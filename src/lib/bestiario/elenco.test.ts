@@ -39,9 +39,9 @@ const ESCENA: Readonly<Record<string, (n: ReadonlyMap<string, string>) => string
 /** Los diez de la decimoquinta vuelta, uno por entorno; después vienen los de la decimosexta, la decimoséptima y la decimoctava. */
 const DIEZ = Object.keys(LUGAR_EN_EL_ELENCO).slice(0, 10);
 
-test('el elenco son los diez, uno por entorno, los tres de la decimosexta, la decimoséptima y la decimoctava, el de la decimonovena, los cinco de la vigésima, el de la vigesimoprimera, los cinco de la vigesimosegunda, los siete de la vigesimotercera, los siete de la vigesimocuarta, los cinco de la vigesimoquinta y los cinco de la vigesimosexta; cada uno es una bestia de esa región', () => {
+test('el elenco son los diez, uno por entorno, los tres de la decimosexta, la decimoséptima y la decimoctava, el de la decimonovena, los cinco de la vigésima, el de la vigesimoprimera, los cinco de la vigesimosegunda, los siete de la vigesimotercera, los siete de la vigesimocuarta, los cinco de la vigesimoquinta, los cinco de la vigesimosexta y los cinco de la vigesimoséptima; cada uno es una bestia de esa región', () => {
   const lugares = Object.entries(LUGAR_EN_EL_ELENCO);
-  assert.equal(lugares.length, 55);
+  assert.equal(lugares.length, 60);
   assert.equal(new Set(DIEZ.map((id) => LUGAR_EN_EL_ELENCO[id])).size, 10, 'dos de los diez en el mismo entorno');
   assert.deepEqual(lugares.slice(10, 13).map(([id]) => id), ['la-hija-del-fletero', 'el-buen-psicopata', 'porco-rex']);
   assert.deepEqual(lugares.slice(13, 16).map(([id]) => id), ['el-angel-de-la-soledad', 'el-pac-man', 'la-mosca']);
@@ -62,7 +62,9 @@ test('el elenco son los diez, uno por entorno, los tres de la decimosexta, la de
   // La vigesimoquinta: cinco que seguían siendo ojos en la profundidad de la noche, uno por recinto flaco de títeres.
   assert.deepEqual(lugares.slice(45, 50).map(([id]) => id), ['el-rey-de-esta-jungla', 'el-ahogado-y-su-fiel-fantasma', 'el-pichon', 'el-club-de-mantis', 'el-que-no-se-cayo-del-cielo']);
   // La vigesimosexta: cinco que seguían sin diseño, uno por región flaca de títeres, y el primero de la pastura.
-  assert.deepEqual(lugares.slice(50).map(([id]) => id), ['el-rey-garufa', 'el-joven-lobo', 'el-reo-semental', 'el-moscon-zumbon', 'el-ovejero']);
+  assert.deepEqual(lugares.slice(50, 55).map(([id]) => id), ['el-rey-garufa', 'el-joven-lobo', 'el-reo-semental', 'el-moscon-zumbon', 'el-ovejero']);
+  // La vigesimoséptima: cinco que seguían siendo ojos o una silueta pintada, cada uno en una región distinta.
+  assert.deepEqual(lugares.slice(55).map(([id]) => id), ['la-rana-rubia', 'el-borrego', 'la-liebre-muerta', 'el-taxi-paranormal', 'el-polizon-del-remolque']);
   for (const [id, region] of lugares) {
     const b = datos.bestias.find((x) => x.id === id);
     assert.ok(b, `${id} no está en el bestiario`);
@@ -138,7 +140,8 @@ test('en el camino, el elenco va en su entorno corrido con k, y en los recintos 
     assert.ok(!piso.includes(`bestia--ojos" data-id="${p.id}"`), `${p.id} sigue siendo ojos en el camino`);
     if (tramo.forma === 'entorno' && !p.fierro) {
       const dx = Math.round(p.ancla * (K_ENTORNO - 1));
-      assert.ok(piso.includes(`data-marco="${p.id}" data-capa="figura" data-dx="${dx}"`) || piso.includes(`data-marco="${p.id}" data-capa="atras" data-dx="${dx}"`), `${p.id} no se corrió con k en el camino`);
+      // El taxi paranormal va en la capa de adelante (los yuyos lo rayaban): también se corre con k.
+      assert.ok((['figura', 'atras', 'delante'] as const).some((capa) => piso.includes(`data-marco="${p.id}" data-capa="${capa}" data-dx="${dx}"`)), `${p.id} no se corrió con k en el camino`);
     }
   }
 });

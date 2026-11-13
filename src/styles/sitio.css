@@ -4934,3 +4934,32 @@ body:has(> .lugar) .marca-chica {
 .titere--ovejero { cursor: pointer; }
 .titere--ovejero [data-parte="huesos"] { pointer-events: none; }
 /* ⟨/el ovejero⟩ */
+
+/* ⟨la liebre muerta⟩ */
+/* La piedra que le pasa rodando no se toca: el toque es de la liebre, de su terciopelo y de sus guindas. */
+.titere--liebre { cursor: pointer; }
+.titere--liebre [data-parte="piedra"] { pointer-events: none; }
+/* ⟨/la liebre muerta⟩ */
+
+/* ⟨el borrego⟩ */
+/* Se toca entero: el bicho, el disfraz y el pañuelo. El pasto pisado también, que agranda el blanco para el dedo. */
+.titere--borrego { cursor: pointer; }
+/* ⟨/el borrego⟩ */
+
+/* ⟨la rana rubia⟩ */
+/* La mosca que le da vueltas y la lengua que le tira no se tocan: el toque es de la rana y de su reposera. */
+.titere--rana { cursor: pointer; }
+.titere--rana [data-parte="mosca"], .titere--rana [data-parte="lengua"] { pointer-events: none; }
+/* ⟨/la rana rubia⟩ */
+
+/* ⟨el taxi paranormal⟩ */
+/* El haz del faro, el doble fuera de foco y las pompas del escape no se tocan: el toque es del fierro. */
+.titere--taxi { cursor: pointer; }
+.titere--taxi [data-parte="haz"], .titere--taxi [data-parte="doble"], .titere--taxi [data-parte="pompas"] { pointer-events: none; }
+/* ⟨/el taxi paranormal⟩ */
+
+/* ⟨el polizon del remolque⟩ */
+/* Las ondas del agua, el resplandor y la luz del fósforo no se tocan: el toque es del bote, de la corona y de él. */
+.titere--polizon { cursor: pointer; }
+.titere--polizon [data-parte="ondas"], .titere--polizon [data-parte="resplandor"], .titere--polizon [data-parte="fosforo"] { pointer-events: none; }
+/* ⟨/el polizon del remolque⟩ */

@@ -37,8 +37,10 @@ export const VECINOS_DEL_MONTE: Readonly<Record<string, readonly [number, number
   'el-rey-de-esta-jungla': [566, 222, 'papel'],
   'tu-animal': [846, 352, 'oro'],
   'el-lobo-caido': [92, 486, 'oro'],
-  'la-liebre-muerta': [818, 540, 'papel'],
-  'el-borrego': [214, 470, 'papel'],
+  // La liebre se tendió en el borde de abajo del claro: los ojos van donde tiene el ojo.
+  'la-liebre-muerta': [553, 516, 'papel'],
+  // El borrego anda suelto abajo del palo, afuera de la soga: los ojos van donde tiene el ojo.
+  'el-borrego': [343, 460, 'papel'],
   'el-rebano': [640, 560, 'papel'],
   'el-ovejero': [168, 396, 'oro'],
 };
