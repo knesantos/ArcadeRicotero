@@ -5,11 +5,11 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-11-13
+**Última actualización:** 2026-11-14
 
 > ## 🐑 DIEZ BESTIAS MÁS EN EL ELENCO (2026-11-13) — `D-73` enmienda 28, `T-528`
 >
-> **Sin integrar.** Rama `claude/bestiario-diez-ffa47e`, sobre `main` en `8b0d80a`, con PR abierto. Pedido del usuario: *"Volve a
+> **Integrada en `main` el 2026-11-14** (PR #112, commit de fusión `3f2f872`), desde la rama `claude/bestiario-diez-ffa47e`, sobre `main` en `8b0d80a`. Pedido del usuario: *"Volve a
 > arrancar otra sesion de al menos 10 bestias nuevas."* Diez que eran ojos en lo oscuro o una cosa pintada pasan a títere, una por
 > región, empezando por el galpón: la **fuente de buñuelos** (el galpón), el **héroe del whisky** (la ruta, viaja en el tránsito en
 > lugar de la imagen del camión), el **rebaño** (la pastura), el **angelito frito** (el árbol), las **almejas** (los astilleros), el
