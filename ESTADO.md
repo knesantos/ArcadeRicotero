@@ -7,6 +7,25 @@
 
 **Última actualización:** 2026-11-13
 
+> ## 🐑 DIEZ BESTIAS MÁS EN EL ELENCO (2026-11-13) — `D-73` enmienda 28, `T-528`
+>
+> **Sin integrar.** Rama `claude/bestiario-diez-ffa47e`, sobre `main` en `8b0d80a`, con PR abierto. Pedido del usuario: *"Volve a
+> arrancar otra sesion de al menos 10 bestias nuevas."* Diez que eran ojos en lo oscuro o una cosa pintada pasan a títere, una por
+> región, empezando por el galpón: la **fuente de buñuelos** (el galpón), el **héroe del whisky** (la ruta, viaja en el tránsito en
+> lugar de la imagen del camión), el **rebaño** (la pastura), el **angelito frito** (el árbol), las **almejas** (los astilleros), el
+> **lobo caído** (el monte), **Mister Ed y Huesito** (el templo), los **buitres de la tele** (Cybersiberia), la **hormiga dormida**
+> (la mesa) y los **náufragos** (el bajo). Quedaron afuera el infierno, la prisión y los techos.
+>
+> - Las dibujaron tres subagentes Sonnet a la vez en el mismo worktree, con un encargo común; el hilo principal auditó sus capturas y
+>   devolvió una segunda vuelta a cada uno (el lobo caído parecía una rata, la hormiga una araña, los buitres flotaban, entre otras).
+> - Se sacaron sus siluetas de los pisos y se reimprimieron galpón, árbol, astilleros, Cybersiberia y mesa, con su camino. En el
+>   templo, Mister Ed ocupaba el hueco de las velas: se corrieron los ojos de la bailarina y la tanda de adelante en `ofrendas.ts`.
+> - **Visto**: las diez, vivas en el sitio armado, en su tramo del camino, en el teléfono emulado (430×860); cada una a PNG de
+>   cerca, en el recinto y en la tira del toque. **No visto**: en un teléfono de verdad, ni el toque de cada una en el navegador.
+> - **Verde:** `npm test` 2470, `npm run check` 0 errores, `npm run build` 200 páginas. `elenco.test.ts` pasa de 60 a 70.
+> - **Falta** (`T-528`): un teléfono de verdad, que `contenido` lea las diez estampas, los diez bloques de tintas al lienzo, el torso
+>   del héroe, sumarlas a `mirada.ts` y los vecinos que reaccionan al toque ajeno.
+
 > ## 🔀 OCHO PR A `main`, POR CADENA (2026-11-13)
 >
 > Pedido del usuario: *"mete todo a main."* Entraron los ocho PR abiertos, siguiendo `.claude/rules/integrar.md`:

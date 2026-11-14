@@ -286,20 +286,12 @@ function silla(x: number, piso: number): string {
   );
 }
 
-/** La mesita con la fuente de buñuelos, los redonditos de ricota, espolvoreados de azúcar. */
+/**
+ * La mesita de la fuente de buñuelos. Los buñuelos ya no se pintan acá: la fuente es un títere del elenco
+ * (`arte-bunuelos.ts`), con su plato, la receta, las pinzas y el vapor, que se apoya en esta misma tapa.
+ */
 function fuenteDeBunuelos(x: number, piso: number): string {
   const tapa = piso - 40;
-  let bunuelos = '';
-  const rnd = azar(19);
-  const pila: Array<[number, number, number]> = [];
-  for (const [fila, n] of [[0, 5], [1, 4], [2, 3], [3, 1]] as const) {
-    for (let i = 0; i < n; i++) pila.push([x + (i - (n - 1) / 2) * 11, tapa - 8 - fila * 9, 7 + rnd() * 1.2]);
-  }
-  for (const [bx, by, r] of pila) {
-    bunuelos += enmascarado(`g-bunuelo-${Math.round(bx)}-${Math.round(by)}`, circulo(bx, by, r),
-      forma(circulo(bx, by, r), G.madera) + nube(bx + r * 0.4, by + r * 0.4, r * 0.8, r * 0.7, G.maderaHonda, 's', 0.9) + nube(bx - r * 0.3, by - r * 0.4, r * 0.5, r * 0.4, G.oro, 's', 0.8));
-    for (let s = 0; s < 4; s++) bunuelos += `<circle cx="${f(bx - r * 0.5 + rnd() * r)}" cy="${f(by - r * 0.7 + rnd() * r * 0.6)}" r="0.9" fill="${G.papel}" opacity="0.85"/>`;
-  }
   return (
     nube(x + 3, piso + 2, 30, 5, G.negro, 's', 0.7) +
     forma(elipse(x, piso - 2, 18, 4), G.maderaHonda) +
@@ -307,8 +299,7 @@ function fuenteDeBunuelos(x: number, piso: number): string {
     forma(elipse(x, tapa, 32, 7), G.madera) +
     nube(x - 8, tapa - 2, 20, 3, G.papel, 's', 0.4) +
     forma(elipse(x, tapa - 3, 30, 6), G.papel) +
-    nube(x + 8, tapa - 1, 22, 4, G.maderaHonda, 's', 0.5) +
-    bunuelos
+    nube(x + 8, tapa - 1, 22, 4, G.maderaHonda, 's', 0.5)
   );
 }
 
@@ -626,7 +617,6 @@ function arbolPiso(ancho = ANCHO, alto = ALTO): string {
   const [scx, scy] = at('el-senor-de-los-cielos');
   const [a2x, a2y] = at('el-angel-guardian');
   const [a3x, a3y] = at('los-angelitos-profesionales');
-  const [fx, fy] = at('el-angelito-frito');
   const [bgx, bgy] = at('el-bicho-del-gran-bonete');
 
   const sombrero = (x: number, y: number): string => forma(`M${f(x - 7)} ${f(y)} Q${f(x)} ${f(y - 13)} ${f(x + 7)} ${f(y)} Z`, A.negro) + forma(elipse(x, y, 11, 2.4), A.negro);
@@ -654,12 +644,8 @@ function arbolPiso(ancho = ANCHO, alto = ALTO): string {
     alas(a3x, a3y, 40, 0.75) + figura(a3x, a3y, 40, A.negro) + sombrero(a3x, a3y - 6) +
     alas(a3x + 42, a3y + 2, 40, 0.75) + figura(a3x + 42, a3y + 2, 40, A.negro) + sombrero(a3x + 42, a3y - 4) +
     `<ellipse cx="${f(a3x + 36)}" cy="${f(a3y + 2)}" rx="2.6" ry="2" fill="${A.papel}"/><ellipse cx="${f(a3x + 48)}" cy="${f(a3y + 2)}" rx="2.6" ry="2" fill="${A.papel}"/>` +
-    // El angelito frito: caído del lado del galpón, chamuscado, con las alas humeando.
-    nube(fx, fy + 14, 60, 12, A.negro, 'm', 0.85) +
-    soplo(`M${f(fx - 30)} ${f(fy + 14)} C${f(fx - 40)} ${f(fy - 10)} ${f(fx - 20)} ${f(fy - 16)} ${f(fx - 8)} ${f(fy)} Z M${f(fx + 30)} ${f(fy + 14)} C${f(fx + 42)} ${f(fy - 12)} ${f(fx + 22)} ${f(fy - 18)} ${f(fx + 8)} ${f(fy)} Z`, A.peltre, 's', 0.8) +
-    forma(circulo(fx, fy, 9), A.negro) + forma(elipse(fx, fy + 16, 14, 9), A.negro) +
-    [0, 1, 2].map((i) => soplo(`M${f(fx - 20 + i * 18)} ${f(fy - 4)} C${f(fx - 30 + i * 18)} ${f(fy - 40)} ${f(fx - 6 + i * 18)} ${f(fy - 60)} ${f(fx - 18 + i * 18)} ${f(fy - 100)} L${f(fx - 12 + i * 18)} ${f(fy - 100)} C${f(fx + i * 18)} ${f(fy - 60)} ${f(fx - 22 + i * 18)} ${f(fy - 40)} ${f(fx - 14 + i * 18)} ${f(fy - 4)} Z`, A.nube, 'm', 0.3)).join('') +
-    estrellas(fx - 30, fy - 10, fx + 30, fy + 20, 14, A.oro, 7);
+    // El angelito frito ya no se pinta acá: es un títere del elenco (`arte-angelito.ts`), caído en este mismo lugar.
+    '';
 
   return (
     `<g filter="url(#rociado)">` +
@@ -829,17 +815,6 @@ function cyberLejos(ancho = ANCHO, alto = ALTO): string {
   );
 }
 
-/** Un buitre encorvado sobre la antena: el bulto, el cogote pelado y el pico de gancho. */
-function buitre(x: number, y: number, lado: number): string {
-  return (
-    forma(`M${f(x - 9)} ${f(y + 16)} C${f(x - 14)} ${f(y)} ${f(x - 6)} ${f(y - 10)} ${f(x + 4)} ${f(y - 8)} C${f(x + 12)} ${f(y - 2)} ${f(x + 12)} ${f(y + 10)} ${f(x + 8)} ${f(y + 18)} Z`, C.negro) +
-    trazo(`M${f(x + lado * 2)} ${f(y - 6)} q${f(lado * 4)} -8 ${f(lado * 8)} -6`, C.negro, 2.6) +
-    forma(circulo(x + lado * 10, y - 13, 3.2), C.oxido) +
-    trazo(`M${f(x + lado * 12)} ${f(y - 13)} q${f(lado * 4)} 0 ${f(lado * 3)} 4`, C.negro, 1.6) +
-    nube(x + lado * 10, y - 14, 3, 3, C.lente, 'xs', 0.6)
-  );
-}
-
 /** La tele: consola de acero remachada con la pantalla de ojo de buey, y el Alien Duce adentro. */
 function tele(x: number): string {
   const { piso, ancho: w, alto: hh, pantalla } = CYBER.tele;
@@ -866,10 +841,10 @@ function tele(x: number): string {
     // La luz de la pantalla, que se derrama sobre la nieve y el aire.
     nube(x, py, 230, 190, C.lente, 'xl', 0.3) +
     nube(x, piso + 34, 210, 34, C.lente, 'l', 0.4) +
-    // La antena de conejo, y los buitres que esperan en la punta de la izquierda.
+    // La antena de conejo. Los buitres que esperan en la punta de la izquierda ya no se pintan acá: son un títere del
+    // elenco (`arte-buitres.ts`), parado en un travesaño que le ataron a esta antena.
     trazo(`M${f(x - 14)} ${f(arriba + 2)} L${f(aix * k)} ${aiy} M${f(x + 14)} ${f(arriba + 2)} L${f(adx * k)} ${ady}`, C.claro, 3) +
     forma(circulo(aix * k, aiy, 4.5), C.claro) + forma(circulo(adx * k, ady, 4.5), C.claro) +
-    buitre(aix * k + (x - 14 - aix * k) * 0.1, aiy + (arriba + 2 - aiy) * 0.1 - 16, -1) + buitre(aix * k + (x - 14 - aix * k) * 0.27, aiy + (arriba + 2 - aiy) * 0.27 - 16, 1) +
     nube(x + 6, piso + 4, w * 0.6, 10, C.negro, 'm', 0.6) +
     enmascarado('c-tele', cuerpo,
       forma(cuerpo, C.acero) +
@@ -1198,7 +1173,7 @@ function ferry(k: number): string {
 function astilleroPiso(ancho = ANCHO, alto = ALTO): string {
   const k = ancho / ANCHO;
   const X = (x: number): number => x * k;
-  const { muelle, pila, farol, hamaca, planchada, cania, lanchon, balde, valija } = ASTILLERO;
+  const { muelle, pila, farol, hamaca, planchada, cania, lanchon, valija } = ASTILLERO;
   const rnd = azar(331);
 
   // El muelle: tablones cada vez más anchos, con la tiza en las juntas.
@@ -1302,15 +1277,7 @@ function astilleroPiso(ancho = ANCHO, alto = ALTO): string {
     enmascarado('t-valija', caja(vx - 22, vy - 30, 44, 30), forma(caja(vx - 22, vy - 30, 44, 30), T.naranjaHonda) + nube(vx + 14, vy - 6, 20, 16, T.negro, 'm', 0.6) + trazo(`M${f(vx - 10)} ${f(vy - 30)} l0 30 M${f(vx + 10)} ${f(vy - 30)} l0 30`, T.negro, 2.4, 0.7)) +
     trazo(`M${f(vx - 7)} ${f(vy - 30)} q7 -9 14 0`, T.negro, 2.6);
 
-  // El balde de las almejas.
-  const [bdx, bdy] = [X(balde.x), balde.piso];
-  const cubo = `M${f(bdx - 22)} ${f(bdy - 40)} L${f(bdx + 22)} ${f(bdy - 40)} L${f(bdx + 17)} ${f(bdy)} L${f(bdx - 17)} ${f(bdy)} Z`;
-  const almejas = [[-12, -40, -20], [0, -44, 10], [12, -40, 30], [-4, -38, -40]].map(([dx, dy, g]) =>
-    `<g transform="rotate(${g} ${f(bdx + dx!)} ${f(bdy + dy!)})">${forma(elipse(bdx + dx!, bdy + dy!, 7, 5), T.clara)}${trazo(`M${f(bdx + dx! - 5)} ${f(bdy + dy! - 1)} q5 -4 10 0 M${f(bdx + dx! - 4)} ${f(bdy + dy! + 2)} q4 -3 8 0`, T.azul, 0.9)}</g>`).join('');
-  const elBalde =
-    nube(bdx + 4, bdy + 2, 28, 5, T.negro, 's', 0.7) + almejas +
-    enmascarado('t-balde', cubo, forma(cubo, T.azul) + nube(bdx + 12, bdy - 20, 12, 30, T.negro, 'm', 0.6) + nube(bdx - 10, bdy - 26, 6, 18, T.sodio, 's', 0.5)) +
-    `<g filter="url(#tiza)">${trazo(cubo, T.clara, 1.4, 0.8)}${trazo(`M${f(bdx - 22)} ${f(bdy - 40)} Q${f(bdx)} ${f(bdy - 70)} ${f(bdx + 22)} ${f(bdy - 40)}`, T.clara, 1.4, 0.7)}</g>`;
+  // El balde de las almejas ya no se pinta acá: es un títere del elenco (`arte-almejas.ts`), que apoya en la tabla del muelle.
 
   return (
     filtroTiza() +
@@ -1327,7 +1294,7 @@ function astilleroPiso(ancho = ANCHO, alto = ALTO): string {
     `<g filter="url(#rociado)">${pilaDeContainers}</g>` +
     poste +
     hamacaEntera +
-    rana + novia + pesca + as + elBalde
+    rana + novia + pesca + as
   );
 }
 
@@ -1560,13 +1527,7 @@ function mesaPiso(ancho = ANCHO, alto = ALTO): string {
   }
   // El vaso boca abajo con el moscón ya no se pinta acá: es un títere del elenco (`arte-moscon.ts`), en este mismo lugar.
   const vaso = '';
-  const [mbx, mbp] = [X(MESA.membrillo.x), MESA.membrillo.piso];
-  const membrillo = forma(`M${f(mbx - 18)} ${f(mbp)} L${f(mbx - 14)} ${f(mbp - 16)} L${f(mbx + 16)} ${f(mbp - 18)} L${f(mbx + 18)} ${f(mbp - 2)} Z`, M2.sepiaHonda) +
-    forma(`M${f(mbx - 14)} ${f(mbp - 16)} L${f(mbx + 16)} ${f(mbp - 18)} L${f(mbx + 12)} ${f(mbp - 22)} L${f(mbx - 16)} ${f(mbp - 20)} Z`, M2.vivo, 0.8) + nube(mbx - 4, mbp - 12, 6, 2, M2.blanco, 's', 0.5);
-  const [hdx, hdy] = [X(COSAS_DE_LA_MESA['la-hormiga-dormida']![0]), COSAS_DE_LA_MESA['la-hormiga-dormida']![1]];
-  const dormida = forma(elipse(hdx, hdy, 4.4, 2.6), M2.negro) + forma(circulo(hdx + 5, hdy, 2.2), M2.negro) +
-    trazo(`M${f(hdx - 2)} ${f(hdy - 2)} l-2 -5 M${f(hdx)} ${f(hdy - 2)} l0 -6 M${f(hdx + 2)} ${f(hdy - 2)} l2 -5`, M2.negro, 0.9) +
-    trazo(`M${f(hdx + 8)} ${f(hdy - 8)} q3 -2 6 0 M${f(hdx + 12)} ${f(hdy - 14)} q2 -1.5 4 0`, M2.blanco, 1, 0.7);
+  // El membrillo y la hormiga dormida ya no se pintan acá: son un títere del elenco (`arte-hormiga.ts`), con su membrillo, su dedal y su camisa.
   const [qx, qp] = [X(MESA.queso.x), MESA.queso.piso];
   const queso = recorte('m-queso', qx - 24, qp - 26, 48, 26, -4,
     forma(caja(qx - 40, qp - 40, 80, 60), M2.rojo) +
@@ -1596,7 +1557,7 @@ function mesaPiso(ancho = ANCHO, alto = ALTO): string {
     vapor +
     recorte('m-olla', ox - ow / 2 - 14, op - oh - 50, ow + 28, oh + 54, -2, ollaAdentro, 471) +
     nube(hpx, hpy + 6, 120, 18, M2.haz, 'l', 0.35) +
-    miel + hormigas + vaso + membrillo + dormida + queso + manzana +
+    miel + hormigas + vaso + queso + manzana +
     // La mosca ya no se pinta acá: es un títere del elenco (`arte-mosca.ts`), que vuela sobre esta olla.
     mosca(mdx, mdy, 16, true) +
     chimpance

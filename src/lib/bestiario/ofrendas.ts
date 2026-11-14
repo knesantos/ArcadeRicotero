@@ -59,7 +59,7 @@ export function ofrendasDelTemplo(hasta: number = marcoDelRecinto('el-templo').a
       cerca.push([Math.round(a + w * 0.3), Math.min(4, entran), true], [Math.round(a + w * 0.75), 3, false]);
       lejos.push(Math.round(a + w * 0.12), Math.round(a + w * 0.52));
     } else if (entran >= 3) {
-      cerca.push([Math.round(a + w / 2), entran, cerca.length % 2 === 0]);
+      cerca.push([Math.round(a + w * 0.3), entran, cerca.length % 2 === 0]);
       if (w >= 200) lejos.push(Math.round(a + 34), Math.round(b - 34));
     } else if (w >= 50) lejos.push(Math.round(a + w / 2));
   };

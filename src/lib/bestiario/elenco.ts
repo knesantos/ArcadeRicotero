@@ -76,6 +76,16 @@ import { BORREGO_PERSONAJE } from './arte-borrego.ts';
 import { LIEBRE_PERSONAJE } from './arte-liebre.ts';
 import { TAXI_PERSONAJE } from './arte-taxi.ts';
 import { POLIZON_PERSONAJE } from './arte-polizon.ts';
+import { NAUF_PERSONAJE } from './arte-nau.ts';
+import { ED_PERSONAJE } from './arte-ed.ts';
+import { ALMEJAS_PERSONAJE } from './arte-almejas.ts';
+import { REBANO_PERSONAJE } from './arte-rebano.ts';
+import { HEROE } from './arte-heroe.ts';
+import { ANGELITO_PERSONAJE } from './arte-angelito.ts';
+import { HORMIGA_PERSONAJE } from './arte-hormiga.ts';
+import { LOBOCAIDO_PERSONAJE } from './arte-lobocaido.ts';
+import { BUNUELOS_PERSONAJE } from './arte-bunuelos.ts';
+import { BUITRES_PERSONAJE } from './arte-buitres.ts';
 
 export type Nombres = ReadonlyMap<string, string>;
 
@@ -119,7 +129,7 @@ export interface Personaje {
  * Los lugares, en el orden del recorrido: los diez de la decimoquinta vuelta y los tres de la
  * decimosexta. `null` es que todavía son ojos en lo oscuro.
  */
-const LUGARES: ReadonlyArray<Personaje | null> = [BESTIA_POP, MONITO, BUSCAPINA, PIBE, CANIBAL, PONTIAC, DIABLO, RATO, MORTA, ESCLAVO, HIJA, PSICOPATA, PORCO, ANGEL, PACMAN, MOSCA, VERDUGO_CENA, SATURNO_DOCTOR, TU_ANIMAL, DINAMITA, ZIPPO_PERSONAJE, VELOZ_PERSONAJE, FUMADOR_PERSONAJE, COLGADO_PERSONAJE, DESENCARNADA, ENCADENADO_PERSONAJE, MATON_PERSONAJE, AMORCITO_PERSONAJE, SIRENAS_PERSONAJE, MANDINGA_PERSONAJE, ALIEN_PERSONAJE, CHIVATO_PERSONAJE, GALLOS_PERSONAJE, ANGUILA_PERSONAJE, LECHUZA_PERSONAJE, ANZUELO_PERSONAJE, PIBA_PERSONAJE, LOBAS_PERSONAJE, CUERNOS_PERSONAJE, SAPITO_PERSONAJE, RAPAZ_PERSONAJE, RATON_PERSONAJE, POLILLA_PERSONAJE, BOTIJA_PERSONAJE, JOCKER_PERSONAJE, REY_PERSONAJE, AHOGADO_PERSONAJE, PICHON_PERSONAJE, MANTIS_PERSONAJE, CIELO_PERSONAJE, GARUFA_PERSONAJE, JOVEN_PERSONAJE, REO_PERSONAJE, MOSCON_PERSONAJE, OVEJERO_PERSONAJE, RANA_PERSONAJE, BORREGO_PERSONAJE, LIEBRE_PERSONAJE, TAXI_PERSONAJE, POLIZON_PERSONAJE];
+const LUGARES: ReadonlyArray<Personaje | null> = [BESTIA_POP, MONITO, BUSCAPINA, PIBE, CANIBAL, PONTIAC, DIABLO, RATO, MORTA, ESCLAVO, HIJA, PSICOPATA, PORCO, ANGEL, PACMAN, MOSCA, VERDUGO_CENA, SATURNO_DOCTOR, TU_ANIMAL, DINAMITA, ZIPPO_PERSONAJE, VELOZ_PERSONAJE, FUMADOR_PERSONAJE, COLGADO_PERSONAJE, DESENCARNADA, ENCADENADO_PERSONAJE, MATON_PERSONAJE, AMORCITO_PERSONAJE, SIRENAS_PERSONAJE, MANDINGA_PERSONAJE, ALIEN_PERSONAJE, CHIVATO_PERSONAJE, GALLOS_PERSONAJE, ANGUILA_PERSONAJE, LECHUZA_PERSONAJE, ANZUELO_PERSONAJE, PIBA_PERSONAJE, LOBAS_PERSONAJE, CUERNOS_PERSONAJE, SAPITO_PERSONAJE, RAPAZ_PERSONAJE, RATON_PERSONAJE, POLILLA_PERSONAJE, BOTIJA_PERSONAJE, JOCKER_PERSONAJE, REY_PERSONAJE, AHOGADO_PERSONAJE, PICHON_PERSONAJE, MANTIS_PERSONAJE, CIELO_PERSONAJE, GARUFA_PERSONAJE, JOVEN_PERSONAJE, REO_PERSONAJE, MOSCON_PERSONAJE, OVEJERO_PERSONAJE, RANA_PERSONAJE, BORREGO_PERSONAJE, LIEBRE_PERSONAJE, TAXI_PERSONAJE, POLIZON_PERSONAJE, BUNUELOS_PERSONAJE, HEROE, REBANO_PERSONAJE, ANGELITO_PERSONAJE, ALMEJAS_PERSONAJE, LOBOCAIDO_PERSONAJE, ED_PERSONAJE, BUITRES_PERSONAJE, HORMIGA_PERSONAJE, NAUF_PERSONAJE];
 
 /** Los que ya tienen títere. */
 export const ELENCO: readonly Personaje[] = LUGARES.filter((p): p is Personaje => p !== null);
@@ -264,4 +274,16 @@ export const LUGAR_EN_EL_ELENCO: Readonly<Record<string, string>> = {
   'la-liebre-muerta': 'el-monte',
   'el-taxi-paranormal': 'la-ruta',
   'el-polizon-del-remolque': 'el-bajo',
+  // La vigesimoctava: diez que seguían siendo ojos en lo oscuro o una cosa pintada, una por región salvo el infierno, la
+  // prisión y los techos, que eran las más cargadas; las dibujaron tres subagentes a la vez y las auditó el hilo principal.
+  'redonditos-de-ricota': 'el-galpon',
+  'el-heroe-del-whisky': 'la-ruta',
+  'el-rebano': 'la-pastura',
+  'el-angelito-frito': 'el-arbol',
+  'las-almejas': 'los-astilleros',
+  'el-lobo-caido': 'el-monte',
+  'mister-ed-y-huesito': 'el-templo',
+  'los-buitres-de-la-tele': 'cybersiberia',
+  'la-hormiga-dormida': 'la-mesa',
+  'los-naufragos': 'el-bajo',
 };

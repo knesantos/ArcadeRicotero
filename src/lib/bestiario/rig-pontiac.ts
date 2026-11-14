@@ -105,12 +105,12 @@ export const PONTIAC_VIDA = {
 
 /**
  * Lo que mira de los fierros del otro carril, que van más despacio y los pasa: quién viaja colgado o
- * tirado arriba, y de dónde sale su luz. Medido del dibujo de cada uno (`bondi()` y `camion()` en
- * `arte-entornos.ts`), con el (0, 0) donde tocan el carril.
+ * tirado arriba, y de dónde sale su luz. Medido del dibujo de cada uno (`bondi()` en `arte-entornos.ts` y el títere de
+ * `arte-heroe.ts`), con el (0, 0) donde tocan el carril.
  */
 export const DE_LOS_OTROS: Readonly<Record<string, { pasajero: P; luz: P }>> = {
   'el-zumba': { pasajero: [-164, -76], luz: [230, -40] },
-  'el-heroe-del-whisky': { pasajero: [-80, -76], luz: [200, -44] },
+  'el-heroe-del-whisky': { pasajero: [-101, -68], luz: [200, -44] },
 };
 
 /** La que espera en la banquina de arriba: cuando pasa cerca, los ojos se le van para allá. */

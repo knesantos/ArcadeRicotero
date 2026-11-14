@@ -176,12 +176,12 @@ export const VECINOS_DEL_TEMPLO: Readonly<Record<string, readonly [number, numbe
   // La murga se corrió a la derecha de la columna para dejarle el anda al santo fumador.
   'la-murga-de-los-renegados': [24, 576, 'papel'],
   'el-morta': [652, 440, 'oro'],
-  // Mister Ed se corrió a la derecha para dejarle el aire al Dr. Saturno, que flota delante de la columna.
-  'mister-ed-y-huesito': [985, 580, 'papel'],
+  // Mister Ed ya es un títere (`arte-ed.ts`): hace el número entre el medallón de Momo y el Morta, y esto es donde está.
+  'mister-ed-y-huesito': [494, 520, 'papel'],
   'el-doctor-saturno': [1000, 300, 'papel'],
   // El sheriff, más contra la primera columna: el anda del santo fumador tiene varas largas.
   'el-sheriff': [-226, 530, 'oro'],
-  'la-bailarina': [270, 586, 'papel'],
+  'la-bailarina': [270, 480, 'papel'],
 };
 
 export function escenaTemplo(nombres: ReadonlyMap<string, string>): string {
@@ -225,7 +225,7 @@ export const VECINOS_DEL_BAJO: Readonly<Record<string, readonly [number, number,
   // El polizón está abajo de su bote: los ojos van donde le asoman, por la rendija de la proa.
   'el-polizon-del-remolque': [178, 592, 'papel'],
   'el-rato-molhado': [92, 452, 'oro'],
-  'los-naufragos': [-60, 596, 'papel'],
+  'los-naufragos': [-58, 570, 'papel'],
   'las-sirenas': [1130, 430, 'oro'],
   'la-anguila': [1076, 600, 'rojo'],
 };

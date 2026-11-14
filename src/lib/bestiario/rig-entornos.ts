@@ -167,7 +167,8 @@ export const OJOS_DE_LOS_ASTILLEROS: Readonly<Record<string, Ojos>> = {
 export const COSAS_DE_LOS_ASTILLEROS: Readonly<Record<string, Cosa>> = {
   'la-pequena-novia-del-carioca': [640, 404, 40],
   'el-que-mordio-el-anzuelo': [770, 424, 30],
-  'las-almejas': [470, 548, 30],
+  // El balde ya es un títere (`arte-almejas.ts`): esta es donde está, para quien lo mire.
+  'las-almejas': [488, 540, 30],
 };
 
 /* ------------------------------------------------------------------
@@ -242,7 +243,7 @@ export const COSAS_DE_LA_RUTA: Readonly<Record<string, Cosa>> = {
  */
 export const FIERROS = {
   'el-zumba': { pieza: 'ruta-bondi', carril: 0, caja: [-176, -150, 470, 166], x: 250 },
-  'el-heroe-del-whisky': { pieza: 'ruta-camion', carril: 0, caja: [-130, -118, 400, 132], x: 760 },
+  'el-heroe-del-whisky': { pieza: 'ruta-camion', carril: 0, caja: [-156, -190, 430, 204], x: 760 },
   'la-mariposa-pontiac': { pieza: 'ruta-pontiac', carril: 1, caja: [-110, -150, 360, 166], x: 560 },
   'el-toxi-taxi': { pieza: 'ruta-taxi', carril: 1, caja: [-240, -84, 470, 98], x: 120 },
 } as const;

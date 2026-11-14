@@ -68,10 +68,20 @@ import { armarReo } from './reo.ts';
 import { armarMoscon } from './moscon.ts';
 import { armarOvejero } from './ovejero.ts';
 import { armarRana } from './rana.ts';
+import { armarHeroe } from './heroe.ts';
+import { armarAngelito } from './angelito.ts';
+import { armarHormiga } from './hormiga.ts';
 import { armarBorrego } from './borrego.ts';
 import { armarLiebre } from './liebre.ts';
 import { armarTaxi } from './taxi.ts';
 import { armarPolizon } from './polizon.ts';
+import { armarNaufragos } from './nau.ts';
+import { armarEd } from './ed.ts';
+import { armarAlmejas } from './almejas.ts';
+import { armarRebano } from './rebano.ts';
+import { armarLobocaido } from './lobocaido.ts';
+import { armarBunuelos } from './bunuelos.ts';
+import { armarBuitres } from './buitres.ts';
 
 /**
  * Lo que la escena le presta a un personaje. Las coordenadas de `hablar` van en las del recinto
@@ -155,10 +165,20 @@ const CONDUCTAS: Readonly<Record<string, Armar | null>> = {
   'el-moscon-zumbon': armarMoscon,
   'el-ovejero': armarOvejero,
   'la-rana-rubia': armarRana,
+  'el-heroe-del-whisky': armarHeroe,
+  'el-angelito-frito': armarAngelito,
+  'la-hormiga-dormida': armarHormiga,
   'el-borrego': armarBorrego,
   'la-liebre-muerta': armarLiebre,
   'el-taxi-paranormal': armarTaxi,
   'el-polizon-del-remolque': armarPolizon,
+  'los-naufragos': armarNaufragos,
+  'mister-ed-y-huesito': armarEd,
+  'las-almejas': armarAlmejas,
+  'el-rebano': armarRebano,
+  'el-lobo-caido': armarLobocaido,
+  'redonditos-de-ricota': armarBunuelos,
+  'los-buitres-de-la-tele': armarBuitres,
 };
 
 /** Los ids que tienen conducta: el test mira que coincidan con los que tienen dibujo. */

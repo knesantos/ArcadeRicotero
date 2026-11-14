@@ -6284,6 +6284,105 @@ está). Lo que quedó flojo: en el camino, lo de adelante de la ruta es otra cap
 por delante al taxi mientras se camina; el taxi apoyado asoma las ruedas sobre el carril de adelante; y al borrego, cuando se sube
 el disfraz, la boca no llega a tocarlo.
 
+### Enmienda del 2026-11-13 (28): diez más que eran ojos o una cosa pintada, una por región, dibujadas por tres subagentes a la vez
+
+Pedido del usuario, textual: *"Volve a arrancar otra sesion de al menos 10 bestias nuevas."*, con la vara de la vigesimosexta
+(*"bien rocambolesco con su animacion y detalles de la letra. Que sea bien detallado y pulido"*). Lo hizo el hilo principal en la
+rama `claude/bestiario-diez-ffa47e`, sobre `main` en `8b0d80a`, con `T-528`. **Las dibujaron, animaron y probaron tres subagentes
+Sonnet en paralelo, en el mismo worktree**, cada uno con un encargo común (las cuatro reglas del bestiario, el molde de la
+vigesimoséptima, cómo convivir y cómo mirar a imagen) y tres o cuatro bestias repartidas según qué pisos tocaban, para no pisarse.
+El hilo principal las auditó sobre sus capturas y les devolvió una segunda vuelta a cada uno.
+
+#### Cuáles
+
+Una por región, empezando por el galpón, que tenía un solo títere. Quedaron afuera el infierno (no le quedan ojos), la prisión y los
+techos (ocho títeres cada una).
+
+- **La fuente de buñuelos** (`redonditos-de-ricota`, el galpón, del mito y no de una letra): la pila despareja de buñuelos de
+  ricota, dorados, con globitos y azúcar impalpable, la receta apoyada contra el plato y unas pinzas de resorte. Sola, el de arriba
+  rueda hasta el borde y no se cae (lo afirma el test), la pila se asienta y las pinzas le erran. Tocada ofrece: el de arriba salta
+  a las pinzas y sale hacia quien mira, con el azúcar cayendo. **La silla de Patricio Rey no se toca y nadie tiene cara** (también
+  lo mira el test). Se sacó la pila de `fuenteDeBunuelos()` y se reimprimieron `galpon-piso` y `camino-galpon-*`. Como no sale en
+  ninguna letra, el bocadillo dice el aviso del mito de siempre; su línea, *"Agarrá uno. Son de quien pase."*, va como
+  `aria-description`.
+- **El héroe del whisky** (la ruta, *Héroe del whisky*, *Bang! Bang! Estás liquidado*): **reemplaza la imagen del fierro**
+  `ruta-camion` y viaja en el tránsito, como la Mariposa Pontiac. Tirado en la caja (*"en la caja de un camión"*), con gabardina y
+  boina, la boca floja, el gorro hecho con el menú de Tony Soirée, una botella vacía y una guitarra de hueso (*"rock de las
+  cavernas"*); las estrellas *"a su alcance"* cuelgan de una caña clavada en la cabina, como la zanahoria del burro, y el perro *"se
+  hace notar"*. Solo alcanza una estrella a ciegas y se le escapa, toma de la vacía, se le vuela el gorro, y el perro salta a morder
+  las estrellas. Tocado ladra cuatro veces y el héroe se levanta el gorro y abre un ojo. `FIERROS.caja` se agrandó y la Pontiac
+  mira ahora la cabeza del héroe (`rig-pontiac.ts`).
+- **El rebaño** (la pastura, *El pibe de los astilleros*, *La mosca y la sopa*): *"esos tipos soplan con el viento / al rebaño y su
+  temor"*. Tres ovejas apretadas alrededor de una veleta con gallo de lata y una bolsa de nailon enganchada que se infla; miran para
+  donde sopla, una más tarde que otra. Solas siguen al gallo (la tercera se pasa de rosca), se les escapa la bolsa por arriba, una
+  asoma y la devuelve un ruido. Tocadas saltan en fila, sueltan copos de lana, la veleta gira y vuelven más apretadas. Afuera de la
+  soga del cordero.
+- **El angelito frito** (el árbol, *Estás frito angelito*, *Último bondi a Finisterre*): sentado en un cráter de pasto quemado, con
+  el pelo parado, los ojos en espiral, la aureola torcida que titila como un tubo, plumas carbonizadas y peladas hasta el cañón, y
+  el enchufe en la mano (*"vas a poner contacto"*). Un brote se le arrima al pie (*"tu naturaleza te quiere"*) y él lo patea. Tocado
+  lo cruza la corriente: se le ven los huesos, se le abren las alas y la aureola sale volando y vuelve torcida para el otro lado. Se
+  sacó su silueta de `arbolPiso` y se reimprimieron `arbol-piso` y `camino-arbol-piso`. La tapa no tiene verde: el brote es su píxel
+  más verde, anotado.
+- **Las almejas** (los astilleros, *La hija del fletero*, *Lobo suelto / Cordero atado*): *"sopa de almejas es todo lo que como"*.
+  Un balde con almejas de ojos de persona, el plato de lata con la cuchara, el higo seco que *"nunca tuvo"* y dos cartas mojadas sin
+  abrir. Solas charlan abriendo la valva, una se escapa por la tabla y vuelve, y la de la derecha le muerde la punta a la cuchara.
+  Tocadas se cierran de golpe, el balde salta, tiran tres chorros y la del medio escupe una perla que cae en la sopa. Se sacó el
+  balde pintado de `astilleroPiso` y se reimprimieron `astillero-piso` y `camino-astillero-piso`.
+- **El lobo caído** (el monte, *El lobo caído*, *Lobo suelto*): *"dije que el lobo estaba sordo"*. Un lobo viejo, arena y flaco,
+  tirado entre raíces, con una **trompetilla de latón** atada a la oreja con piolín y los muertos rayados en una raíz (*"maté y
+  maté"*). Solo para la oreja para el lado equivocado, intenta pararse y se cae, raya un tanto y se duerme antes del quinto; cada
+  tanto le pasa por detrás el lobo de plata y a la trompetilla no le llega nada. Tocado no se entera durante 1,3 s y después grita
+  sin voz tres veces. **En la primera vuelta se leía como una rata**: el hocico largo, las orejas triangulares gachas y la cola
+  peluda a la vista salieron de la auditoría.
+- **Mister Ed y Huesito** (el templo, *Lavi-rap*, *Lobo suelto / Cordero atado*): *"van a saltar otra vez sin red"*. El caballo que
+  hablaba, parado en dos patas sobre un tambor de lavarropas que rueda, con la jaula del pajarito en la pezuña, y Huesito, un
+  esqueleto de galera, en el lomo; abajo, la red rota con un agujero. Del número del Morta llevan el toallón y la cadenita. Solos el
+  caballo habla sin sonido y se tambalea, el tambor rueda. Tocados el caballo relincha de manos y Huesito da dos mortales, cae por el
+  agujero de la red y vuelve a subir. **Ocupaba el hueco de las velas de adelante**: los ojos de la bailarina subieron (de 586 a 480)
+  para dejar de contar como parados en el piso, y en `ofrendas.ts` la tanda de adelante de un hueco de menos de 300 cae a 0,3 del
+  hueco y no a la mitad. `aire.test.ts` pasa sin cambiarlo y se reimprimió `aire-templo-ofrendas`.
+- **Los buitres de la tele** (Cybersiberia, *Estás frito angelito*): *"hay buitres en la tele"*. Dos, en un travesaño oxidado atado
+  a la antena con tirantes y alambre, esperando para cenar: servilleta a cuadros en la gorguera, uno con el tenedor y el otro con el
+  cuchillo. Solos tamborilean, cuchichean, se afilan los cubiertos y a uno se le suelta la servilleta. Tocados giran de golpe, abren
+  los ojos, cruzan los cubiertos y asienten tres veces. Ningún cubierto cruza un ojo (lo afirma el test). Se sacó `buitre()` de
+  `tele()` y se reimprimieron `cyber-piso` y `camino-cyber-*`.
+- **La hormiga dormida** (la mesa, *Caña seca y un membrillo*, *Lobo suelto / Cordero atado*): *"negrita yace asustada / la hormiga
+  se le durmió"*. Panza arriba en el mantel, con el ceño fruncido dormida, la cabeza en un dedal de caña soplada, gorro de dormir,
+  zapatillas de baile y la camisa chica colgada del membrillo a un palillo. Sola ronca una burbuja que revienta y la sobresalta,
+  sueña que baila y se le duerme una pata. Tocada se despierta y baila de espaldas. **En la primera vuelta se leía como una araña**:
+  las seis patas pasaron a salir del tórax, encogidas, con uñita, y la dormida cuelga floja. El membrillo es ahora del títere: se
+  sacó con la silueta de `mesaPiso` y se reimprimieron `mesa-piso` y `camino-mesa-*`.
+- **Los náufragos** (el bajo, *Canción para naufragios*, *Oktubre*): *"ya no estás solo, estamos todos en naufragar"*. Dos cabezas
+  en el agua, agarradas de la mano, en el grabado a la gubia de *Oktubre*, con un salvavidas, un tubo de teléfono de baquelita con el
+  cable mojado, una bomba con la mecha prendida y, atrás, la multitud que se adivina. Solos buscan un barco, estornudan, a uno se le
+  resbala la mano y se hunde largando burbujas hasta que el otro lo agarra. Tocados cae el rayo dos veces, se alumbra la multitud y
+  todos gritan con los brazos arriba. Entre el ahogado y el bote del polizón (lo afirma el test).
+
+#### Cómo se hizo, y lo que se tocó alrededor
+
+- El molde es el de la vigesimoséptima: cuatro archivos por bestia, el registro en `elenco.ts` y `vivos.ts`, su bloque de tintas
+  medido con sharp en la tapa de su disco (o en la interior de *En directo* para los buñuelos, que no tiene tapa en `public/tapas/`)
+  y su bloque en `sitio.css`. Los slugs de los archivos son cortos: `bunuelos`, `heroe`, `rebano`, `angelito`, `almejas`,
+  `lobocaido`, `ed`, `buitres`, `hormiga`, `nau`. Las piezas: 6, 27, 13, 19, 11, 19, 20, 10, 12 y 20. Las tintas: 9, 18, 11, 14, 15,
+  10, 13, 11, 13 y 7.
+- Uno de los constructores sacó un reloj común de conducta, `scripts/bestiario/vida.ts` (elegir sin repetir, el toque, la pose
+  quieta con movimiento reducido), que usan sus cuatro bestias. Las demás siguen con el reloj propio de cada una, como antes.
+- **Para convivir tres en el mismo worktree**: cada uno escribía solo sus archivos y tocaba lo compartido con reemplazos chicos,
+  imprimía con `--solo` y corría solo sus tests; ninguno hacía commit. Funcionó sin pisarse. Lo único que se cruzó fue un import a
+  medio hacer de otro, que rompía la carga de `vivos.ts` en los tests del vecino mientras duró.
+- Cada títere se miró a PNG de cerca, en su recinto, en su tramo del camino y en la tira del toque. El hilo principal auditó esas
+  capturas y devolvió una segunda vuelta. Además de la rata y la araña: el torso de pan lactal del héroe (gabardina, cinturón, el
+  brazo que cuelga por el borde de la caja), las plumas de palito del angelito, el travesaño de los buitres que flotaba, los buñuelos
+  que parecían albóndigas en pirámide, la bolsa del rebaño que parecía un huevo, el teléfono de los náufragos que era una mancha
+  negra y los chorros de las almejas, que no se veían. Después las diez se miraron vivas en el sitio armado, en el teléfono emulado.
+- `elenco.test.ts` pasa de 60 a 70 y mira que las diez sean de regiones distintas.
+
+- `T-528`: verlas en un teléfono de verdad, que `contenido` lea las diez estampas, y pasar los diez bloques de tintas al lienzo.
+  Quedó flojo, según los constructores y la auditoría: el torso del héroe sigue parejo; la hormiga y el angelito se leen chicos a
+  430 de ancho; los buitres, negros sobre pared negra, dependen del canto; las pinzas de los buñuelos son finas. Ninguna se sumó a
+  `scripts/bestiario/mirada.ts`, y siguen sin hacerse los vecinos que reaccionan al toque ajeno (que el perro del héroe le ladre a la
+  Pontiac, que el lobo de plata se pare ante el lobo caído).
+
 ## D-74 — El sitio se muda a una cuenta Hobby de Vercel
 
 - **Fecha:** 2026-10-17
