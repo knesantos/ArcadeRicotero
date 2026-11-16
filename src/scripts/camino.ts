@@ -60,6 +60,7 @@ import { miradaDe, seguir } from './bestiario/mirada.ts';
 import { alSacudon } from './bestiario/sacudon.ts';
 import { lugarDeLaFicha, type Lado } from '../lib/bestiario/hoja.ts';
 import { reposar, sellar, sellarAnotada } from './bestiario/sellos.ts';
+import { contestarAlIrse, soltarElVelo } from './bestiario/llegada.ts';
 
 interface Datos {
   region: string;
@@ -1873,3 +1874,7 @@ requestAnimationFrame(() => {
   }
 });
 arrancar();
+
+// El velo de llegada espera a que esto haya arrancado y a lo que se ve en la primera pantalla (`D-91`).
+contestarAlIrse();
+void soltarElVelo();
