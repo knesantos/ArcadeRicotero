@@ -2201,3 +2201,9 @@ export const PIEZAS_ENTORNOS: readonly Pieza[] = [
   pieza(FIERROS['la-mariposa-pontiac'].pieza, pontiac(), FIERROS['la-mariposa-pontiac'].caja),
   pieza(FIERROS['el-toxi-taxi'].pieza, taxi(), FIERROS['el-toxi-taxi'].caja),
 ];
+
+/**
+ * Lo que piden los caminos largos de la tanda 2 de `D-91` (`arte-recital.ts`, `arte-sobremesa.ts`): las
+ * herramientas y las capas del recinto, para pintar encima sin tocar lo que el recinto imprime.
+ */
+export { trama, estrellas, rasgado, recorte, mosca, galponPiso, mesaLejos, mesaPiso, G as TINTAS_DEL_GALPON, M2 as TINTAS_DE_LA_MESA };
