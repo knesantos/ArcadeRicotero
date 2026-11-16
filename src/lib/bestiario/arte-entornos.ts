@@ -1596,6 +1596,8 @@ const R = {
   cuero: 'var(--disco-luzbelito-tinta)',
   oro: 'var(--acento-2)',
   vivo: 'var(--marca-rojo)',
+  /** La plata vieja de *Último bondi*: las planchas del cielo y el aro del ojo de buey. */
+  acero: 'var(--disco-ultimo-bondi-a-finisterre-tinta)',
 };
 
 /** El horizonte de la ruta: todas las regiones, chiquitas, cada una con su luz. */
@@ -1639,6 +1641,100 @@ function mundoEnElHorizonte(ancho: number, h: number): string {
  *   cada vez más chicos, y las luces de algún puesto. Al pie de uno de esos postes hay alguien haciendo
  *   dedo: se ve con la lupa.
  */
+/**
+ * El cielo de chapa (`D-91`, segunda vuelta). La tapa de *Último bondi a Finisterre* es chapa
+ * remachada con ojos de buey: el cielo de la ruta larga es eso, de noche. Planchas enormes apenas
+ * más claras que la noche, con la costura de remaches entre una y otra, y la luna asomada a un ojo
+ * de buey. La mitad de arriba de la pantalla deja de ser un hueco con estrellas.
+ */
+function cieloDeChapa(ancho: number, h: number): string {
+  const rnd = azar(569);
+  let s = '';
+  const filas = [[-10, 120], [120, 232], [232, h - 8]] as const;
+  filas.forEach(([y0, y1], fila) => {
+    for (let x = -60 + (fila % 2) * 170 - rnd() * 60; x < ancho; ) {
+      const w = 260 + rnd() * 180;
+      // Cada plancha, con su tono: unas agarran un pelo más de luz que otras.
+      s += forma(caja(x + 1.5, y0 + 1.5, w - 3, y1 - y0 - 3), rnd() < 0.5 ? R.acero : R.noche, 0.05 + rnd() * 0.09);
+      // La costura de la derecha y la de abajo, y sus remaches.
+      s += trazo(`M${f(x + w)} ${f(y0)} L${f(x + w)} ${f(y1)}`, R.negro, 1.6, 0.6);
+      for (let y = y0 + 9; y < y1 - 4; y += 15) s += forma(circulo(x + w - 5, y, 1.25), R.acero, 0.34) + forma(circulo(x + w + 5, y, 1.25), R.acero, 0.26);
+      for (let rx = x + 9; rx < x + w - 4; rx += 15) s += forma(circulo(rx, y1 - 5, 1.25), R.acero, 0.3);
+      x += w;
+    }
+    s += trazo(`M-10 ${f(y1)} L${ancho + 10} ${f(y1)}`, R.negro, 1.6, 0.6);
+  });
+  return s;
+}
+
+/** El ojo de buey por el que asoma la luna: el aro de bronce viejo y sus ocho tornillos. */
+function ojoDeBuey(x: number, y: number, r: number): string {
+  let s = `<circle cx="${f(x)}" cy="${f(y)}" r="${f(r)}" fill="none" stroke="${R.acero}" stroke-width="${f(r * 0.24)}" opacity="0.8"/>` + `<circle cx="${f(x)}" cy="${f(y)}" r="${f(r * 0.88)}" fill="none" stroke="${R.negro}" stroke-width="1.4" opacity="0.7"/>`;
+  for (let i = 0; i < 8; i++) {
+    const a = (i / 8) * Math.PI * 2 + 0.3;
+    s += forma(circulo(x + Math.cos(a) * r, y + Math.sin(a) * r, r * 0.07), R.negro, 0.8);
+  }
+  return s + trazo(`M${f(x - r * 0.8)} ${f(y - r * 0.62)} A${f(r)} ${f(r)} 0 0 1 ${f(x + r * 0.3)} ${f(y - r * 0.96)}`, R.papel, 1.4, 0.35);
+}
+
+/**
+ * Las torres de alta tensión (`D-91`, segunda vuelta): una línea que nace enorme, contra el cielo, y
+ * se va al horizonte achicándose, con los cables combados de torre a torre. Es lo que le da a la ruta
+ * un punto de fuga que ocupa la mitad de arriba. La bruma se las va tragando: cada una, más apagada.
+ */
+function torresDeAlta(x0: number, paraAlla: number, h: number, pie: number, semilla: number): string {
+  const rnd = azar(semilla);
+  const torres: { x: number; y: number; alto: number; u: number }[] = [];
+  for (let k = 0; k < 8; k++) {
+    const u = 1 - 0.64 ** k;
+    torres.push({ x: x0 + paraAlla * 620 * u, y: pie + (h + 2 - pie) * u, alto: 318 * (1 - u) + 5, u });
+  }
+  const brazo = (t: (typeof torres)[number], n: number, lado: number): Punto => [t.x + lado * t.alto * (0.2 - n * 0.035), t.y - t.alto * (0.9 - n * 0.14)];
+  let s = '';
+  // De atrás para adelante: la de más cerca tapa.
+  for (let k = torres.length - 1; k >= 0; k--) {
+    const t = torres[k]!;
+    const w = t.alto * 0.13;
+    const g = Math.max(0.5, 2.4 * (1 - t.u));
+    let torre = trazo(`M${f(t.x - w)} ${f(t.y)} L${f(t.x - w * 0.22)} ${f(t.y - t.alto)} M${f(t.x + w)} ${f(t.y)} L${f(t.x + w * 0.22)} ${f(t.y - t.alto)}`, R.negro, g);
+    // El enrejado: cruces entre las dos patas, que se achican para arriba.
+    const tramos = t.alto > 80 ? 7 : t.alto > 30 ? 4 : 0;
+    for (let i = 0; i < tramos; i++) {
+      const a = i / tramos;
+      const b = (i + 1) / tramos;
+      const wa = w * (1 - a * 0.78);
+      const wb = w * (1 - b * 0.78);
+      const ya = t.y - t.alto * a;
+      const yb = t.y - t.alto * b;
+      torre += trazo(`M${f(t.x - wa)} ${f(ya)} L${f(t.x + wb)} ${f(yb)} M${f(t.x + wa)} ${f(ya)} L${f(t.x - wb)} ${f(yb)} M${f(t.x - wb)} ${f(yb)} L${f(t.x + wb)} ${f(yb)}`, R.negro, g * 0.42);
+    }
+    // Las tres crucetas, con los aisladores colgando.
+    for (let n = 0; n < 3; n++) {
+      const [ax, ay] = brazo(t, n, -1);
+      const [bx, by] = brazo(t, n, 1);
+      torre += trazo(`M${f(ax)} ${f(ay)} L${f(bx)} ${f(by)}`, R.negro, g * 0.8);
+      if (t.alto > 60) torre += trazo(`M${f(ax)} ${f(ay)} l0 ${f(t.alto * 0.03)} M${f(bx)} ${f(by)} l0 ${f(t.alto * 0.03)}`, R.tenue, g * 0.7, 0.8);
+    }
+    // Los cables hasta la que sigue: se comban, y más cuanto más cerca.
+    if (k < torres.length - 1) {
+      const q = torres[k + 1]!;
+      for (let n = 0; n < 3; n++) {
+        for (const lado of [-1, 1]) {
+          const [ax, ay] = brazo(t, n, lado);
+          const [bx, by] = brazo(q, n, lado);
+          torre += trazo(`M${f(ax)} ${f(ay + t.alto * 0.03)} Q${f((ax + bx) / 2)} ${f((ay + by) / 2 + t.alto * 0.11)} ${f(bx)} ${f(by + q.alto * 0.03)}`, R.negro, Math.max(0.4, g * 0.34), 0.85);
+        }
+      }
+    }
+    // La bruma se la traga desde abajo: de la segunda en adelante, cada una más perdida.
+    const traga = Math.min(0.92, t.u * 1.25);
+    s += torre + (k > 0 ? nube(t.x + (rnd() - 0.5) * 20, t.y - t.alto * 0.34, t.alto * 0.42 + 26, t.alto * 0.44 + 6, R.noche, t.alto > 90 ? 'xl' : 'l', traga) + nube(t.x, t.y - 2, t.alto * 0.5 + 30, 5, T.clara, 'l', 0.09) : '');
+  }
+  // La baliza de la primera, arriba de todo: un punto rojo, para que no se la lleve un avión.
+  const p = torres[0]!;
+  return s + nube(p.x, p.y - p.alto - 3, 7, 7, R.vivo, 'm', 0.5) + forma(circulo(p.x, p.y - p.alto - 3, 1.7), R.vivo);
+}
+
 function sierrasDeLaRuta(ancho: number, h: number): string {
   const rnd = azar(547);
   const lomo = (y: number, alto: number, paso: number, color: string, o: number): string => {
@@ -1727,14 +1823,16 @@ function rutaLejos(ancho = ANCHO, alto = ALTO): string {
     `<g transform="rotate(-6 ${f(ancho / 2)} 100)">${nube(ancho / 2, 100, ancho * 0.7, 50, R.papel, 'xl', 0.07)}</g>` +
     `<g fill="${R.papel}">${lactea}</g>` +
     estrellas(0, 0, ancho, h - 30, Math.round(380 * (ancho / ANCHO)), R.papel, 509) +
+    (largo ? cieloDeChapa(ancho, h) : '') +
     `<path d="M${f(ancho * 0.84)} 70 a20 20 0 1 0 14 34 a16 16 0 1 1 -14 -34 Z" fill="${R.papel}" opacity="0.85"/>` +
     nube(ancho * 0.84 + 6, 88, 46, 46, R.papel, 'xl', 0.12) +
+    (largo ? ojoDeBuey(ancho * 0.84 + 4, 88, 34) : '') +
     (largo ? sierrasDeLaRuta(ancho, h) : '') +
     mundoEnElHorizonte(ancho, h) +
     // La pampa, oscura, hasta la ruta.
     forma(caja(-10, h, ancho + 20, alto - h + 10), R.negro) +
     nube(ancho / 2, h + 6, ancho * 0.7, 10, R.noche, 'l', 0.8) +
-    (largo ? pampaDeLaRuta(ancho, h, RUTA.asfalto.arriba - 22) : '') +
+    (largo ? pampaDeLaRuta(ancho, h, RUTA.asfalto.arriba - 22) + torresDeAlta(ancho * 0.2, 1, h, RUTA.asfalto.arriba - 26, 571) + torresDeAlta(ancho * 0.72, -1, h, RUTA.asfalto.arriba - 26, 573) : '') +
     `</g>`
   );
 }
