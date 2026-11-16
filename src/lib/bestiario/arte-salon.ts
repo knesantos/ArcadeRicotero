@@ -164,7 +164,7 @@ const fila = (semilla: number, alto: readonly [number, number], paso: readonly [
    ------------------------------------------------------------------ */
 
 /** Dónde está el que asoma: la caja de su pieza. */
-export const GIGANTE = { caja: [247, 0, 420, 346] as const } as const;
+export const GIGANTE = { caja: [-30, 0, 420, 346] as const } as const;
 
 /**
  * El que asoma detrás de las llamas: la cabeza y los hombros de alguien demasiado grande, de cuernos
@@ -173,9 +173,10 @@ export const GIGANTE = { caja: [247, 0, 420, 346] as const } as const;
 function gigante(): string {
   const [x0, y0, w, h] = GIGANTE.caja;
   const cx = x0 + w * 0.5;
-  // En el vano del medio (segunda vuelta: estaba detrás de una columna), justo arriba de Luzbelito: se le
-  // ve la cara por encima de la llama, y los hombros llenan el vano de columna a columna.
-  const cabeza = y0 + h * 0.6;
+  // Quinta vuelta: en el vano de la izquierda, el de la primera pantalla, por arriba de la puerta y de las
+  // cabezas de los diablos. En el del medio quedaba detrás del busto de Luzbelito, que es blanco y se lo comía:
+  // a 430 px no se lo encontraba. Acá la cara entera queda contra el fuego, sin nadie adelante.
+  const cabeza = y0 + h * 0.43;
   const silueta =
     // Los hombros, que se pierden por abajo.
     `M${f(cx - 200)} ${y0 + h + 20} Q${f(cx - 190)} ${f(cabeza + 60)} ${f(cx - 70)} ${f(cabeza + 44)} L${f(cx + 70)} ${f(cabeza + 44)} Q${f(cx + 190)} ${f(cabeza + 60)} ${f(cx + 200)} ${y0 + h + 20} Z ` +
@@ -215,9 +216,9 @@ function gigante(): string {
     `<g filter="url(#rociado)">${hoja(x0, y0, w, h)}` +
     `<mask id="sl-asoma"><path d="${silueta}" fill="white"/><g filter="url(#soplo-xs)">${comido}</g></mask>` +
     `<g mask="url(#sl-asoma)">` +
-    `<g filter="url(#soplo-xs)" opacity="0.74"><path d="${silueta}" fill="${F.brasa}"/></g>` +
+    `<g filter="url(#soplo-xs)" opacity="0.9"><path d="${silueta}" fill="${F.brasa}"/></g>` +
     // Lo hondo de la cara y del pecho, donde no le llega nada.
-    nube(cx, cabeza - 20, 34, 60, F.negro, 'l', 0.5) + nube(cx, cabeza + 120, 150, 50, F.negro, 'xl', 0.45) +
+    nube(cx, cabeza - 20, 40, 70, F.negro, 'l', 0.72) + nube(cx, cabeza + 120, 170, 60, F.negro, 'xl', 0.6) +
     // Cuarta vuelta: a 430 px no se leía como silueta. El contorno quemado va más grueso y, por fuera, pegado a
     // él, una raya de fuego claro rota: es el fuego de atrás, que lo recorta.
     `<path d="${canto}" fill="none" stroke="${F.oro}" stroke-width="7" stroke-dasharray="16 9 6 12 22 7" stroke-linecap="round" opacity="0.55"/>` +
@@ -291,7 +292,33 @@ function damero(desde: number): string {
       trazo(orilla(0.16), F.brasa, 1.6, 0.9) + trazo(orilla(0.84), F.brasa, 1.6, 0.9) +
       arrugas +
       nube(fuga.x, y0 + 4, 70, 16, F.negro, 'm', 0.6)) +
+    alhajas(y0, a0, a1) +
     nube(ANCHO / 2, ALTO, ANCHO * 0.7, 120, F.negro, 'xl', 0.7));
+}
+
+/**
+ * Lo que le da peso a la alfombra (quinta vuelta): los flecos de oro del cabo que da a la piedra, y una
+ * copa caída a un costado, con lo que se le volcó. La copa apoya: su mancha, y el pie medio hundido en el pelo.
+ */
+function alhajas(y0: number, a0: number, a1: number): string {
+  const rnd = azar(4099);
+  let flecos = '';
+  for (let x = a0 + 2; x < a1 - 1; x += 3.4) flecos += trazo(`M${f(x)} ${f(y0 + 1)} l${f((rnd() - 0.5) * 2.4)} ${f(-4 - rnd() * 4)}`, F.oro, 1, 0.75);
+  const [cx, cy] = [512, 566];
+  return (
+    flecos +
+    // Lo volcado: una mancha oscura que corre hacia abajo, por el escorzo.
+    nube(cx + 26, cy + 9, 26, 6, F.negro, 's', 0.7) + nube(cx + 44, cy + 16, 12, 3.4, F.brasa, 's', 0.8) +
+    // La copa, acostada: la boca, el cáliz, el tallo y el pie.
+    `<g transform="rotate(-14 ${cx} ${cy})">` +
+    nube(cx, cy + 7, 30, 4, F.negro, 's', 0.75) +
+    forma(`M${cx + 6} ${cy - 9} Q${cx - 14} ${cy - 10} ${cx - 16} ${cy} Q${cx - 14} ${cy + 10} ${cx + 6} ${cy + 9} Z`, F.oro) +
+    forma(elipse(cx + 6, cy, 4.4, 9), F.negro) + forma(elipse(cx + 6.6, cy, 2.6, 6.4), F.brasa) +
+    forma(poli([[cx - 16, cy - 2], [cx - 30, cy - 1.4], [cx - 30, cy + 1.4], [cx - 16, cy + 2]]), F.oro) +
+    forma(elipse(cx - 31, cy, 2.6, 7.4), F.oro) +
+    nube(cx - 6, cy - 5, 8, 2, 'var(--entorno-mesa-papel)', 'xs', 0.7) +
+    `</g>`
+  );
 }
 
 /** El piso del salón en el camino: el del recinto (`infiernoCerca` en `arte.ts`), con el damero nuevo. */
@@ -317,9 +344,9 @@ function pisoDelSalon(): string {
 /** Las piezas del salón: las imprime la imprenta con las del camino. */
 export const PIEZAS_DEL_SALON: readonly Pieza[] = [
   // Cuarta vuelta, por la memoria (lo decodificado depende del tamaño, no de la calidad): el salón a 1,5, el que
-  // asoma a 1,2 y las lenguas a 1. Son siluetas a contraluz y manchas sopladas: no pierden nada que se vea.
+  // asoma a 1,5 (quinta vuelta: es lo que se va a mirar) y las lenguas a 1. Son siluetas a contraluz y manchas sopladas: no pierden nada que se vea.
   { nombre: 'camino-infierno-salon', caja: [0, 0, ANCHO, SALON.zocalo + 10], dibujo: salon(), densidad: 1.5 },
-  { nombre: 'camino-infierno-gigante', caja: GIGANTE.caja, dibujo: gigante(), densidad: 1.2, calidad: 70 },
+  { nombre: 'camino-infierno-gigante', caja: GIGANTE.caja, dibujo: gigante(), densidad: 1.5, calidad: 70 },
   { nombre: 'camino-infierno-lenguas-a', caja: LENGUAS.caja, dibujo: fila(4031, [50, 220], [16, 40], 0.8), densidad: 1, calidad: 62 },
   { nombre: 'camino-infierno-lenguas-b', caja: LENGUAS.caja, dibujo: fila(4049, [20, 100], [13, 30], 0.9), densidad: 1, calidad: 62 },
   { nombre: 'camino-infierno-piso', caja: [0, 300, ANCHO, ALTO - 300], dibujo: pisoDelSalon(), densidad: 2 },
