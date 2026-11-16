@@ -27,8 +27,7 @@
 >   piezas. **No visto**: vivas en el navegador (el panel quedó trabado) ni en un teléfono de verdad.
 > - **Verde:** `npm test` 2537, `npm run check` 0 errores, `npm run build` 200 páginas. `elenco.test.ts` pasa de 70 a 80.
 > - **Falta** (`T-529`): mirarlas vivas y en un teléfono, que `contenido` lea las diez estampas, las tintas al lienzo, el roce del tren
->   del gato con el Atila, los nenes chicos en el bajo, y borrar `prision-jaula.webp` y `prision-puerta.webp` (sin uso) si el usuario
->   da el OK.
+>   del gato con el Atila, los nenes chicos en el bajo. `prision-jaula.webp` y `prision-puerta.webp`, sin uso, se borraron con el OK del usuario.
 
 > ## 🐑 DIEZ BESTIAS MÁS EN EL ELENCO (2026-11-13) — `D-73` enmienda 28, `T-528`
 >

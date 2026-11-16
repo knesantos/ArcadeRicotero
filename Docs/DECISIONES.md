@@ -6469,7 +6469,7 @@ grande. Por eso hay dos en la prisión y dos en los techos.
   lienzo. Quedó flojo, según los diseñadores y la crítica: el tren del gato le roza el sobretodo al Atila en su punta derecha; los
   nenes se ven chicos en el recinto del bajo; la aureola del ángel queda pegada al saco del colgado; el joyero de los camellos
   muestra la joroba menos que el campana; el pliegue del as todavía achica la carta a 0,84. Las piezas `prision-jaula.webp` y
-  `prision-puerta.webp` ya no las usa nadie y no se borraron: borrar archivos pide el OK del usuario. Ninguna se sumó a `mirada.ts`.
+  `prision-puerta.webp` quedaron sin uso y se borraron con el OK del usuario. Ninguna se sumó a `mirada.ts`.
 
 ## D-74 — El sitio se muda a una cuenta Hobby de Vercel
 
