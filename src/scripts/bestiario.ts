@@ -29,6 +29,7 @@ import { Charla } from '../lib/bestiario/charla.ts';
 import { lugarDeLaFicha, type Lado } from '../lib/bestiario/hoja.ts';
 import { reposar, sellar, sellarAnotada } from './bestiario/sellos.ts';
 import { armarLupaDelPlano } from './bestiario/lupa-plano.ts';
+import { contestarAlIrse, soltarElVelo } from './bestiario/llegada.ts';
 
 interface BestiaIsla {
   id: string;
@@ -475,3 +476,7 @@ function seguirLaDireccion(): void {
 
 seguirLaDireccion();
 window.addEventListener('hashchange', seguirLaDireccion);
+
+// El velo de llegada espera a que esto haya arrancado y a lo que se ve en la primera pantalla (`D-91`).
+contestarAlIrse();
+void soltarElVelo();
