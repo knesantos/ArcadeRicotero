@@ -200,23 +200,31 @@ function monteCerca(): string {
  * para que el camino con cruces (`arte-camino.ts`) lo apoye sobre su piso largo sin arrastrar el
  * del recinto, que termina en los costados de la escena.
  */
-export function claroDeLaPastura(desnudo = false): string {
+export function claroDeLaPastura(): string {
   const { x: px, y: py } = PALO_ARTE;
   const { rx, ry } = PASTURA_ARTE;
   return (
-    // `desnudo` (`D-91`): el camino de la pastura le pone su propia orilla, rota y comida por el pasto.
-    // Con el halo y el aro de siempre, de noche y a campo abierto, el claro era un segundo sol de canto liso.
-    (desnudo ? '' : nube(px, py + 10, rx + 120, ry + 70, M.negro, 'xl', 0.4)) +
+    nube(px, py + 10, rx + 120, ry + 70, M.negro, 'xl', 0.4) +
     // La pastura: el naranja de la tapa, que brilla en el medio y se apaga en la orilla.
     `<ellipse cx="${px}" cy="${py}" rx="${rx}" ry="${ry}" fill="${M.naranjaHonda}" filter="url(#soplo-s)"/>` +
     nube(px, py - 6, rx * 0.86, ry * 0.8, M.naranja, 'l') +
     nube(px - 40, py - 20, rx * 0.5, ry * 0.4, 'var(--bestia-cordero-pezunia)', 'xl', 0.55) +
-    (desnudo ? '' : `<ellipse cx="${px}" cy="${py}" rx="${rx + 18}" ry="${ry + 14}" fill="none" stroke="${M.negro}" stroke-width="44" filter="url(#soplo-l)" opacity="0.9"/>`) +
+    `<ellipse cx="${px}" cy="${py}" rx="${rx + 18}" ry="${ry + 14}" fill="none" stroke="${M.negro}" stroke-width="44" filter="url(#soplo-l)" opacity="0.9"/>` +
     crayon() +
     // El círculo pelado que deja la soga: tierra más honda, pisada.
     nube(px, py + 4, 92, 50, M.naranjaHonda, 'm', 0.95) +
     nube(px, py + 8, 70, 34, M.oscuro, 'l', 0.35) +
-    // El palo: madera, con la luz del lado izquierdo.
+    paloDeLaPastura()
+  );
+}
+
+/**
+ * El palo, solo: madera, con la luz del lado izquierdo. Aparte para el camino de la pastura
+ * (`arte-camino.ts`, `D-91`), que pinta su propio círculo pelado y clava el mismo palo en el mismo lugar.
+ */
+export function paloDeLaPastura(): string {
+  const { x: px, y: py } = PALO_ARTE;
+  return (
     nube(px + 4, py + 2, 14, 4, M.negro, 's', 0.8) +
     enmascarado('m-palo', `M${px - 4.5} ${py} L${px - 4} ${py - 50} L${px + 4} ${py - 53} L${px + 4.5} ${py} Z`,
       forma(`M${px - 4.5} ${py} L${px - 4} ${py - 50} L${px + 4} ${py - 53} L${px + 4.5} ${py} Z`, M.sombra) +
