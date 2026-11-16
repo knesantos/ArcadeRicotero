@@ -203,6 +203,79 @@ export function sueloDelMonte(desde: number, hasta: number, semilla: number): st
 }
 
 /* ------------------------------------------------------------------
+   La pastura (`D-91`): el campo de noche, alrededor del claro
+   ------------------------------------------------------------------ */
+
+const PA = {
+  negro: 'var(--fondo)',
+  cielo: 'var(--bestia-cordero-lana-oscura)',
+  azul: 'var(--bestia-cordero-lana)',
+  claro: 'var(--bestia-cordero-lana-clara)',
+  hondo: 'var(--bestia-cordero-azul-hondo)',
+  luna: 'var(--entorno-pastura)',
+  lunaHonda: 'var(--entorno-pastura-honda)',
+};
+
+/**
+ * El bebedero: una batea larga de chapa, en escorzo, con el agua negra que devuelve la luna en rayas
+ * naranjas. Es lo que hay para mirar al entrar a la pastura, delante de la tranquera.
+ */
+function bebedero(id: string, x: number, y: number, largo: number, rnd: Azar): string {
+  const h = largo * 0.12;
+  const fuga = largo * 0.1;
+  const borde = `M${f(x)} ${f(y - h)} L${f(x + largo)} ${f(y - h - fuga * 0.35)} L${f(x + largo + fuga)} ${f(y - h - fuga * 1.05)} L${f(x + fuga * 1.2)} ${f(y - h - fuga * 0.75)} Z`;
+  let rayas = '';
+  for (let i = 0; i < 7; i++) {
+    const u = 0.12 + (i / 7) * 0.76 + (rnd() - 0.5) * 0.05;
+    const w = largo * (0.05 + rnd() * 0.07);
+    rayas += trazo(`M${f(x + largo * u + fuga * 0.6)} ${f(y - h - fuga * (0.42 + rnd() * 0.3))} l${f(w)} ${f(-w * 0.04)}`, i % 3 ? PA.luna : PA.lunaHonda, 1.2 + rnd() * 1.2, 0.5 + rnd() * 0.35);
+  }
+  return (
+    nube(x + largo * 0.55, y + 2, largo * 0.62, 5, PA.negro, 's', 0.8) +
+    // El frente de chapa, con la luz arriba, y las patas.
+    forma(`M${f(x)} ${f(y - h)} L${f(x + largo)} ${f(y - h - fuga * 0.35)} L${f(x + largo)} ${f(y - fuga * 0.35)} L${f(x)} ${f(y)} Z`, PA.hondo) +
+    forma(`M${f(x + largo)} ${f(y - h - fuga * 0.35)} L${f(x + largo + fuga)} ${f(y - h - fuga * 1.05)} L${f(x + largo + fuga)} ${f(y - fuga * 1.05)} L${f(x + largo)} ${f(y - fuga * 0.35)} Z`, PA.negro) +
+    nube(x + largo * 0.5, y - h * 0.2, largo * 0.5, h * 0.4, PA.negro, 's', 0.7) +
+    enmascarado(id, borde, forma(borde, PA.negro) + rayas) +
+    trazo(`M${f(x)} ${f(y - h)} L${f(x + largo)} ${f(y - h - fuga * 0.35)} L${f(x + largo + fuga)} ${f(y - h - fuga * 1.05)}`, PA.claro, 1.2, 0.7) +
+    // Remaches, y el caño que gotea.
+    [0.15, 0.4, 0.65, 0.9].map((u) => nube(x + largo * u, y - h * 0.55 - fuga * 0.35 * u, 0.9, 0.9, PA.claro, 'xs', 0.6)).join('') +
+    trazo(`M${f(x + largo * 0.08)} ${f(y - h - 2)} l0 ${f(-h * 1.5)} l${f(largo * 0.1)} ${f(-2)}`, PA.hondo, 2.2) +
+    trazo(`M${f(x + largo * 0.08 - 0.8)} ${f(y - h - 2)} l0 ${f(-h * 1.5)}`, PA.claro, 0.7, 0.5)
+  );
+}
+
+/**
+ * Lo tirado en el campo de la pastura, entre `desde` y `hasta`, salteando el claro (`evita`): el
+ * bebedero a la entrada, un charco grande con la luna adentro y lo que quedó de una oveja a la salida,
+ * y suelto, charcos chicos y piedras. Poco: el campo es abierto, y lo llenan el pasto y la niebla.
+ */
+export function sueloDeLaPastura(desde: number, hasta: number, semilla: number, evita: readonly [number, number]): string {
+  const rnd = azar(semilla);
+  let s = '';
+  s += bebedero('sp-beb', desde + 150, 452, 150, rnd);
+  // A la salida, un bajo con agua: la luna entera, rota en rayas, y un costillar al lado.
+  const bx = evita[1] + (hasta - evita[1]) * 0.42;
+  s += charco('sp-bajo', bx, 430, 150, 22, rnd, PA.negro, [PA.luna, PA.lunaHonda, PA.luna, PA.claro], PA.claro, 'rayas', 9);
+  s += asentar(`<g transform="translate(${f(bx + 120)} 462) skewX(-14) scale(1.5 1.2) translate(${f(-(bx + 120))} -462)">${costillar(bx + 120, 462, rnd)}</g>`, bx + 150, 462, 80, 0.9, PA.cielo, PA.negro);
+  let n = 0;
+  for (let x = desde + 60 + rnd() * 60; x < hasta - 60; x += 70 + rnd() * 110) {
+    if (x > evita[0] && x < evita[1]) continue;
+    if (Math.abs(x - (desde + 225)) < 130 || Math.abs(x - bx) < 190) continue;
+    const hondura = rnd();
+    const y = 356 + hondura * 240;
+    const escala = 0.7 + hondura;
+    if (rnd() < 0.5) s += `<g opacity="${f(0.55 + 0.45 * hondura)}">${charco(`sp-ch-${n}`, x, y, (30 + rnd() * 44) * escala, (5 + rnd() * 5) * escala, rnd, PA.negro, [PA.luna, PA.claro, PA.lunaHonda], PA.claro, 'rayas')}</g>`;
+    else {
+      const w = (12 + rnd() * 18) * escala;
+      s += asentar(piedra(`sp-pi-${n}`, x, y, w, rnd, PA.hondo, PA.claro, PA.negro), x, y, w, hondura, PA.cielo, PA.negro);
+    }
+    n++;
+  }
+  return s;
+}
+
+/* ------------------------------------------------------------------
    Cybersiberia
    ------------------------------------------------------------------ */
 
