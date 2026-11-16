@@ -270,11 +270,11 @@ const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín
               />
             )
           }
-          {/* Lo que está parado entre lo lejano y el piso (`PLANOS`): el carguero de los astilleros, a su velocidad. */}
-          {(PLANOS[id] ?? []).map((p) => <img class="capa plano" data-f={p.f} src={rutaDePieza(p.pieza)} width={p.caja[2]} height={p.caja[3]} style={enSuLugar(p.caja, 1)} alt="" decoding="async" />)}
           {visita && <img class="capa asoma" data-f={visita.f} data-espera={visita.espera} src={rutaDePieza(visita.pieza)} width={visita.caja[2]} height={visita.caja[3]} style={estiloDeVisita} alt="" decoding="async" loading="lazy" />}
           {huidizo && <img class="capa huye" data-f={huidizo.f} src={rutaDePieza(huidizo.pieza)} width={huidizo.caja[2]} height={huidizo.caja[3]} style={enSuLugar(huidizo.caja, 1)} alt="" decoding="async" />}
           {aire('fondo').map((a) => <div class:list={['aire', `aire--${a.plano}`, { 'aire--cae': a.cae, 'aire--firme': a.firme }]} data-aire={a.pieza} style={a.estilo} />)}
+          {/* Lo que está parado entre lo lejano y el piso (`PLANOS`): el carguero de los astilleros, a su velocidad. Va después del aire de atrás: el río no le corre por el casco. */}
+          {(PLANOS[id] ?? []).map((p) => <img class="capa plano" data-f={p.f} src={rutaDePieza(p.pieza)} width={p.caja[2]} height={p.caja[3]} style={enSuLugar(p.caja, 1)} alt="" decoding="async" />)}
           {/* Lo que cruza por detrás del piso (`Vida.atras`): el tren de la ruta, detrás de los postes. */}
           {vida?.atras && (
             <img class="vida" id="vida" src={rutaDePieza(vida.pieza)} width={vida.ancho} height={vida.alto} style={`--lw: ${vida.ancho}; --lh: ${vida.alto}`} alt="" decoding="async" loading="lazy" />
