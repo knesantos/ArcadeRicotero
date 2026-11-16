@@ -14,6 +14,11 @@ import { camConLupa, LUPA_ANCLA } from './lupa.ts';
 import { EJE_DEL_MOLINO, LUNA } from './arte-arboles.ts';
 import { PIEZAS } from './arte.ts';
 import { PIEZAS_ENTORNOS } from './arte-entornos.ts';
+import { GIGANTE, LENGUAS, PIEZAS_DEL_SALON, SALON } from './arte-salon.ts';
+import { CUEVA, PUERTA } from './arte-sobremesa.ts';
+import { escenaInfierno } from './escenas.ts';
+import { GALPON, MESA, OJOS_DE_LA_MESA } from './rig-entornos.ts';
+import { saltoDeAire } from './aire.ts';
 import { ACECHO, PALO } from './rig.ts';
 import { OJOS_DE_LA_RUTA, RUTA } from './rig-entornos.ts';
 import { ofrendasDelTemplo, paradosEnElTemplo } from './ofrendas.ts';
@@ -204,7 +209,8 @@ test('las luces: una por región, impresas, clavadas en la escena y sin salirse 
       assert.deepEqual([...p.caja], [...l.caja]);
       assert.ok(existsSync(`public${rutaDePieza(l.pieza)}`), `falta imprimir ${l.pieza}`);
       // Con el grano del aerógrafo, o con la mano del recinto: crayón en el bajo, gubia en la prisión.
-      assert.match(p.dibujo, /filter="url\(#(rociado|xerox-fino|gubia)\)"/, `${l.pieza} no tiene mano`);
+      // O el grano fino sobre tinta plana, en la mesa, que es un afiche (`D-91`, tanda 2).
+      assert.match(p.dibujo, /filter="url\(#(rociado|xerox-fino|gubia|grano)\)"/, `${l.pieza} no tiene mano`);
       assert.doesNotMatch(p.dibujo, /Gradient/i);
       assert.ok(l.x > 0 && l.x < CAMINOS[region]!.escena, `${l.pieza} cae afuera de la escena`);
       // La que va colgada de un bicho, que el bicho exista en ese camino.
@@ -570,8 +576,10 @@ test('las trece regiones tienen aire y ojos sin dueño, y las cuatro últimas, s
   assert.match(dibujo('aire-templo-incienso'), /soplo-s/);
   assert.ok(AIRE['el-arbol']!.some((c) => c.cae > 0) && AIRE['el-arbol']!.some((c) => c.suena === 'viento'));
   assert.ok(AIRE['la-mesa']![0]!.cae < 0 && AIRE['el-templo']!.find((c) => c.pieza === 'aire-templo-incienso')!.cae < 0, 'el humo y el incienso suben');
-  // Y el galpón tiene su seguidor, con el polvo adelante.
-  assert.ok(LUCES['el-galpon'] && LUCES['el-templo'] && AIRE['el-galpon']![0]!.pieza === 'aire-galpon-polvo');
+  // Y el galpón tiene su seguidor, con el polvo adelante. Desde la tanda 2 de `D-91` el polvo va adentro
+  // del humo del escenario, que es la primera capa (cambiado a propósito: antes era `aire-galpon-polvo`).
+  assert.ok(LUCES['el-galpon'] && LUCES['el-templo'] && AIRE['el-galpon']![0]!.pieza === 'aire-galpon-humo');
+  assert.match(readFileSync('src/lib/bestiario/arte-recital.ts', 'utf-8'), /El polvo que ya estaba/);
 });
 
 test('el charco del monte refleja roto: manchas acostadas, nunca una guirnalda de triángulos', () => {
@@ -864,7 +872,8 @@ test('D-91/4: con la lupa el paralaje se ancla: lo que se apunta en una capa de 
 });
 
 test('D-91/4: lo que premia a la lupa va otra vez, fino, encima del piso y en su mismo lugar', () => {
-  assert.deepEqual(Object.keys(FINAS_DE).sort(), ['el-monte', 'la-pastura', 'la-ruta']);
+  // La mesa se sumó en la tanda 2 (la cueva del ratón, debajo del mantel).
+  assert.deepEqual(Object.keys(FINAS_DE).sort(), ['el-monte', 'la-mesa', 'la-pastura', 'la-ruta']);
   let peso = 0;
   for (const [region, nombres] of Object.entries(FINAS_DE)) {
     const piso = pisoDelCamino(CAMINOS[region]!, new Map());
@@ -905,3 +914,114 @@ test('D-91/4: lo que se mueve raro: el tren del horizonte, el vellón con el vie
   assert.match(readFileSync('src/lib/bestiario/arte-aire.ts', 'utf-8'), /function helecho\(/);
 });
 
+/* ------------------------------------------------------------------
+   `D-91`, tanda 2: el galpón, el infierno y la mesa
+   ------------------------------------------------------------------ */
+
+test('D-91/t2: la gente del galpón va en planos, y dos de ellos saltan a contratiempo', () => {
+  const aire = AIRE['el-galpon']!;
+  const [pogo, cerca] = [aire.find((c) => c.pieza === 'aire-galpon-pogo')!, aire.find((c) => c.pieza === 'aire-galpon-cerca')!];
+  assert.ok(pogo.salta > 0 && cerca.salta > 0 && pogo.faseSalta !== cerca.faseSalta, 'el pogo y lo pegado a la cámara saltan, y no juntos');
+  assert.ok(pogo.plano === 'medio' && cerca.plano === 'cerca' && pogo.f < CAMINOS['el-galpon']!.velocidad.frente && cerca.f > CAMINOS['el-galpon']!.velocidad.frente, 'el pogo va detrás de la fila grande, y lo otro adelante');
+  // El salto baja y vuelve, nunca sube por encima de donde está impresa la capa ni pasa de lo que dice la receta.
+  for (const c of [pogo, cerca]) {
+    let [min, max] = [Infinity, -Infinity];
+    for (let t = 0; t < 60; t += 0.037) {
+      const y = saltoDeAire(c, t);
+      min = Math.min(min, y);
+      max = Math.max(max, y);
+    }
+    assert.ok(min >= 0 && max <= c.salta + 1e-9 && max - min > c.salta * 0.5, `${c.pieza}: salta de ${min} a ${max}`);
+    // Lo que baja no deja ver el borde de abajo: la capa llega al fondo de la pantalla.
+    assert.equal(c.y + c.alto, ALTO);
+  }
+  // Las que no saltan, cero: el aire de las otras doce regiones no se entera.
+  for (const { c } of capas.filter((x) => !x.c.salta)) assert.equal(saltoDeAire(c, 7.3), 0);
+  const isla = readFileSync('src/scripts/camino.ts', 'utf-8');
+  assert.match(isla, /\(quieto\(\) \? 0 : saltoDeAire\(a\.c, t\)\)/, 'con movimiento reducido nadie salta');
+  // El camino pinta su gente: el piso con las filas del fondo y lo de adelante con banderas y bengalas.
+  // El recinto de 900 sigue con la fila de siempre.
+  const [piso, frente] = ['camino-galpon-piso', 'camino-galpon-frente'].map((n) => PIEZAS_CAMINO.find((q) => q.nombre === n)!.dibujo);
+  assert.equal((piso.match(/<clipPath id="gl-fondo-/g) ?? []).length, 3, 'tres filas de gente contra el tablado');
+  assert.ok((frente.match(/<clipPath id="gl-bandera-/g) ?? []).length >= 3 && /<clipPath id="gl-gente">/.test(frente));
+  for (const n of ['galpon-piso', 'galpon-frente']) assert.doesNotMatch(PIEZAS_ENTORNOS.find((q) => q.nombre === n)!.dibujo, /gl-(fondo|gente|bandera)/, `${n}: el recinto no lleva lo del camino`);
+  // Las banderas no le cruzan la cara a los que están en el tablado: la punta del palo no pasa del borde.
+  assert.match(readFileSync('src/lib/bestiario/arte-recital.ts', 'utf-8'), /const punta = GALPON\.tablado\.borde \+ 2 \+ rnd\(\) \* 26;/);
+  assert.ok(GALPON.tablado.borde < GALPON.gente);
+});
+
+test('D-91/t2: la zapatilla vuela en arco, y el tren de la ruta pasa por detrás de los postes', () => {
+  const z = VIDAS['el-galpon']!;
+  assert.equal(z.pieza, 'vida-zapatilla');
+  assert.ok((z.arco ?? 0) > 60 && z.dura[1] < 5 && z.espera[0] >= 20);
+  const [a, m, b] = [0, 0.5, 1].map((u) => pasoDeVida(z, u, 1, false).y);
+  assert.ok(m! < a! - 60 && m! < b! - 60 && m! > 240, 'sube en el medio, y no llega a la cara de los del tablado');
+  // El que no tiene arco cruza como antes.
+  assert.equal(pasoDeVida(VIDAS['la-ruta']!, 0.5, 1, false).y, VIDAS['la-ruta']!.y[0]);
+  assert.equal(VIDAS['la-ruta']!.atras, true);
+  const pagina = readFileSync('src/pages/redondopedia/bestiario/[region].astro', 'utf-8');
+  const [atras, piso, adelante] = [pagina.indexOf('{vida?.atras && ('), pagina.indexOf('class="capa capa--piso bestiario-svg"'), pagina.indexOf('{vida && !vida.atras && (')];
+  assert.ok(atras > 0 && atras < piso && piso < adelante, 'lo que cruza por detrás va antes del piso en la página');
+});
+
+test('D-91/t2: la mesa tiene fondo sin perder la tinta plana: la puerta, la lámpara, las moscas y lo de abajo del mantel', () => {
+  const lejos = PIEZAS_CAMINO.find((q) => q.nombre === 'camino-mesa-lejos')!.dibujo;
+  // La puerta del fondo, los retratos y la ventana van encima de la pared de siempre, con el grano y sin un soplo nuevo.
+  const sumado = lejos.slice(lejos.lastIndexOf('<g filter="url(#grano)">'));
+  assert.match(sumado, /<clipPath id="ms-puerta">/);
+  assert.ok((sumado.match(/<clipPath id="ms-r\d">/g) ?? []).length >= 5 && /<clipPath id="ms-vidrio">/.test(sumado));
+  assert.doesNotMatch(sumado, /soplo-|Gradient/i, 'lo sumado a la pared es tinta plana');
+  assert.doesNotMatch(PIEZAS_ENTORNOS.find((q) => q.nombre === 'mesa-lejos')!.dibujo, /ms-puerta/, 'el recinto de 900 queda como estaba');
+  // La puerta termina en la línea de la mesa y su punto de fuga queda adentro del vano.
+  assert.ok(PUERTA.fuga.x > PUERTA.x && PUERTA.fuga.x < PUERTA.x + PUERTA.ancho && PUERTA.fuga.y > PUERTA.arriba && PUERTA.fuga.y < MESA.tablero.atras);
+  // La lámpara: una luz de papel, que se hamaca, colgada arriba de la mesa y lejos de la cabeza de los que cenan.
+  const lampara = LUCES['la-mesa']![0]!;
+  assert.ok(lampara.vaiven > 0 && lampara.pulso === 'barre' && lampara.y < 0);
+  for (const [id, [x]] of Object.entries(OJOS_DE_LA_MESA)) assert.ok(Math.abs(x * (CAMINOS['la-mesa']!.escena / 900) - lampara.x) > 90, `la lámpara cuelga encima de ${id}`);
+  const papel = PIEZAS_DE_LUZ.find((q) => q.nombre === 'luz-mesa-lampara')!.dibujo;
+  assert.match(papel, /<mask id="lz-mesa">/);
+  assert.doesNotMatch(papel, /soplo-|Gradient/i);
+  // Las moscas: segunda capa, de franja (no de pantalla entera), que deriva, se hamaca y salta.
+  const moscas = AIRE['la-mesa']!.find((c) => c.pieza === 'aire-mesa-moscas')!;
+  assert.ok(moscas.cae === 0 && moscas.alto < ALTO && moscas.deriva !== 0 && moscas.mece > 0 && moscas.salta > 0);
+  assert.equal(VIDAS['la-mesa']!.pieza, 'vida-moscardon');
+  // Debajo del mantel: va en el piso impreso, y la cueva del ratón además fina, para la lupa.
+  const piso = PIEZAS_CAMINO.find((q) => q.nombre === 'camino-mesa-piso')!.dibujo;
+  assert.match(piso, /<clipPath id="ms-cueva">/);
+  assert.ok(FINAS_DE['la-mesa']!.includes('fino-mesa-cueva') && CUEVA.y > MESA.tablero.cuelga);
+  assert.match(readFileSync('src/lib/bestiario/arte-sobremesa.ts', 'utf-8'), /const de = \(id: string\): number => X\(OJOS_DE_LA_MESA\[id\]!\[0\], ancho\);/, 'los pies salen de los datos de la escena');
+});
+
+test('D-91/t2: el salón del infierno: arcada, lenguas que respiran, el que asoma y el damero que se va; el recinto, igual', () => {
+  const nombres = new Map<string, string>();
+  const recinto = escenaInfierno(nombres);
+  const camino = pisoDelCamino(CAMINOS['el-infierno']!, nombres);
+  assert.doesNotMatch(recinto, /camino-infierno-|class="respira"|class="asoma"/, 'el recinto del plano no lleva lo del camino');
+  assert.match(recinto, /infierno-cerca\.webp/);
+  // En el camino: el que asoma (apagado), la fila alta, la arcada, la fila baja y el piso nuevo, en ese orden, y todo antes de los bichos.
+  const orden = ['class="asoma" data-espera="4.5" opacity="0"', 'camino-infierno-lenguas-a.webp', 'camino-infierno-salon.webp', 'camino-infierno-lenguas-b.webp', 'camino-infierno-piso.webp', 'class="luz-de-vela"'].map((m) => camino.indexOf(m));
+  assert.ok(orden.every((i) => i > 0) && orden.every((i, n) => n === 0 || i > orden[n - 1]!), `el orden del salón: ${orden}`);
+  assert.doesNotMatch(camino, /infierno-cerca\.webp/);
+  assert.equal((camino.match(/class="respira" data-base="/g) ?? []).length, 2);
+  for (const p of PIEZAS_DEL_SALON) {
+    assert.ok(existsSync(`public${rutaDePieza(p.nombre)}`), `falta imprimir ${p.nombre}`);
+    assert.doesNotMatch(p.dibujo, /Gradient/i);
+    assert.match(p.dibujo, /filter="url\(#rociado\)"/);
+  }
+  // Las columnas no caen detrás de la puerta ni de la piedra de Luzbelito, y las lenguas se estiran desde el zócalo.
+  for (const x of SALON.columnas) assert.ok((x < 120 || x > 240) && (x < 350 || x > 560), `una columna en ${x}`);
+  assert.ok(LENGUAS.base >= SALON.zocalo && LENGUAS.caja[1] + LENGUAS.caja[3] >= LENGUAS.base && GIGANTE.caja[1] + GIGANTE.caja[3] <= SALON.zocalo + 10);
+  // El damero: más filas que el del recinto y la alfombra hasta el punto de fuga.
+  const piso = PIEZAS_DEL_SALON.find((q) => q.nombre === 'camino-infierno-piso')!.dibujo;
+  assert.match(piso, /<clipPath id="sl-alfombra">/);
+  const fuente = readFileSync('src/lib/bestiario/arte-salon.ts', 'utf-8');
+  assert.match(fuente, /const N = 15;/);
+  // La isla: las lenguas, con `transform`; el que asoma, con `opacity`, después de la quietud. Nada más.
+  const isla = readFileSync('src/scripts/camino.ts', 'utf-8');
+  const salon = isla.slice(isla.indexOf('function moverElSalon('), isla.indexOf('/** Si te fijás en ellos'));
+  assert.match(salon, /r\.el\.setAttribute\('transform'/);
+  assert.match(salon, /a\.el\.style\.opacity = /);
+  assert.deepEqual([...new Set([...salon.matchAll(/\.style\.(\w+)/g)].map((m) => m[1]))], ['opacity']);
+  assert.match(salon, /a\.quietud = seMueve \|\| !hoja\.hidden \|\| agarre !== null \? 0 : a\.quietud \+ dt;/);
+  assert.match(isla, /if \(!quieto\(\)\) \{[\s\S]*?moverElSalon\(dt, /, 'con movimiento reducido el salón queda quieto y nadie asoma');
+});
