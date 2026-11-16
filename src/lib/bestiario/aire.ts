@@ -640,6 +640,15 @@ export function alivioDeEntrada(nucleos: number | undefined, memoria: number | u
  */
 export const ALIVIO_DE_LA_REGION: Readonly<Record<string, number>> = { cybersiberia: 1 };
 
+/**
+ * Las regiones donde lo de adelante se corre con la lupa (`D-91`, tanda 2, quinta vuelta). Es la regla de
+ * siempre («con la lupa, lo pegado a la cámara se desvanece»), que hasta acá solo cumplía el aire `cerca`:
+ * en la mesa, el respaldo de una silla de adelante quedaba agrandado justo encima de lo que se había ido a
+ * mirar (la puerta del fondo, la ventana), y en el galpón, la fila grande. Las demás regiones quedan como
+ * estaban hasta que alguien las mire con la lupa.
+ */
+export const FRENTE_QUE_SE_CORRE: readonly string[] = ['la-mesa', 'el-galpon'];
+
 /** A cuántos píxeles de los ojos un dedo o un mouse ya los está mirando. */
 export const MIRADA = 84;
 
