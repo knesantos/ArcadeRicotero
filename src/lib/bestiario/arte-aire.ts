@@ -20,7 +20,6 @@ import { enmascarado, forma, nube, soplo, trazo, type Pieza } from './aerografo.
 import { ACECHOS, AIRE, LUCES, VIDAS, altoDeBaldosa, type CapaDeAire } from './aire.ts';
 import { M, azar, filaDeTiras } from './arte.ts';
 import { ruedaDelMolino, troncosCercanos } from './arte-arboles.ts';
-import { boneteColgantes } from './arte-bonete.ts';
 import { galponHumo, galponPogo, zapatilla } from './arte-recital.ts';
 import { lamparaDeLaMesa, moscardon } from './arte-sobremesa.ts';
 import { ALTO } from './camino.ts';
@@ -445,8 +444,8 @@ function cyberCerca(c: CapaDeAire): string {
 function astilleroRio(c: CapaDeAire): string {
   const rnd = azar(611);
   let s = '';
-  for (let i = 0; i < 64; i++) {
-    const hondura = rnd();
+  for (let i = 0; i < 96; i++) {
+    const hondura = rnd() ** 0.8;
     const x = rnd() * c.ancho;
     const y = c.y + 12 + hondura * (c.alto - 26);
     const largo = 7 + hondura * 22 + rnd() * 8;
@@ -455,7 +454,7 @@ function astilleroRio(c: CapaDeAire): string {
     const o = (que < 0.3 ? 0.5 : 0.3) + rnd() * 0.3;
     s += vuelta(x, largo + 6, c.ancho, (xx) => trazo(`M${f(xx - largo / 2)} ${f(y)} q${f(largo / 2)} ${f(-1.2 - hondura * 1.6)} ${f(largo)} 0`, color, 1 + hondura * 1.1, o));
   }
-  return rociado(c, manchas(c, 613, 6, c.y + 34, c.y + 70, [[T.clara, 0.12], [T.azul, 0.2]], 12, [50, 110]) + s);
+  return rociado(c, manchas(c, 613, 6, c.y + 50, c.y + 104, [[T.clara, 0.12], [T.azul, 0.2]], 12, [50, 110]) + s);
 }
 
 function astilleroVaho(c: CapaDeAire): string {
@@ -1221,8 +1220,6 @@ const PINTA: Readonly<Record<string, (c: CapaDeAire) => string>> = {
   'aire-mesa-humo': mesaHumo,
   'aire-templo-incienso': temploIncienso,
   'aire-templo-ofrendas': temploOfrendas,
-  // Lo que cuelga de las ramas grandes del árbol y se hamaca (`arte-bonete.ts`).
-  'aire-arbol-colgantes': (c) => rociado(c, boneteColgantes()),
   'aire-arbol-hojas': arbolHojas,
   'aire-arbol-racha': arbolRacha,
   'aire-galpon-humo': galponHumo,
@@ -1235,9 +1232,9 @@ const PINTA: Readonly<Record<string, (c: CapaDeAire) => string>> = {
  * pura mancha y se imprime gruesa, que pesa poco; lo que tiene filo (las matas, la ceniza) va más fino.
  */
 /** Las baldosas que no son niebla sino dibujo de canto duro, y que se miran con la lupa: se imprimen finas (`D-91`). */
-const FILOSAS: ReadonlySet<string> = new Set(['aire-monte-troncos', 'aire-galpon-pogo', 'aire-galpon-pogo-b', 'aire-arbol-colgantes']);
+const FILOSAS: ReadonlySet<string> = new Set(['aire-monte-troncos', 'aire-galpon-pogo', 'aire-galpon-pogo-b']);
 /** Las filosas que no se miran con la lupa tan de cerca: el pogo va un poco menos fino, por la memoria (`D-91`, tanda 2, cuarta vuelta). */
-const MENOS_FINAS: Readonly<Record<string, number>> = { 'aire-galpon-pogo': 1.4, 'aire-galpon-pogo-b': 1.4, 'aire-arbol-colgantes': 1.4 };
+const MENOS_FINAS: Readonly<Record<string, number>> = { 'aire-galpon-pogo': 1.4, 'aire-galpon-pogo-b': 1.4 };
 
 export const PIEZAS_AIRE: readonly Pieza[] = [...new Map(Object.values(AIRE).flat().filter((c) => !c.ajena).map((c) => [c.pieza, c] as const)).values()].map((c) => {
   const pinta = PINTA[c.pieza];
