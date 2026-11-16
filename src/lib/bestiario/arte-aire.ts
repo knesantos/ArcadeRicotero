@@ -1194,6 +1194,8 @@ const PINTA: Readonly<Record<string, (c: CapaDeAire) => string>> = {
  */
 /** Las baldosas que no son niebla sino dibujo de canto duro, y que se miran con la lupa: se imprimen finas (`D-91`). */
 const FILOSAS: ReadonlySet<string> = new Set(['aire-monte-troncos', 'aire-galpon-pogo', 'aire-galpon-pogo-b']);
+/** Las filosas que no se miran con la lupa tan de cerca: el pogo va un poco menos fino, por la memoria (`D-91`, tanda 2, cuarta vuelta). */
+const MENOS_FINAS: Readonly<Record<string, number>> = { 'aire-galpon-pogo': 1.4, 'aire-galpon-pogo-b': 1.4 };
 
 export const PIEZAS_AIRE: readonly Pieza[] = [...new Map(Object.values(AIRE).flat().filter((c) => !c.ajena).map((c) => [c.pieza, c] as const)).values()].map((c) => {
   const pinta = PINTA[c.pieza];
@@ -1203,7 +1205,7 @@ export const PIEZAS_AIRE: readonly Pieza[] = [...new Map(Object.values(AIRE).fla
     nombre: c.pieza,
     caja: [0, c.y, c.ancho, c.alto] as const,
     dibujo: pinta(receta(region, c.pieza)),
-    densidad: FILOSAS.has(c.pieza) ? 1.75 : c.cae ? 1.5 : c.plano === 'cerca' ? 1.25 : 1,
+    densidad: FILOSAS.has(c.pieza) ? (MENOS_FINAS[c.pieza] ?? 1.75) : c.cae ? 1.5 : c.plano === 'cerca' ? 1.25 : 1,
     // El grano pesa: la niebla aguanta más compresión que un títere, porque no tiene filo que cuidar.
     calidad: FILOSAS.has(c.pieza) ? 72 : c.plano === 'cerca' ? 78 : 58,
     // La que se repite también para arriba (la ceniza) son motas sueltas: no hay soplo que cruce el borde.
