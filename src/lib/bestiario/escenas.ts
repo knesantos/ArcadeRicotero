@@ -138,14 +138,18 @@ export const VECINOS_DEL_INFIERNO: Readonly<Record<string, readonly [number, num
   'mandinga': [612, 540, 'rojo'],
 };
 
-export function escenaInfierno(nombres: ReadonlyMap<string, string>): string {
+/**
+ * `camino` (`D-91`, tanda 2): lo que el camino le suma al salón sin tocar el recinto del plano. `entre`
+ * va entre el fuego y el piso (la arcada, los que bailan, las lenguas); `cerca`, en lugar del piso de siempre.
+ */
+export function escenaInfierno(nombres: ReadonlyMap<string, string>, camino?: { entre: string; cerca: string }): string {
   const [px, py] = ARMADO.luzbelito.piso;
   const luz = llamaEnEscena();
   return (
     imagen('infierno-lejos') +
     // El fuego: la pincelada de *Gulp!*, teñida, que se suma a lo oscuro como luz.
     `<g class="infierno-fuego" transform="translate(-30 -330) scale(1)">${imagen('infierno-pincelada')}</g>` +
-    imagen('infierno-cerca') +
+    (camino ? camino.entre + camino.cerca : imagen('infierno-cerca')) +
     capasDe('el-infierno', 'atras', nombres) +
     `<g class="luz-de-vela" data-x="${f(luz.x)}" data-y="${f(luz.y)}" transform="translate(${f(luz.x)} ${f(luz.y)})">${imagen('luzbelito-luz')}</g>` +
     losOjos(VECINOS_DEL_INFIERNO, nombres) +
