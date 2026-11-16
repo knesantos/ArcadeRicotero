@@ -141,7 +141,10 @@ export const AIRE: Readonly<Record<string, readonly CapaDeAire[]>> = {
   ],
   // Los astilleros: la bruma del río detrás del muelle, el vaho que sube del agua y los fierros del muelle fuera de foco.
   'los-astilleros': [
-    capa({ pieza: 'aire-astillero-bruma', plano: 'fondo', f: 0.7, y: 110, alto: 320, ancho: 1200, deriva: 7, alfa: 0.7, late: 0.1, ritmo: 0.21 }),
+    // Tanda 3 de `D-91`: la bruma de atrás ahora está impresa en lo lejano, entre la otra orilla y el carguero.
+    // En su lugar va **el río**: una franja angosta, pegada al muelle, de destellos de sodio y rayas de tiza
+    // que la corriente lleva de costado. Es chica (90 de alto): es agua que se mueve, no una capa de pantalla.
+    capa({ pieza: 'aire-astillero-rio', plano: 'fondo', f: 0.9, y: 350, alto: 90, ancho: 1200, deriva: 13, alfa: 0.86, late: 0.14, ritmo: 0.9 }),
     capa({ pieza: 'aire-astillero-vaho', plano: 'medio', f: 1.1, y: 300, alto: 340, ancho: 1400, deriva: 11, alfa: 0.75, late: 0.14, ritmo: 0.29, abre: 0.45 }),
     capa({ pieza: 'aire-astillero-cerca', plano: 'cerca', f: 1.75, y: 420, alto: 220, ancho: 1600 }),
   ],
@@ -372,6 +375,9 @@ export const LUCES: Readonly<Record<string, readonly Luz[]>> = {
   // paño libre entre la puerta del fondo y la ventana, así no le cruza por delante a la ventana ni a un
   // retrato en ninguna pantalla; y el cono termina en la línea de la mesa, que es donde termina la pared.
   'la-mesa': [{ pieza: 'luz-mesa-lampara', f: 0.8, x: 952, y: -8, caja: [-130, -4, 260, 340], vaiven: 5.5, ritmo: 0.66, alfa: 0.94, late: 0.04, pulso: 'barre', crece: 0 }],
+  // El árbol (`D-91`, tanda 3): el farol de cobre que cuelga de la rama grande, en la primera pantalla. Se
+  // hamaca apenas y titila como una llama. La boca es `FAROL` (`arte-bonete.ts`); el test mira que coincidan.
+  'el-arbol': [{ pieza: 'luz-arbol-farol', f: 1, x: 322, y: 225, caja: [-100, -14, 200, 330], vaiven: 5, ritmo: 0.5, alfa: 0.46, late: 0.14, pulso: 'titila', crece: 0 }],
   'el-bajo': [{ pieza: 'luz-bajo-reflejo', f: 1, x: 806, y: 492, caja: [-70, -12, 140, 140], vaiven: 2.5, ritmo: 1.7, alfa: 0.62, late: 0.2, pulso: 'titila', crece: 0 }],
   // Los techos: el farol del baldío (650, 130 en su recinto), que titila.
   'los-techos': [{ pieza: 'luz-techos-farol', f: 1, x: 650, y: 140, caja: [-180, -14, 360, 420], vaiven: 2.5, ritmo: 0.7, alfa: 0.4, late: 0.16, pulso: 'titila', crece: 0, suena: 'zumbido', filo: { pieza: 'filo-lila', cuantos: 4, abre: 34 } }],
@@ -422,6 +428,13 @@ export interface Visita {
 
 export const VISITAS: Readonly<Record<string, Visita>> = {
   'la-mesa': { pieza: 'camino-mesa-visita', f: 0.8, caja: [644, 132, 84, 192], espera: 6 },
+  // Tanda 3 de `D-91`, las tres en la primera pantalla. Los astilleros: un gato que se sube a la pila de
+  // containers (va con el piso, y asoma de atrás del canto de la pila). Cybersiberia: algo enorme que camina
+  // en el blanco del horizonte. El árbol: a la luna se le abre un ojo. Las cajas son las de `arte-puerto.ts`,
+  // `arte-tundra.ts` y `arte-bonete.ts`, y `aire.test.ts` mira que coincidan.
+  'los-astilleros': { pieza: 'camino-astillero-gato', f: 1, caja: [112, 138, 66, 62], espera: 6 },
+  cybersiberia: { pieza: 'camino-cyber-coloso', f: 0.6, caja: [584, 160, 96, 176], espera: 6 },
+  'el-arbol': { pieza: 'camino-arbol-ojo', f: 0.5, caja: [638, 210, 104, 104], espera: 7 },
 };
 
 /**
@@ -570,7 +583,9 @@ export const VIDAS: Readonly<Record<string, Vida>> = {
   // La pastura (`D-91`, cuarta vuelta): no un pájaro sino un vellón que el viento lleva rodando por el pasto,
   // para el mismo lado que la ola. Raro: uno cada medio minuto o más.
   'la-pastura': { pieza: 'vida-vellon', ancho: 22, alto: 16, tam: 1, y: [468, 520], dura: [6, 9], espera: [26, 48], aletea: 0, bamboleo: 38, alfa: 0.9, deLosDosLados: false, alReves: true },
-  'los-astilleros': { ...AVE, y: [60, 130] },
+  // Los astilleros (`D-91`, tanda 3): ya no la gaviota sino una chata con sus luces, que cruza el río despacio
+  // por detrás del muelle y del ferry. Tarda medio minuto; pasa una cada minuto o más.
+  'los-astilleros': { pieza: 'vida-chata', ancho: 150, alto: 26, tam: 0.6, y: [352, 352], dura: [26, 34], espera: [36, 70], aletea: 0, bamboleo: 0, alfa: 0.92, deLosDosLados: false, atras: true },
   // Los techos: un murciélago, más bajo y más rápido.
   'los-techos': { ...AVE, tam: 0.45, y: [120, 240], dura: [5, 8] },
   // La prisión: un pájaro blanco, de gubia, que pasa por arriba del muro. El único que sale.
