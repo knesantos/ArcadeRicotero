@@ -1629,8 +1629,89 @@ function mundoEnElHorizonte(ancho: number, h: number): string {
   return s;
 }
 
+/**
+ * El fondo de la ruta larga (`D-91`, `T-530`): la pampa entre el horizonte y la banquina era una
+ * franja negra, y la ruta no tenía nada que se perdiera en la distancia. Esto le pone planos, solo en
+ * el camino (el recinto de 900 queda como estaba):
+ *
+ * - `sierras`: dos lomos detrás del mundo del horizonte, el de más atrás más claro y más frío.
+ * - `pampa`: bancos de niebla en los bajos, caminos de tierra que se van al horizonte con sus postes
+ *   cada vez más chicos, y las luces de algún puesto. Al pie de uno de esos postes hay alguien haciendo
+ *   dedo: se ve con la lupa.
+ */
+function sierrasDeLaRuta(ancho: number, h: number): string {
+  const rnd = azar(547);
+  const lomo = (y: number, alto: number, paso: number, color: string, o: number): string => {
+    let d = `M-10 ${y}`;
+    for (let x = -10; x < ancho + 10; x += paso) d += ` Q${f(x + paso * (0.3 + rnd() * 0.4))} ${f(y - alto * (0.2 + rnd() * 1.2))} ${f(x + paso)} ${f(y - rnd() * alto * 0.3)}`;
+    return forma(`${d} L${ancho + 10} ${h + 4} L-10 ${h + 4} Z`, color, o);
+  };
+  return lomo(h - 6, 34, 330, T.azul, 0.3) + nube(ancho / 2, h - 14, ancho * 0.7, 9, R.noche, 'l', 0.7) + lomo(h - 2, 18, 210, R.noche, 0.85);
+}
+
+function pampaDeLaRuta(ancho: number, h: number, hasta: number): string {
+  const rnd = azar(557);
+  let s = '';
+  // Los bancos de niebla: chatos, en los bajos, más claros cuanto más atrás.
+  for (let x = rnd() * 120; x < ancho; x += 110 + rnd() * 190) {
+    const u = rnd();
+    s += nube(x, h + 10 + u * (hasta - h - 26), 70 + rnd() * 110, 3 + u * 6, u < 0.45 ? T.clara : R.noche, 'l', u < 0.45 ? 0.1 + rnd() * 0.08 : 0.5 + rnd() * 0.3);
+  }
+  // Los caminos de tierra que se van: una cuña clara que se afina hasta el horizonte, y sus postes.
+  let n = 0;
+  for (let x = 380 + rnd() * 120; x < ancho - 260; x += 620 + rnd() * 380, n++) {
+    const paraAlla = n % 2 ? -1 : 1;
+    const fuga: Punto = [x + paraAlla * (170 + rnd() * 90), h + 3];
+    s += forma(poli([[x - 15, hasta], [x + 15, hasta], [fuga[0] + 0.6, fuga[1]], [fuga[0] - 0.6, fuga[1]]]), R.topo, 0.55);
+    s += trazo(`M${f(x)} ${hasta} L${f(fuga[0])} ${f(fuga[1])}`, R.tenue, 0.6, 0.5);
+    for (let k = 0; k < 9; k++) {
+      // En perspectiva: cada poste a la mitad de lo que le falta al anterior, y la bruma se los va tragando.
+      const u = 1 - 0.72 ** k;
+      const px = x + 20 * paraAlla * (1 - u) + (fuga[0] - x) * u + paraAlla * 8 * (1 - u);
+      const py = hasta + (fuga[1] - hasta) * u;
+      const alto = 44 * (1 - u) + 2;
+      const o = 0.95 - u * 0.75;
+      s += forma(caja(px - 1.2 * (1 - u) - 0.3, py - alto, 2.4 * (1 - u) + 0.6, alto), R.negro, 1) + forma(caja(px - 7 * (1 - u), py - alto + 2 * (1 - u), 14 * (1 - u), 1.6 * (1 - u) + 0.4), R.negro, 1);
+      s += nube(px, py - alto * 0.3, 10 * (1 - u) + 3, alto * 0.5, R.noche, 's', (1 - o) * 0.9);
+      // El que hace dedo, al pie del segundo poste del primer camino.
+      if (n === 0 && k === 1) {
+        const a = alto * 0.42;
+        s += `<g transform="translate(${f(px + paraAlla * 5)} ${f(py)})">` +
+          forma(`M-1.6 0 L-1.2 ${f(-a * 0.62)} L1.2 ${f(-a * 0.62)} L1.6 0 Z`, R.negro) + forma(circulo(0, -a * 0.78, a * 0.14), R.negro) +
+          trazo(`M1 ${f(-a * 0.52)} L${f(a * 0.34)} ${f(-a * 0.6)} l${f(a * 0.06)} ${f(-a * 0.12)}`, R.negro, 1.1) +
+          forma(caja(-a * 0.36, -a * 0.2, a * 0.22, a * 0.2), R.negro) + nube(0, -a * 0.8, 1, 1, R.papel, 'xs', 0.5) + `</g>`;
+      }
+    }
+  }
+  // Las luces de algún puesto, lejos: un punto tibio y su halo. Pocas.
+  for (let x = 240 + rnd() * 200; x < ancho; x += 520 + rnd() * 520) {
+    const y = h + 8 + rnd() * 20;
+    s += nube(x, y - 2, 16, 7, 'var(--entorno-templo-foco)', 'l', 0.3) + forma(caja(x - 6, y - 5, 12, 5), R.negro) + forma(poli([[x - 7, y - 5], [x, y - 9], [x + 7, y - 5]]), R.negro) + forma(caja(x - 1.6, y - 3.6, 2.2, 2.2), 'var(--entorno-templo-foco)', 0.95);
+  }
+  return s;
+}
+
+/** El santuario de la banquina: una casita de chapa a la altura de la rodilla, con una vela adentro y trapos atados. */
+function santuario(x: number, y: number): string {
+  const vela = 'var(--entorno-templo-foco)';
+  return (
+    nube(x, y - 10, 34, 18, vela, 'l', 0.3) +
+    nube(x + 2, y + 1, 20, 3.4, R.negro, 's', 0.85) +
+    forma(poli([[x - 12, y], [x - 12, y - 17], [x, y - 26], [x + 12, y - 17], [x + 12, y]]), R.negro) +
+    forma(poli([[x - 7, y - 2], [x - 7, y - 14], [x + 7, y - 14], [x + 7, y - 2]]), vela, 0.5) +
+    forma(caja(x - 1, y - 8, 2, 6), R.papel, 0.9) + nube(x, y - 10, 1.8, 2.6, vela, 'xs', 1) +
+    trazo(`M${f(x - 14)} ${f(y - 17)} L${f(x)} ${f(y - 27)} L${f(x + 14)} ${f(y - 17)}`, R.tenue, 1.2, 0.7) +
+    // La cruz de caña, y los trapos, en el rojo de siempre.
+    trazo(`M${f(x + 18)} ${f(y)} l1 -34 M${f(x + 12)} ${f(y - 26)} l13 -1`, R.negro, 1.6) +
+    forma(poli([[x + 19, y - 33], [x + 31, y - 31], [x + 27, y - 27], [x + 32, y - 22], [x + 19, y - 25]]), R.vivo, 0.9) +
+    forma(poli([[x - 12, y - 17], [x - 22, y - 13], [x - 17, y - 9], [x - 24, y - 3], [x - 12, y - 8]]), R.vivo, 0.7)
+  );
+}
+
 function rutaLejos(ancho = ANCHO, alto = ALTO): string {
   const h = RUTA.horizonte;
+  // Lo hondo es del camino largo: el recinto de 900 queda como estaba.
+  const largo = ancho > ANCHO;
   const rnd = azar(503);
   let lactea = '';
   for (let i = 0; i < Math.round(260 * (ancho / ANCHO)); i++) {
@@ -1648,10 +1729,12 @@ function rutaLejos(ancho = ANCHO, alto = ALTO): string {
     estrellas(0, 0, ancho, h - 30, Math.round(380 * (ancho / ANCHO)), R.papel, 509) +
     `<path d="M${f(ancho * 0.84)} 70 a20 20 0 1 0 14 34 a16 16 0 1 1 -14 -34 Z" fill="${R.papel}" opacity="0.85"/>` +
     nube(ancho * 0.84 + 6, 88, 46, 46, R.papel, 'xl', 0.12) +
+    (largo ? sierrasDeLaRuta(ancho, h) : '') +
     mundoEnElHorizonte(ancho, h) +
     // La pampa, oscura, hasta la ruta.
     forma(caja(-10, h, ancho + 20, alto - h + 10), R.negro) +
     nube(ancho / 2, h + 6, ancho * 0.7, 10, R.noche, 'l', 0.8) +
+    (largo ? pampaDeLaRuta(ancho, h, RUTA.asfalto.arriba - 22) : '') +
     `</g>`
   );
 }
@@ -1691,12 +1774,30 @@ function rutaPiso(ancho = ANCHO, alto = ALTO): string {
   for (let i = 0; i < postes.length - 1; i++) {
     for (const d of [-18, 6]) telegrafo += trazo(`M${f(postes[i]! + d)} 258 Q${f((postes[i]! + postes[i + 1]!) / 2 + d)} 290 ${f(postes[i + 1]! + d)} 258`, R.negro, 1.2, 0.85);
   }
+  // `D-91`: en el camino largo, una segunda línea de postes más atrás (la mitad de altos, más juntos),
+  // y la bruma que se los traga de a uno: cada tres, el poste se pierde hasta la cruceta.
+  let atras = '';
+  if (ancho > ANCHO) {
+    const lejos: number[] = [];
+    for (let x = X(70) + X(250) * 0.4; x < ancho + 60; x += X(250) * 0.62) lejos.push(x);
+    lejos.forEach((x, i) => {
+      const pie = arriba - 26;
+      atras += forma(caja(x - 1.6, pie - 96, 3.2, 96), R.negro) + forma(caja(x - 12, pie - 90, 24, 3), R.negro);
+      if (i < lejos.length - 1) atras += trazo(`M${f(x - 10)} ${pie - 90} Q${f((x + lejos[i + 1]!) / 2)} ${pie - 74} ${f(lejos[i + 1]! - 10)} ${pie - 90}`, R.negro, 0.8, 0.8);
+      // La bella señora anda por esta banquina (`OJOS_DE_LA_RUTA`): ahí no se le echa niebla encima.
+      const libre = Math.abs(x - X(520)) > 150;
+      const traga = i % 3 === 1 ? 0.92 : i % 3 === 2 ? 0.6 : 0.3;
+      if (libre) atras += nube(x + (rnd() - 0.5) * 30, pie - 30 - (i % 3 === 1 ? 26 : 0), 46 + rnd() * 30, i % 3 === 1 ? 44 : 20, R.noche, 'l', traga * 0.8) + nube(x, pie - 8, 60, 7, T.clara, 'l', 0.07 * (i % 3 === 1 ? 2 : 1));
+    });
+  }
   // El taxi paranormal ya no se pinta acá: es un títere del elenco (`arte-taxi.ts`), volcado en esta banquina.
   const volcado = '';
   // La bella señora ya no se pinta acá: es un títere del elenco (`arte-desencarnada.ts`), en la banquina de este lado.
   // La piba con la remera tampoco: es un títere del elenco (`arte-piba.ts`), dormida en esta banquina (o haciéndose).
   return (
     `<g filter="url(#rociado)">` +
+    `<rect x="-10" y="190" width="${ancho + 20}" height="${alto - 180}" fill="${R.negro}" fill-opacity="0"/>` +
+    atras +
     // La banquina de arriba, con el pasto, y lo que alumbran los faros al pasar.
     soplo(`M-10 ${arriba - 30} L${ancho + 10} ${arriba - 30} L${ancho + 10} ${arriba + 4} L-10 ${arriba + 4} Z`, R.negro, 'xs') +
     forma(caja(-10, arriba, ancho + 20, abajo - arriba), R.negro) +
@@ -1704,6 +1805,8 @@ function rutaPiso(ancho = ANCHO, alto = ALTO): string {
     surcos +
     trazo(`M-10 ${arriba + 4} L${ancho + 10} ${arriba + 4} M-10 ${abajo - 4} L${ancho + 10} ${abajo - 4}`, R.papel, 2, 0.55) +
     lineas +
+    // El santuario, en la banquina de arriba, al borde del asfalto: solo en el camino largo.
+    (ancho > ANCHO ? santuario(250, arriba - 1) : '') +
     forma(caja(-10, abajo, ancho + 20, alto - abajo + 10), R.negro) +
     nube(ancho / 2, abajo + 30, ancho * 0.6, 30, R.topo, 'xl', 0.35) +
     `</g>` +
