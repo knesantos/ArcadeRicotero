@@ -185,10 +185,12 @@ export function arbol(r: Receta, rnd: Azar): Arbol {
     const cuantas = 3 + Math.floor(rnd() * 3);
     for (let i = 0; i < cuantas; i++) {
       const u = i / (cuantas - 1) - 0.5;
-      const l = r.grosor * (0.9 + rnd() * 0.9);
-      const pie: P = [r.x + u * r.grosor * 0.7, r.base - r.grosor * 0.5];
-      const punta: P = [r.x + u * (r.grosor + l * 1.6), r.base + 10 + rnd() * 8];
-      miembros.push(miembro(pie, punta, -u * l * 0.7, r.grosor * 0.42, 2.2, l * 0.05, 1, rnd() * 6, 9));
+      // Tercera vuelta: bajas y pegadas al piso. Con la comba de antes, a la vista, eran arcos negros
+      // de un metro de alto, patas de araña; una raíz sale del tronco casi acostada y se entierra.
+      const l = r.grosor * (0.55 + rnd() * 0.6);
+      const pie: P = [r.x + u * r.grosor * 0.8, r.base - r.grosor * 0.3];
+      const punta: P = [r.x + u * (r.grosor * 1.1 + l * 1.5), r.base + 8 + rnd() * 6];
+      miembros.push(miembro(pie, punta, -u * l * 0.22, r.grosor * 0.4, 2.2, l * 0.04, 1, rnd() * 6, 9));
     }
   }
   let cuerpo = miembros.map(contorno).join(' ');
@@ -635,3 +637,31 @@ export function arado(x: number, y: number, k = 1): string {
   );
 }
 
+/**
+ * Un carro de dos ruedas, volcado: una rueda grande parada, de rayos, con la llanta de fierro; la
+ * caja de tablas de costado; la lanza apuntando al cielo. Con el arado, es lo que quedó del que
+ * trabajaba este campo (`D-91`, tercera vuelta: el último tramo de la pastura estaba vacío).
+ */
+export function carroVolcado(x: number, y: number, k = 1): string {
+  const luz = CAMPO.claro;
+  let rayos = '';
+  for (let i = 0; i < 6; i++) {
+    const a = (i / 6) * Math.PI + 0.2;
+    rayos += `M${f(Math.cos(a) * 25)} ${f(-27 + Math.sin(a) * 25)} L${f(-Math.cos(a) * 25)} ${f(-27 - Math.sin(a) * 25)} `;
+  }
+  return (
+    `<g transform="translate(${f(x)} ${f(y)}) scale(${f(k)})">` +
+    nube(18, 3, 74, 6, M.negro, 's', 0.85) +
+    // La lanza, para arriba, y la caja de tablas, de costado.
+    trazo('M30 -30 Q64 -62 82 -104', M.negro, 4.2) + trazo('M31 -32 Q64 -63 81 -102', luz, 0.9, 0.4) +
+    forma('M8 -4 L20 -52 L78 -40 L70 2 Z', M.negro) +
+    trazo('M16 -36 L74 -25 M13 -20 L72 -10', CAMPO.hondo, 1.4, 0.9) + trazo('M20 -52 L78 -40', luz, 1.1, 0.5) +
+    // La rueda parada: llanta, rayos, maza.
+    `<circle cx="0" cy="-27" r="26" fill="none" stroke="${M.negro}" stroke-width="4.4"/>` + trazo(rayos, M.negro, 2) +
+    forma('M-5 -27 a5 5 0 1 0 10 0 a5 5 0 1 0 -10 0 Z', M.negro) +
+    trazo('M-22 -41 A26 26 0 0 1 9 -51.4', luz, 1.3, 0.55) +
+    // La otra, caída: un óvalo en el pasto.
+    `<ellipse cx="104" cy="-2" rx="24" ry="6.5" fill="none" stroke="${M.negro}" stroke-width="3.6"/>` + trazo('M82 -3 L126 -1 M104 -8 L104 4', M.negro, 1.6) + trazo('M84 -6 Q104 -10.6 122 -6.4', luz, 0.9, 0.4) +
+    `</g>`
+  );
+}
