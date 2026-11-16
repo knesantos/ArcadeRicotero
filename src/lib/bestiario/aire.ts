@@ -317,18 +317,36 @@ export interface Luz {
    * zona a la que apunta el haz (`angulo`, en grados; `abre`, a cada lado). `f` y `caja`: la capa con la
    * que va y dónde, en unidades de esa capa.
    */
-  cantos?: readonly { pieza: string; f: number; caja: readonly [number, number, number, number]; angulo: number; abre: number }[];
+  cantos?: readonly { pieza: string; f: number; caja: readonly [number, number, number, number] }[];
+  /** La altura, en unidades del piso, a la que el haz llega a lo que prende (las cabezas de la fila grande). */
+  cantosEn?: number;
 }
 
 /**
- * Las tres zonas de la fila grande del galpón que el seguidor alcanza a barrer, en unidades de la capa
- * de adelante (que va a 1,3). El haz gira a la izquierda con el ángulo positivo: la zona de más a la
- * izquierda es la del ángulo más grande.
+ * Dónde cae el haz de una luz, en unidades de una capa que va a velocidad `f` (cuarta vuelta de la tanda 2
+ * de `D-91`). El haz sale de `(x, y)` del piso apuntando `grados` (0, para abajo; positivo, para la
+ * izquierda) y llega a la altura `hasta`. La luz va con el piso y lo que prende con otra capa: lo que en
+ * el piso está en `x` se ve, con la cámara en `cam` (unidades de escena), donde esa capa tiene `x + (f − 1)·cam`.
+ */
+export function dondeCaeElHaz(x: number, y: number, grados: number, hasta: number, f: number, cam: number): number {
+  return x - Math.tan((grados * Math.PI) / 180) * (hasta - y) + (f - 1) * cam;
+}
+
+/** Cuánto le toca a una zona de canto, de 0 a 1, con el haz cayendo en `xf` de su capa: de lleno en el medio y nada a tres cuartos de su ancho. */
+export function tocaLaZona(xf: number, caja: readonly [number, number, number, number]): number {
+  const k = 1 - Math.abs(xf - (caja[0] + caja[2] / 2)) / (caja[2] * 0.7);
+  return k <= 0 ? 0 : k * k * (3 - 2 * k);
+}
+
+/**
+ * Las zonas de la fila grande del galpón que el seguidor alcanza a barrer, en unidades de la capa de
+ * adelante (que va a 1,3). Cubren todo lo que puede caer bajo el haz: el seguidor barre del 1640 al 2060
+ * del piso, y eso, según por dónde vaya la cámara, es del 1880 al 2660 de la capa de adelante (lo mide el test, en un teléfono y a 1280).
  */
 const CANTOS_DEL_GALPON = [
-  { pieza: 'canto-galpon-0', f: 1.3, caja: [1920, 400, 294, 240], angulo: 36, abre: 17 },
-  { pieza: 'canto-galpon-1', f: 1.3, caja: [2154, 400, 294, 240], angulo: 18, abre: 17 },
-  { pieza: 'canto-galpon-2', f: 1.3, caja: [2388, 400, 294, 240], angulo: 0, abre: 17 },
+  { pieza: 'canto-galpon-0', f: 1.3, caja: [1830, 400, 380, 240] },
+  { pieza: 'canto-galpon-1', f: 1.3, caja: [2110, 400, 380, 240] },
+  { pieza: 'canto-galpon-2', f: 1.3, caja: [2390, 400, 380, 240] },
 ] as const;
 
 /**
@@ -365,7 +383,7 @@ export const LUCES: Readonly<Record<string, readonly Luz[]>> = {
   'el-templo': [{ pieza: 'luz-templo-foco', f: 1, x: 556, y: 218, caja: [-170, -14, 340, 400], vaiven: 3, ritmo: 0.6, alfa: 0.42, late: 0.14, pulso: 'titila', crece: 0, suena: 'zumbido' }],
   // El galpón: el seguidor de atrás, arriba a la derecha (`GALPON.luz`, a lo largo), que barre el
   // escenario y le pega al polvo.
-  'el-galpon': [{ pieza: 'luz-galpon-seguidor', f: 1, x: 2027, y: 64, caja: [-200, -14, 400, 460], vaiven: 22, ritmo: 0.36, alfa: 0.4, late: 0.06, pulso: 'barre', crece: 0, rumbo: 18, cantos: CANTOS_DEL_GALPON }],
+  'el-galpon': [{ pieza: 'luz-galpon-seguidor', f: 1, x: 2027, y: 64, caja: [-200, -14, 400, 460], vaiven: 22, ritmo: 0.36, alfa: 0.4, late: 0.06, pulso: 'barre', crece: 0, rumbo: 18, cantos: CANTOS_DEL_GALPON, cantosEn: 530 }],
 };
 
 /**
@@ -404,6 +422,14 @@ export interface Visita {
 
 export const VISITAS: Readonly<Record<string, Visita>> = {
   'la-mesa': { pieza: 'camino-mesa-visita', f: 0.8, caja: [644, 132, 84, 192], espera: 6 },
+};
+
+/**
+ * Lo que se va si lo mirás de cerca (cuarta vuelta): al revés que la visita, está siempre, y se apaga
+ * cuando se saca la lupa. En la mesa, los dos ojos que miran para adentro por la ventana. `espera` no se usa.
+ */
+export const HUIDIZOS: Readonly<Record<string, Visita>> = {
+  'la-mesa': { pieza: 'camino-mesa-ojos', f: 0.8, caja: [1212, 172, 30, 14], espera: 0 },
 };
 
 /** Las piezas que no son cuerpo: el humo, los fogonazos, los ojos, la boca, los muebles. A esas la luz no les prende un canto. */
