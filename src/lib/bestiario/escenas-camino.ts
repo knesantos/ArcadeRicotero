@@ -16,6 +16,7 @@
 
 import { rutaDePieza, type Pieza } from './aerografo.ts';
 import { FINAS_DE, PIEZAS_CAMINO, cajaDelCruce } from './arte-camino.ts';
+import { LENGUAS } from './arte-salon.ts';
 import { K_ENTORNO, RECINTO, type Tramo } from './camino.ts';
 import { escenaBajo, escenaBaldio, escenaInfierno, escenaPrision, escenaTemplo, ojos, type Tinta } from './escenas.ts';
 import { cosa, VELOCIDAD_DE_CARRIL } from './escenas-entornos.ts';
@@ -192,9 +193,27 @@ function pisoDeEntorno(t: Tramo, nombres: Nombres): string {
    ------------------------------------------------------------------ */
 
 /** La escena de cada recinto de títeres: la misma del bestiario (`escenas.ts`). */
+/**
+ * Lo que el camino le suma al salón del infierno (`arte-salon.ts`, `D-91`, tanda 2), de atrás para adelante:
+ * el que asoma (no se ve: la isla lo trae si te quedás quieto), la fila alta de lenguas, la arcada con los
+ * que bailan, y la fila baja. Las lenguas van en un grupo que la isla estira desde su base (`data-base`).
+ */
+function salonEnElCamino(): { entre: string; cerca: string } {
+  const quieta = (n: string): string => imagenDePieza(piezaDelCamino(n), true);
+  const lenguas = (n: string, fase: number): string => `<g class="respira" data-base="${LENGUAS.base}" data-fase="${fase}" pointer-events="none">${quieta(n)}</g>`;
+  return {
+    entre:
+      `<g class="asoma" data-espera="4.5" opacity="0" pointer-events="none">${quieta('camino-infierno-gigante')}</g>` +
+      lenguas('camino-infierno-lenguas-a', 0) +
+      quieta('camino-infierno-salon') +
+      lenguas('camino-infierno-lenguas-b', 2.2),
+    cerca: imagenDePieza(piezaDelCamino('camino-infierno-piso')),
+  };
+}
+
 export const ESCENA_DEL_RECINTO: Readonly<Record<string, (n: Nombres) => string>> = {
   'los-techos': escenaBaldio,
-  'el-infierno': escenaInfierno,
+  'el-infierno': (n) => escenaInfierno(n, salonEnElCamino()),
   'el-templo': escenaTemplo,
   'el-bajo': escenaBajo,
   'la-prision': escenaPrision,
