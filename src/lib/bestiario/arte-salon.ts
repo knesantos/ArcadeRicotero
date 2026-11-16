@@ -215,10 +215,13 @@ function gigante(): string {
     `<g filter="url(#rociado)">${hoja(x0, y0, w, h)}` +
     `<mask id="sl-asoma"><path d="${silueta}" fill="white"/><g filter="url(#soplo-xs)">${comido}</g></mask>` +
     `<g mask="url(#sl-asoma)">` +
-    `<g filter="url(#soplo-xs)" opacity="0.62"><path d="${silueta}" fill="${F.brasa}"/></g>` +
+    `<g filter="url(#soplo-xs)" opacity="0.74"><path d="${silueta}" fill="${F.brasa}"/></g>` +
     // Lo hondo de la cara y del pecho, donde no le llega nada.
     nube(cx, cabeza - 20, 34, 60, F.negro, 'l', 0.5) + nube(cx, cabeza + 120, 150, 50, F.negro, 'xl', 0.45) +
-    `<path d="${canto}" fill="none" stroke="${F.negro}" stroke-width="3" stroke-dasharray="9 5 3 6 14 4" stroke-linecap="round" opacity="0.7"/>` +
+    // Cuarta vuelta: a 430 px no se leía como silueta. El contorno quemado va más grueso y, por fuera, pegado a
+    // él, una raya de fuego claro rota: es el fuego de atrás, que lo recorta.
+    `<path d="${canto}" fill="none" stroke="${F.oro}" stroke-width="7" stroke-dasharray="16 9 6 12 22 7" stroke-linecap="round" opacity="0.55"/>` +
+    `<path d="${canto}" fill="none" stroke="${F.negro}" stroke-width="4.4" stroke-dasharray="12 4 5 5 18 3" stroke-linecap="round" opacity="0.9"/>` +
     `</g>` +
     ojo(-1) + ojo(1) +
     `</g>`
@@ -313,9 +316,11 @@ function pisoDelSalon(): string {
 
 /** Las piezas del salón: las imprime la imprenta con las del camino. */
 export const PIEZAS_DEL_SALON: readonly Pieza[] = [
-  { nombre: 'camino-infierno-salon', caja: [0, 0, ANCHO, SALON.zocalo + 10], dibujo: salon(), densidad: 2 },
-  { nombre: 'camino-infierno-gigante', caja: GIGANTE.caja, dibujo: gigante(), densidad: 1.5, calidad: 70 },
-  { nombre: 'camino-infierno-lenguas-a', caja: LENGUAS.caja, dibujo: fila(4031, [50, 220], [16, 40], 0.8), densidad: 1.25, calidad: 62 },
-  { nombre: 'camino-infierno-lenguas-b', caja: LENGUAS.caja, dibujo: fila(4049, [20, 100], [13, 30], 0.9), densidad: 1.25, calidad: 62 },
+  // Cuarta vuelta, por la memoria (lo decodificado depende del tamaño, no de la calidad): el salón a 1,5, el que
+  // asoma a 1,2 y las lenguas a 1. Son siluetas a contraluz y manchas sopladas: no pierden nada que se vea.
+  { nombre: 'camino-infierno-salon', caja: [0, 0, ANCHO, SALON.zocalo + 10], dibujo: salon(), densidad: 1.5 },
+  { nombre: 'camino-infierno-gigante', caja: GIGANTE.caja, dibujo: gigante(), densidad: 1.2, calidad: 70 },
+  { nombre: 'camino-infierno-lenguas-a', caja: LENGUAS.caja, dibujo: fila(4031, [50, 220], [16, 40], 0.8), densidad: 1, calidad: 62 },
+  { nombre: 'camino-infierno-lenguas-b', caja: LENGUAS.caja, dibujo: fila(4049, [20, 100], [13, 30], 0.9), densidad: 1, calidad: 62 },
   { nombre: 'camino-infierno-piso', caja: [0, 300, ANCHO, ALTO - 300], dibujo: pisoDelSalon(), densidad: 2 },
 ];
