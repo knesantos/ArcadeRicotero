@@ -51,7 +51,7 @@ import { contextoVivo, despertarSalida } from '../lib/audio/contexto.ts';
 import { Charla } from '../lib/bestiario/charla.ts';
 import { PRIMER_PASO, corridaDe, crearCamara, primerPaso, transformDe, type Encuadre } from '../lib/bestiario/camara.ts';
 import {
-  ACECHOS, AIRE, ALIVIO, LUCES, MIRADA, PASO_PLENO, VIDAS, alfaDeAire, alivioDeEntrada, alivioTras, corridaDeAire, saltoDeAire, despejeDeLupa, estadoDeLuz, parpadeo, pasoDeVida, rutaDelFilo, tieneFiloPropio,
+  ACECHOS, AIRE, ALIVIO, LUCES, MIRADA, PASO_PLENO, VIDAS, alfaDeAire, alivioDeEntrada, alivioTras, corridaDeAire, dondeCaeElHaz, saltoDeAire, tocaLaZona, despejeDeLupa, estadoDeLuz, parpadeo, pasoDeVida, rutaDelFilo, tieneFiloPropio,
   tocaLaLuz,
 } from '../lib/bestiario/aire.ts';
 import { ENTERA, LUPA, acotar, camConLupa, centrar, conLupa, enElMundo, enfocar, entreLentes, type Lente } from '../lib/bestiario/lupa.ts';
@@ -98,6 +98,8 @@ const apariciones = [...piso.querySelectorAll<SVGGElement>('.aparece')].map((el)
  */
 const respiran = [...piso.querySelectorAll<SVGGElement>('.respira')].map((el) => ({ el, base: Number(el.dataset.base), fase: Number(el.dataset.fase) }));
 const asoman = [...camino.querySelectorAll<SVGGElement | HTMLElement>('.asoma')].map((el) => ({ el, espera: Number(el.dataset.espera), quietud: 0, alfa: 0, pintado: 0 }));
+/** Lo que se va si lo mirás de cerca (`HUIDIZOS`): está siempre, y se apaga con la lupa puesta. */
+const huyen = [...camino.querySelectorAll<HTMLElement>('.huye')].map((el) => ({ el, alfa: 1, pintado: 1 }));
 /** El aire (`D-90`, `lib/bestiario/aire.ts`): cada capa con su receta, y el alfa que tiene pintada. */
 const recetasDeAire = new Map((AIRE[datos.region] ?? []).map((c) => [c.pieza, c]));
 const aires = [...camino.querySelectorAll<HTMLElement>('.aire')].flatMap((el) => {
@@ -556,10 +558,14 @@ function pintarLuces(): void {
     }
     // Y toca a lo impreso: cada zona de canto sube con el haz encima. Con movimiento reducido quedan apagadas.
     if (l.cantos.length && l.r.cantos && !quieto()) {
+      // La zona se calcula con el corrimiento de las dos capas (`dondeCaeElHaz`): el seguidor va con el piso
+      // y la gente con la de adelante. (En `d9e5f03` el mensaje dice que la zona apagada «no se compone»: eso
+      // se probó con `visibility` y se sacó, porque acá solo se toca `transform` y `opacity`. Apagada, queda en cero.)
       const apunta = (l.r.rumbo ?? 0) + e.giro;
       l.cantos.forEach((c, i) => {
         const z = l.r.cantos![i]!;
-        const k = alivio >= 2 ? 0 : 0.8 * tocaLaLuz(apunta - z.angulo, z.abre) * Math.min(1, e.alfa / l.r.alfa);
+        const xf = dondeCaeElHaz(ancla, l.r.y, apunta, l.r.cantosEn ?? ALTO, z.f, camDe(z.f) / escala);
+        const k = alivio >= 2 ? 0 : 0.9 * tocaLaZona(xf, z.caja) * Math.min(1, e.alfa / l.r.alfa);
         if (Math.abs(k - c.alfa) > 0.02) {
           c.alfa = k;
           c.el.style.opacity = k.toFixed(2);
@@ -769,6 +775,13 @@ function moverElSalon(dt: number, seMueve: boolean): void {
     for (const r of respiran) {
       const s = 1 + 0.09 * Math.sin(reloj * 1.15 + r.fase) + 0.04 * Math.sin(reloj * 2.9 + r.fase * 2.3);
       r.el.setAttribute('transform', `translate(0 ${r.base}) scale(1 ${s.toFixed(3)}) translate(0 ${-r.base})`);
+    }
+  }
+  for (const h of huyen) {
+    h.alfa = Math.min(1, Math.max(0, h.alfa + dt * (conLupa(lente) ? -3 : 0.25)));
+    if (Math.abs(h.alfa - h.pintado) > 0.01 || (h.alfa === 0 && h.pintado !== 0)) {
+      h.pintado = h.alfa;
+      h.el.style.opacity = h.alfa.toFixed(2);
     }
   }
   for (const a of asoman) {
