@@ -127,9 +127,84 @@ function pasilloDeLaMesa(e: number): string {
   );
 }
 
-/** El adorno de cada cruce: recibe dónde termina la escena. Las regiones que no están, no tienen (todavía). */
+/* Tanda 3 de `D-91`: los astilleros, Cybersiberia y el árbol. */
+
+const PU = { noche: 'var(--entorno-astillero-noche)', clara: 'var(--entorno-astillero-tiza-clara)', naranja: 'var(--entorno-pastura)', sodio: 'var(--disco-cordero-atado-tinta)', papel: 'var(--papel)' };
+const CY = { hondo: 'var(--entorno-cyber-acero-hondo)', acero: 'var(--entorno-cyber-acero)', claro: 'var(--entorno-cyber-acero-claro)', nieve: 'var(--entorno-cyber-nieve)', lente: 'var(--entorno-cyber-lente)', rojo: 'var(--marca-rojo)' };
+const AB = { hondo: 'var(--entorno-arbol-marmol-hondo)', marmol: 'var(--entorno-arbol-marmol)', claro: 'var(--entorno-arbol-marmol-claro)', veta: 'var(--entorno-arbol-veta)', cobre: 'var(--entorno-arbol-cobre)', peltre: 'var(--disco-momo-sampler-apoyo)', plata: 'var(--disco-momo-sampler-tinta)' };
+
+/** La salida del puerto: la garita con su ventana prendida y la barrera levantada, a rayas, con el farol de sodio arriba. */
+function barreraDelPuerto(e: number): string {
+  const [g, eje] = [e + 8, e + 84];
+  let rayas = '';
+  for (let i = 0; i < 6; i++) {
+    const [x, y] = [eje + 6 + i * 11, 498 - i * 17.4];
+    rayas += forma(poli([[x, y], [x + 11, y - 17.4], [x + 15, y - 14.6], [x + 4, y + 2.8]]), i % 2 ? PU.papel : PU.naranja, 0.9);
+  }
+  return (
+    // La garita: una caja de chapa con techo a un agua, la ventana prendida y el canto de tiza.
+    forma(poli([[g, 412], [g + 56, 404], [g + 56, 606], [g, 600]]), PU.noche) + forma(poli([[g - 6, 414], [g + 62, 400], [g + 62, 408], [g - 6, 422]]), N) +
+    forma(poli([[g + 14, 446], [g + 44, 443], [g + 44, 484], [g + 14, 486]]), PU.sodio, 0.85) + trazo(`M${f(g + 29)} 444.6 L${f(g + 29)} 485 M${f(g + 14)} 466 L${f(g + 44)} 464`, N, 1.6) +
+    nube(g + 29, 466, 34, 30, PU.sodio, 'l', 0.26) +
+    trazo(`M${f(g)} 412 L${f(g + 56)} 404 L${f(g + 56)} 606`, PU.clara, 1.4, 0.55) +
+    // La barrera, levantada: el pie, el contrapeso y el brazo a rayas.
+    forma(poli([[eje - 5, 606], [eje - 5, 500], [eje + 7, 500], [eje + 7, 606]]) + poli([[eje - 22, 508], [eje + 2, 494], [eje + 8, 504], [eje - 16, 518]]), N) +
+    rayas +
+    trazo(`M${f(eje - 5)} 500 L${f(eje - 5)} 606`, PU.clara, 1.2, 0.5) +
+    nube(e + 60, 600, 80, 12, PU.sodio, 'm', 0.2)
+  );
+}
+
+/** La compuerta de Cybersiberia: un aro de chapa remachado, parado en la nieve, con la hoja abierta y la luz de adentro. */
+function compuertaDeLaChapa(e: number): string {
+  const [cx, cy, r] = [e + 74, 486, 74];
+  let remaches = '';
+  for (let i = 0; i < 20; i++) {
+    const a = (i / 20) * Math.PI * 2;
+    remaches += forma(elipse(cx + Math.cos(a) * (r + 9), cy + Math.sin(a) * (r + 9), 2.6, 2.6), CY.claro);
+  }
+  return (
+    nube(cx, cy, r * 0.9, r * 0.9, CY.lente, 'l', 0.3) +
+    `<circle cx="${cx}" cy="${cy}" r="${r + 9}" fill="none" stroke="${CY.acero}" stroke-width="18"/>` +
+    `<circle cx="${cx}" cy="${cy}" r="${r + 17}" fill="none" stroke="${CY.hondo}" stroke-width="3"/>` +
+    trazo(`M${f(cx - (r + 9) * 0.9)} ${f(cy - (r + 9) * 0.42)} A${r + 9} ${r + 9} 0 0 1 ${f(cx + (r + 9) * 0.3)} ${f(cy - (r + 9) * 0.95)}`, CY.claro, 2.4, 0.7) +
+    remaches +
+    // La hoja, abierta para este lado: se ve de canto, con su volante.
+    forma(elipse(cx - r - 4, cy, 13, r + 4), CY.hondo) + trazo(`M${f(cx - r - 4)} ${f(cy - r)} L${f(cx - r - 4)} ${f(cy + r)}`, CY.claro, 1.6, 0.6) +
+    `<circle cx="${f(cx - r - 8)}" cy="${cy}" r="9" fill="none" stroke="${CY.claro}" stroke-width="2.4"/>` +
+    forma(elipse(cx + r + 14, cy - 44, 3, 3), CY.rojo) + nube(cx + r + 14, cy - 44, 7, 7, CY.rojo, 's', 0.5) +
+    // La nieve que se juntó al pie, y la que la luz de adentro prende.
+    forma(`M${f(cx - r - 40)} 606 Q${f(cx - 30)} 548 ${f(cx + 10)} 566 Q${f(cx + 60)} 552 ${f(cx + r + 30)} 606 Z`, CY.claro) +
+    nube(cx - 10, 572, 50, 9, CY.nieve, 'm', 0.7) + nube(cx + 8, 590, 60, 10, CY.lente, 'm', 0.3)
+  );
+}
+
+/** La última rama del árbol: baja hasta el borde con un bonete colgando, y en el piso quedó un huevo de plata roto. */
+function ultimaRama(e: number): string {
+  const rama = `M${f(e - 30)} 130 C${f(e + 20)} 150 ${f(e + 60)} 196 ${f(e + 86)} 250 Q${f(e + 96)} 276 ${f(e + 120)} 286 Q${f(e + 90)} 284 ${f(e + 74)} 262 C${f(e + 50)} 214 ${f(e + 14)} 176 ${f(e - 30)} 164 Z`;
+  const [bx, by] = [e + 92, 362];
+  const [hx, hy] = [e + 70, 596];
+  return (
+    forma(rama, AB.hondo) + nube(e + 30, 168, 40, 12, AB.marmol, 'm', 0.9) +
+    trazo(`M${f(e - 20)} 146 C${f(e + 24)} 160 ${f(e + 56)} 200 ${f(e + 80)} 248 M${f(e + 10)} 170 C${f(e + 36)} 186 ${f(e + 58)} 216 ${f(e + 74)} 250`, AB.claro, 1.2, 0.8) +
+    trazo(`M${f(e + 2)} 152 C${f(e + 30)} 166 ${f(e + 50)} 190 ${f(e + 66)} 220`, AB.veta, 0.9, 0.5) +
+    // El bonete, colgado del codo de la rama.
+    trazo(`M${f(bx)} ${f(by)} L${f(bx - 4)} 270`, AB.veta, 0.9, 0.55) +
+    forma(poli([[bx, by], [bx - 15, by + 46], [bx + 15, by + 46]]), AB.cobre) + trazo(`M${f(bx - 6)} ${f(by + 20)} l13 -6 M${f(bx - 11)} ${f(by + 36)} l24 -11`, AB.veta, 4, 0.85) + forma(elipse(bx, by - 2, 4.6, 4.6), AB.veta) +
+    // El huevo roto: las dos cáscaras, y lo de adentro, negro.
+    nube(hx + 6, hy + 4, 34, 6, N, 's', 0.8) +
+    forma(`M${f(hx - 22)} ${f(hy)} Q${f(hx - 24)} ${f(hy - 22)} ${f(hx - 12)} ${f(hy - 30)} l4 9 l6 -8 l5 10 l6 -7 Q${f(hx + 14)} ${f(hy - 12)} ${f(hx + 8)} ${f(hy)} Z`, AB.peltre) +
+    nube(hx - 14, hy - 16, 4, 7, AB.plata, 'xs', 0.9) +
+    forma(`M${f(hx + 18)} ${f(hy + 4)} q10 -20 26 -8 q-4 12 -26 8 Z`, AB.peltre, 0.9) + forma(elipse(hx - 6, hy - 3, 9, 2.4), N, 0.8)
+  );
+}
+
+/** El adorno de cada cruce: recibe dónde termina la escena. Las regiones que no están, no tienen (todavía). La tanda 3 sumó la barrera del puerto, la compuerta de la chapa y la última rama del árbol. */
 export const ADORNOS_DEL_CRUCE: Readonly<Record<string, (escena: number) => string>> = {
   'el-galpon': salidaDelGalpon,
   'el-infierno': puertaDelSalon,
   'la-mesa': pasilloDeLaMesa,
+  'los-astilleros': barreraDelPuerto,
+  cybersiberia: compuertaDeLaChapa,
+  'el-arbol': ultimaRama,
 };
