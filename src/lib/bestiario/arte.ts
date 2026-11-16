@@ -200,16 +200,18 @@ function monteCerca(): string {
  * para que el camino con cruces (`arte-camino.ts`) lo apoye sobre su piso largo sin arrastrar el
  * del recinto, que termina en los costados de la escena.
  */
-export function claroDeLaPastura(): string {
+export function claroDeLaPastura(desnudo = false): string {
   const { x: px, y: py } = PALO_ARTE;
   const { rx, ry } = PASTURA_ARTE;
   return (
-    nube(px, py + 10, rx + 120, ry + 70, M.negro, 'xl', 0.4) +
+    // `desnudo` (`D-91`): el camino de la pastura le pone su propia orilla, rota y comida por el pasto.
+    // Con el halo y el aro de siempre, de noche y a campo abierto, el claro era un segundo sol de canto liso.
+    (desnudo ? '' : nube(px, py + 10, rx + 120, ry + 70, M.negro, 'xl', 0.4)) +
     // La pastura: el naranja de la tapa, que brilla en el medio y se apaga en la orilla.
     `<ellipse cx="${px}" cy="${py}" rx="${rx}" ry="${ry}" fill="${M.naranjaHonda}" filter="url(#soplo-s)"/>` +
     nube(px, py - 6, rx * 0.86, ry * 0.8, M.naranja, 'l') +
     nube(px - 40, py - 20, rx * 0.5, ry * 0.4, 'var(--bestia-cordero-pezunia)', 'xl', 0.55) +
-    `<ellipse cx="${px}" cy="${py}" rx="${rx + 18}" ry="${ry + 14}" fill="none" stroke="${M.negro}" stroke-width="44" filter="url(#soplo-l)" opacity="0.9"/>` +
+    (desnudo ? '' : `<ellipse cx="${px}" cy="${py}" rx="${rx + 18}" ry="${ry + 14}" fill="none" stroke="${M.negro}" stroke-width="44" filter="url(#soplo-l)" opacity="0.9"/>`) +
     crayon() +
     // El círculo pelado que deja la soga: tierra más honda, pisada.
     nube(px, py + 4, 92, 50, M.naranjaHonda, 'm', 0.95) +
