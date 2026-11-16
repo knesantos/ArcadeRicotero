@@ -19,6 +19,7 @@ import { M, azar, filaDeTiras, paloDeLaPastura } from './arte.ts';
 import { ENTORNOS, PIEZAS_ENTORNOS, santuario } from './arte-entornos.ts';
 import { ALTO, CAMINOS, CRUCE, K_ENTORNO, SOLAPE, VELOCIDAD, anchoDeCapa, type Tramo } from './camino.ts';
 import { tintaDe } from './mapa.ts';
+import { LUCES } from './aire.ts';
 import { sueloDeCybersiberia, sueloDeLaMesa, sueloDeLaPastura, sueloDeLaRuta, sueloDeLosAstilleros, sueloDelArbol, sueloDelGalpon, sueloDelMonte } from './arte-suelo.ts';
 import { CAMPO, MONTE, alambrado, arado, carroVolcado, brumaEntrePlanos, calaveraDeVaca, cardo, mataDePasto, pasturaLejos, planoLejano, planoMedio } from './arte-arboles.ts';
 import { ARBOL, GALPON, MESA, RUTA } from './rig-entornos.ts';
@@ -684,6 +685,8 @@ export const PIEZAS_CAMINO: readonly Pieza[] = [
   ...DE_ENTORNO.flatMap(piezasDeEntorno),
   ...PIEZAS_FINAS,
   ...PIEZAS_DEL_SALON,
+  // El canto de la fila grande del galpón, por zonas (`Luz.cantos`): la misma capa de adelante, en modo canto.
+  ...(LUCES['el-galpon']![0]!.cantos ?? []).map((c): Pieza => ({ nombre: c.pieza, caja: c.caja, dibujo: galponFrenteLargo(anchoDeCapa(VELOCIDAD.frente, CAMINOS['el-galpon']!.ancho), ALTO, 'canto', [c.caja[0], c.caja[0] + c.caja[2]]), densidad: 1.25, calidad: 70 })),
   ...PIEZAS_DE_LA_SOBREMESA,
 ];
 
