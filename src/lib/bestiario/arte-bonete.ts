@@ -289,22 +289,45 @@ const colgado = (pasos: readonly Nudo[], x: number, largo: number, cosa: string,
 };
 
 /**
- * Lo que se hamaca (`aire-arbol-colgantes`, segunda vuelta): va en una capa de aire detrás del piso, que la isla
- * mece de costado. El hilo sube de más, así la punta queda escondida atrás de la rama y no se ve que se despega.
- * Nada a menos de 120 de los bordes de la baldosa (2400): no hay copia que cierre.
+ * Lo que se hamaca (tercera vuelta). En la segunda iba todo junto en una capa de aire que la isla corría de
+ * costado: se movía, pero el hilo no se inclinaba. Ahora cada cosa es una pieza chica del piso, con su hilo, que
+ * la isla **gira desde el nudo** (`.pendula`, `scripts/camino.ts`): un péndulo, cada uno con su compás según el
+ * largo. El nudo queda adentro de la rama, que va pintada encima. Siete piezas chicas pesan menos que la baldosa.
  */
-export function boneteColgantes(): string {
-  const h = 22;
-  return (
-    colgado(RAMA_IZQ, 124, 96, bonete(A.veta), -5, h) +
-    colgado(RAMA_IZQ, 276, 38, huevoEnRed(), 2, h) +
-    colgado(RAMA_IZQ, 404, 56, bonete(A.plata), 6, h) +
-    colgado(RAMA_DER, 1846, 96, campana(), -4, h) +
-    colgado(RAMA_DER, 1912, 140, bonete(A.veta), 5, h) +
-    colgado(RAMA_DER, 1972, 70, llave(), -3, h) +
-    colgado(RAMA_DER, 2034, 118, huevoEnRed(), 2, h)
-  );
+export interface Colgante {
+  pieza: string;
+  /** El nudo: de ahí gira. */
+  x: number;
+  y: number;
+  /** Del nudo a la cosa: el largo del péndulo. */
+  largo: number;
+  caja: readonly [number, number, number, number];
+  dibujo: string;
 }
+
+const NUDO = 14;
+const pendulo = (n: number, pasos: readonly Nudo[], x: number, largo: number, cosa: string, giro: number): Colgante => {
+  const y = Math.round(panzaDe(pasos, x) - NUDO);
+  const caja = [x - 34, y, 68, Math.round(largo + NUDO + 40 * TAM + 6)] as const;
+  return {
+    pieza: `cuelga-arbol-${n}`,
+    x,
+    y,
+    largo: largo + NUDO,
+    caja,
+    dibujo: `<g filter="url(#rociado)"><rect x="${caja[0]}" y="${caja[1]}" width="${caja[2]}" height="${caja[3]}" fill="${A.negro}" fill-opacity="0"/>${colgado(pasos, x, largo, cosa, giro, NUDO)}</g>`,
+  };
+};
+
+export const COLGANTES: readonly Colgante[] = [
+  pendulo(0, RAMA_IZQ, 124, 96, bonete(A.veta), -5),
+  pendulo(1, RAMA_IZQ, 276, 38, huevoEnRed(), 2),
+  pendulo(2, RAMA_IZQ, 404, 56, bonete(A.plata), 6),
+  pendulo(3, RAMA_DER, 1846, 96, campana(), -4),
+  pendulo(4, RAMA_DER, 1912, 140, bonete(A.veta), 5),
+  pendulo(5, RAMA_DER, 1972, 70, llave(), -3),
+  pendulo(6, RAMA_DER, 2034, 118, huevoEnRed(), 2),
+];
 
 /** Lo que va **debajo** del piso del recinto: las dos ramas y lo que cuelga. Asoman de atrás de la copa. */
 export function boneteBajo(): string {
@@ -328,7 +351,7 @@ export function boneteBajo(): string {
  * A rayas de cobre y veta, medio enterrado, con el pompón en la punta. Adentro está oscuro: un huevo de plata
  * que rodó hasta ahí, y dos ojos (el segundo premio de la lupa, `fino-arbol-bonete`).
  */
-const GRAN_BONETE = { punta: [140, 566], arriba: [314, 458], abajo: [332, 588], caja: [286, 446, 76, 152] as const } as const;
+const GRAN_BONETE = { punta: [112, 566], arriba: [286, 462], abajo: [302, 586], caja: [258, 450, 76, 148] as const } as const;
 
 function bocaDelBonete(): string {
   const [[ax, ay], [bx, by]] = [GRAN_BONETE.arriba, GRAN_BONETE.abajo];
@@ -457,6 +480,7 @@ const CAJA_DE_LA_JAULA = [JAULA.x - 34, JAULA.y - 22, 84, 96] as const;
 
 /** Las piezas sueltas del árbol largo: el ojo de la luna, que asoma, y la jaula con su pajarito, fina, para la lupa. */
 export const PIEZAS_DEL_BONETE: readonly Pieza[] = [
+  ...COLGANTES.map((c): Pieza => ({ nombre: c.pieza, caja: c.caja, dibujo: c.dibujo, densidad: 2.5 })),
   { nombre: 'camino-arbol-ojo', caja: OJO.caja, dibujo: ojoDeLaLuna(), densidad: 2.5 },
   {
     nombre: 'fino-arbol-jaula',
