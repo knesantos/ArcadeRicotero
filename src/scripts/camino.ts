@@ -51,7 +51,7 @@ import { contextoVivo, despertarSalida } from '../lib/audio/contexto.ts';
 import { Charla } from '../lib/bestiario/charla.ts';
 import { PRIMER_PASO, corridaDe, crearCamara, primerPaso, transformDe, type Encuadre } from '../lib/bestiario/camara.ts';
 import {
-  ACECHOS, AIRE, ALIVIO, LUCES, MIRADA, PASO_PLENO, VIDAS, alfaDeAire, alivioDeEntrada, alivioTras, corridaDeAire, despejeDeLupa, estadoDeLuz, parpadeo, pasoDeVida, rutaDelFilo, tieneFiloPropio,
+  ACECHOS, AIRE, ALIVIO, LUCES, MIRADA, PASO_PLENO, VIDAS, alfaDeAire, alivioDeEntrada, alivioTras, corridaDeAire, saltoDeAire, despejeDeLupa, estadoDeLuz, parpadeo, pasoDeVida, rutaDelFilo, tieneFiloPropio,
   tocaLaLuz,
 } from '../lib/bestiario/aire.ts';
 import { ENTERA, LUPA, acotar, camConLupa, centrar, conLupa, enElMundo, enfocar, entreLentes, type Lente } from '../lib/bestiario/lupa.ts';
@@ -91,6 +91,13 @@ const capas = [...camino.querySelectorAll<HTMLElement>('.capa')].map((el) => ({ 
 const conCapas = capas.some((c) => c.f !== 1);
 const cruce = document.getElementById('cruce')!;
 const apariciones = [...piso.querySelectorAll<SVGGElement>('.aparece')].map((el) => ({ el, x: Number(el.dataset.x) }));
+/**
+ * Lo que respira y lo que asoma (`D-91`, tanda 2; el salón del infierno, `arte-salon.ts`). Lo que respira
+ * es un grupo del piso que se estira y afloja desde su base: las lenguas de fuego. Lo que asoma no se ve
+ * hasta que quien mira se queda quieto `espera` segundos; entonces aparece despacio, y se va rápido al caminar.
+ */
+const respiran = [...piso.querySelectorAll<SVGGElement>('.respira')].map((el) => ({ el, base: Number(el.dataset.base), fase: Number(el.dataset.fase) }));
+const asoman = [...piso.querySelectorAll<SVGGElement>('.asoma')].map((el) => ({ el, espera: Number(el.dataset.espera), quietud: 0, alfa: 0, pintado: 0 }));
 /** El aire (`D-90`, `lib/bestiario/aire.ts`): cada capa con su receta, y el alfa que tiene pintada. */
 const recetasDeAire = new Map((AIRE[datos.region] ?? []).map((c) => [c.pieza, c]));
 const aires = [...camino.querySelectorAll<HTMLElement>('.aire')].flatMap((el) => {
@@ -738,6 +745,29 @@ function moverAcecho(dt: number, seMueve: boolean): void {
   mira.abierto = Math.min(1, Math.max(0, mira.abierto + dt * (mira.quiere ? 1.1 : -5)));
 }
 
+/**
+ * El salón: las lenguas respiran un cuadro sí y uno no (son manchas sopladas: no se nota), con dos
+ * compases que no coinciden; y lo que asoma sube si nadie camina ni tiene nada agarrado, y se hunde si sí.
+ * Solo `transform` y `opacity`. Con el teléfono al límite (`alivio` 2), el fuego queda quieto.
+ */
+function moverElSalon(dt: number, seMueve: boolean): void {
+  if (respiran.length && alivio < 2 && cuadros % 2 === 0) {
+    for (const r of respiran) {
+      const s = 1 + 0.09 * Math.sin(reloj * 1.15 + r.fase) + 0.04 * Math.sin(reloj * 2.9 + r.fase * 2.3);
+      r.el.setAttribute('transform', `translate(0 ${r.base}) scale(1 ${s.toFixed(3)}) translate(0 ${-r.base})`);
+    }
+  }
+  for (const a of asoman) {
+    a.quietud = seMueve || !hoja.hidden || agarre !== null ? 0 : a.quietud + dt;
+    const quiere = a.quietud > a.espera ? 1 : 0;
+    a.alfa = Math.min(1, Math.max(0, a.alfa + dt * (quiere ? 0.3 : -2.4)));
+    if (Math.abs(a.alfa - a.pintado) > 0.008 || (a.alfa === 0 && a.pintado !== 0)) {
+      a.pintado = a.alfa;
+      a.el.style.opacity = a.alfa.toFixed(3);
+    }
+  }
+}
+
 /** Si te fijás en ellos, se apagan: un dedo o un mouse cerca alcanza. */
 function mirarLosOjos(ev: PointerEvent): void {
   if (!acecho || mira.abierto < 0.2 || !mira.quiere) return;
@@ -776,7 +806,8 @@ function pintarCapas(): void {
     if (a.c.plano === 'fondo' && mediaVuelta && z === 1 && a.alfa >= 0) continue;
     const k = corridaDeAire(a.c, camDe(a.c.f, paralaje) / escala, t, paralaje);
     const x = quieto() ? 0 : k.x * escala;
-    const baja = k.y * escala - lente.y;
+    // Lo que salta (el pogo del galpón) baja y vuelve; con movimiento reducido queda arriba, donde está impreso.
+    const baja = (k.y + (quieto() ? 0 : saltoDeAire(a.c, t))) * escala - lente.y;
     a.el.style.transform = encuadre ? transformDe(encuadre, capaX, x, z, baja) : corridaDe(x, z, baja);
     // Con la lupa uno se mete adentro del aire: lo pegado a la cámara queda atrás, y la niebla afloja.
     const alfa = (quieto() ? a.c.alfa : alfaDeAire(a.c, t, anda)) * despejeDeLupa(a.c.plano, a.c.cae !== 0, z);
@@ -1535,6 +1566,7 @@ function cuadro(ahora: number): void {
     anda += (pide - anda) * Math.min(1, dt * (pide > anda ? 3.5 : 0.55));
     pasoAhora = dt > 0 && Math.abs(paso) < 160 ? paso / dt : 0;
     moverAcecho(dt, dt > 0 && Math.abs(paso) / dt > 6);
+    moverElSalon(dt, dt > 0 && Math.abs(paso) / dt > 6);
     camEnElCuadro = cam;
     camara.retumbar(retumboDeLaRuta());
     encuadre = camara.encuadre(reloj, dt, vistaPx, escenario.clientHeight);
