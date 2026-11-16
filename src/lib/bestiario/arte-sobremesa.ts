@@ -21,8 +21,8 @@
  * Todo plano, con el grano encima. El recinto de 900 no se toca: esto es solo del camino.
  */
 
-import { enmascarado, forma, trazo } from './aerografo.ts';
-import type { CapaDeAire } from './aire.ts';
+import { enmascarado, forma, trazo, type Pieza } from './aerografo.ts';
+import { VISITAS, type CapaDeAire } from './aire.ts';
 import { TINTAS_DE_LA_MESA as M2, mesaLejos, rasgado, recorte } from './arte-entornos.ts';
 import { azar } from './pincel.ts';
 import { MESA, OJOS_DE_LA_MESA } from './rig-entornos.ts';
@@ -34,6 +34,7 @@ const elipse = (x: number, y: number, rx: number, ry: number): string =>
   `M${f(x - rx)} ${f(y)} a${f(rx)} ${f(ry)} 0 1 0 ${f(rx * 2)} 0 a${f(rx)} ${f(ry)} 0 1 0 ${f(-rx * 2)} 0 Z`;
 const poli = (ps: readonly Punto[]): string => `M${ps.map(([x, y]) => `${f(x)} ${f(y)}`).join(' L')} Z`;
 const caja = (x: number, y: number, w: number, h: number): string => `M${f(x)} ${f(y)} h${f(w)} v${f(h)} h${f(-w)} Z`;
+const caja2 = caja;
 
 /* ------------------------------------------------------------------
    La pared: la puerta del fondo, el zócalo, los retratos, la ventana
@@ -221,8 +222,8 @@ export function mesaLejosLarga(ancho: number, alto: number): string {
     puertaDelFondo(piso) +
     retrato('ms-r1', 452, 92, 62, -3, 'mosca', 3521) +
     retrato('ms-r2', 536, 60, 50, 2.5, 'mula', 3527) +
-    retrato('ms-r3', 866, 84, 58, 3, 'sombrero', 3533) +
-    retrato('ms-r4', 946, 116, 44, -4, 'mosca', 3539) +
+    // El paño entre la puerta y la ventana queda libre: ahí cuelga la lámpara (`LUCES` en `aire.ts`).
+    retrato('ms-r3', 572, 148, 42, 3, 'sombrero', 3533) +
     // Los dos últimos, a la derecha de donde nace el seguidor: el haz baja para el otro lado.
     retrato('ms-r5', 2212, 70, 60, -2.5, 'mantis', 3541) +
     retrato('ms-r6', 2292, 114, 46, 4, 'mosca', 3547) +
@@ -338,26 +339,26 @@ export function bajoElMantel(ancho: number): string {
  */
 export function lamparaDeLaMesa(): string {
   const rnd = azar(3557);
-  const largo = 118;
-  const pie = 420;
+  const largo = 96;
+  const pie = 330;
   const canto = (lado: number): string[] => {
     const ps: string[] = [];
     for (let u = 0.02; u < 0.99; u += 0.03 + rnd() * 0.07) {
       const muerde = (rnd() < 0.2 ? 5 + rnd() * 8 : rnd() * 3) * (0.3 + u);
-      ps.push(`L${f(lado * (30 + 104 * u - muerde))} ${f(largo + 26 + (pie - largo - 26) * u)}`);
+      ps.push(`L${f(lado * (30 + 86 * u - muerde))} ${f(largo + 26 + (pie - largo - 26) * u)}`);
     }
     return ps;
   };
-  const silueta = `M-30 ${largo + 26} ${canto(1).join(' ')} L134 ${pie} L-134 ${pie} ${canto(-1).reverse().join(' ')} Z`;
+  const silueta = `M-30 ${largo + 26} ${canto(1).join(' ')} L116 ${pie} L-116 ${pie} ${canto(-1).reverse().join(' ')} Z`;
   let rayas = '';
   for (let i = 0; i < 11; i++) {
-    const a = (rnd() - 0.5) * 230;
+    const a = (rnd() - 0.5) * 200;
     const w = 5 + rnd() * 20;
     rayas += `<path d="M${f(a * 0.1)} ${largo + 20} L${f(a + w / 2)} ${pie} L${f(a - w / 2)} ${pie} Z" fill="black" opacity="${f(0.3 + rnd() * 0.4)}"/>`;
   }
   // El pie del cono se deshace en flecos: dientes negros en la máscara, desparejos.
   let flecos = '';
-  for (let x = -140; x < 140; x += 7 + rnd() * 12) flecos += `<path d="M${f(x)} ${pie + 2} L${f(x + 4 + rnd() * 5)} ${f(pie - 14 - rnd() * 44)} L${f(x + 9 + rnd() * 8)} ${pie + 2} Z" fill="black"/>`;
+  for (let x = -124; x < 124; x += 7 + rnd() * 12) flecos += `<path d="M${f(x)} ${pie + 2} L${f(x + 4 + rnd() * 5)} ${f(pie - 12 - rnd() * 36)} L${f(x + 9 + rnd() * 8)} ${pie + 2} Z" fill="black"/>`;
   return (
     `<mask id="lz-mesa"><path d="${silueta}" fill="white"/>${rayas}${flecos}</mask>` +
     `<g mask="url(#lz-mesa)">${forma(silueta, M2.papel, 0.2)}${forma(`M-16 ${largo + 26} L16 ${largo + 26} L62 ${pie} L-62 ${pie} Z`, M2.blanco, 0.1)}</g>` +
@@ -370,6 +371,80 @@ export function lamparaDeLaMesa(): string {
     forma(caja(-5, largo - 8, 10, 7), M2.negro)
   );
 }
+
+/**
+ * El vapor de la olla: cuatro cintas de papel que suben torcidas y se afinan. La isla las estira y las
+ * afloja desde la boca de la olla (`respira`), con el mismo gesto que las lenguas del infierno.
+ */
+export const VAPOR = { caja: [1140, 136, 124, 160] as const, base: 290 } as const;
+
+function vaporDeLaOlla(): string {
+  const rnd = azar(3571);
+  const [x0, y0, w, h] = VAPOR.caja;
+  let s = '';
+  for (let i = 0; i < 4; i++) {
+    const x = x0 + w * (0.26 + i * 0.16);
+    const alto = h * (0.55 + rnd() * 0.4);
+    const onda = 8 + rnd() * 9;
+    const lado = i % 2 ? -1 : 1;
+    const g = 4.4 + rnd() * 2.4;
+    // Una cinta: dos eses casi iguales, que se juntan arriba en punta.
+    const d = `M${f(x - g)} ${VAPOR.base} C${f(x - g + lado * onda)} ${f(VAPOR.base - alto * 0.3)} ${f(x - g - lado * onda)} ${f(VAPOR.base - alto * 0.62)} ${f(x + lado * onda * 0.4)} ${f(VAPOR.base - alto)} C${f(x + g - lado * onda * 0.7)} ${f(VAPOR.base - alto * 0.62)} ${f(x + g + lado * onda * 1.1)} ${f(VAPOR.base - alto * 0.3)} ${f(x + g)} ${VAPOR.base} Z`;
+    s += forma(d, i % 2 ? M2.blanco : M2.papel, 0.34 + rnd() * 0.16);
+  }
+  return `<g filter="url(#grano)"><rect x="${x0}" y="${y0}" width="${w}" height="${h}" fill="${M2.negro}" fill-opacity="0"/>${s}</g>`;
+}
+
+/**
+ * El que se para en la puerta del fondo: una sombra alta, de galera, con una bandeja en la mano y los
+ * dos ojos prendidos. No está; aparece si te quedás quieto (`VISITAS` en `aire.ts`). Está de este lado
+ * de la sala, a la izquierda del vano, y tapa el principio de la mesa larga.
+ */
+function visitaDeLaPuerta(caja: readonly [number, number, number, number]): string {
+  const [x0, y0, w, h] = caja;
+  const x = x0 + w * 0.36;
+  const pie = y0 + h;
+  const d =
+    // La galera, la cabeza, el saco largo hasta el piso.
+    caja2(x - 10, y0 + 4, 20, 26) + caja2(x - 16, y0 + 28, 32, 4) + elipse(x, y0 + 42, 9.6, 11) +
+    `M${f(x - 20)} ${f(pie)} L${f(x - 18)} ${f(y0 + 70)} Q${f(x - 17)} ${f(y0 + 54)} ${f(x)} ${f(y0 + 53)} Q${f(x + 17)} ${f(y0 + 54)} ${f(x + 18)} ${f(y0 + 70)} L${f(x + 22)} ${f(pie)} Z ` +
+    // El brazo que lleva la bandeja, y la bandeja con su campana.
+    poli([[x + 14, y0 + 66], [x + 40, y0 + 84], [x + 39, y0 + 90], [x + 13, y0 + 76]]);
+  return (
+    `<g filter="url(#grano)"><rect x="${x0}" y="${y0}" width="${w}" height="${h}" fill="${M2.negro}" fill-opacity="0"/>` +
+    forma(d, M2.negro) +
+    forma(caja2(x + 28, y0 + 80, 30, 3), M2.sepiaClara) + forma(`M${f(x + 31)} ${f(y0 + 80)} Q${f(x + 43)} ${f(y0 + 60)} ${f(x + 55)} ${f(y0 + 80)} Z`, M2.plata) + forma(elipse(x + 43, y0 + 66, 2, 2), M2.sepiaClara) +
+    forma(elipse(x - 3.6, y0 + 41, 2, 1.4) + elipse(x + 4, y0 + 41, 2, 1.4), M2.oro) +
+    // El canto que le marca la luz de la sala, del lado de la mesa.
+    trazo(`M${f(x + 19)} ${f(y0 + 96)} L${f(x + 21.4)} ${f(pie - 4)}`, M2.naranja, 1.4, 0.7) +
+    `</g>`
+  );
+}
+
+/** Un candelabro de tres velas, en la punta de la mesa: le da peso a la primera pantalla. `piso`: donde apoya. */
+export function candelabro(x: number, piso: number): string {
+  const brazo = (dx: number, alto: number): string =>
+    trazo(`M${f(x)} ${f(piso - 54)} Q${f(x + dx)} ${f(piso - 50)} ${f(x + dx)} ${f(piso - alto + 22)}`, M2.sepia, 4) +
+    forma(elipse(x + dx, piso - alto + 22, 8, 2.6), M2.sepiaClara) +
+    // La vela, con la cera que chorrea, y la llama.
+    forma(caja2(x + dx - 4, piso - alto - 14, 8, 36), M2.papel) + forma(elipse(x + dx - 3, piso - alto + 8, 2, 5) + elipse(x + dx + 3.4, piso - alto - 2, 1.6, 4), M2.blanco) +
+    forma(`M${f(x + dx)} ${f(piso - alto - 34)} Q${f(x + dx + 6)} ${f(piso - alto - 20)} ${f(x + dx)} ${f(piso - alto - 14)} Q${f(x + dx - 6)} ${f(piso - alto - 20)} ${f(x + dx)} ${f(piso - alto - 34)} Z`, M2.naranja) +
+    forma(elipse(x + dx, piso - alto - 19, 2, 3.6), M2.oro);
+  return (
+    forma(elipse(x, piso, 22, 5), M2.sepiaHonda) + forma(elipse(x, piso - 3, 15, 3.6), M2.sepia) +
+    forma(poli([[x - 3.4, piso - 4], [x + 3.4, piso - 4], [x + 2.4, piso - 56], [x - 2.4, piso - 56]]), M2.sepia) +
+    forma(elipse(x, piso - 30, 6, 4.4), M2.sepiaClara) +
+    brazo(-30, 96) + brazo(30, 90) + brazo(0, 118) +
+    // La luz de las velas en el mantel: un redondel plano.
+    forma(elipse(x, piso + 5, 58, 9), M2.blanco, 0.4)
+  );
+}
+
+/** Las piezas sueltas de la mesa larga: el vapor, que la isla estira, y el que se para en la puerta. */
+export const PIEZAS_DE_LA_SOBREMESA: readonly Pieza[] = [
+  { nombre: 'camino-mesa-vapor', caja: VAPOR.caja, dibujo: vaporDeLaOlla(), densidad: 2 },
+  { nombre: 'camino-mesa-visita', caja: VISITAS['la-mesa']!.caja, dibujo: visitaDeLaPuerta(VISITAS['la-mesa']!.caja), densidad: 3 },
+];
 
 /** Una mosca chica, vista de arriba, girada a gusto: el cuerpo, la cabeza y las dos alas de vidrio. */
 function mosquita(x: number, y: number, t: number, giro: number, o: number): string {
