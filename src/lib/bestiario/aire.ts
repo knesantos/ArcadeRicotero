@@ -376,8 +376,9 @@ export const LUCES: Readonly<Record<string, readonly Luz[]>> = {
   // La mesa (`D-91`, tanda 2): la lámpara que cuelga del techo y se hamaca. Es de papel, como todo ahí: el
   // cono cortado a mano y casi sin tinta. Segunda vuelta: va clavada en la pared (`f` de lo lejano), en el
   // paño libre entre la puerta del fondo y la ventana, así no le cruza por delante a la ventana ni a un
-  // retrato en ninguna pantalla; y el cono termina en la línea de la mesa, que es donde termina la pared.
-  'la-mesa': [{ pieza: 'luz-mesa-lampara', f: 0.8, x: 952, y: -8, caja: [-130, -4, 260, 340], vaiven: 5.5, ritmo: 0.66, alfa: 0.94, late: 0.04, pulso: 'barre', crece: 0 }],
+  // retrato en ninguna pantalla. Tanda 3, cuarta vuelta: el cono ya no llega a la línea de la mesa: termina arriba de
+  // las cabezas de los comensales (a 1280, y más con la lupa, le cruzaba la cara a uno).
+  'la-mesa': [{ pieza: 'luz-mesa-lampara', f: 0.8, x: 952, y: -8, caja: [-96, -4, 192, 224], vaiven: 5.5, ritmo: 0.66, alfa: 0.94, late: 0.04, pulso: 'barre', crece: 0 }],
   // El árbol (`D-91`, tanda 3): el farol de cobre que cuelga de la rama grande, en la primera pantalla. Se
   // hamaca apenas y titila como una llama. La boca es `FAROL` (`arte-bonete.ts`); el test mira que coincidan.
   'el-arbol': [{ pieza: 'luz-arbol-farol', f: 1, x: 322, y: 225, caja: [-100, -14, 200, 330], vaiven: 5, ritmo: 0.5, alfa: 0.46, late: 0.14, pulso: 'titila', crece: 0 }],
