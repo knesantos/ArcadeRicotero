@@ -82,9 +82,16 @@ import { armarRebano } from './rebano.ts';
 import { armarLobocaido } from './lobocaido.ts';
 import { armarBunuelos } from './bunuelos.ts';
 import { armarBuitres } from './buitres.ts';
-// [T-529 A importa]
-// [T-529 B importa]
-// [T-529 C importa]
+import { armarFiera } from './fiera.ts';
+import { armarPajarito } from './pajarito.ts';
+import { armarManso } from './manso.ts';
+import { armarSilbido } from './silbido.ts';
+import { armarGuardian } from './guardian.ts';
+import { armarCamellos } from './camellos.ts';
+import { armarAsparis } from './asparis.ts';
+import { armarNolate } from './nolate.ts';
+import { armarSheriff } from './sheriff.ts';
+import { armarNenes } from './nenes.ts';
 
 /**
  * Lo que la escena le presta a un personaje. Las coordenadas de `hablar` van en las del recinto
@@ -182,9 +189,16 @@ const CONDUCTAS: Readonly<Record<string, Armar | null>> = {
   'el-lobo-caido': armarLobocaido,
   'redonditos-de-ricota': armarBunuelos,
   'los-buitres-de-la-tele': armarBuitres,
-  // [T-529 A conductas]
-  // [T-529 B conductas]
-  // [T-529 C conductas]
+  'la-fiera-mas-fiera': armarFiera,
+  'el-pajarito-del-lavi-rap': armarPajarito,
+  'el-perro-manso': armarManso,
+  'el-gato-que-llamas-con-silbidos': armarSilbido,
+  'el-angel-guardian': armarGuardian,
+  'los-camellos-prestigiosos': armarCamellos,
+  'el-as-del-club-paris': armarAsparis,
+  'el-animal-que-no-late': armarNolate,
+  'el-sheriff': armarSheriff,
+  'los-nenes-de-oro': armarNenes,
 };
 
 /** Los ids que tienen conducta: el test mira que coincidan con los que tienen dibujo. */
