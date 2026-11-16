@@ -147,9 +147,8 @@ export const AIRE: Readonly<Record<string, readonly CapaDeAire[]>> = {
   ],
   // El infierno: el humo que se arrastra por el damero y la ceniza encendida que sube. Es un recinto (una sola capa), y el aire le da el fondo que no tenía.
   'el-infierno': [
-    // El calor (`D-91`, tanda 2, segunda vuelta): hebras claras contra la pared de fuego, que tiemblan
-    // rápido de costado. Es una franja, no una pantalla entera, y va detrás del humo.
-    capa({ pieza: 'aire-infierno-calor', plano: 'medio', f: 1.04, y: 140, alto: 210, ancho: 1100, deriva: 5, alfa: 0.5, late: 0.22, ritmo: 1.3, mece: 2.2, ritmoMece: 12 }),
+    // El calor que tiembla (hebras claras que vibraban contra la pared) se probó en la segunda vuelta de la
+    // tanda 2 de `D-91` y se sacó en la tercera: en una tira de seis cuadros no se leía, y era una capa más.
     capa({ pieza: 'aire-infierno-humo', plano: 'medio', f: 1.15, y: 250, alto: 390, ancho: 1300, deriva: 8, alfa: 0.8, late: 0.14, ritmo: 0.27, abre: 0.4 }),
     capa({ pieza: 'aire-infierno-ceniza', plano: 'cerca', f: 1.5, y: 0, alto: ALTO, ancho: 800, deriva: 9, cae: -34, alfa: 0.9, late: 0.1, ritmo: 0.9 }),
   ],
@@ -183,9 +182,9 @@ export const AIRE: Readonly<Record<string, readonly CapaDeAire[]>> = {
   // tinta plana con grano, como el afiche de *La mosca y la sopa*: volutas de papel, no una nube.
   'la-mesa': [
     capa({ pieza: 'aire-mesa-humo', plano: 'medio', f: 1.1, y: 0, alto: ALTO, ancho: 900, deriva: 4, cae: -15, alfa: 0.55, late: 0.12, ritmo: 0.3, mece: 5, ritmoMece: 0.5 }),
-    // Las moscas (`D-91`, tanda 2): un puñado suelto sobre la mesa. La baldosa deriva, se hamaca rápido y
-    // salta a otro compás: entre las tres cosas, el enjambre no repite el dibujo.
-    capa({ pieza: 'aire-mesa-moscas', plano: 'medio', f: 1.22, y: 170, alto: 200, ancho: 1200, deriva: -21, alfa: 0.92, mece: 15, ritmoMece: 2.3, salta: 11, ritmoSalta: 1.55 }),
+    // Las moscas en capa (un puñado suelto que derivaba sobre la mesa) entraron en la primera vuelta de la tanda 2
+    // de `D-91` y se fueron en la tercera, por la cuenta: medida en pares contra main, la mesa pasaba del +15 %.
+    // Quedan las moscas que importan: la del elenco, el moscón del vaso y el moscardón que cruza (`VIDAS`).
   ],
   // El templo: el incienso, que sube en hebras tibias entre los focos de la guirnalda.
   'el-templo': [
@@ -209,9 +208,12 @@ export const AIRE: Readonly<Record<string, readonly CapaDeAire[]>> = {
   // su salto cada uno (una ola de verdad): medido con control, duplicaba el tiempo de cuadro, y se sacó.
   // Para hacerle lugar a la segunda se fue lo pegado a la cámara, que eran bultos negros y era lo que menos sumaba.
   'el-galpon': [
-    capa({ pieza: 'aire-galpon-humo', plano: 'medio', f: 1.06, y: 270, alto: 250, ancho: 1300, deriva: -7, alfa: 0.74, late: 0.16, ritmo: 0.29, abre: 0.35 }),
-    capa({ pieza: 'aire-galpon-pogo', plano: 'medio', f: 1.12, y: 400, alto: 240, ancho: 1400, salta: 13, ritmoSalta: 5.6 }),
-    capa({ pieza: 'aire-galpon-pogo-b', plano: 'medio', f: 1.17, y: 400, alto: 240, ancho: 1400, salta: 15, ritmoSalta: 5.6, faseSalta: 1.25 }),
+    // Tercera vuelta, por la cuenta: las tres capas se achicaron un tercio (lo que cuesta una capa es su
+    // superficie). El humo ya no baja de la tercera fila, y el pogo termina donde lo tapa la fila grande:
+    // de ahí para abajo era gente negra detrás de gente negra.
+    capa({ pieza: 'aire-galpon-humo', plano: 'medio', f: 1.06, y: 296, alto: 176, ancho: 1300, deriva: -7, alfa: 0.74, late: 0.16, ritmo: 0.29, abre: 0.35 }),
+    capa({ pieza: 'aire-galpon-pogo', plano: 'medio', f: 1.12, y: 400, alto: 164, ancho: 1400, salta: 13, ritmoSalta: 5.6 }),
+    capa({ pieza: 'aire-galpon-pogo-b', plano: 'medio', f: 1.17, y: 400, alto: 164, ancho: 1400, salta: 15, ritmoSalta: 5.6, faseSalta: 1.25 }),
   ],
 };
 
@@ -309,7 +311,25 @@ export interface Luz {
    * cuando les pasa por encima, con qué pieza, y hasta qué ángulo (en grados, a cada lado del haz).
    */
   filo?: { pieza: string; cuantos: number; abre: number };
+  /**
+   * Lo que la luz le prende a lo impreso (`D-91`, tanda 2, tercera vuelta): piezas con el canto encendido
+   * de algo que no es un títere (la gente del galpón), cada una en su zona. La isla le sube el alfa a la
+   * zona a la que apunta el haz (`angulo`, en grados; `abre`, a cada lado). `f` y `caja`: la capa con la
+   * que va y dónde, en unidades de esa capa.
+   */
+  cantos?: readonly { pieza: string; f: number; caja: readonly [number, number, number, number]; angulo: number; abre: number }[];
 }
+
+/**
+ * Las tres zonas de la fila grande del galpón que el seguidor alcanza a barrer, en unidades de la capa
+ * de adelante (que va a 1,3). El haz gira a la izquierda con el ángulo positivo: la zona de más a la
+ * izquierda es la del ángulo más grande.
+ */
+const CANTOS_DEL_GALPON = [
+  { pieza: 'canto-galpon-0', f: 1.3, caja: [1920, 400, 294, 240], angulo: 36, abre: 17 },
+  { pieza: 'canto-galpon-1', f: 1.3, caja: [2154, 400, 294, 240], angulo: 18, abre: 17 },
+  { pieza: 'canto-galpon-2', f: 1.3, caja: [2388, 400, 294, 240], angulo: 0, abre: 17 },
+] as const;
 
 /**
  * Las luces de cada región, una por región como mucho: es una superficie más que el teléfono compone.
@@ -345,7 +365,7 @@ export const LUCES: Readonly<Record<string, readonly Luz[]>> = {
   'el-templo': [{ pieza: 'luz-templo-foco', f: 1, x: 556, y: 218, caja: [-170, -14, 340, 400], vaiven: 3, ritmo: 0.6, alfa: 0.42, late: 0.14, pulso: 'titila', crece: 0, suena: 'zumbido' }],
   // El galpón: el seguidor de atrás, arriba a la derecha (`GALPON.luz`, a lo largo), que barre el
   // escenario y le pega al polvo.
-  'el-galpon': [{ pieza: 'luz-galpon-seguidor', f: 1, x: 2027, y: 64, caja: [-200, -14, 400, 460], vaiven: 22, ritmo: 0.36, alfa: 0.4, late: 0.06, pulso: 'barre', crece: 0, rumbo: 18 }],
+  'el-galpon': [{ pieza: 'luz-galpon-seguidor', f: 1, x: 2027, y: 64, caja: [-200, -14, 400, 460], vaiven: 22, ritmo: 0.36, alfa: 0.4, late: 0.06, pulso: 'barre', crece: 0, rumbo: 18, cantos: CANTOS_DEL_GALPON }],
 };
 
 /**
