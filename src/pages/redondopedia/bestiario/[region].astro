@@ -93,6 +93,7 @@ const aire = (plano: Plano) =>
     pieza: c.pieza,
     plano,
     cae: altoDeBaldosa(c) > 0,
+    firme: !!c.firme,
     estilo:
       `--baldosa: url(${rutaDePieza(c.pieza)}); --tw: ${c.ancho}; --th: ${c.alto}; --alfa: ${c.alfa}` +
       (altoDeBaldosa(c) > 0 ? '' : `; ${enLaAltura([0, c.y, c.ancho, c.alto])}`),
@@ -241,7 +242,7 @@ const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín
               />
             )
           }
-          {aire('fondo').map((a) => <div class:list={['aire', `aire--${a.plano}`, { 'aire--cae': a.cae }]} data-aire={a.pieza} style={a.estilo} />)}
+          {aire('fondo').map((a) => <div class:list={['aire', `aire--${a.plano}`, { 'aire--cae': a.cae, 'aire--firme': a.firme }]} data-aire={a.pieza} style={a.estilo} />)}
           <svg
             class="capa capa--piso bestiario-svg"
             data-f="1"
