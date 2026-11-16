@@ -243,6 +243,10 @@ const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín
             )
           }
           {aire('fondo').map((a) => <div class:list={['aire', `aire--${a.plano}`, { 'aire--cae': a.cae, 'aire--firme': a.firme }]} data-aire={a.pieza} style={a.estilo} />)}
+          {/* Lo que cruza por detrás del piso (`Vida.atras`): el tren de la ruta, detrás de los postes. */}
+          {vida?.atras && (
+            <img class="vida" id="vida" src={rutaDePieza(vida.pieza)} width={vida.ancho} height={vida.alto} style={`--lw: ${vida.ancho}; --lh: ${vida.alto}`} alt="" decoding="async" loading="lazy" />
+          )}
           <svg
             class="capa capa--piso bestiario-svg"
             data-f="1"
@@ -269,7 +273,7 @@ const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín
 
           {aire('cerca').map((a) => <div class:list={['aire', `aire--${a.plano}`, { 'aire--cae': a.cae }]} data-aire={a.pieza} style={a.estilo} />)}
           {filos.map((fl) => <img class="filo" data-filo={fl.luz} src={rutaDePieza(fl.pieza)} width="100" height="50" style="--lw: 100; --lh: 50" alt="" decoding="async" loading="lazy" />)}
-          {vida && (
+          {vida && !vida.atras && (
             <img class="vida" id="vida" src={rutaDePieza(vida.pieza)} width={vida.ancho} height={vida.alto} style={`--lw: ${vida.ancho}; --lh: ${vida.alto}`} alt="" decoding="async" loading="lazy" />
           )}
           {acecho && (
