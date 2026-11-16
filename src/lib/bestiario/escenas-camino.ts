@@ -15,7 +15,7 @@
  */
 
 import { rutaDePieza, type Pieza } from './aerografo.ts';
-import { PIEZAS_CAMINO, cajaDelCruce } from './arte-camino.ts';
+import { FINAS_DE, PIEZAS_CAMINO, cajaDelCruce } from './arte-camino.ts';
 import { K_ENTORNO, RECINTO, type Tramo } from './camino.ts';
 import { escenaBajo, escenaBaldio, escenaInfierno, escenaPrision, escenaTemplo, ojos, type Tinta } from './escenas.ts';
 import { cosa, VELOCIDAD_DE_CARRIL } from './escenas-entornos.ts';
@@ -85,8 +85,11 @@ const titereLobo = (x: number, nombres: Nombres): string =>
  * corrido `dx` y adentro valen las coordenadas del recinto: la isla mueve al lobo y al cordero
  * con la misma lógica que en el bestiario.
  */
+/** Lo que premia a la lupa, impreso fino, encima del piso y en su mismo lugar (`FINAS_DE`, `D-91`). */
+const finasDe = (t: Tramo): string => (FINAS_DE[t.region] ?? []).map((n) => imagenDePieza(piezaDelCamino(n))).join('');
+
 function pisoLargo(t: Tramo, nombres: Nombres): string {
-  const piso = imagenDePieza(piezaDelCamino(t.piezas.piso!));
+  const piso = imagenDePieza(piezaDelCamino(t.piezas.piso!)) + finasDe(t);
   const claro = t.claro;
   if (!claro) {
     // Los del elenco que viven en el tramo (tu animal, en el monte) van donde estaban sus ojos, corridos enteros.
@@ -175,6 +178,7 @@ function pisoDeEntorno(t: Tramo, nombres: Nombres): string {
   return (
     capasDe(t.region, 'atras', nombres, K_ENTORNO) +
     imagenDePieza(piezaDelCamino(t.piezas.piso!)) +
+    finasDe(t) +
     cruce(t) +
     `<g class="ojos-del-recinto">${quietas ? ojosDelEntorno.replaceAll('class="bestia bestia--ojos"', 'class="bestia bestia--ojos" data-quieto=""') : ojosDelEntorno}${lasCosas}</g>` +
     extra +
