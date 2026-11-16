@@ -18,7 +18,7 @@ import { GIGANTE, LENGUAS, PIEZAS_DEL_SALON, SALON } from './arte-salon.ts';
 import { CUEVA, PUERTA } from './arte-sobremesa.ts';
 import { escenaInfierno } from './escenas.ts';
 import { GALPON, MESA } from './rig-entornos.ts';
-import { HUIDIZOS, VISITAS, dondeCaeElHaz, saltoDeAire, tocaLaZona } from './aire.ts';
+import { FRENTE_QUE_SE_CORRE, HUIDIZOS, VISITAS, dondeCaeElHaz, saltoDeAire, tocaLaZona } from './aire.ts';
 import { MONTONES } from './arte-recital.ts';
 import { ADORNOS_DEL_CRUCE, ANCHO_DEL_ADORNO } from './arte-cruces.ts';
 import { destinosDelCruce, piezaDelCruce } from './arte-camino.ts';
@@ -1007,7 +1007,13 @@ test('D-91/t2: la gente del galpón va en planos, y el pogo son dos capas que sa
   assert.equal(tocaLaZona(zonas[1]!.caja[0] + zonas[1]!.caja[2] / 2, zonas[1]!.caja), 1);
   assert.match(isla, /const xf = dondeCaeElHaz\(ancla, l\.r\.y, apunta, l\.r\.cantosEn \?\? ALTO, z\.f, camDe\(z\.f\) \/ escala\);/);
   // Tinta caliente (el oro con el punto de papel), y fino: solo la coronilla y los hombros.
-  assert.match(recital, /patron\('gl-trama-luz', 4\.4, G\.oro, G\.papel, 1\.5\)/);
+  assert.match(recital, /patron\('gl-trama-luz', 3\.2, G\.oro, G\.papel, 1\.1\)/);
+  // Quinta vuelta: un solo trazo por persona (de hombro a hombro por la coronilla), no el canto de toda la silueta.
+  const unaZona = PIEZAS_CAMINO.find((q) => q.nombre === zonas[0]!.pieza)!.dibujo;
+  const trazos = (unaZona.match(/fill="none" stroke="white"/g) ?? []).length;
+  const cuerpos = (unaZona.match(/<path d="[^"]+" fill="black"\/>/g) ?? []).length;
+  assert.ok(trazos > 60 && trazos <= cuerpos, `${trazos} trazos para ${cuerpos} cuerpos`);
+  assert.doesNotMatch(unaZona, /gl-c-\d+/, 'volvió el canto de la silueta entera');
   assert.match(readFileSync('src/pages/redondopedia/bestiario/[region].astro', 'utf-8'), /class="capa canto-de-luz" data-f=\{c\.f\}/);
   // El techo: la parrilla y los bafles van en lo lejano del camino, por arriba de los trapos.
   const lejos = PIEZAS_CAMINO.find((q) => q.nombre === 'camino-galpon-lejos')!.dibujo;
@@ -1060,6 +1066,11 @@ test('D-91/t2: la mesa tiene fondo sin perder la tinta plana: la puerta, la lám
   assert.doesNotMatch(sumado, /Los ojos: alguien mira/);
   assert.match(readFileSync('src/scripts/camino.ts', 'utf-8'), /h\.alfa \+ dt \* \(conLupa\(lente\) \? -3 : 0\.25\)/);
   assert.match(readFileSync('src/pages/redondopedia/bestiario/[region].astro', 'utf-8'), /class="capa huye"[^>]*style=\{enSuLugar\(huidizo\.caja, 1\)\}/);
+  // Quinta vuelta: con la lupa, lo de adelante de la mesa (los respaldos) y del galpón (la fila grande) se corre,
+  // como ya hacía el aire pegado a la cámara. Solo en esas dos: las demás no cambian.
+  assert.deepEqual([...FRENTE_QUE_SE_CORRE].sort(), ['el-galpon', 'la-mesa']);
+  assert.match(readFileSync('src/scripts/camino.ts', 'utf-8'), /if \(frenteQueSeCorre\.el\) \{\s*const alfa = despejeDeLupa\('cerca', false, z\);/);
+  assert.equal(despejeDeLupa('cerca', false, 1), 1);
   // Tercera vuelta: el seguidor nace de la foto (antes salía de la pared pelada), y en el paño de su derecha hay un reloj de pie.
   assert.match(fuenteMesa, /mesaLejos\(ancho, alto, \[586 \* k \+ 280 \* 0\.97, 32 \+ 168 \* 0\.05\]\)/);
   assert.match(fuenteMesa, /relojDePie\(2112, piso\)/);
@@ -1110,16 +1121,18 @@ test('D-91/t2: el salón del infierno: arcada, lenguas que respiran, el que asom
   // Segunda vuelta: columnas finas (una gruesa partía la pantalla de un teléfono en dos) y ninguna pegada al cruce.
   assert.match(fuenteDelSalon, /const g = 7\.5;/);
   assert.ok(Math.max(...SALON.columnas) < 700);
-  // El que asoma está en el vano del medio, entre dos columnas, arriba de Luzbelito.
+  // El que asoma: quinta vuelta, en el vano de la izquierda (el de la primera pantalla), arriba de la puerta. En el
+  // del medio quedaba detrás del busto de Luzbelito y a 430 px no se lo encontraba.
   const medio = GIGANTE.caja[0] + GIGANTE.caja[2] / 2;
-  assert.ok(medio > SALON.columnas[1]! + 60 && medio < SALON.columnas[2]! - 60);
+  assert.ok(medio > SALON.columnas[0]! + 60 && medio < SALON.columnas[1]! - 60);
+  assert.ok(medio < 320, 'el que asoma no entra en la primera pantalla de un teléfono');
   // El calor que tiembla se probó y se sacó (tercera vuelta): en la tira de seis cuadros no se leía. La brasa le sube a Luzbelito.
   assert.equal(AIRE['el-infierno']!.length, 2);
   assert.ok(!existsSync('public/bestiario/aire-infierno-calor.webp'), 'quedó impresa la capa que se fue');
   // El que asoma es fuego más oscuro, no un objeto: la silueta en brasa a media tinta, comida por una máscara, y solo los ojos prenden.
   const asoma = PIEZAS_DEL_SALON.find((q) => q.nombre === 'camino-infierno-gigante')!.dibujo;
   assert.match(asoma, /<mask id="sl-asoma">/);
-  assert.match(asoma, /opacity="0\.74"><path d="[^"]+" fill="var\(--entorno-infierno-brasa\)"/);
+  assert.match(asoma, /opacity="0\.9"><path d="[^"]+" fill="var\(--entorno-infierno-brasa\)"/);
   // Cuarta vuelta: el contorno quemado, y por fuera la raya de fuego claro que lo recorta.
   assert.match(asoma, /stroke="var\(--acento-2\)" stroke-width="7" stroke-dasharray/);
   assert.ok(LUCES['el-infierno']![0]!.caja[1] <= -200, 'la brasa no llega a los flancos del busto');
@@ -1127,6 +1140,8 @@ test('D-91/t2: el salón del infierno: arcada, lenguas que respiran, el que asom
   // El damero: más filas que el del recinto y la alfombra hasta el punto de fuga.
   const piso = PIEZAS_DEL_SALON.find((q) => q.nombre === 'camino-infierno-piso')!.dibujo;
   assert.match(piso, /<clipPath id="sl-alfombra">/);
+  // Quinta vuelta: la alfombra con peso (los flecos del cabo y la copa caída, con su mancha).
+  assert.match(readFileSync('src/lib/bestiario/arte-salon.ts', 'utf-8'), /alhajas\(y0, a0, a1\) \+/);
   const fuente = readFileSync('src/lib/bestiario/arte-salon.ts', 'utf-8');
   assert.match(fuente, /const N = 15;/);
   // La isla: las lenguas, con `transform`; el que asoma, con `opacity`, después de la quietud. Nada más.
