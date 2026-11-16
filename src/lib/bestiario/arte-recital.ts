@@ -176,7 +176,9 @@ function patron(id: string, paso: number, base: string, punto: string, r: number
  * cada dedo. Así cada uno se recorta del de atrás, que con una sola máscara para toda la fila no pasaba.
  */
 function figura(id: string, d: string, canto: string, cuerpo: string, dx: number, dy: number): string {
-  return `<clipPath id="${id}"><path d="${d}"/></clipPath><path d="${d}" fill="url(#${canto})"/><g clip-path="url(#${id})"><path d="${d}" fill="url(#${cuerpo})" transform="translate(${f(dx)} ${f(dy)})"/></g>`;
+  // Una trama (`gl-…`) o una tinta lisa (el blanco y el negro de una máscara).
+  const tinta = (v: string): string => (v.startsWith('gl-') ? `url(#${v})` : v);
+  return `<clipPath id="${id}"><path d="${d}"/></clipPath><path d="${d}" fill="${tinta(canto)}"/><g clip-path="url(#${id})"><path d="${d}" fill="${tinta(cuerpo)}" transform="translate(${f(dx)} ${f(dy)})"/></g>`;
 }
 
 const GESTOS: readonly Gesto[] = ['puno', 'cuernos', 'palma', 've', 'dos', 'cuernos', 'puno'];
@@ -402,7 +404,13 @@ const GRANDES = { arriba: GALPON.gente + 46, abajo: GALPON.gente + 104 } as cons
  * uno a caballito con los dos brazos arriba, una bengala que tiñe a los de al lado; y entre montón y
  * montón, cabezas sueltas. Hacia el final (el cruce) la gente ralea: es la salida.
  */
-export function galponFrenteLargo(ancho: number, alto: number): string {
+/**
+ * `modo`: `'gente'` es la capa de adelante. `'canto'` es **la misma gente, solo el canto** (tercera
+ * vuelta): lo que el seguidor les prende cuando les pasa por encima. Se arma con una máscara, donde el
+ * canto de cada uno va en blanco y su cuerpo en negro: así el que está adelante tapa el canto del de atrás,
+ * igual que en la capa. Se imprime por zonas (`CANTOS` en `aire.ts`) y la isla le sube el alfa a cada una.
+ */
+export function galponFrenteLargo(ancho: number, alto: number, modo: 'gente' | 'canto' = 'gente', zona?: readonly [number, number]): string {
   const rnd = azar(3331);
   const salida = ancho - 720;
   const rala = (x: number): number => (x < salida ? 1 : Math.max(0.16, 1 - (x - salida) / 520));
@@ -415,9 +423,10 @@ export function galponFrenteLargo(ancho: number, alto: number): string {
    * el rojo vivo, y mira para la bengala.
    */
   const pinta: Pinta = (d, x, y, r) => {
+    if (modo === 'canto') return figura(`gl-c-${n++}`, d, 'white', 'black', 0, 5.4 + r * 0.16);
     let cerca: { x: number; y: number } | null = null;
     for (const b of bengalas) if (Math.hypot(x - b.x, (y - b.y) * 0.6) < 170 && (!cerca || Math.abs(x - b.x) < Math.abs(x - cerca.x))) cerca = b;
-    if (!cerca) return figura(`gl-g-${n++}`, d, 'gl-trama', 'gl-cuerpo', 0, 2.6 + r * 0.12);
+    if (!cerca) return figura(`gl-g-${n++}`, d, 'gl-trama', 'gl-cuerpo', 0, 4.4 + r * 0.2);
     const [ux, uy] = [x - cerca.x, y + r * 2 - cerca.y];
     const largo = Math.hypot(ux, uy) || 1;
     const fuerza = (2.4 + r * 0.2) * (1.25 - Math.min(1, largo / 190) * 0.6);
@@ -451,13 +460,28 @@ export function galponFrenteLargo(ancho: number, alto: number): string {
     m++;
   }
 
+  if (modo === 'canto') {
+    return (
+      `<g filter="url(#grano)">` +
+      `<rect x="-40" y="240" width="${ancho + 80}" height="${alto - 240}" fill="${G.negro}" fill-opacity="0"/>` +
+      patron('gl-trama-luz', 5, G.luz, G.papel, 1.8) +
+      // Cada zona se apaga soplada hacia sus costados: cortada a cuchillo, la luz terminaba en una raya vertical.
+      `<mask id="gl-canto" maskUnits="userSpaceOnUse" x="-40" y="240" width="${ancho + 80}" height="${alto - 240}">${gente}` +
+      (zona ? `<g filter="url(#soplo-l)" fill="black"><rect x="-80" y="200" width="${f(zona[0] + 110)}" height="${alto}"/><rect x="${f(zona[1] - 30)}" y="200" width="${f(ancho - zona[1] + 120)}" height="${alto}"/></g>` : '') +
+      `</mask>` +
+      `<rect x="-40" y="240" width="${ancho + 80}" height="${alto - 240}" fill="url(#gl-trama-luz)" mask="url(#gl-canto)"/>` +
+      `</g>`
+    );
+  }
   const fuegos = bengalas.map((b, i) => trazo(`M${f(b.x)} ${f(b.y + 28)} L${f(b.x)} ${f(b.y)}`, G.negro, 3) + bengala(b.x, b.y, 3361 + i, i === 1 ? 1 : 0.86)).join('');
   return (
     `<g filter="url(#rociado)">` +
     `<rect x="-40" y="240" width="${ancho + 80}" height="${alto - 240}" fill="${G.negro}" fill-opacity="0"/>` +
-    patron('gl-trama', 4.6, G.brasa, G.rojo, 1.7) +
-    patron('gl-trama-viva', 4.6, G.vivo, G.papel, 1.2, 0.85) +
-    patron('gl-cuerpo', 5.2, G.negro, G.noche, 1.3, 0.7) +
+    // El punto gordo de *En directo* (tercera vuelta: con la trama fina la fila grande había perdido la mano).
+    // Gordo pero no tanto: con el paso en 7 el canto entraba en una sola hilera y cada uno llevaba un collar de lamparitas.
+    patron('gl-trama', 5, G.brasa, G.rojo, 2.05) +
+    patron('gl-trama-viva', 5, G.vivo, G.papel, 1.4, 0.85) +
+    patron('gl-cuerpo', 7, G.negro, G.noche, 2, 0.8) +
     // El resplandor de cada bengala, por detrás de la gente.
     bengalas.map((b) => nube(b.x, b.y, 130, 90, G.vivo, 'xl', 0.3)).join('') +
     banderas +
@@ -485,6 +509,8 @@ export const MONTONES = 4;
 export function galponPogo(c: CapaDeAire, cual: 0 | 1): string {
   const base = c.y + c.alto + 30;
   const arriba = c.y + 62 + cual * 8;
+  // La capa termina antes del borde de la pantalla (tercera vuelta): el final se deshace en negro soplado,
+  // no en un corte, y queda detrás de la fila grande.
   const paso = c.ancho / MONTONES;
   const rnd = azar(3389 + cual);
   let gente = '';
@@ -495,7 +521,11 @@ export function galponPogo(c: CapaDeAire, cual: 0 | 1): string {
     // Un poco más ancho que su cuarto: se pisa con los vecinos, que están en la otra capa.
     gente += gentio(g * paso + 12, (g + 1) * paso - 12, arriba, arriba + 34, [9.5, 14.5], base, 0.55, 3373 + g * 7, (d) => figura(`gl-p${cual}-${n++}`, d, 'gl-trama-pogo', 'gl-cuerpo-pogo', 0, 3.4)).dibujo;
   }
-  return `<g filter="url(#grano)">${hoja(c)}${patron('gl-trama-pogo', 3.8, G.brasa, G.rojo, 1.45)}${patron('gl-cuerpo-pogo', 4.6, G.negro, G.noche, 1.1, 0.8)}${gente}</g>`;
+  const pie = c.y + c.alto;
+  return (
+    `<mask id="gl-pie-${cual}" maskUnits="userSpaceOnUse" x="-200" y="${c.y - 80}" width="${c.ancho + 400}" height="${c.alto + 160}"><rect x="-200" y="${c.y - 80}" width="${c.ancho + 400}" height="${c.alto + 160}" fill="white"/><rect x="-260" y="${pie - 16}" width="${c.ancho + 520}" height="80" fill="black" filter="url(#soplo-m)"/></mask>` +
+    `<g filter="url(#grano)" mask="url(#gl-pie-${cual})">${hoja(c)}${patron('gl-trama-pogo', 3.8, G.brasa, G.rojo, 1.45)}${patron('gl-cuerpo-pogo', 4.6, G.negro, G.noche, 1.1, 0.8)}${gente}</g>`
+  );
 }
 
 /**
