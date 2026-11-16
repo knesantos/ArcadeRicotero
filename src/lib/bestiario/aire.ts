@@ -67,6 +67,11 @@ export interface CapaDeAire {
   ajena?: boolean;
   /** Si suena (`entorno.ts`): el viento sube y baja con el alfa de la capa. */
   suena?: 'viento';
+  /**
+   * Una capa de `fondo` que el alivio no apaga (`D-91`): no es bruma, es dibujo. Los troncos gordos del
+   * monte son la mitad del bosque; un teléfono flojo se queda sin la niebla, no sin los árboles.
+   */
+  firme?: boolean;
 }
 
 const capa = (c: Partial<CapaDeAire> & Pick<CapaDeAire, 'pieza' | 'plano' | 'f' | 'y' | 'alto' | 'ancho'>): CapaDeAire => ({
@@ -88,7 +93,7 @@ const capa = (c: Partial<CapaDeAire> & Pick<CapaDeAire, 'pieza' | 'plano' | 'f' 
  * está impresa entre los planos de lo lejano. La rasante y lo pegado a la cámara siguen.
  */
 const DEL_MONTE: readonly CapaDeAire[] = [
-  capa({ pieza: 'aire-monte-troncos', plano: 'fondo', f: 0.72, y: 0, alto: 360, ancho: 1400 }),
+  capa({ pieza: 'aire-monte-troncos', plano: 'fondo', f: 0.72, y: 0, alto: 360, ancho: 1400, firme: true }),
   capa({ pieza: 'aire-monte-rasante', plano: 'medio', f: 1.12, y: 300, alto: 340, ancho: 1400, deriva: -9, alfa: 0.82, late: 0.1, ritmo: 0.31, abre: 0.6 }),
   capa({ pieza: 'aire-monte-cerca', plano: 'cerca', f: 1.75, y: 380, alto: 260, ancho: 1600 }),
 ];
@@ -137,7 +142,7 @@ export const AIRE: Readonly<Record<string, readonly CapaDeAire[]>> = {
   // La ruta (tercera ronda): la bruma baja del horizonte, el polvo que levantan los fierros y los pastos de la banquina.
   'la-ruta': [
     capa({ pieza: 'aire-ruta-bruma', plano: 'fondo', f: 0.6, y: 110, alto: 320, ancho: 1200, deriva: 4, alfa: 0.7, late: 0.1, ritmo: 0.2 }),
-    capa({ pieza: 'aire-ruta-polvo', plano: 'medio', f: 1.2, y: 250, alto: 390, ancho: 1300, deriva: 46, alfa: 0.55, late: 0.25, ritmo: 0.41, abre: 0.2 }),
+    capa({ pieza: 'aire-ruta-polvo', plano: 'medio', f: 1.2, y: 410, alto: 230, ancho: 1300, deriva: 46, alfa: 0.55, late: 0.25, ritmo: 0.41, abre: 0.2 }),
     capa({ pieza: 'aire-ruta-cerca', plano: 'cerca', f: 1.75, y: 420, alto: 220, ancho: 1600, mece: 3, ritmoMece: 0.9 }),
   ],
   // Los tres recintos que siguen son de una sola capa y cada uno viste la mano de su disco: el aire
@@ -278,8 +283,12 @@ export const LUCES: Readonly<Record<string, readonly Luz[]>> = {
   'el-infierno': [{ pieza: 'luz-infierno-brasa', f: 1, x: 452, y: 486, caja: [-260, -110, 520, 220], vaiven: 0, ritmo: 3.9, alfa: 0.56, late: 0.36, pulso: 'late', crece: 0.07, suena: 'chispa' }],
   cybersiberia: [{ pieza: 'luz-cyber-haz', f: 1, x: 1560, y: -6, caja: [-190, -14, 380, 600], vaiven: 15, ritmo: 0.33, alfa: 0.34, late: 0.05, pulso: 'barre', crece: 0 }],
   // La ruta: los faros del último bondi, que van con él y alumbran el polvo. El bondi anda para la derecha.
-  'la-ruta': [{ pieza: 'luz-ruta-faros', f: 1, x: 286, y: 446, caja: [-110, -14, 220, 300], vaiven: 1.6, ritmo: 6.5, alfa: 0.72, late: 0.06, pulso: 'barre', crece: 0, rumbo: -90, sigue: 'el-zumba' }],
+  'la-ruta': [{ pieza: 'luz-ruta-faros', f: 1, x: 286, y: 446, caja: [-110, -14, 220, 300], vaiven: 1.6, ritmo: 6.5, alfa: 0.72, late: 0.06, pulso: 'barre', crece: 0, rumbo: -90, sigue: 'el-zumba', filo: { pieza: 'filo-sodio', cuantos: 3, abre: 44 } }],
   // El bajo: el reflejo del pucho de Pierre en el agua, una escalerita de rayas de crayón que tiembla. Pierre está en 486, y el recinto arranca en -250.
+  // La pastura (`D-91`, segunda vuelta): no es una luz, es la rueda del primer molino, que gira. Va clavada en
+  // lo lejano (`f` de `VELOCIDAD.lejos`), en el eje (`EJE_DEL_MOLINO`, `arte-arboles.ts`). El vaivén es tan
+  // ancho y tan lento que es una vuelta tras otra, y cada tanto afloja y cambia de mano, como con el viento.
+  'la-pastura': [{ pieza: 'luz-pastura-rueda', f: 0.45, x: 188, y: 220, caja: [-24, -24, 48, 48], vaiven: 1500, ritmo: 0.03, alfa: 1, late: 0, pulso: 'barre', crece: 0 }],
   'el-bajo': [{ pieza: 'luz-bajo-reflejo', f: 1, x: 806, y: 492, caja: [-70, -12, 140, 140], vaiven: 2.5, ritmo: 1.7, alfa: 0.62, late: 0.2, pulso: 'titila', crece: 0 }],
   // Los techos: el farol del baldío (650, 130 en su recinto), que titila.
   'los-techos': [{ pieza: 'luz-techos-farol', f: 1, x: 650, y: 140, caja: [-180, -14, 360, 420], vaiven: 2.5, ritmo: 0.7, alfa: 0.4, late: 0.16, pulso: 'titila', crece: 0, suena: 'zumbido', filo: { pieza: 'filo-lila', cuantos: 4, abre: 34 } }],
@@ -312,11 +321,13 @@ export const FILO_PROPIO: Readonly<Record<string, { prefijos: readonly string[];
   // El botija es moreno y de remera azul, bajo una luz naranja: un canto naranja se le perdía. Va en
   // la tiza clara de los astilleros, que es la que dibuja los cantos de todo el muelle (octava ronda).
   'los-astilleros': { prefijos: ['botija-'], tinta: 'var(--entorno-astillero-tiza-clara)' },
+  // `D-91`, segunda vuelta: los faros del bondi le prenden el canto a los que están en la banquina.
+  'la-ruta': { prefijos: ['taxi-', 'desencarnada-', 'piba-'], tinta: 'var(--entorno-templo-foco)' },
 };
 
 /** Las piezas que no son cuerpo: el humo, los fogonazos, los ojos, la boca, los muebles. A esas la luz no les prende un canto. */
 const SIN_FILO =
-  /-(humo|chispa|fogonazo|esquirlas|luz|brillo|gotas|estrella|fiebre|copo|pluma|plumon|hollin-[a-z]+|canto|agujero|rayita|iris-\d|pupila|parpado|ceja|boca|sirena-chica|reja|catre|alfeizar|pizarra|jamba|lata|caballete|cuadro|bandera|boleto|forro-\d)$/;
+  /-(humo|chispa|fogonazo|esquirlas|luz|brillo|gotas|estrella|fiebre|copo|pluma|plumon|hollin-[a-z]+|canto|agujero|rayita|iris-\d|pupila|parpado|ceja|boca|sirena-chica|reja|catre|alfeizar|pizarra|jamba|lata|caballete|cuadro|bandera|boleto|forro-\d|haz|banquina|yuyos|pompas|zeta|rubor|dia|libre|doble|cuencas|ojo-\d|pupila-\d|cejas|almohadon)$/;
 
 /** Si una pieza tiene su filo impreso, en esa región. */
 export function tieneFiloPropio(pieza: string, region: string): boolean {
