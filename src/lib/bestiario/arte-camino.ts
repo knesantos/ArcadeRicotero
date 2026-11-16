@@ -29,6 +29,9 @@ import { ADORNOS_DEL_CRUCE } from './arte-cruces.ts';
 import { CUEVA, PIEZAS_DE_LA_SOBREMESA, bajoElMantel, candelabro, cuevaDelRaton, mesaLejosLarga } from './arte-sobremesa.ts';
 import { ASTILLERO } from './rig-entornos.ts';
 import { PALO } from './rig.ts';
+import { PIEZAS_DEL_PUERTO, puertoBajo, puertoLejos, puertoSobre } from './arte-puerto.ts';
+import { PIEZAS_DE_LA_TUNDRA, tundraBajo, tundraLejos } from './arte-tundra.ts';
+import { PIEZAS_DEL_BONETE, boneteBajo, boneteFrente, boneteLejos, boneteSobre } from './arte-bonete.ts';
 
 const ANCHO = CAMINOS['el-monte']!.ancho;
 /**
@@ -623,6 +626,21 @@ type Capa = (ancho: number, alto: number) => string;
 const A_LO_LARGO: Readonly<Record<string, Partial<Record<'lejos' | 'piso' | 'frente', Capa>>>> = {
   'el-galpon': { lejos: galponLejosLargo, piso: galponPisoLargo, frente: galponFrenteLargo },
   'la-mesa': { lejos: mesaLejosLarga },
+  // Tanda 3: lo lejano de estas tres es del camino. El piso sigue siendo el del recinto, sin tocar (`T-529`).
+  'los-astilleros': { lejos: puertoLejos },
+  cybersiberia: { lejos: tundraLejos },
+  'el-arbol': { lejos: boneteLejos, frente: boneteFrente },
+};
+
+/**
+ * Lo que el camino le suma al piso de un recinto **sin editarlo** (`D-91`, tanda 3): una mano por debajo
+ * y otra por encima del dibujo del recinto, en la misma imagen. Así el piso de `arte-entornos.ts` queda
+ * como lo deje quien lo esté tocando, y lo del camino (el punto de fuga, lo que cuelga, la tiza) va aparte.
+ */
+const SOBRE_EL_RECINTO: Readonly<Record<string, { bajo?: () => string; sobre?: () => string }>> = {
+  'los-astilleros': { bajo: puertoBajo, sobre: puertoSobre },
+  cybersiberia: { bajo: tundraBajo },
+  'el-arbol': { bajo: boneteBajo, sobre: boneteSobre },
 };
 
 function piezasDeEntorno(tramo: Tramo): Pieza[] {
@@ -633,7 +651,7 @@ function piezasDeEntorno(tramo: Tramo): Pieza[] {
   const yFrente = arribaDe(`${pieza}-frente`);
   return [
     { nombre: tramo.piezas.lejos!, caja: [0, 0, tramo.escena, ALTO], dibujo: capas.lejos(tramo.escena, ALTO), opaca: true, densidad: 1.25 },
-    { nombre: tramo.piezas.piso!, caja: [0, yPiso, tramo.escena, ALTO - yPiso], dibujo: conSuelo(tramo, capas.piso(tramo.escena, ALTO)), densidad: 1.25 },
+    { nombre: tramo.piezas.piso!, caja: [0, yPiso, tramo.escena, ALTO - yPiso], dibujo: (SOBRE_EL_RECINTO[tramo.region]?.bajo?.() ?? '') + conSuelo(tramo, capas.piso(tramo.escena, ALTO)) + (SOBRE_EL_RECINTO[tramo.region]?.sobre?.() ?? ''), densidad: 1.25 },
     // La gente del galpón es pura trama de puntos, que pesa: se comprime un poco más, que el punto lo aguanta.
     { nombre: tramo.piezas.frente!, caja: [0, yFrente, frente, ALTO - yFrente], dibujo: capas.frente(frente, ALTO), densidad: 1.25, ...(tramo.region === 'el-galpon' ? { calidad: 70 } : {}) },
   ];
@@ -649,6 +667,9 @@ function piezasDeEntorno(tramo: Tramo): Pieza[] {
    `FINAS_DE` dice cuáles lleva cada región; las pone `escenas-camino.ts` arriba del piso impreso.
 */
 
+/** Las piezas sueltas de los tres caminos de la tanda 3: lo que asoma y lo que premia a la lupa. */
+const SUELTAS_DE_LA_TANDA_3: readonly Pieza[] = [...PIEZAS_DEL_PUERTO, ...PIEZAS_DE_LA_TUNDRA, ...PIEZAS_DEL_BONETE];
+
 const fina = (nombre: string, caja: readonly [number, number, number, number], dibujo: string, mano = 'rociado'): Pieza => ({
   nombre,
   caja,
@@ -662,6 +683,8 @@ export const PIEZAS_FINAS: readonly Pieza[] = [
   fina('fino-ruta-santuario', [208, 388, 86, 48], santuario(250, RUTA.asfalto.arriba - 1)),
   // La cueva del ratón, debajo de la mesa (`D-91`, tanda 2): tinta plana, con el grano fino del afiche.
   fina('fino-mesa-cueva', [CUEVA.x - 30, CUEVA.y - 34, 64, 50], cuevaDelRaton(CUEVA.x, CUEVA.y), 'grano'),
+  // Tanda 3: la rayuela del muelle, el charco de hielo con el casete y la jaula con su pajarito. Las pinta cada región.
+  ...SUELTAS_DE_LA_TANDA_3.filter((p) => p.nombre.startsWith('fino-')),
 ];
 
 /** Las piezas finas de cada región, en el orden en que van sobre el piso. */
@@ -670,6 +693,9 @@ export const FINAS_DE: Readonly<Record<string, readonly string[]>> = {
   'la-pastura': ['fino-pastura-calavera'],
   'la-ruta': ['fino-ruta-santuario'],
   'la-mesa': ['fino-mesa-cueva'],
+  'los-astilleros': ['fino-astillero-rayuela'],
+  cybersiberia: ['fino-cyber-hielo'],
+  'el-arbol': ['fino-arbol-jaula'],
 };
 
 export const PIEZAS_CAMINO: readonly Pieza[] = [
@@ -688,6 +714,7 @@ export const PIEZAS_CAMINO: readonly Pieza[] = [
   // El canto de la fila grande del galpón, por zonas (`Luz.cantos`): la misma capa de adelante, en modo canto.
   ...(LUCES['el-galpon']![0]!.cantos ?? []).map((c): Pieza => ({ nombre: c.pieza, caja: c.caja, dibujo: galponFrenteLargo(anchoDeCapa(VELOCIDAD.frente, CAMINOS['el-galpon']!.ancho), ALTO, 'canto', [c.caja[0], c.caja[0] + c.caja[2]]), densidad: 1.25, calidad: 70 })),
   ...PIEZAS_DE_LA_SOBREMESA,
+  ...SUELTAS_DE_LA_TANDA_3.filter((p) => !p.nombre.startsWith('fino-')),
 ];
 
 /* ------------------------------------------------------------------
