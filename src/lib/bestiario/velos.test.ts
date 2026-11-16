@@ -4,8 +4,8 @@ import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 
 import { PIEZAS_DE_VELO } from './arte-velos.ts';
 import { CON_CAMINO } from './camino.ts';
-import { EL_PLANO, ESPERA, HOJA, OJOS_DEL_PLANO, SOBRA, VELOS, piezaDelVelo, rutaDelVelo } from './velos.ts';
-import { ACECHOS } from './aire.ts';
+import { EL_PLANO, ESPERA, HOJA, SOBRA, VELOS, piezaDelVelo, rutaDelVelo } from './velos.ts';
+import { ACECHOS, LUCES } from './aire.ts';
 import { CAMINO } from './copy.ts';
 import { destinoDe } from '../../scripts/bestiario/llegada.ts';
 
@@ -65,7 +65,7 @@ test('el velo se va moviendo nada más que transform, y no frena a nadie', () =>
     }
   }
   // Lo demás que se anima en el velo solo cambia `visibility` u `opacity`.
-  for (const [nombre, deja] of [['velo-tinta', 'visibility'], ['velo-respaldo', 'visibility'], ['velo-asoma', 'opacity']] as const) {
+  for (const [nombre, deja] of [['velo-tinta', 'visibility'], ['velo-respaldo', 'visibility'], ['velo-asoma', 'opacity'], ['velo-gira', 'rotate'], ['velo-acerca', 'scale']] as const) {
     const cuadros = new RegExp(`@keyframes ${nombre} \\{[\\s\\S]*?\\n\\}`).exec(sitio)![0];
     assert.deepEqual([...new Set([...cuadros.matchAll(/^\s+([a-z-]+):/gm)].map((m) => m[1]))], [deja], `${nombre} mueve otra cosa`);
   }
@@ -87,13 +87,11 @@ test('D-91: tapa con tinta sólida desde el primer cuadro, antes de que llegue l
   assert.match(componente, /--tinta-velo: \$\{velo\.tinta\}/);
   for (const p of PIEZAS_DE_VELO) {
     const region = Object.keys(VELOS).find((r) => piezaDelVelo(r) === p.nombre)!;
-    const { tinta: t, mira } = VELOS[region]!;
+    const { tinta: t } = VELOS[region]!;
     const token = /^var\((--[a-z0-9-]+)\)$/.exec(t)?.[1];
     assert.ok(token, `${region}: la tinta no es un token`);
     assert.match(tokens, new RegExp(`^\\s*${token}:`, 'm'), `${region}: ${token} no está en tokens.css`);
     assert.ok(p.dibujo.includes(t), `${region}: la hoja no está pintada con ${t}`);
-    // Los ojos solo se abren donde hay una región con los suyos, o los del monte para el resto.
-    if (mira) assert.ok(ACECHOS[region] ?? ACECHOS[OJOS_DEL_PLANO], `${region}: mira y no tiene ojos`);
   }
 });
 
@@ -116,7 +114,7 @@ test('D-91: espera a la isla, y nunca deja a nadie adentro', () => {
   assert.match(componente, /<noscript>\s*<style is:inline>[\s\S]*\.velo-de-llegada::after \{\s*animation-play-state: running;/);
   // Con movimiento reducido espera igual y se va de un corte: una animación de duración cero ya nace
   // en su último cuadro (afuera), así que ahí la hoja no se anima y la saca `data-listo`.
-  const quieto = sitio.slice(sitio.indexOf('.velo-de-llegada[data-listo] .velo-ojos'), sitio.indexOf('@keyframes velo-asoma'));
+  const quieto = sitio.slice(sitio.indexOf('.velo-de-llegada[data-listo] .velo-signo'), sitio.indexOf('@keyframes velo-asoma'));
   assert.match(quieto, /@media \(prefers-reduced-motion: reduce\) \{\s*\.velo-de-llegada\[data-rumbo\]::before,\s*\.velo-de-llegada\[data-rumbo\]::after \{\s*animation-name: none;/);
   assert.match(quieto, /\.velo-de-llegada\[data-listo\] \{\s*visibility: hidden;/);
   assert.match(componente, /@media \(prefers-reduced-motion: reduce\) \{\s*\.velo-de-llegada \{\s*display: none;/, 'sin JavaScript y con movimiento reducido, el velo se queda');
@@ -169,3 +167,25 @@ test('D-91: al tocar un cartel o «Al plano», la hoja del destino entra en la p
   assert.match(sitio, /\.velo-de-salida::after \{[^}]*animation-direction: reverse;/);
   assert.match(sitio, /\.velo-de-salida::before \{\s*animation: velo-tinta [^;]* reverse;/);
 });
+
+test('D-91, segunda vuelta: el signo de espera es de cada lugar, no un sistema con trece pieles', () => {
+  const con = Object.entries(VELOS).filter(([, v]) => v.signo);
+  // Los ojos son del monte y de nadie más: en todas las llegadas gastaban el misterio.
+  assert.deepEqual(con.filter(([, v]) => v.signo === 'ojos').map(([r]) => r), ['el-monte']);
+  assert.equal(VELOS['la-ruta']!.signo, 'faros');
+  assert.equal(VELOS['la-pastura']!.signo, 'molino');
+  // Ningún signo se repite, y las otras diez y el plano van con el aviso solo.
+  assert.equal(new Set(con.map(([, v]) => v.signo)).size, con.length);
+  assert.equal(con.length, 3);
+  // Los que son imagen usan la pieza impresa de su escena: los ojos sin dueño y la rueda que gira.
+  assert.ok(ACECHOS['el-monte'] && existsSync(`public/bestiario/${ACECHOS['el-monte']!.pieza}.webp`));
+  assert.equal(LUCES['la-pastura']![0]!.pieza, 'luz-pastura-rueda');
+  assert.ok(existsSync('public/bestiario/luz-pastura-rueda.webp'));
+  // Los faros son dos discos de tinta plana: sin halo, sin sombra, sin degradé.
+  const faros = /\.velo-signo--faros i \{[^}]*\}/.exec(sitio)![0];
+  assert.match(faros, /background: var\(--papel\);/);
+  assert.doesNotMatch(faros, /shadow|gradient|filter/);
+  // La rueda gira en bucle y con movimiento reducido queda quieta y a la vista.
+  assert.match(sitio, /\.velo-signo--molino \{\s*animation: none;\s*opacity: 1;/);
+});
+
