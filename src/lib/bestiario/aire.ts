@@ -28,7 +28,7 @@
  * Con movimiento reducido no se corre ni respira: queda impresa en su lugar, con su alfa.
  */
 
-import { ALTO } from './camino.ts';
+import { ALTO, VISTA_MAX } from './camino.ts';
 
 /** Dónde va una capa de aire entre las del camino. */
 export type Plano =
@@ -71,6 +71,12 @@ export interface CapaDeAire {
   salta: number;
   ritmoSalta: number;
   faseSalta: number;
+  /**
+   * En cuántos gajos se parte la baldosa para saltar (`D-91`, tanda 2, segunda vuelta). Una capa entera
+   * que sube y baja se lee como una capa que se mueve; partida en gajos que saltan uno después del otro,
+   * es una ola que recorre a la gente. El dibujo deja aire en cada corte (`arte-recital.ts`).
+   */
+  gajos?: number;
   /** La pieza ya la pinta y la imprime otro (`arte-entornos.ts`): acá solo se la mueve. */
   ajena?: boolean;
   /** Si suena (`entorno.ts`): el viento sube y baja con el alfa de la capa. */
@@ -147,6 +153,9 @@ export const AIRE: Readonly<Record<string, readonly CapaDeAire[]>> = {
   ],
   // El infierno: el humo que se arrastra por el damero y la ceniza encendida que sube. Es un recinto (una sola capa), y el aire le da el fondo que no tenía.
   'el-infierno': [
+    // El calor (`D-91`, tanda 2, segunda vuelta): hebras claras contra la pared de fuego, que tiemblan
+    // rápido de costado. Es una franja, no una pantalla entera, y va detrás del humo.
+    capa({ pieza: 'aire-infierno-calor', plano: 'medio', f: 1.04, y: 140, alto: 210, ancho: 1100, deriva: 5, alfa: 0.5, late: 0.22, ritmo: 1.3, mece: 2.2, ritmoMece: 12 }),
     capa({ pieza: 'aire-infierno-humo', plano: 'medio', f: 1.15, y: 250, alto: 390, ancho: 1300, deriva: 8, alfa: 0.8, late: 0.14, ritmo: 0.27, abre: 0.4 }),
     capa({ pieza: 'aire-infierno-ceniza', plano: 'cerca', f: 1.5, y: 0, alto: ALTO, ancho: 800, deriva: 9, cae: -34, alfa: 0.9, late: 0.1, ritmo: 0.9 }),
   ],
@@ -203,7 +212,7 @@ export const AIRE: Readonly<Record<string, readonly CapaDeAire[]>> = {
   // la cámara, hombros y manos fuera de foco, que saltan a contratiempo. La fila grande va en `frente`.
   'el-galpon': [
     capa({ pieza: 'aire-galpon-humo', plano: 'medio', f: 1.06, y: 270, alto: 250, ancho: 1300, deriva: -7, alfa: 0.74, late: 0.16, ritmo: 0.29, abre: 0.35 }),
-    capa({ pieza: 'aire-galpon-pogo', plano: 'medio', f: 1.14, y: 400, alto: 240, ancho: 1400, salta: 9, ritmoSalta: 5.6 }),
+    capa({ pieza: 'aire-galpon-pogo', plano: 'medio', f: 1.14, y: 400, alto: 240, ancho: 1400, salta: 13, ritmoSalta: 5.6, gajos: 4 }),
     capa({ pieza: 'aire-galpon-cerca', plano: 'cerca', f: 1.75, y: 512, alto: 128, ancho: 1600, salta: 12, ritmoSalta: 5.6, faseSalta: 1.1 }),
   ],
 };
@@ -236,11 +245,19 @@ export function corridaDeAire(c: CapaDeAire, cam: number, t: number, suelta: boo
  * (apoyada). Es el rebote de una pelota: sube rápido, cuelga y cae; y la fuerza va y viene, porque un
  * pogo no salta parejo toda la noche. Las que no saltan, cero.
  */
-export function saltoDeAire(c: CapaDeAire, t: number): number {
+export function saltoDeAire(c: CapaDeAire, t: number, gajo = 0): number {
   if (!c.salta) return 0;
-  const ganas = 0.45 + 0.55 * Math.sin(t * 0.21 + c.faseSalta * 1.7) ** 2;
-  return c.salta * (1 - Math.abs(Math.sin(t * c.ritmoSalta + c.faseSalta)) * ganas);
+  // Cada gajo va un poco después que el de al lado: la ola corre de izquierda a derecha.
+  const fase = c.faseSalta - gajo * DESFASE_DE_GAJO;
+  const ganas = 0.45 + 0.55 * Math.sin(t * 0.21 + c.faseSalta * 1.7 - gajo * 0.3) ** 2;
+  return c.salta * (1 - Math.abs(Math.sin(t * c.ritmoSalta + fase)) * ganas);
 }
+
+/** Cuánto se atrasa cada gajo respecto del anterior, en radianes del salto. */
+export const DESFASE_DE_GAJO = 0.85;
+
+/** Cuántos gajos hay que poner para que la capa cubra la vista más ancha más una baldosa. */
+export const gajosDe = (c: CapaDeAire): number => (c.gajos ? Math.ceil(((VISTA_MAX + c.ancho) * c.gajos) / c.ancho) : 0);
 
 /**
  * El alfa de una capa en el momento `t`. `anda`, de 0 (quieto) a 1 (caminando a paso pleno), la
@@ -313,7 +330,7 @@ export interface Luz {
 export const LUCES: Readonly<Record<string, readonly Luz[]>> = {
   // El farol está en `ASTILLERO.farol` (440 de 900, a lo largo ×2400/900), y su boca a 30 a la derecha del poste.
   'los-astilleros': [{ pieza: 'luz-astillero-cono', f: 1, x: 1203, y: 244, caja: [-170, -14, 340, 380], vaiven: 8, ritmo: 0.55, alfa: 0.62, late: 0.16, pulso: 'titila', crece: 0, suena: 'zumbido', rumbo: -24, filo: { pieza: 'filo-sodio', cuantos: 3, abre: 60 } }],
-  'el-infierno': [{ pieza: 'luz-infierno-brasa', f: 1, x: 452, y: 486, caja: [-260, -110, 520, 220], vaiven: 0, ritmo: 3.9, alfa: 0.56, late: 0.36, pulso: 'late', crece: 0.07, suena: 'chispa' }],
+  'el-infierno': [{ pieza: 'luz-infierno-brasa', f: 1, x: 452, y: 486, caja: [-260, -230, 520, 340], vaiven: 0, ritmo: 3.9, alfa: 0.56, late: 0.36, pulso: 'late', crece: 0.07, suena: 'chispa' }],
   cybersiberia: [{ pieza: 'luz-cyber-haz', f: 1, x: 1560, y: -6, caja: [-190, -14, 380, 600], vaiven: 15, ritmo: 0.33, alfa: 0.34, late: 0.05, pulso: 'barre', crece: 0 }],
   // La ruta: los faros del último bondi, que van con él y alumbran el polvo. El bondi anda para la derecha.
   'la-ruta': [{ pieza: 'luz-ruta-faros', f: 1, x: 286, y: 446, caja: [-110, -14, 220, 300], vaiven: 1.6, ritmo: 6.5, alfa: 0.72, late: 0.06, pulso: 'barre', crece: 0, rumbo: -90, sigue: 'el-zumba', filo: { pieza: 'filo-sodio', cuantos: 3, abre: 44 } }],
@@ -322,9 +339,11 @@ export const LUCES: Readonly<Record<string, readonly Luz[]>> = {
   // lo lejano (`f` de `VELOCIDAD.lejos`), en el eje (`EJE_DEL_MOLINO`, `arte-arboles.ts`). El vaivén es tan
   // ancho y tan lento que es una vuelta tras otra, y cada tanto afloja y cambia de mano, como con el viento.
   'la-pastura': [{ pieza: 'luz-pastura-rueda', f: 0.45, x: 188, y: 220, caja: [-24, -24, 48, 48], vaiven: 1500, ritmo: 0.03, alfa: 1, late: 0, pulso: 'barre', crece: 0 }],
-  // La mesa (`D-91`, tanda 2): la lámpara que cuelga del techo, entre Pituca y la olla, y se hamaca.
-  // Es de papel, como todo ahí: el cono cortado a mano y casi sin tinta. La pantalla queda arriba de las cabezas.
-  'la-mesa': [{ pieza: 'luz-mesa-lampara', f: 1, x: 1010, y: -8, caja: [-150, -4, 300, 440], vaiven: 5.5, ritmo: 0.66, alfa: 0.94, late: 0.04, pulso: 'barre', crece: 0 }],
+  // La mesa (`D-91`, tanda 2): la lámpara que cuelga del techo y se hamaca. Es de papel, como todo ahí: el
+  // cono cortado a mano y casi sin tinta. Segunda vuelta: va clavada en la pared (`f` de lo lejano), en el
+  // paño libre entre la puerta del fondo y la ventana, así no le cruza por delante a la ventana ni a un
+  // retrato en ninguna pantalla; y el cono termina en la línea de la mesa, que es donde termina la pared.
+  'la-mesa': [{ pieza: 'luz-mesa-lampara', f: 0.8, x: 952, y: -8, caja: [-130, -4, 260, 340], vaiven: 5.5, ritmo: 0.66, alfa: 0.94, late: 0.04, pulso: 'barre', crece: 0 }],
   'el-bajo': [{ pieza: 'luz-bajo-reflejo', f: 1, x: 806, y: 492, caja: [-70, -12, 140, 140], vaiven: 2.5, ritmo: 1.7, alfa: 0.62, late: 0.2, pulso: 'titila', crece: 0 }],
   // Los techos: el farol del baldío (650, 130 en su recinto), que titila.
   'los-techos': [{ pieza: 'luz-techos-farol', f: 1, x: 650, y: 140, caja: [-180, -14, 360, 420], vaiven: 2.5, ritmo: 0.7, alfa: 0.4, late: 0.16, pulso: 'titila', crece: 0, suena: 'zumbido', filo: { pieza: 'filo-lila', cuantos: 4, abre: 34 } }],
@@ -359,6 +378,22 @@ export const FILO_PROPIO: Readonly<Record<string, { prefijos: readonly string[];
   'los-astilleros': { prefijos: ['botija-'], tinta: 'var(--entorno-astillero-tiza-clara)' },
   // `D-91`, segunda vuelta: los faros del bondi le prenden el canto a los que están en la banquina.
   'la-ruta': { prefijos: ['taxi-', 'desencarnada-', 'piba-'], tinta: 'var(--entorno-templo-foco)' },
+};
+
+/**
+ * Lo que asoma lejos (`D-91`, tanda 2, segunda vuelta): una figura impresa, clavada en lo lejano, que no
+ * se ve hasta que quien mira se queda quieto `espera` segundos. En la mesa, alguien que se para en la
+ * puerta del fondo. Es una imagen más, chica, que se corre con la capa de atrás (`f`).
+ */
+export interface Visita {
+  pieza: string;
+  f: number;
+  caja: readonly [number, number, number, number];
+  espera: number;
+}
+
+export const VISITAS: Readonly<Record<string, Visita>> = {
+  'la-mesa': { pieza: 'camino-mesa-visita', f: 0.8, caja: [644, 132, 84, 192], espera: 6 },
 };
 
 /** Las piezas que no son cuerpo: el humo, los fogonazos, los ojos, la boca, los muebles. A esas la luz no les prende un canto. */
