@@ -206,6 +206,11 @@ const ANIMACIONES = [
   { nombre: 'velo-sube', apaga: 'token', valor: '--duracion-velo', hoja: 'src/styles/sitio.css' },
   { nombre: 'velo-baja', apaga: 'token', valor: '--duracion-velo', hoja: 'src/styles/sitio.css' },
   { nombre: 'velo-corre', apaga: 'token', valor: '--duracion-velo', hoja: 'src/styles/sitio.css' },
+  // `D-91`: la tinta de abajo del velo, su respaldo y lo que avisa que está cargando. No se mueven:
+  // cambian `visibility` u `opacity` una vez. El mismo token los deja en un corte.
+  { nombre: 'velo-tinta', apaga: 'token', valor: '--duracion-velo', hoja: 'src/styles/sitio.css' },
+  { nombre: 'velo-respaldo', apaga: 'token', valor: '--duracion-velo', hoja: 'src/styles/sitio.css' },
+  { nombre: 'velo-asoma', apaga: 'token', valor: '--duracion-velo', hoja: 'src/styles/sitio.css' },
 ] as const;
 
 test('no hay ninguna animacion que esta lista no conozca', () => {
