@@ -7,8 +7,8 @@
  *
  * - **Lo lejano**, entero: la otra orilla en dos planos. Atrás, grúas de pórtico pálidas que se salen
  *   por arriba del cuadro; entre los dos, la bruma del río; adelante, el casco de un carguero que
- *   corta la vista, con su ancla, sus ojos de buey y el óxido que le chorrea. El agua devuelve cada
- *   luz en una columna de rayas rotas, más anchas cuanto más cerca.
+ *   corta la vista, con su ancla, sus ojos de buey y el óxido que le chorrea (desde la segunda vuelta va
+ *   en su propia capa, `PLANOS`). El agua devuelve cada luz en una columna de rayas rotas.
  * - **Debajo del piso** (`puertoBajo`): un espigón que sale del muelle y se va al horizonte, con sus
  *   faroles cada vez más chicos. Es el punto de fuga de la región.
  * - **Encima del piso** (`puertoSobre`): las vías de la grúa, que cruzan los tablones hasta el
@@ -97,69 +97,84 @@ function grua(x: number, pie: number, k: number, color: string, o: number, paraA
   );
 }
 
-/** Dónde arranca la proa del carguero, en lo lejano, y hasta dónde le llega el agua. */
-const CARGUERO = { x: 880, agua: 345 } as const;
+/**
+ * El carguero (`PLANOS` en `aire.ts`): dónde arranca la proa y hasta dónde le llega el agua, en las unidades
+ * de su capa. La caja es la de la pieza. Segunda vuelta: salió de lo lejano (era un bloque negro en tres de
+ * cinco pantallas del teléfono, y tapaba las grúas) y va en una capa propia, más corto, que se corre más
+ * rápido que la otra orilla y más despacio que el muelle.
+ */
+export const CARGUERO = { x: 850, agua: 345, largo: 340, caja: [820, -12, 420, 400] as const } as const;
 
 /**
- * El carguero: un casco enorme, de proa para la izquierda, que corta la vista entre la orilla y el
- * muelle. Negro, con la franja de la línea de flotación en el naranja hondo de la tapa, el óxido que
- * chorrea de los imbornales, una fila de ojos de buey (dos prendidos) y todo el canto en tiza.
+ * El casco no es negro parejo: la traca de arriba es del azul de la noche, las chapas tienen sus costuras, el
+ * óxido chorrea de los imbornales y del escobén, y abajo, contra la línea de flotación, la panza agarra el
+ * sodio de los faroles del muelle. La franja de la flotación es el naranja hondo de la tapa; el canto, tiza.
  */
 function carguero(): string {
-  const { x: b, agua } = CARGUERO;
+  const { x: b, agua, largo: L } = CARGUERO;
   const rnd = azar(3089);
-  const casco = `M${b - 24} 122 L${b + 470} 140 Q${b + 502} 152 ${b + 492} ${agua} L${b + 76} ${agua} Q${b + 22} 262 ${b - 24} 122 Z`;
+  const casco = `M${b - 24} 122 L${b + L} 136 Q${b + L + 30} 148 ${b + L + 22} ${agua} L${b + 76} ${agua} Q${b + 22} 262 ${b - 24} 122 Z`;
   let ojos = '';
   let enElAgua = '';
-  for (let x = b + 112, i = 0; x < b + 452; x += 34, i++) {
-    const prendido = i === 3 || i === 7;
-    ojos += forma(circulo(x, 198, 4.4), prendido ? T.sodio : T.noche) + (prendido ? nube(x, 198, 9, 9, T.sodio, 's', 0.5) + forma(circulo(x, 198, 1.6), T.papel) : '');
-    if (prendido) enElAgua += reflejo(rnd, x, agua + 5, 60, T.sodio, 0.9);
+  for (let x = b + 104, i = 0; x < b + L - 14; x += 31, i++) {
+    const prendido = i === 1 || i === 4 || i === 5;
+    ojos += forma(circulo(x, 196, 4.6), prendido ? T.sodio : T.noche) + trazo(circulo(x, 196, 5.6), T.clara, 0.8, 0.35) + (prendido ? nube(x, 196, 10, 10, T.sodio, 's', 0.55) + forma(circulo(x, 196, 1.7), T.papel) : '');
+    if (prendido) enElAgua += reflejo(rnd, x, agua + 5, 34, T.sodio, 0.9);
   }
+  let chapas = '';
+  for (let x = b + 30; x < b + L + 10; x += 38 + rnd() * 10) chapas += `M${f(x)} 132 L${f(x + (rnd() - 0.5) * 3)} ${agua - 22} `;
   let oxido = '';
-  for (let i = 0; i < 11; i++) {
-    const x = b + 60 + rnd() * 400;
-    oxido += nube(x, 214 + rnd() * 60, 2 + rnd() * 2.4, 26 + rnd() * 40, T.naranjaHonda, 's', 0.3 + rnd() * 0.25);
+  for (let i = 0; i < 14; i++) {
+    const x = b + 50 + rnd() * (L - 40);
+    oxido += nube(x, 214 + rnd() * 70, 2.4 + rnd() * 3, 24 + rnd() * 44, i % 3 ? T.naranjaHonda : T.naranja, 's', 0.34 + rnd() * 0.3);
   }
   let calado = '';
-  for (let y = 262; y < agua - 24; y += 9) calado += `M${b + 58 + (agua - y) * -0.12} ${y} l${y % 18 < 9 ? 8 : 4} 0 `;
+  for (let y = 262; y < agua - 24; y += 9) calado += `M${f(b + 58 + (agua - y) * -0.12)} ${y} l${y % 18 < 9 ? 8 : 4} 0 `;
   let ventanas = '';
-  for (let x = b + 344; x < b + 458; x += 15) ventanas += forma(caja(x, 86, 9, 10), T.sodio, rnd() < 0.3 ? 0.18 : 0.85);
-  for (let x = b + 362; x < b + 432; x += 13) ventanas += forma(caja(x, 54, 9, 7), T.clara, 0.6);
-  const arriba = `${caja(b + 330, 72, 140, 64)} ${caja(b + 350, 46, 92, 28)}`;
-  const chimenea = `M${b + 392} 46 L${b + 398} -6 L${b + 430} -6 L${b + 434} 46 Z`;
+  for (let x = b + 232; x < b + 326; x += 15) ventanas += forma(caja(x, 84, 9, 10), T.sodio, rnd() < 0.3 ? 0.2 : 0.9);
+  for (let x = b + 250; x < b + 310; x += 13) ventanas += forma(caja(x, 52, 9, 7), T.clara, 0.65);
+  const arriba = `${caja(b + 218, 70, 118, 62)} ${caja(b + 238, 44, 78, 28)}`;
+  const chimenea = `M${b + 262} 44 L${b + 268} -6 L${b + 298} -6 L${b + 302} 44 Z`;
   return (
-    // Lo que el casco le tapa al agua, y las luces que le devuelve.
-    nube(b + 250, agua + 14, 260, 13, T.negro, 'm', 0.75) +
-    // El palo de carga, con su pluma, y el puente con la chimenea.
-    trazo(`M${b + 150} 130 L${b + 150} 18 M${b + 132} 44 L${b + 168} 44 M${b + 150} 60 L${b + 250} 100 M${b + 150} 22 L${b + 250} 100 M${b + 150} 22 L${b + 100} 128`, T.negro, 4) +
-    forma(arriba, T.negro) + forma(chimenea, T.naranjaHonda) + forma(caja(b + 396, -8, 36, 16), T.negro) +
-    nube(b + 404, -26, 30, 20, T.clara, 'l', 0.2) +
+    // Lo que el casco le tapa al agua.
+    nube(b + 180, agua + 12, 190, 11, T.negro, 'm', 0.8) +
+    // El palo de carga, con su pluma, y el puente con la chimenea: del azul de la noche, no negros.
+    trazo(`M${b + 128} 128 L${b + 128} 16 M${b + 110} 42 L${b + 146} 42 M${b + 128} 58 L${b + 210} 96 M${b + 128} 20 L${b + 210} 96 M${b + 128} 20 L${b + 84} 126`, T.negro, 4) +
+    forma(arriba, T.noche) + nube(b + 300, 100, 40, 40, T.negro, 'm', 0.6) + nube(b + 240, 62, 30, 14, T.azul, 'm', 0.4) +
+    forma(chimenea, T.naranjaHonda) + forma(caja(b + 266, -8, 34, 16), T.negro) + forma(caja(b + 266, 20, 34, 6), T.papel, 0.5) +
+    nube(b + 274, -8, 26, 10, T.clara, 'l', 0.22) +
     ventanas +
     `<clipPath id="pt-casco"><path d="${casco}"/></clipPath><g clip-path="url(#pt-casco)">` +
     forma(casco, T.negro) +
-    nube(b + 70, 176, 110, 70, T.azul, 'l', 0.38) +
-    nube(b + 330, 150, 200, 26, T.noche, 'l', 0.8) +
-    forma(caja(b - 30, agua - 20, 560, 22), T.naranjaHonda, 0.85) +
-    nube(b + 300, agua - 6, 240, 10, T.negro, 'm', 0.6) +
+    // La traca de arriba, azul; el brillo de la amura; las costuras de las chapas.
+    forma(caja(b - 30, 116, L + 70, 50), T.noche) +
+    nube(b + 64, 190, 100, 80, T.azul, 'l', 0.55) + nube(b + 250, 176, 120, 30, T.azul, 'l', 0.28) +
+    trazo(chapas, T.azul, 1, 0.3) + trazo(`M${b - 20} 166 L${b + L + 30} 172 M${b + 30} 250 L${b + L + 30} 254`, T.azul, 1, 0.3) +
+    // El óxido: una mancha grande bajo el escobén, otra a media eslora, y los chorretes.
+    nube(b + 44, 226, 16, 46, T.naranjaHonda, 'm', 0.6) + nube(b + 214, 262, 40, 34, T.naranjaHonda, 'l', 0.4) +
     oxido +
+    // La panza agarra el sodio de los faroles del muelle.
+    nube(b + 250, agua - 44, 110, 40, T.sodio, 'l', 0.3) + nube(b + 120, agua - 36, 60, 26, T.sodio, 'l', 0.2) +
+    forma(caja(b - 30, agua - 20, L + 90, 22), T.naranjaHonda, 0.9) +
+    nube(b + 220, agua - 4, 170, 7, T.negro, 'm', 0.5) +
     `</g>` +
     ojos +
     // El escobén y el ancla, colgada a medio izar.
-    forma(circulo(b + 36, 168, 5.4), T.noche) +
+    forma(circulo(b + 36, 168, 5.4), T.negro) +
     trazo(`M${b + 37} 172 L${b + 40} 222`, T.clara, 1.6, 0.6) +
-    trazo(`M${b + 40} 222 L${b + 40} 250 M${b + 30} 228 L${b + 50} 228 M${b + 26} 240 Q${b + 40} 258 ${b + 54} 240`, T.clara, 2.4, 0.75) +
+    trazo(`M${b + 40} 222 L${b + 40} 250 M${b + 30} 228 L${b + 50} 228 M${b + 26} 240 Q${b + 40} 258 ${b + 54} 240`, T.clara, 2.4, 0.8) +
     `<g filter="url(#tiza)">` +
-    trazo(`M${b - 24} 122 L${b + 470} 140 Q${b + 502} 152 ${b + 492} ${agua}`, T.clara, 1.8, 0.75) +
+    trazo(`M${b - 24} 122 L${b + L} 136 Q${b + L + 30} 148 ${b + L + 22} ${agua}`, T.clara, 1.8, 0.75) +
     trazo(`M${b - 24} 122 Q${b + 22} 262 ${b + 76} ${agua}`, T.clara, 1.4, 0.55) +
+    trazo(`M${b + 70} ${agua - 21} L${b + L + 26} ${agua - 21}`, T.clara, 1, 0.5) +
     trazo(`${arriba} ${chimenea}`, T.clara, 1.2, 0.5) +
     trazo(calado, T.clara, 1.2, 0.6) +
     // El nombre, que no se llega a leer: un garabato y su espiral.
-    trazo(`M${b + 84} 160 l7 -9 l6 9 l7 -9 l6 9 m6 -4 l16 0 m6 4 l5 -9 l6 9 l6 -9`, T.clara, 1.6, 0.6) +
-    espiral(b + 176, 156, 8, 2, T.clara, 1.4, 0.6) +
+    trazo(`M${b + 84} 150 l7 -9 l6 9 l7 -9 l6 9 m6 -4 l16 0 m6 4 l5 -9 l6 9 l6 -9`, T.clara, 1.6, 0.65) +
+    espiral(b + 176, 146, 8, 2, T.clara, 1.4, 0.6) +
     // La baranda de la borda.
-    Array.from({ length: 24 }, (_, i) => trazo(`M${b + i * 20} ${f(123.5 + i * 0.73)} l0 -9`, T.clara, 1, 0.45)).join('') +
-    trazo(`M${b - 20} 113 L${b + 470} 131`, T.clara, 1, 0.45) +
+    Array.from({ length: Math.floor(L / 20) + 1 }, (_, i) => trazo(`M${b + i * 20} ${f(123.2 + i * 0.78)} l0 -9`, T.clara, 1, 0.45)).join('') +
+    trazo(`M${b - 20} 113 L${b + L} 127`, T.clara, 1, 0.45) +
     enElAgua +
     `</g>`
   );
@@ -198,8 +213,7 @@ export function puertoLejos(ancho: number, alto: number): string {
     const w = 30 + rnd() * 90;
     const t = orilla - 8 - rnd() * 34;
     orillaLejos += forma(caja(x, t, w, orilla - t + 2), T.azul, 0.5) + trazo(`M${f(x)} ${f(t)} l${f(w)} 0`, T.clara, 1, 0.3);
-    // Atrás del carguero no hay luces: no las vería nadie, y su reflejo le saldría por debajo del casco.
-    if (rnd() < 0.42 && (x < CARGUERO.x - 60 || x > CARGUERO.x + 520)) {
+    if (rnd() < 0.42) {
       const lx = x + rnd() * w;
       luces += nube(lx, t + 6, 9, 7, T.sodio, 'm', 0.55) + forma(circulo(lx, t + 6, 1.5), T.papel);
       reflejos += reflejo(rnd, lx, orilla + 5, 36 + rnd() * 70, T.sodio);
@@ -239,7 +253,7 @@ export function puertoLejos(ancho: number, alto: number): string {
     velo +
     `</g>` +
     `<g filter="url(#tiza)">${reflejos}${agua}</g>` +
-    `<g filter="url(#rociado)">${carguero()}${boya(700, 392)}${boya(1790, 366)}</g>`
+    `<g filter="url(#rociado)">${boya(700, 392)}${boya(1790, 366)}</g>`
   );
 }
 
@@ -314,6 +328,24 @@ function rayuela(cx: number, cerca: number): string {
   );
 }
 
+/**
+ * El corderito atado, en tiza, en el tercer container: alguien dibujó la tapa del disco. Es el segundo
+ * premio de la lupa (`fino-astillero-cordero`): el vellón de garabato, las cuatro patas, la soga y la estaca.
+ */
+const CORDERITO = { x: 190, y: 352, caja: [158, 330, 76, 46] as const };
+function corderito(): string {
+  const { x, y } = CORDERITO;
+  return (
+    `<g transform="translate(${x} ${y})">` +
+    trazo('M-14 2 q-5 -8 4 -10 q3 -8 10 -3 q8 -5 11 3 q8 1 4 8 q2 7 -6 7 l-18 0 q-8 -1 -5 -5 Z', T.clara, 1.7, 0.9) +
+    trazo('M-15 -4 q-8 -4 -9 3 q1 6 8 3 M-21 -5 l-4 -4 M-9 9 l-1 8 M-3 9 l0 8 M7 9 l0 8 M13 8 l1 8 M17 -1 q5 -2 5 3', T.clara, 1.5, 0.9) +
+    trazo('M-22 -1 l0.4 0.4', T.clara, 1.6, 1) +
+    // La soga, floja, y la estaca.
+    trazo('M-14 4 Q4 26 31 12 M31 -2 l0 20 M27 -2 l8 0', T.clara, 1.4, 0.8) +
+    `</g>`
+  );
+}
+
 /** Dónde está la rayuela, en el piso: la caja de la pieza fina. */
 const RAYUELA = { x: 168, cerca: 608, caja: [96, 508, 150, 108] as const };
 
@@ -346,6 +378,7 @@ export function puertoSobre(): string {
     trazo(palotes, T.clara, 2.2, 0.8) +
     trazo(`M318 356 l64 -5 m-13 -9 l13 9 l-11 11`, T.clara, 2.6, 0.8) +
     espiral(446, 300, 15, 2.4, T.clara, 1.6, 0.55) +
+    corderito() +
     rayuela(RAYUELA.x, RAYUELA.cerca) +
     `</g>`
   );
@@ -379,11 +412,23 @@ function gato(): string {
 
 /** Las piezas sueltas de los astilleros largos: el gato que asoma y la rayuela, fina, para la lupa. */
 export const PIEZAS_DEL_PUERTO: readonly Pieza[] = [
+  {
+    nombre: 'camino-astillero-carguero',
+    caja: CARGUERO.caja,
+    dibujo: filtroTiza() + `<g filter="url(#rociado)"><rect x="${CARGUERO.caja[0]}" y="${CARGUERO.caja[1]}" width="${CARGUERO.caja[2]}" height="${CARGUERO.caja[3]}" fill="${T.negro}" fill-opacity="0"/>${carguero()}</g>`,
+    densidad: 1.6,
+  },
   { nombre: 'camino-astillero-gato', caja: GATO.caja, dibujo: gato(), densidad: 4 },
   {
     nombre: 'fino-astillero-rayuela',
     caja: RAYUELA.caja,
     dibujo: filtroTiza() + `<g filter="url(#tiza)"><rect x="${RAYUELA.caja[0]}" y="${RAYUELA.caja[1]}" width="${RAYUELA.caja[2]}" height="${RAYUELA.caja[3]}" fill="${T.negro}" fill-opacity="0"/>${rayuela(RAYUELA.x, RAYUELA.cerca)}</g>`,
+    densidad: 4,
+  },
+  {
+    nombre: 'fino-astillero-cordero',
+    caja: CORDERITO.caja,
+    dibujo: filtroTiza() + `<g filter="url(#tiza)"><rect x="${CORDERITO.caja[0]}" y="${CORDERITO.caja[1]}" width="${CORDERITO.caja[2]}" height="${CORDERITO.caja[3]}" fill="${T.negro}" fill-opacity="0"/>${corderito()}</g>`,
     densidad: 4,
   },
 ];
