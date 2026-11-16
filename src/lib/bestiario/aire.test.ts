@@ -18,7 +18,8 @@ import { GIGANTE, LENGUAS, PIEZAS_DEL_SALON, SALON } from './arte-salon.ts';
 import { CUEVA, PUERTA } from './arte-sobremesa.ts';
 import { escenaInfierno } from './escenas.ts';
 import { GALPON, MESA } from './rig-entornos.ts';
-import { VISITAS, gajosDe, saltoDeAire } from './aire.ts';
+import { VISITAS, saltoDeAire } from './aire.ts';
+import { MONTONES } from './arte-recital.ts';
 import { ADORNOS_DEL_CRUCE, ANCHO_DEL_ADORNO } from './arte-cruces.ts';
 import { destinosDelCruce, piezaDelCruce } from './arte-camino.ts';
 import { ACECHO, PALO } from './rig.ts';
@@ -922,13 +923,17 @@ test('D-91/4: lo que se mueve raro: el tren del horizonte, el vellón con el vie
    `D-91`, tanda 2: el galpón, el infierno y la mesa
    ------------------------------------------------------------------ */
 
-test('D-91/t2: la gente del galpón va en planos, y dos de ellos saltan a contratiempo', () => {
+test('D-91/t2: la gente del galpón va en planos, y el pogo son dos capas que saltan a contratiempo', () => {
   const aire = AIRE['el-galpon']!;
-  const [pogo, cerca] = [aire.find((c) => c.pieza === 'aire-galpon-pogo')!, aire.find((c) => c.pieza === 'aire-galpon-cerca')!];
-  assert.ok(pogo.salta > 0 && cerca.salta > 0 && pogo.faseSalta !== cerca.faseSalta, 'el pogo y lo pegado a la cámara saltan, y no juntos');
-  assert.ok(pogo.plano === 'medio' && cerca.plano === 'cerca' && pogo.f < CAMINOS['el-galpon']!.velocidad.frente && cerca.f > CAMINOS['el-galpon']!.velocidad.frente, 'el pogo va detrás de la fila grande, y lo otro adelante');
+  const [pogo, otra] = [aire.find((c) => c.pieza === 'aire-galpon-pogo')!, aire.find((c) => c.pieza === 'aire-galpon-pogo-b')!];
+  assert.ok(pogo.salta > 0 && otra.salta > 0 && Math.abs(pogo.faseSalta - otra.faseSalta) > 0.8, 'las dos capas del pogo saltan, y no juntas');
+  assert.ok(pogo.plano === 'medio' && otra.plano === 'medio' && otra.f < CAMINOS['el-galpon']!.velocidad.frente && pogo.f < otra.f, 'el pogo va detrás de la fila grande');
+  // Segunda vuelta: ya no hay nada pegado a la cámara (eran bultos negros), y siguen siendo tres capas.
+  assert.equal(aire.length, 3);
+  assert.equal(aireDe('el-galpon', 'cerca').length, 0);
+  assert.ok(!existsSync('public/bestiario/aire-galpon-cerca.webp'), 'quedó impresa la capa que se fue');
   // El salto baja y vuelve, nunca sube por encima de donde está impresa la capa ni pasa de lo que dice la receta.
-  for (const c of [pogo, cerca]) {
+  for (const c of [pogo, otra]) {
     let [min, max] = [Infinity, -Infinity];
     for (let t = 0; t < 60; t += 0.037) {
       const y = saltoDeAire(c, t);
@@ -939,20 +944,17 @@ test('D-91/t2: la gente del galpón va en planos, y dos de ellos saltan a contra
     // Lo que baja no deja ver el borde de abajo: la capa llega al fondo de la pantalla.
     assert.equal(c.y + c.alto, ALTO);
   }
+  assert.ok([0.3, 1.1, 2.7].some((t) => Math.abs(saltoDeAire(pogo, t) - saltoDeAire(otra, t)) > 3), 'las dos capas van al mismo compás');
   // Las que no saltan, cero: el aire de las otras doce regiones no se entera.
   for (const { c } of capas.filter((x) => !x.c.salta)) assert.equal(saltoDeAire(c, 7.3), 0);
   const isla = readFileSync('src/scripts/camino.ts', 'utf-8');
-  assert.match(isla, /\(quieto\(\) \|\| a\.gajos\.length \? 0 : saltoDeAire\(a\.c, t\)\)/, 'con movimiento reducido nadie salta');
-  // La ola (segunda vuelta): el pogo se parte en gajos, y cada gajo salta un poco después que el de al lado.
-  assert.equal(pogo.gajos, 4);
-  assert.ok(gajosDe(pogo) * (pogo.ancho / pogo.gajos!) >= VISTA_MAX + pogo.ancho, 'los gajos no cubren la vista más ancha');
-  assert.equal(gajosDe(cerca), 0);
-  assert.ok([0.3, 1.1, 2.7].some((t) => Math.abs(saltoDeAire(pogo, t, 0) - saltoDeAire(pogo, t, 1)) > pogo.salta * 0.2), 'dos gajos vecinos saltan juntos');
-  assert.match(isla, /if \(a\.gajos\.length && !quieto\(\)\) a\.gajos\.forEach\(\(g, i\) => \(g\.style\.transform = /);
-  const hoja = readFileSync('src/styles/camino.css', 'utf-8');
-  assert.match(hoja, /\.camino \.aire--gajos \.gajo \{[^}]*background-position-x: calc\(var\(--gw\) \* var\(--i\) \* -1\);/);
-  // En el dibujo, nadie cae en el corte: cada montón deja 48 unidades de aire a cada lado de su gajo.
-  assert.match(readFileSync('src/lib/bestiario/arte-recital.ts', 'utf-8'), /gentio\(g \* paso \+ 48, \(g \+ 1\) \* paso - 48,/);
+  assert.match(isla, /\(quieto\(\) \? 0 : saltoDeAire\(a\.c, t\)\)/, 'con movimiento reducido nadie salta');
+  // Montón por medio: una capa pinta los pares y la otra los impares, así el vecino siempre es de la otra.
+  const [a, b] = ['aire-galpon-pogo', 'aire-galpon-pogo-b'].map((n) => PIEZAS_AIRE.find((q) => q.nombre === n)!.dibujo);
+  assert.ok(a !== b && /gl-p0-\d+/.test(a!) && /gl-p1-\d+/.test(b!) && !/gl-p1-/.test(a!));
+  assert.equal(MONTONES % 2, 0);
+  // Los gajos (una sola capa partida en ocho, cada una con su salto) se probaron y se sacaron: duplicaban el cuadro.
+  assert.doesNotMatch(isla + readFileSync('src/styles/camino.css', 'utf-8'), /gajo/);
   // El camino pinta su gente: el piso con las filas del fondo y lo de adelante con banderas y bengalas.
   // El recinto de 900 sigue con la fila de siempre.
   const [piso, frente] = ['camino-galpon-piso', 'camino-galpon-frente'].map((n) => PIEZAS_CAMINO.find((q) => q.nombre === n)!.dibujo);
