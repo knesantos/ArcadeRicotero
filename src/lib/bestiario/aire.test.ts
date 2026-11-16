@@ -33,7 +33,7 @@ import { COLGANTES } from './arte-bonete.ts';
 import { PLANOS } from './aire.ts';
 import { COLOSO } from './arte-tundra.ts';
 import { FAROL, OJO } from './arte-bonete.ts';
-import { ARBOL, ASTILLERO, CYBER } from './rig-entornos.ts';
+import { ARBOL, ASTILLERO, CYBER, OJOS_DE_LA_MESA } from './rig-entornos.ts';
 import { VISTA_MIN, corrimiento } from './camino.ts';
 import { LUPA } from './lupa.ts';
 
@@ -1068,6 +1068,10 @@ test('D-91/t2: la mesa tiene fondo sin perder la tinta plana: la puerta, la lám
   const k = CAMINOS['la-mesa']!.escena / 900;
   assert.ok(lampara.x - 40 > PUERTA.x + PUERTA.ancho + 12 && lampara.x + 40 < MESA.ventana.x0 * k - 30, 'la pantalla de la lámpara pisa la puerta o la cortina');
   assert.ok(lampara.y + lampara.caja[1] + lampara.caja[3] <= MESA.tablero.atras + 6, 'el cono baja de la línea de la mesa');
+  // Tanda 3, cuarta vuelta: y termina arriba de las cabezas. La lámpara va con la pared y los comensales con el piso: en
+  // alguna pantalla (a 1280, y con la lupa) el cono cae sobre uno, y nada fijo le cruza la cara a un bicho.
+  const ojoMasAlto = Math.min(...Object.values(OJOS_DE_LA_MESA).map(([, y]) => y));
+  assert.ok(lampara.y + lampara.caja[1] + lampara.caja[3] <= ojoMasAlto - 36, 'el cono de la lámpara llega a las cabezas');
   const fuenteMesa = readFileSync('src/lib/bestiario/arte-sobremesa.ts', 'utf-8');
   for (const m of fuenteMesa.matchAll(/retrato\('ms-r\d', (\d+), \d+, (\d+),/g)) assert.ok(Number(m[1]) + Number(m[2]) < lampara.x - 60 || Number(m[1]) > lampara.x + 60, `un retrato en ${m[1]} queda detrás de la lámpara`);
   // Cuarta vuelta: los ojos de la ventana son una pieza aparte, a la vista, que se va si se saca la lupa.
@@ -1368,4 +1372,23 @@ test('D-91/t3v2: en Cybersiberia lo prendido tiñe la nieve, y el primer poste e
   assert.ok((bajo.match(/entorno-cyber-lente/g) ?? []).length > 60, 'la caja no tiñe');
   // El coloso camina lejos de la pared de teles (486 a 578) y sus pies siguen en el horizonte.
   assert.ok(COLOSO.caja[0] >= 578 + 40);
+});
+
+test('D-91/t3v4: Cybersiberia tiene una segunda luz grande, la aurora, y la nevada se tiñe cerca de la tele', () => {
+  const fuente = readFileSync('src/lib/bestiario/arte-tundra.ts', 'utf-8');
+  // Dos cortinas, una a cada lado de la tele (1200), que ya tiene su luz; pegadas al horizonte.
+  const cortinas = [...fuente.matchAll(/aurora\(rnd, (\d+), (\d+), (\d+), /g)].map((m) => m.slice(1).map(Number));
+  assert.equal(cortinas.length, 2);
+  for (const [desde, hasta, pie] of cortinas) {
+    assert.ok(hasta! - desde! >= 400 && (hasta! < 1075 || desde! > 1325), 'la aurora pisa la tele o es chica');
+    assert.ok(pie! < CYBER.horizonte && pie! > CYBER.horizonte - 60);
+  }
+  // Es fría: el verde agua del ojo del cordero (el lente celeste, sobre la nieve gris, no llegaba a ser color), con apenas rojo.
+  const lejos = dibujoDe('camino-cyber-lejos');
+  assert.ok((lejos.match(/bestia-cordero-ojo/g) ?? []).length > 60);
+  // Va delante de la ventisca y detrás de lo oscuro de la orilla.
+  assert.ok(fuente.indexOf('    aurora(rnd, ') > fuente.indexOf('    ventisca +') && fuente.indexOf('    aurora(rnd, ') < fuente.indexOf('    cables + cerca +'));
+  assert.match(fuente, /const nevadaTenida = tenidos\(rnd, CYBER\.tele\.x/);
+  // La imagen mide lo mismo: el color no cuesta memoria.
+  assert.deepEqual([...PIEZAS_CAMINO.find((q) => q.nombre === 'camino-cyber-lejos')!.caja], [0, 0, CAMINOS.cybersiberia!.escena, ALTO]);
 });
