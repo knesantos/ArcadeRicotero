@@ -267,11 +267,13 @@ const ESPIGON = { desde: [1256, 436], hasta: [1348, 307], cerca: 62, lejos: 5 } 
 /** Lo que va **debajo** del piso del recinto: el espigón, sobre el agua, detrás de todo lo del muelle. */
 export function puertoBajo(): string {
   const rnd = azar(3119);
+  // Los reflejos de los faroles del espigón van quietos. En la tercera vuelta se probó hacerlos temblar (piezas
+  // sueltas que la isla ensanchaba desde su eje): en la tira de seis cuadros no se leían, y se sacaron.
+  let enElAgua = '';
   const ps = fuga(ESPIGON.desde, ESPIGON.hasta, ESPIGON.cerca, ESPIGON.lejos, 22);
   let tablas = '';
   for (const [x, y, w] of ps) tablas += `M${f(x - w / 2)} ${f(y)} l${f(w)} 0 `;
   let faroles = '';
-  let enElAgua = '';
   for (const hondo of [0.1, 0.38, 0.58, 0.73, 0.84, 0.92]) {
     const [x, y] = enLaFuga(ESPIGON.desde, ESPIGON.hasta, hondo);
     const cerca = 1 - hondo;
