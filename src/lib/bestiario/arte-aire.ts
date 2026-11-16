@@ -20,6 +20,8 @@ import { enmascarado, forma, nube, soplo, trazo, type Pieza } from './aerografo.
 import { ACECHOS, AIRE, LUCES, VIDAS, altoDeBaldosa, type CapaDeAire } from './aire.ts';
 import { M, azar, filaDeTiras } from './arte.ts';
 import { ruedaDelMolino, troncosCercanos } from './arte-arboles.ts';
+import { galponCerca, galponHumo, galponPogo, zapatilla } from './arte-recital.ts';
+import { lamparaDeLaMesa, mesaMoscas, moscardon } from './arte-sobremesa.ts';
 import { ALTO } from './camino.ts';
 import { ofrendasDelTemplo } from './ofrendas.ts';
 
@@ -913,19 +915,8 @@ function temploOfrendas(c: CapaDeAire): string {
   return rociado(c, s);
 }
 
-/** El polvo del galpón: motas chicas y parejas, tibias, como la trama de puntos del público. */
-function galponPolvo(c: CapaDeAire): string {
-  const rnd = azar(1511);
-  let s = manchas(c, 1513, 8, 180, 380, [[GA.luz, 0.07], [GA.rojo, 0.09]], 30, [50, 120]);
-  for (let i = 0; i < 150; i++) {
-    const x = rnd() * c.ancho;
-    const y = c.y + 30 + rnd() * (c.alto - 60);
-    const r = 0.9 + rnd() * 1.3;
-    const o = 0.4 + rnd() * 0.45;
-    s += vuelta(x, 8, c.ancho, (xx) => `<circle cx="${f(xx)}" cy="${f(y)}" r="${f(r)}" fill="${i % 4 ? GA.luz : GA.rojo}" opacity="${f(o)}"/>`);
-  }
-  return rociado(c, s);
-}
+// El polvo del galpón ya no es una capa aparte (`D-91`, tanda 2): va adentro del humo del escenario
+// (`galponHumo` en `arte-recital.ts`), con la gente que salta.
 
 /* ------------------------------------------------------------------
    La luz que se ve en el aire, y los ojos sin dueño (segunda ronda)
@@ -1003,6 +994,8 @@ const QUIEN_ALUMBRA: Readonly<Record<string, () => string>> = {
   'luz-techos-farol': () => haz('lz-t', 380, 320, B.lila, B.luz),
   'luz-templo-foco': () => haz('lz-m', 360, 300, TE.foco, TE.papel),
   'luz-galpon-seguidor': () => haz('lz-g', 420, 340, GA.luz, GA.luz),
+  // La lámpara de la mesa: tinta plana, de papel (`arte-sobremesa.ts`).
+  'luz-mesa-lampara': lamparaDeLaMesa,
   // El reflejo del pucho en el agua: una escalerita de rayas de crayón, cada vez más cortas y más flojas.
   'luz-bajo-reflejo': () =>
     Array.from({ length: 9 }, (_, i) => trazo(`M${f(-34 + i * 3.4 + (i % 2) * 5)} ${f(4 + i * 13)} l${f(68 - i * 6.6)} 0`, i % 3 ? J.llama : J.clara, 3.6 - i * 0.22, 0.9 - i * 0.07)).join(''),
@@ -1036,9 +1029,9 @@ function polillas(largo: number, ancho: number): string {
 }
 
 /** Las luces que tienen canto fino y se imprimen más finas que una mancha (`D-91`): la rueda del molino. */
-const DE_FILO: Readonly<Record<string, number>> = { 'luz-pastura-rueda': 3 };
+const DE_FILO: Readonly<Record<string, number>> = { 'luz-pastura-rueda': 3, 'luz-mesa-lampara': 2 };
 
-const SIN_ROCIADO: Readonly<Record<string, string>> = { 'luz-bajo-reflejo': 'xerox-fino', 'luz-prision-reflector': '' };
+const SIN_ROCIADO: Readonly<Record<string, string>> = { 'luz-bajo-reflejo': 'xerox-fino', 'luz-prision-reflector': '', 'luz-mesa-lampara': 'grano' };
 
 /** Un ojo de almendra: la silueta dura, el iris soplado adentro y la pupila. `giro`, lo torcido. */
 function almendra(id: string, x: number, y: number, color: string, hondo: string, pupila: 'raya' | 'punto', giro = 0): string {
@@ -1098,6 +1091,8 @@ const ave = (color: string): string =>
   forma('M20 11 Q12 2 1 4 Q10 6 15 12 Q18 15 20 14 Q22 15 25 12 Q30 6 39 4 Q28 2 20 11 Z', color) + `<ellipse cx="20" cy="12.5" rx="2.6" ry="3.4" fill="${color}"/>`;
 
 const QUIEN_PASA: Readonly<Record<string, () => string>> = {
+  'vida-zapatilla': zapatilla,
+  'vida-moscardon': moscardon,
   'vida-ave': () => ave(M.medio),
   'vida-ave-papel': () => ave(P.papel),
   // El tren del horizonte (`D-91`, cuarta vuelta): la locomotora con su farol y seis vagones con las
@@ -1179,11 +1174,14 @@ const PINTA: Readonly<Record<string, (c: CapaDeAire) => string>> = {
   'aire-prision-frio': prisionFrio,
   'aire-prision-rejas': prisionRejas,
   'aire-mesa-humo': mesaHumo,
+  'aire-mesa-moscas': mesaMoscas,
   'aire-templo-incienso': temploIncienso,
   'aire-templo-ofrendas': temploOfrendas,
   'aire-arbol-hojas': arbolHojas,
   'aire-arbol-racha': arbolRacha,
-  'aire-galpon-polvo': galponPolvo,
+  'aire-galpon-humo': galponHumo,
+  'aire-galpon-pogo': galponPogo,
+  'aire-galpon-cerca': galponCerca,
 };
 
 /**
@@ -1191,7 +1189,7 @@ const PINTA: Readonly<Record<string, (c: CapaDeAire) => string>> = {
  * pura mancha y se imprime gruesa, que pesa poco; lo que tiene filo (las matas, la ceniza) va más fino.
  */
 /** Las baldosas que no son niebla sino dibujo de canto duro, y que se miran con la lupa: se imprimen finas (`D-91`). */
-const FILOSAS: ReadonlySet<string> = new Set(['aire-monte-troncos']);
+const FILOSAS: ReadonlySet<string> = new Set(['aire-monte-troncos', 'aire-galpon-pogo', 'aire-mesa-moscas']);
 
 export const PIEZAS_AIRE: readonly Pieza[] = [...new Map(Object.values(AIRE).flat().filter((c) => !c.ajena).map((c) => [c.pieza, c] as const)).values()].map((c) => {
   const pinta = PINTA[c.pieza];
