@@ -108,7 +108,9 @@ const aires = [...camino.querySelectorAll<HTMLElement>('.aire')].flatMap((el) =>
 const recetasDeLuz = new Map((LUCES[datos.region] ?? []).map((l) => [l.pieza, l]));
 const luces = [...camino.querySelectorAll<HTMLElement>('.luz')].flatMap((el) => {
   const r = recetasDeLuz.get(el.dataset.luz ?? '');
-  return r ? [{ el, r, alfa: -1, pulso: 0 }] : [];
+  // Las zonas de canto que esta luz prende en lo impreso (`Luz.cantos`), en el orden de la receta.
+  const cantos = [...camino.querySelectorAll<HTMLElement>(`.canto-de-luz[data-luz="${el.dataset.luz}"]`)].map((c) => ({ el: c, alfa: 0 }));
+  return r ? [{ el, r, alfa: -1, pulso: 0, cantos }] : [];
 });
 /**
  * Los filos (`D-90`, quinta ronda): la luz toca a los bichos. Cada luz que lo pide le prende un filo
@@ -551,6 +553,18 @@ function pintarLuces(): void {
     if (Math.abs(e.alfa - l.alfa) > 0.004) {
       l.alfa = e.alfa;
       l.el.style.opacity = e.alfa.toFixed(3);
+    }
+    // Y toca a lo impreso: cada zona de canto sube con el haz encima. Con movimiento reducido quedan apagadas.
+    if (l.cantos.length && l.r.cantos && !quieto()) {
+      const apunta = (l.r.rumbo ?? 0) + e.giro;
+      l.cantos.forEach((c, i) => {
+        const z = l.r.cantos![i]!;
+        const k = alivio >= 2 ? 0 : 0.8 * tocaLaLuz(apunta - z.angulo, z.abre) * Math.min(1, e.alfa / l.r.alfa);
+        if (Math.abs(k - c.alfa) > 0.02) {
+          c.alfa = k;
+          c.el.style.opacity = k.toFixed(2);
+        }
+      });
     }
     // La luz toca a los bichos: a cada uno, lo que le pega según a cuántos grados le quedó el haz.
     if (l.r.filo) {
