@@ -20,7 +20,7 @@ import { ENTORNOS, PIEZAS_ENTORNOS } from './arte-entornos.ts';
 import { ALTO, CAMINOS, CRUCE, K_ENTORNO, SOLAPE, VELOCIDAD, anchoDeCapa, type Tramo } from './camino.ts';
 import { tintaDe } from './mapa.ts';
 import { sueloDeCybersiberia, sueloDeLaMesa, sueloDeLaPastura, sueloDeLaRuta, sueloDeLosAstilleros, sueloDelArbol, sueloDelGalpon, sueloDelMonte } from './arte-suelo.ts';
-import { CAMPO, MONTE, alambrado, brumaEntrePlanos, cardo, mataDePasto, pasturaLejos, planoLejano, planoMedio } from './arte-arboles.ts';
+import { CAMPO, MONTE, alambrado, arado, brumaEntrePlanos, calaveraDeVaca, cardo, mataDePasto, pasturaLejos, planoLejano, planoMedio } from './arte-arboles.ts';
 import { ARBOL, GALPON, MESA, RUTA } from './rig-entornos.ts';
 import { ASTILLERO } from './rig-entornos.ts';
 import { PALO } from './rig.ts';
@@ -85,13 +85,23 @@ function pisoDelMonte(desde: number, hasta: number, semilla: number): string {
   };
   let picada = `M${desde - 40} 520`;
   for (let x = desde; x <= hasta + 40; x += 200) picada += ` C${x + 60} ${(500 + rnd() * 30).toFixed(1)}, ${x + 140} ${(506 + rnd() * 30).toFixed(1)}, ${x + 200} ${(512 + rnd() * 20).toFixed(1)}`;
+  // Los pastos (`D-91`, segunda vuelta): eran rayitas sueltas repartidas parejo, y se leían como
+  // lluvia. Ahora son matas de tres o cuatro hojas que se abren desde un punto, juntas de a varias.
   let pastos = '';
-  for (let i = 0; i < (hasta - desde) / 9; i++) {
-    const x = desde + rnd() * (hasta - desde);
-    const y = 330 + rnd() * 290;
-    const largo = 6 + rnd() * 10;
-    const cae = -4 + rnd() * 8;
-    pastos += trazo(`M${x.toFixed(1)} ${y.toFixed(1)} q${(cae * 0.2).toFixed(1)} ${(-largo * 0.7).toFixed(1)} ${cae.toFixed(1)} ${(-largo).toFixed(1)}`, rnd() < 0.75 ? M.hondo : M.sombra, 1.3, 0.6);
+  for (let i = 0; i < (hasta - desde) / 46; i++) {
+    const cx = desde + rnd() * (hasta - desde);
+    const cy = 340 + rnd() * 270;
+    const cuantas = 2 + Math.floor(rnd() * 4);
+    for (let k = 0; k < cuantas; k++) {
+      const x = cx + (rnd() - 0.5) * 70;
+      const y = cy + (rnd() - 0.5) * 24;
+      const largo = (5 + rnd() * 7) * (0.7 + ((y - 330) / 290) * 0.8);
+      const color = rnd() < 0.75 ? M.hondo : M.sombra;
+      for (const cae of [-0.7, -0.1, 0.6]) {
+        const dx = (cae + (rnd() - 0.5) * 0.4) * largo * 0.8;
+        pastos += trazo(`M${x.toFixed(1)} ${y.toFixed(1)} q${(dx * 0.2).toFixed(1)} ${(-largo * 0.7).toFixed(1)} ${dx.toFixed(1)} ${(-largo * (1 - Math.abs(cae) * 0.3)).toFixed(1)}`, color, 1.3, 0.6);
+      }
+    }
   }
   let noche = '';
   for (let x = desde + 80; x < hasta; x += 220 + rnd() * 240) {
@@ -110,6 +120,19 @@ function pisoDelMonte(desde: number, hasta: number, semilla: number): string {
     // Abajo, lo más cerca, se apaga: la noche se come el borde de la vista.
     soplo(`M${desde - 40} 590 L${hasta + 40} 590 L${hasta + 40} ${ALTO + 40} L${desde - 40} ${ALTO + 40} Z`, M.negro, 'l', 0.7)
   );
+}
+
+/** Un sendero que nace adelante, ancho, y se pierde angosto entre los troncos: tierra pisada, más clara. */
+function sendero(x: number, cae: number, semilla: number): string {
+  const rnd = azar(semilla);
+  const ps: [number, number, number][] = [];
+  for (let i = 0; i <= 8; i++) {
+    const u = i / 8;
+    ps.push([x + cae * u + Math.sin(u * Math.PI * 1.6 + rnd()) * 34 * (1 - u * 0.6), 624 - u * 314, 74 * (1 - u) ** 1.5 + 5]);
+  }
+  const ida = ps.map(([px, py, w], i) => `${i ? 'L' : 'M'}${(px - w / 2).toFixed(1)} ${py.toFixed(1)}`).join(' ');
+  const vuelta = [...ps].reverse().map(([px, py, w]) => `L${(px + w / 2).toFixed(1)} ${py.toFixed(1)}`).join(' ');
+  return soplo(`${ida} ${vuelta} Z`, M.sombra, 'm', 0.55) + soplo(`${ida} ${vuelta} Z`, M.medio, 'l', 0.16);
 }
 
 /**
@@ -153,6 +176,11 @@ function pisoMonte(): string {
     brumaEntrePlanos(0, ANCHO, 366, 13, M.medio, 0.2, 813) +
     brumaEntrePlanos(0, ANCHO, 462, 26, MONTE.ocre, 0.12, 817) +
     brumaEntrePlanos(0, ANCHO, 556, 22, M.negro, 0.42, 819) +
+    // Segunda vuelta: dos senderos que se pierden entre los troncos. (Las raíces sueltas en el borde se
+    // probaron y se sacaron: sin tronco encima, en la captura eran una araña.)
+    // Nada de esto cae cerca de (660, 262), que es de otro bicho (`T-529`), ni debajo de los del elenco.
+    sendero(232, 70, 821) +
+    sendero(1936, -90, 823) +
     troncoHueco(790, 356, 150, 30) +
     `</g>`
   );
@@ -171,45 +199,116 @@ function pisoDelCampo(desde: number, hasta: number, semilla: number, claro: read
     return d + ` L${hasta + 40} ${ALTO + 40} L${desde - 40} ${ALTO + 40} Z`;
   };
   const enElClaro = (x: number): boolean => x > claro[0] && x < claro[1];
+  /**
+   * Segunda vuelta: el campo no es una alfombra. Se compone en **manchones** de pasto alto (cada uno
+   * con su centro, más tupido adentro) y, entre ellos, tierra pisada y oscura por donde va la huella.
+   * `tupido` dice cuánto pasto hay en un punto, de 0 a 1.
+   */
+  const manchones: [number, number, number, number][] = [];
+  for (let x = desde + 40 + rnd() * 80; x < hasta; x += 210 + rnd() * 230) manchones.push([x, 372 + rnd() * 200, 90 + rnd() * 90, 26 + rnd() * 34]);
+  const tupido = (x: number, y: number): number => {
+    let t = 0;
+    for (const [cx, cy, rx, ry] of manchones) t = Math.max(t, 1 - Math.hypot((x - cx) / rx, (y - cy) / ry));
+    return t;
+  };
   let luz = '';
-  for (let x = desde + 60; x < hasta; x += 200 + rnd() * 220) luz += nube(x, 400 + rnd() * 110, 150 + rnd() * 130, 34 + rnd() * 30, CAMPO.azul, 'xl', 0.5 + rnd() * 0.3);
-  let noche = '';
-  for (let x = desde + 140; x < hasta; x += 260 + rnd() * 260) noche += nube(x, 420 + rnd() * 170, 120 + rnd() * 140, 40 + rnd() * 40, M.negro, 'xl', 0.4 + rnd() * 0.25);
-  // El pasto: hileras de crayón, cortas atrás y largas adelante, todas peinadas para el mismo lado.
+  for (const [cx, cy, rx, ry] of manchones) luz += nube(cx, cy, rx * 1.1, ry * 1.2, CAMPO.azul, 'xl', 0.75);
+  // La huella: de la tranquera al claro, y del claro a la salida. Tierra pisada, apenas más clara, que se angosta hacia el fondo.
+  const huella = (ps: readonly (readonly [number, number, number])[]): string => {
+    const arriba = ps.map(([x, y, w], i) => `${i ? 'L' : 'M'}${x} ${y - w / 2}`).join(' ');
+    const abajo = [...ps].reverse().map(([x, y, w]) => `L${x} ${y + w / 2}`).join(' ');
+    return soplo(`${arriba} ${abajo} Z`, M.negro, 'm', 0.5) + soplo(`${arriba} ${abajo} Z`, CAMPO.pezunia, 'l', 0.07);
+  };
+  const huellas =
+    huella([[desde + 244, 334, 6], [desde + 300, 372, 14], [desde + 420, 410, 22], [desde + 600, 430, 26], [claro[0] + 60, 440, 30]]) +
+    huella([[claro[1] - 60, 452, 30], [claro[1] + 150, 480, 28], [hasta - 420, 500, 30], [hasta - 150, 470, 22], [hasta - 40, 420, 12]]);
   let pasto = '';
-  for (let i = 0; i < (hasta - desde) / 3.2; i++) {
+  for (let i = 0; i < (hasta - desde) / 2.2; i++) {
     const x = desde + rnd() * (hasta - desde);
     const hondura = rnd() ** 0.8;
     const y = 336 + hondura * 290;
-    if (enElClaro(x) && y > 360 && y < 590) continue;
-    const largo = 4 + hondura * 13 + rnd() * 4;
+    if (enElClaro(x) && y > 350 && y < 596) continue;
+    const t = tupido(x, y);
+    // Fuera de los manchones casi no hay: algún pelo suelto.
+    if (rnd() > t * 1.5 + 0.05) continue;
+    const largo = (4 + hondura * 13 + rnd() * 4) * (0.7 + t * 0.6);
     const que = rnd();
     pasto += trazo(`M${x.toFixed(1)} ${y.toFixed(1)} q${(-1 - rnd() * 2).toFixed(1)} ${(-largo * 0.6).toFixed(1)} ${(-3 - rnd() * 5).toFixed(1)} ${(-largo).toFixed(1)}`, que < 0.5 ? CAMPO.escama : que < 0.8 ? CAMPO.azul : CAMPO.claro, 1 + hondura * 0.7, que < 0.8 ? 0.7 : 0.5);
   }
   let matas = '';
-  const lugares: [number, number][] = [];
-  for (let i = 0; i < 74; i++) lugares.push([desde + rnd() * (hasta - desde), rnd()]);
-  lugares.sort((a, b) => a[1] - b[1]);
-  for (const [x, hondura] of lugares) {
-    const y = 350 + hondura * 250;
-    if (enElClaro(x)) continue;
-    const alto = 10 + hondura * 26;
-    matas += nube(x + 2, y + 1, alto * 0.5, 2.4, M.negro, 's', 0.6);
-    matas += rnd() < 0.2 ? cardo(x, y, alto * 1.2, rnd) : mataDePasto(x, y, alto, rnd, rnd() < 0.5 ? CAMPO.hondo : CAMPO.cielo, CAMPO.claro);
+  const lugares: [number, number, number][] = [];
+  for (const [cx, cy, rx, ry] of manchones) {
+    const cuantas = 3 + Math.floor(rnd() * 4);
+    for (let i = 0; i < cuantas; i++) lugares.push([cx + (rnd() - 0.5) * rx * 1.5, cy + (rnd() - 0.5) * ry * 1.5, rnd()]);
   }
+  lugares.sort((a, b) => a[1] - b[1]);
+  for (const [x, y, que] of lugares) {
+    if (enElClaro(x) || y < 348 || y > 604) continue;
+    const hondura = (y - 348) / 256;
+    const alto = 12 + hondura * 28;
+    matas += nube(x + 2, y + 1, alto * 0.5, 2.4, M.negro, 's', 0.6);
+    matas += que < 0.16 ? cardo(x, y, alto * 1.2, rnd) : mataDePasto(x, y, alto, rnd, que < 0.6 ? CAMPO.hondo : CAMPO.cielo, CAMPO.claro);
+  }
+  // Lo que pesa: a la entrada, la calavera clavada en el poste de la tranquera; a la salida, el arado.
+  const cosas =
+    calaveraDeVaca(desde + 166, 272, 0.95) +
+    arado(hasta - 300, 468, 1.25) +
+    [0, 1, 2, 3].map((i) => mataDePasto(hasta - 372 + i * 44 + rnd() * 10, 470 + (i % 2) * 5, 26 + rnd() * 12, rnd, CAMPO.hondo, CAMPO.claro, 11)).join('');
   return (
     soplo(borde(300), CAMPO.cielo, 'l') +
     soplo(borde(318), CAMPO.cielo, 'm') +
     nube((desde + hasta) / 2, 600, (hasta - desde) * 0.6, 80, M.negro, 'xl', 0.5) +
+    // La tierra pisada, oscura; y encima, los manchones donde el pasto agarra la luna.
+    nube((desde + hasta) / 2, 470, (hasta - desde) * 0.6, 110, M.negro, 'xl', 0.42) +
     luz +
-    noche +
+    huellas +
     // El alambrado, en el fondo del campo: se corta donde está el claro (ahí asoma el lobo).
     alambrado(desde - 10, claro[0] + 30, 327, 42, 78, semilla + 3, desde + 240) +
     alambrado(claro[1] - 30, hasta - 190, 327, 42, 78, semilla + 5) +
     sueloDeLaPastura(desde, hasta, semilla + 7, [claro[0] - 110, claro[1] + 110]) +
     pasto +
     matas +
+    cosas +
     soplo(`M${desde - 40} 592 L${hasta + 40} 592 L${hasta + 40} ${ALTO + 40} L${desde - 40} ${ALTO + 40} Z`, M.negro, 'l', 0.7)
+  );
+}
+
+/**
+ * La orilla del claro (`D-91`, segunda vuelta). El claro del recinto es un óvalo de canto liso con un
+ * aro negro: de noche y con la luna atrás, se leía como un segundo sol. Acá el pasto se lo come: la
+ * orilla es de mordidas desparejas, con matas encima, y el naranja se enfría y se apaga hacia afuera.
+ * Lo de adentro (la soga, el palo, los bichos) no cambia de lugar.
+ */
+const CORTE_DEL_CLARO = 306;
+
+function orillaDelClaro(): string {
+  const rnd = azar(431);
+  const { x: px, y: py } = PALO;
+  const rx = 262;
+  const ry = 138;
+  let mordidas = '';
+  let matas = '';
+  for (let i = 0; i < 54; i++) {
+    const a = (i / 54) * Math.PI * 2 + rnd() * 0.1;
+    const afuera = 6 + rnd() * 30;
+    const x = px + Math.cos(a) * (rx + afuera);
+    const y = py + Math.sin(a) * (ry + afuera * 0.6);
+    const r = 12 + rnd() * 22;
+    // Lo de arriba del borde del piso no se muerde: ahí atrás hay cielo, y la mordida sería una nube negra.
+    if (y < 322) continue;
+    // En la tinta del campo, no en negro: es pasto que avanza, no humo.
+    mordidas += nube(x, y, r * (1 + Math.abs(Math.cos(a)) * 0.2), r * 0.62, CAMPO.cielo, i % 2 ? 'm' : 's', 0.92);
+    // El pasto que avanza sobre la orilla: más en el canto de adelante, que es el que se ve.
+    if (Math.sin(a) > -0.5 && rnd() < 0.62) matas += mataDePasto(x + (rnd() - 0.5) * 16, y + r * 0.2, 10 + Math.max(0, Math.sin(a)) * 18 + rnd() * 6, rnd, rnd() < 0.5 ? CAMPO.hondo : CAMPO.cielo, CAMPO.claro, 7);
+  }
+  // El canto de atrás: el claro del recinto sube más que el borde del piso (ahí lo tapaba su halo). Acá
+  // se recorta en el borde (`CORTE_DEL_CLARO`) y el pasto del fondo le pasa por delante.
+  for (let x = px - 176; x <= px + 176; x += 15 + rnd() * 12) mordidas += nube(x, CORTE_DEL_CLARO + 6 + rnd() * 8, 15 + rnd() * 12, 8 + rnd() * 5, CAMPO.cielo, 'm', 0.95);
+  return (
+    // Se enfría y se apaga: es tierra pelada de noche, no una brasa.
+    nube(px, py, rx * 0.95, ry * 0.95, CAMPO.azul, 'xl', 0.2) +
+    mordidas +
+    matas
   );
 }
 
@@ -224,7 +323,7 @@ function pisoPastura(): string {
     nube(ANCHO - 140, 336, 150, 50, VELA, 'xl', 0.5) +
     nube(ANCHO - 140, 330, 26, 30, 'var(--entorno-templo-foco)', 'l', 0.8) +
     pisoDelCampo(0, ANCHO, 203, [dx + PALO.x - 320, dx + PALO.x + 320]) +
-    `<g transform="translate(${dx} 0)">${claroDeLaPastura()}</g>` +
+    `<g transform="translate(${dx} 0)"><clipPath id="cp-claro"><rect x="-200" y="${CORTE_DEL_CLARO}" width="1400" height="${ALTO}"/></clipPath><g clip-path="url(#cp-claro)">${claroDeLaPastura(true)}</g>${orillaDelClaro()}</g>` +
     `</g>`
   );
 }
