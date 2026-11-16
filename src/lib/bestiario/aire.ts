@@ -143,8 +143,9 @@ export const AIRE: Readonly<Record<string, readonly CapaDeAire[]>> = {
   'los-astilleros': [
     // Tanda 3 de `D-91`: la bruma de atrás ahora está impresa en lo lejano, entre la otra orilla y el carguero.
     // En su lugar va **el río**: una franja angosta, pegada al muelle, de destellos de sodio y rayas de tiza
-    // que la corriente lleva de costado. Es chica (90 de alto): es agua que se mueve, no una capa de pantalla.
-    capa({ pieza: 'aire-astillero-rio', plano: 'fondo', f: 0.9, y: 350, alto: 90, ancho: 1200, deriva: 20, alfa: 0.86, late: 0.14, ritmo: 0.9 }),
+    // que la corriente lleva de costado. Es chica: es agua que se mueve, no una capa de pantalla. Tercera vuelta: llega
+    // hasta la otra orilla (128 de alto), y el carguero va pintado encima de ella, así no le corre por el casco.
+    capa({ pieza: 'aire-astillero-rio', plano: 'fondo', f: 0.9, y: 312, alto: 128, ancho: 1200, deriva: 20, alfa: 0.86, late: 0.14, ritmo: 0.9 }),
     capa({ pieza: 'aire-astillero-vaho', plano: 'medio', f: 1.1, y: 300, alto: 340, ancho: 1400, deriva: 11, alfa: 0.75, late: 0.14, ritmo: 0.29, abre: 0.45 }),
     capa({ pieza: 'aire-astillero-cerca', plano: 'cerca', f: 1.75, y: 420, alto: 220, ancho: 1600 }),
   ],
@@ -200,11 +201,8 @@ export const AIRE: Readonly<Record<string, readonly CapaDeAire[]>> = {
   ],
   // El árbol: las hojas que se le caen, y la racha que las lleva de costado cuando sopla en la copa.
   'el-arbol': [
-    // Lo que cuelga (`D-91`, tanda 3, segunda vuelta): los bonetes, las campanas, la llave y el huevo en su red van
-    // en una capa propia, detrás del piso y a su velocidad, que se hamaca. Las ramas quedan quietas en el piso: lo
-    // que se mueve es lo colgado. Es dibujo, no bruma: el alivio no la apaga. La jaula y el farol no van acá (a la
-    // jaula la mira la lupa, y del farol sale la luz): esos cuelgan quietos.
-    capa({ pieza: 'aire-arbol-colgantes', plano: 'fondo', f: 1, y: 0, alto: 340, ancho: 2400, mece: 7, ritmoMece: 0.7, firme: true }),
+    // Lo que cuelga de las ramas grandes se hamacó en una capa de aire en la segunda vuelta de la tanda 3 de `D-91`,
+    // y en la tercera salió de acá: son piezas del piso que la isla gira desde su nudo (`COLGANTES`, `arte-bonete.ts`).
     capa({ pieza: 'aire-arbol-racha', plano: 'medio', f: 1.2, y: 60, alto: 400, ancho: 1300, deriva: -70, alfa: 0.34, late: 0.3, ritmo: 0.37, mece: 10, ritmoMece: 0.6, suena: 'viento' }),
     capa({ pieza: 'aire-arbol-hojas', plano: 'cerca', f: 1.4, y: 0, alto: ALTO, ancho: 900, deriva: -16, cae: 30, alfa: 0.95, mece: 12, ritmoMece: 0.9 }),
   ],
