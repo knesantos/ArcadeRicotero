@@ -20,6 +20,7 @@ import { enmascarado, forma, nube, soplo, trazo, type Pieza } from './aerografo.
 import { ACECHOS, AIRE, LUCES, VIDAS, altoDeBaldosa, type CapaDeAire } from './aire.ts';
 import { M, azar, filaDeTiras } from './arte.ts';
 import { ruedaDelMolino, troncosCercanos } from './arte-arboles.ts';
+import { boneteColgantes } from './arte-bonete.ts';
 import { galponHumo, galponPogo, zapatilla } from './arte-recital.ts';
 import { lamparaDeLaMesa, moscardon } from './arte-sobremesa.ts';
 import { ALTO } from './camino.ts';
@@ -1220,6 +1221,8 @@ const PINTA: Readonly<Record<string, (c: CapaDeAire) => string>> = {
   'aire-mesa-humo': mesaHumo,
   'aire-templo-incienso': temploIncienso,
   'aire-templo-ofrendas': temploOfrendas,
+  // Lo que cuelga de las ramas grandes del árbol y se hamaca (`arte-bonete.ts`).
+  'aire-arbol-colgantes': (c) => rociado(c, boneteColgantes()),
   'aire-arbol-hojas': arbolHojas,
   'aire-arbol-racha': arbolRacha,
   'aire-galpon-humo': galponHumo,
@@ -1232,9 +1235,9 @@ const PINTA: Readonly<Record<string, (c: CapaDeAire) => string>> = {
  * pura mancha y se imprime gruesa, que pesa poco; lo que tiene filo (las matas, la ceniza) va más fino.
  */
 /** Las baldosas que no son niebla sino dibujo de canto duro, y que se miran con la lupa: se imprimen finas (`D-91`). */
-const FILOSAS: ReadonlySet<string> = new Set(['aire-monte-troncos', 'aire-galpon-pogo', 'aire-galpon-pogo-b']);
+const FILOSAS: ReadonlySet<string> = new Set(['aire-monte-troncos', 'aire-galpon-pogo', 'aire-galpon-pogo-b', 'aire-arbol-colgantes']);
 /** Las filosas que no se miran con la lupa tan de cerca: el pogo va un poco menos fino, por la memoria (`D-91`, tanda 2, cuarta vuelta). */
-const MENOS_FINAS: Readonly<Record<string, number>> = { 'aire-galpon-pogo': 1.4, 'aire-galpon-pogo-b': 1.4 };
+const MENOS_FINAS: Readonly<Record<string, number>> = { 'aire-galpon-pogo': 1.4, 'aire-galpon-pogo-b': 1.4, 'aire-arbol-colgantes': 1.4 };
 
 export const PIEZAS_AIRE: readonly Pieza[] = [...new Map(Object.values(AIRE).flat().filter((c) => !c.ajena).map((c) => [c.pieza, c] as const)).values()].map((c) => {
   const pinta = PINTA[c.pieza];
