@@ -144,7 +144,7 @@ export const AIRE: Readonly<Record<string, readonly CapaDeAire[]>> = {
     // Tanda 3 de `D-91`: la bruma de atrás ahora está impresa en lo lejano, entre la otra orilla y el carguero.
     // En su lugar va **el río**: una franja angosta, pegada al muelle, de destellos de sodio y rayas de tiza
     // que la corriente lleva de costado. Es chica (90 de alto): es agua que se mueve, no una capa de pantalla.
-    capa({ pieza: 'aire-astillero-rio', plano: 'fondo', f: 0.9, y: 350, alto: 90, ancho: 1200, deriva: 13, alfa: 0.86, late: 0.14, ritmo: 0.9 }),
+    capa({ pieza: 'aire-astillero-rio', plano: 'fondo', f: 0.9, y: 350, alto: 90, ancho: 1200, deriva: 20, alfa: 0.86, late: 0.14, ritmo: 0.9 }),
     capa({ pieza: 'aire-astillero-vaho', plano: 'medio', f: 1.1, y: 300, alto: 340, ancho: 1400, deriva: 11, alfa: 0.75, late: 0.14, ritmo: 0.29, abre: 0.45 }),
     capa({ pieza: 'aire-astillero-cerca', plano: 'cerca', f: 1.75, y: 420, alto: 220, ancho: 1600 }),
   ],
@@ -200,6 +200,11 @@ export const AIRE: Readonly<Record<string, readonly CapaDeAire[]>> = {
   ],
   // El árbol: las hojas que se le caen, y la racha que las lleva de costado cuando sopla en la copa.
   'el-arbol': [
+    // Lo que cuelga (`D-91`, tanda 3, segunda vuelta): los bonetes, las campanas, la llave y el huevo en su red van
+    // en una capa propia, detrás del piso y a su velocidad, que se hamaca. Las ramas quedan quietas en el piso: lo
+    // que se mueve es lo colgado. Es dibujo, no bruma: el alivio no la apaga. La jaula y el farol no van acá (a la
+    // jaula la mira la lupa, y del farol sale la luz): esos cuelgan quietos.
+    capa({ pieza: 'aire-arbol-colgantes', plano: 'fondo', f: 1, y: 0, alto: 340, ancho: 2400, mece: 7, ritmoMece: 0.7, firme: true }),
     capa({ pieza: 'aire-arbol-racha', plano: 'medio', f: 1.2, y: 60, alto: 400, ancho: 1300, deriva: -70, alfa: 0.34, late: 0.3, ritmo: 0.37, mece: 10, ritmoMece: 0.6, suena: 'viento' }),
     capa({ pieza: 'aire-arbol-hojas', plano: 'cerca', f: 1.4, y: 0, alto: ALTO, ancho: 900, deriva: -16, cae: 30, alfa: 0.95, mece: 12, ritmoMece: 0.9 }),
   ],
@@ -433,7 +438,7 @@ export const VISITAS: Readonly<Record<string, Visita>> = {
   // en el blanco del horizonte. El árbol: a la luna se le abre un ojo. Las cajas son las de `arte-puerto.ts`,
   // `arte-tundra.ts` y `arte-bonete.ts`, y `aire.test.ts` mira que coincidan.
   'los-astilleros': { pieza: 'camino-astillero-gato', f: 1, caja: [112, 138, 66, 62], espera: 6 },
-  cybersiberia: { pieza: 'camino-cyber-coloso', f: 0.6, caja: [584, 160, 96, 176], espera: 6 },
+  cybersiberia: { pieza: 'camino-cyber-coloso', f: 0.6, caja: [620, 160, 96, 176], espera: 6 },
   'el-arbol': { pieza: 'camino-arbol-ojo', f: 0.5, caja: [638, 210, 104, 104], espera: 7 },
 };
 
@@ -443,6 +448,16 @@ export const VISITAS: Readonly<Record<string, Visita>> = {
  */
 export const HUIDIZOS: Readonly<Record<string, Visita>> = {
   'la-mesa': { pieza: 'camino-mesa-ojos', f: 0.8, caja: [1212, 172, 30, 14], espera: 0 },
+};
+
+/**
+ * Lo que está parado entre lo lejano y el piso (`D-91`, tanda 3, segunda vuelta): una imagen clavada, a la vista
+ * siempre, que se corre a su propia velocidad. Es la lección de la tanda 1 (lo más cercano del fondo va aparte,
+ * a otra velocidad) para algo que no se repite: una baldosa de aire lo mostraría de nuevo cada tantas pantallas.
+ * En los astilleros, el carguero: va más rápido que la otra orilla y más despacio que el muelle.
+ */
+export const PLANOS: Readonly<Record<string, readonly { pieza: string; f: number; caja: readonly [number, number, number, number] }[]>> = {
+  'los-astilleros': [{ pieza: 'camino-astillero-carguero', f: 0.72, caja: [820, -12, 420, 400] }],
 };
 
 /** Las piezas que no son cuerpo: el humo, los fogonazos, los ojos, la boca, los muebles. A esas la luz no les prende un canto. */
@@ -585,7 +600,7 @@ export const VIDAS: Readonly<Record<string, Vida>> = {
   'la-pastura': { pieza: 'vida-vellon', ancho: 22, alto: 16, tam: 1, y: [468, 520], dura: [6, 9], espera: [26, 48], aletea: 0, bamboleo: 38, alfa: 0.9, deLosDosLados: false, alReves: true },
   // Los astilleros (`D-91`, tanda 3): ya no la gaviota sino una chata con sus luces, que cruza el río despacio
   // por detrás del muelle y del ferry. Tarda medio minuto; pasa una cada minuto o más.
-  'los-astilleros': { pieza: 'vida-chata', ancho: 150, alto: 26, tam: 0.6, y: [352, 352], dura: [26, 34], espera: [36, 70], aletea: 0, bamboleo: 0, alfa: 0.92, deLosDosLados: false, atras: true },
+  'los-astilleros': { pieza: 'vida-chata', ancho: 150, alto: 26, tam: 1, y: [358, 358], dura: [26, 34], espera: [36, 70], aletea: 0, bamboleo: 0, alfa: 0.92, deLosDosLados: false, atras: true },
   // Los techos: un murciélago, más bajo y más rápido.
   'los-techos': { ...AVE, tam: 0.45, y: [120, 240], dura: [5, 8] },
   // La prisión: un pájaro blanco, de gubia, que pasa por arriba del muro. El único que sale.
@@ -662,7 +677,7 @@ export const ALIVIO_DE_LA_REGION: Readonly<Record<string, number>> = { cybersibe
  * mirar (la puerta del fondo, la ventana), y en el galpón, la fila grande. Las demás regiones quedan como
  * estaban hasta que alguien las mire con la lupa.
  */
-export const FRENTE_QUE_SE_CORRE: readonly string[] = ['la-mesa', 'el-galpon'];
+export const FRENTE_QUE_SE_CORRE: readonly string[] = ['la-mesa', 'el-galpon', 'los-astilleros', 'cybersiberia', 'el-arbol'];
 
 /** A cuántos píxeles de los ojos un dedo o un mouse ya los está mirando. */
 export const MIRADA = 84;
