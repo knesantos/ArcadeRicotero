@@ -482,6 +482,32 @@ function astilleroCerca(c: CapaDeAire): string {
    El infierno
    ------------------------------------------------------------------ */
 
+/**
+ * El calor que tiembla: hebras finas, casi verticales, que serpentean hacia arriba contra la pared de
+ * fuego. Casi sin tinta. La isla las sacude rápido de costado (`mece`): no se ve la hebra, se ve que
+ * el aire no está quieto.
+ */
+function infiernoCalor(c: CapaDeAire): string {
+  const rnd = azar(743);
+  let s = '';
+  for (let i = 0; i < 44; i++) {
+    const x = (c.ancho / 44) * (i + rnd());
+    const y0 = c.y + c.alto - 16 - rnd() * 70;
+    const largo = 50 + rnd() * 100;
+    const onda = 3 + rnd() * 5;
+    const fase = rnd() * 6;
+    const grosor = 1.2 + rnd() * 1.8;
+    const o = 0.14 + rnd() * 0.2;
+    const d = (xx: number): string => {
+      let p = `M${f(xx)} ${f(y0)}`;
+      for (let k = 1; k <= 8; k++) p += ` L${f(xx + Math.sin(fase + k * 0.9) * onda * (0.4 + k / 8))} ${f(y0 - (largo * k) / 8)}`;
+      return p;
+    };
+    s += vuelta(x, 20, c.ancho, (xx) => trazo(d(xx), i % 3 ? I.fuego : I.chispa, grosor, o));
+  }
+  return rociado(c, `<g filter="url(#soplo-xs)">${s}</g>`);
+}
+
 function infiernoHumo(c: CapaDeAire): string {
   return rociado(c,     manchas(c, 711, 13, 380, 590, [[I.brasa, 0.42], [I.negro, 0.34], [I.fuego, 0.09]], 26, [45, 105]) +
       jirones('ih', c, 719, 12, 372, 612, [[I.brasa, 0.62], [I.negro, 0.5], [I.fuego, 0.14]]),
@@ -983,7 +1009,12 @@ function haz(id: string, largo: number, ancho: number, color: string, corazon: s
 }
 
 /** La brasa: una mancha ancha y baja, tres bocanadas una adentro de la otra. */
-const brasa = (): string => nube(0, 0, 170, 26, I.fuego, 'xl', 0.75) + nube(0, 4, 100, 20, I.chispa, 'xl', 0.6) + nube(0, 6, 44, 9, 'var(--entorno-mesa-papel)', 'l', 0.55);
+// Segunda vuelta de la tanda 2 de `D-91`: la brasa le pega a Luzbelito desde abajo. Dos lamidas a los flancos
+// del busto y una bajo el mentón, sopladas, que laten con ella. No es un filo a medida (el busto es un recorte
+// de la tapa real, y el filo se mide desde arriba): es el resplandor que le sube.
+const brasa = (): string =>
+  nube(0, 0, 170, 26, I.fuego, 'xl', 0.75) + nube(0, 4, 100, 20, I.chispa, 'xl', 0.6) + nube(0, 6, 44, 9, 'var(--entorno-mesa-papel)', 'l', 0.55) +
+  nube(-48, -110, 8, 44, I.fuego, 'm', 0.5) + nube(48, -110, 8, 44, I.fuego, 'm', 0.5) + nube(-40, -70, 12, 20, I.chispa, 'm', 0.32) + nube(40, -70, 12, 20, I.chispa, 'm', 0.32) + nube(0, -150, 26, 9, I.fuego, 'm', 0.3);
 
 const QUIEN_ALUMBRA: Readonly<Record<string, () => string>> = {
   'luz-astillero-cono': () => haz('lz-a', 340, 300, T.sodio, 'var(--entorno-mesa-papel)'),
@@ -1162,6 +1193,7 @@ const PINTA: Readonly<Record<string, (c: CapaDeAire) => string>> = {
   'aire-astillero-bruma': astilleroBruma,
   'aire-astillero-vaho': astilleroVaho,
   'aire-astillero-cerca': astilleroCerca,
+  'aire-infierno-calor': infiernoCalor,
   'aire-infierno-humo': infiernoHumo,
   'aire-infierno-ceniza': infiernoCeniza,
   'aire-ruta-bruma': rutaBruma,
