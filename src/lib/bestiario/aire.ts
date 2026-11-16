@@ -447,6 +447,8 @@ export interface Vida {
   alfa: number;
   /** Si puede venir de cualquiera de los dos lados, o siempre de la izquierda (la estrella cae para un lado). */
   deLosDosLados: boolean;
+  /** Siempre de la derecha: lo que lleva el viento, que en la pastura sopla para la izquierda (`D-91`). */
+  alReves?: boolean;
 }
 
 const AVE = { pieza: 'vida-ave', ancho: 40, alto: 18, tam: 0.55, y: [70, 150], dura: [9, 14], espera: [22, 40], aletea: 1, bamboleo: 0, alfa: 0.8, deLosDosLados: true } as const;
@@ -454,14 +456,18 @@ const AVE = { pieza: 'vida-ave', ancho: 40, alto: 18, tam: 0.55, y: [70, 150], d
 export const VIDAS: Readonly<Record<string, Vida>> = {
   // La lechuza del monte y la gaviota del río son la misma silueta lejana.
   'el-monte': AVE,
-  'la-pastura': AVE,
+  // La pastura (`D-91`, cuarta vuelta): no un pájaro sino un vellón que el viento lleva rodando por el pasto,
+  // para el mismo lado que la ola. Raro: uno cada medio minuto o más.
+  'la-pastura': { pieza: 'vida-vellon', ancho: 22, alto: 16, tam: 1, y: [468, 520], dura: [6, 9], espera: [26, 48], aletea: 0, bamboleo: 38, alfa: 0.9, deLosDosLados: false, alReves: true },
   'los-astilleros': { ...AVE, y: [60, 130] },
   // Los techos: un murciélago, más bajo y más rápido.
   'los-techos': { ...AVE, tam: 0.45, y: [120, 240], dura: [5, 8] },
   // La prisión: un pájaro blanco, de gubia, que pasa por arriba del muro. El único que sale.
   'la-prision': { ...AVE, pieza: 'vida-ave-papel', y: [40, 110], dura: [10, 15], alfa: 0.9 },
   // La ruta: una estrella que se cae.
-  'la-ruta': { pieza: 'vida-fugaz', ancho: 90, alto: 30, tam: 1, y: [50, 190], dura: [0.9, 1.4], espera: [18, 34], aletea: 0, bamboleo: 0, alfa: 0.9, deLosDosLados: false },
+  // La ruta (`D-91`, cuarta vuelta): ya no la estrella fugaz sino un tren, lejos, por el horizonte. Tarda
+  // casi medio minuto en cruzar y pasa uno cada minuto o más: el que se queda lo ve.
+  'la-ruta': { pieza: 'vida-tren', ancho: 280, alto: 22, tam: 0.62, y: [304, 304], dura: [24, 30], espera: [44, 80], aletea: 0, bamboleo: 0, alfa: 0.9, deLosDosLados: false },
   // El bajo: un barquito de papel que se lleva el agua, despacio.
   // El árbol: el pájaro que vuelve a la copa. La mesa: una polilla, chica y rápida, arriba.
   'el-arbol': { ...AVE, y: [50, 120] },
