@@ -5348,17 +5348,27 @@ body:has(> .lugar) .marca-chica {
    Al entrar a una región, o al volver al plano, la página llega tapada por una hoja impresa
    con la firma del lugar (la niebla del monte, la reja de la prisión, el telón del galpón) y
    la hoja se va: para arriba, para abajo o de costado, y lo último que se ve es su canto roto.
-   Mientras tapa, la región carga sus piezas atrás.
 
-   Es de la página a la que se llega y no tiene JavaScript, como manda `ADR-03` para el paso
-   entre pantallas: si la isla falla, el velo se va igual. No frena nada (`pointer-events:
-   none`): quien quiera caminar ya puede. Solo `transform`; lo soplado está impreso.
+   Desde `D-91` (`T-530`) es un loader de verdad. Son tres capas adentro de una caja quieta:
 
-   Con movimiento reducido `--duracion-velo` vale cero y el relleno `both` la deja en su último
-   cuadro, afuera y escondida: es un corte.
+   1. `::before`, la tinta sólida de la hoja (`--tinta-velo`): tapa desde el primer cuadro,
+      aunque el webp no haya llegado. Se apaga en el mismo instante en que la hoja se empieza
+      a correr (para entonces la hoja, que es de esa misma tinta, ya está encima).
+   2. `::after`, la hoja impresa: **queda quieta** (`animation-play-state: paused`) hasta que la
+      isla avisa con `data-listo` (`scripts/bestiario/llegada.ts`) que lo de la primera pantalla
+      ya está decodificado. Solo `transform`; lo soplado está impreso.
+   3. Lo que dice que está cargando: los ojos de la región, que se abren si tarda, y un aviso seco
+      si tarda más. Se apagan cuando la hoja se suelta.
+
+   Nunca deja a nadie adentro (`ADR-03`): sin JavaScript, un `<noscript>` de la página la suelta
+   enseguida; si la isla no avisa nunca, la caja entera se corta sola a los `--respaldo-velo`.
+   No frena nada (`pointer-events: none`): quien quiera caminar ya puede.
+
+   Con movimiento reducido `--duracion-velo` vale cero: espera igual, y se va de un corte.
    ========================================================================== */
 
-.velo-de-llegada {
+.velo-de-llegada,
+.velo-de-salida {
   position: fixed;
   left: 0;
   top: 0;
@@ -5367,30 +5377,146 @@ body:has(> .lugar) .marca-chica {
   height: 100vh;
   height: 100lvh;
   pointer-events: none;
+}
+
+/* El respaldo: si nadie la soltó, la caja entera se apaga sola. */
+.velo-de-llegada {
+  animation: velo-respaldo var(--duracion-velo) linear var(--respaldo-velo) both;
+}
+
+.velo-de-llegada::before,
+.velo-de-salida::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--tinta-velo, var(--fondo));
+}
+
+.velo-de-llegada::after,
+.velo-de-salida::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
   background: var(--velo) 0 0 / 100% 100% no-repeat;
+}
+
+.velo-de-llegada::before,
+.velo-de-llegada::after {
   animation-duration: var(--duracion-velo);
   animation-timing-function: var(--curva-cinta);
   animation-fill-mode: both;
+  animation-play-state: paused;
+}
+
+.velo-de-llegada::before {
+  animation-name: velo-tinta;
+}
+
+.velo-de-llegada[data-listo]::before,
+.velo-de-llegada[data-listo]::after {
+  animation-play-state: running;
 }
 
 /* La hoja es más larga que la pantalla (`--sobra`): lo que sobra es el canto que arrastra. */
-.velo-de-llegada[data-rumbo='sube'] {
-  height: calc(100vh * var(--sobra));
-  height: calc(100lvh * var(--sobra));
+.velo-de-llegada[data-rumbo='sube']::after,
+.velo-de-salida[data-rumbo='sube']::after {
+  height: calc(100% * var(--sobra));
   animation-name: velo-sube;
 }
 
-.velo-de-llegada[data-rumbo='baja'] {
-  top: calc(100vh * (1 - var(--sobra)));
-  top: calc(100lvh * (1 - var(--sobra)));
-  height: calc(100vh * var(--sobra));
-  height: calc(100lvh * var(--sobra));
+.velo-de-llegada[data-rumbo='baja']::after,
+.velo-de-salida[data-rumbo='baja']::after {
+  top: calc(100% * (1 - var(--sobra)));
+  height: calc(100% * var(--sobra));
   animation-name: velo-baja;
 }
 
-.velo-de-llegada[data-rumbo='corre'] {
-  width: calc(100vw * var(--sobra));
+.velo-de-llegada[data-rumbo='corre']::after,
+.velo-de-salida[data-rumbo='corre']::after {
+  width: calc(100% * var(--sobra));
   animation-name: velo-corre;
+}
+
+/* La hoja de salida (`llegada.ts` la pone al tocar un cartel): la del destino, que entra en la
+   página que se deja por donde después se va a ir, al revés y en la mitad del tiempo. La tinta
+   de abajo aparece recién cuando la hoja ya tapó. */
+.velo-de-salida::after {
+  animation-duration: calc(var(--duracion-velo) * 0.5);
+  animation-timing-function: var(--curva-cinta);
+  animation-fill-mode: both;
+  animation-direction: reverse;
+}
+
+.velo-de-salida::before {
+  animation: velo-tinta calc(var(--duracion-velo) * 0.5) var(--curva-cinta) both reverse;
+}
+
+/* Lo que dice que está cargando. Los ojos de la región (los mismos que se abren en lo oscuro si te
+   quedás quieto, `ACECHOS`) aparecen si la carga tarda; el aviso, si tarda más. */
+.velo-ojos,
+.velo-aviso {
+  position: absolute;
+  left: 50%;
+  z-index: 1;
+  margin: 0;
+  opacity: 0;
+  animation: velo-asoma var(--duracion-velo) linear both;
+}
+
+.velo-ojos {
+  top: 44%;
+  width: min(34vw, 9rem);
+  height: auto;
+  transform: translate(-50%, -50%);
+  animation-delay: calc(var(--aviso-velo) * 0.4);
+}
+
+.velo-aviso {
+  top: calc(44% + min(17vw, 4.5rem));
+  padding: 0.3rem 0.6rem;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  white-space: nowrap;
+  color: var(--fondo);
+  background: var(--papel);
+  border: var(--linea) solid var(--fondo);
+  border-radius: 3px;
+  transform: translate(-50%, 0) rotate(-1.5deg);
+  animation-delay: var(--aviso-velo);
+}
+
+.velo-de-llegada[data-listo] .velo-ojos,
+.velo-de-llegada[data-listo] .velo-aviso {
+  visibility: hidden;
+}
+
+@keyframes velo-asoma {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes velo-respaldo {
+  to {
+    visibility: hidden;
+  }
+}
+
+/* La tinta de abajo está mientras la hoja tapa quieta, y se apaga cuando la hoja arranca. */
+@keyframes velo-tinta {
+  0%,
+  22% {
+    visibility: visible;
+  }
+
+  23%,
+  100% {
+    visibility: hidden;
+  }
 }
 
 /* Tapa quieta el primer quinto, que es lo que dura el fundido entre las dos pantallas, y después se va. */
