@@ -15,12 +15,12 @@
  */
 
 import { forma, nube, soplo, trazo, type Pieza } from './aerografo.ts';
-import { M, azar, claroDeLaPastura, filaDeTiras } from './arte.ts';
+import { M, azar, filaDeTiras, paloDeLaPastura } from './arte.ts';
 import { ENTORNOS, PIEZAS_ENTORNOS } from './arte-entornos.ts';
 import { ALTO, CAMINOS, CRUCE, K_ENTORNO, SOLAPE, VELOCIDAD, anchoDeCapa, type Tramo } from './camino.ts';
 import { tintaDe } from './mapa.ts';
 import { sueloDeCybersiberia, sueloDeLaMesa, sueloDeLaPastura, sueloDeLaRuta, sueloDeLosAstilleros, sueloDelArbol, sueloDelGalpon, sueloDelMonte } from './arte-suelo.ts';
-import { CAMPO, MONTE, alambrado, arado, brumaEntrePlanos, calaveraDeVaca, cardo, mataDePasto, pasturaLejos, planoLejano, planoMedio } from './arte-arboles.ts';
+import { CAMPO, MONTE, alambrado, arado, carroVolcado, brumaEntrePlanos, calaveraDeVaca, cardo, mataDePasto, pasturaLejos, planoLejano, planoMedio } from './arte-arboles.ts';
 import { ARBOL, GALPON, MESA, RUTA } from './rig-entornos.ts';
 import { ASTILLERO } from './rig-entornos.ts';
 import { PALO } from './rig.ts';
@@ -85,22 +85,19 @@ function pisoDelMonte(desde: number, hasta: number, semilla: number): string {
   };
   let picada = `M${desde - 40} 520`;
   for (let x = desde; x <= hasta + 40; x += 200) picada += ` C${x + 60} ${(500 + rnd() * 30).toFixed(1)}, ${x + 140} ${(506 + rnd() * 30).toFixed(1)}, ${x + 200} ${(512 + rnd() * 20).toFixed(1)}`;
-  // Los pastos (`D-91`, segunda vuelta): eran rayitas sueltas repartidas parejo, y se leían como
-  // lluvia. Ahora son matas de tres o cuatro hojas que se abren desde un punto, juntas de a varias.
+  // Los pastos (`D-91`, tercera vuelta). Primero eran rayitas (lluvia), después brotes sueltos
+  // repartidos parejo (regla §3: salpicado). Ahora son **matas con peso**: pocas, cada una un manojo
+  // apretado de varias matas de hojas anchas con su sombra, y entre mata y mata, nada.
   let pastos = '';
-  for (let i = 0; i < (hasta - desde) / 46; i++) {
-    const cx = desde + rnd() * (hasta - desde);
-    const cy = 340 + rnd() * 270;
-    const cuantas = 2 + Math.floor(rnd() * 4);
+  for (let cx = desde + 60 + rnd() * 90; cx < hasta - 40; cx += 150 + rnd() * 170) {
+    const hondura = rnd();
+    const cy = 352 + hondura * 244;
+    const alto = 9 + hondura * 20;
+    const cuantas = 3 + Math.floor(rnd() * 4);
+    pastos += nube(cx, cy + 3, alto * 1.9, alto * 0.3, M.negro, 'm', 0.6);
     for (let k = 0; k < cuantas; k++) {
-      const x = cx + (rnd() - 0.5) * 70;
-      const y = cy + (rnd() - 0.5) * 24;
-      const largo = (5 + rnd() * 7) * (0.7 + ((y - 330) / 290) * 0.8);
-      const color = rnd() < 0.75 ? M.hondo : M.sombra;
-      for (const cae of [-0.7, -0.1, 0.6]) {
-        const dx = (cae + (rnd() - 0.5) * 0.4) * largo * 0.8;
-        pastos += trazo(`M${x.toFixed(1)} ${y.toFixed(1)} q${(dx * 0.2).toFixed(1)} ${(-largo * 0.7).toFixed(1)} ${dx.toFixed(1)} ${(-largo * (1 - Math.abs(cae) * 0.3)).toFixed(1)}`, color, 1.3, 0.6);
-      }
+      const u = k / Math.max(1, cuantas - 1) - 0.5;
+      pastos += mataDePasto(cx + u * alto * 3 + (rnd() - 0.5) * 6, cy + Math.abs(u) * -4 + (rnd() - 0.5) * 4, alto * (0.7 + rnd() * 0.5), rnd, rnd() < 0.6 ? M.oscuro : M.hondo, rnd() < 0.5 ? M.sombra : MONTE.ocre, 8);
     }
   }
   let noche = '';
@@ -122,17 +119,99 @@ function pisoDelMonte(desde: number, hasta: number, semilla: number): string {
   );
 }
 
-/** Un sendero que nace adelante, ancho, y se pierde angosto entre los troncos: tierra pisada, más clara. */
-function sendero(x: number, cae: number, semilla: number): string {
+/**
+ * Un sendero, **en escorzo** (`D-91`, tercera vuelta). El de la segunda vuelta subía casi derecho y
+ * claro: en la captura era un haz de luz. Este se ve desde arriba y de costado, como todo el piso:
+ * cerca es ancho y cruza la pantalla acostado; a medida que se aleja se angosta rápido, hace dos
+ * curvas cada vez más apretadas y se pierde en el borde, entre los troncos. `va` es para qué lado.
+ *
+ * Es tierra pisada, no luz: apenas más clara que el barro, con dos surcos, cascotes, y el canto
+ * comido por matas que le crecen encima.
+ */
+function sendero(x: number, va: number, semilla: number): string {
   const rnd = azar(semilla);
   const ps: [number, number, number][] = [];
-  for (let i = 0; i <= 8; i++) {
-    const u = i / 8;
-    ps.push([x + cae * u + Math.sin(u * Math.PI * 1.6 + rnd()) * 34 * (1 - u * 0.6), 624 - u * 314, 74 * (1 - u) ** 1.5 + 5]);
+  const n = 26;
+  for (let i = 0; i <= n; i++) {
+    const u = i / n;
+    // La perspectiva: lo lejos se apila contra el borde. `hondo` va de 0 (acá) a 1 (el borde del piso).
+    const hondo = 1 - (1 - u) ** 2.2;
+    const y = 632 - hondo * 312;
+    // Lo que se corre de costado se achica con la distancia, y las curvas se aprietan.
+    const lejos = 1 - hondo * 0.86;
+    const px = x + va * (u * 250 + Math.sin(u * Math.PI * 2.4 + 0.4) * 96 * lejos);
+    ps.push([px, y, 108 * lejos ** 1.7 + 3.5]);
   }
-  const ida = ps.map(([px, py, w], i) => `${i ? 'L' : 'M'}${(px - w / 2).toFixed(1)} ${py.toFixed(1)}`).join(' ');
-  const vuelta = [...ps].reverse().map(([px, py, w]) => `L${(px + w / 2).toFixed(1)} ${py.toFixed(1)}`).join(' ');
-  return soplo(`${ida} ${vuelta} Z`, M.sombra, 'm', 0.55) + soplo(`${ida} ${vuelta} Z`, M.medio, 'l', 0.16);
+  const canto = (lado: number, k = 1): string => ps.map(([px, py, w], i) => `${i ? 'L' : 'M'}${(px + lado * w * 0.5 * k).toFixed(1)} ${(py + lado * w * 0.07).toFixed(1)}`).join(' ');
+  const vuelta = (k = 1): string => [...ps].reverse().map(([px, py, w]) => `L${(px + w * 0.5 * k).toFixed(1)} ${(py + w * 0.07).toFixed(1)}`).join(' ');
+  const cuerpo = `${canto(-1)} ${vuelta()} Z`;
+  let s = soplo(cuerpo, M.sombra, 's', 0.42) + soplo(`${canto(-1, 0.6)} ${vuelta(0.6)} Z`, M.hondo, 'm', 0.2);
+  // Los dos surcos, más oscuros: por donde pasa todo.
+  for (const lado of [-0.28, 0.26]) s += `<path d="${ps.map(([px, py, w], i) => `${i ? 'L' : 'M'}${(px + lado * w).toFixed(1)} ${(py + lado * w * 0.14).toFixed(1)}`).join(' ')}" fill="none" stroke="${M.negro}" stroke-width="2.4" opacity="0.4" filter="url(#soplo-xs)"/>`;
+  // Cascotes y matas en el canto, más grandes cuanto más cerca.
+  for (let i = 0; i < n; i++) {
+    const [px, py, w] = ps[i]!;
+    const cerca = w / 108;
+    if (rnd() < 0.75) {
+      const lado = rnd() < 0.5 ? -1 : 1;
+      s += mataDePasto(px + lado * w * (0.44 + rnd() * 0.14), py + 2 + lado * w * 0.07, 6 + cerca * 22 + rnd() * 4, rnd, rnd() < 0.6 ? M.oscuro : M.hondo, M.sombra, 7);
+    }
+    if (rnd() < 0.5 && w > 9) {
+      const cx = px + (rnd() - 0.5) * w * 0.7;
+      const r = 1.2 + cerca * 3.4 * rnd();
+      s += nube(cx + 1, py + 1, r * 1.4, r * 0.5, M.negro, 'xs', 0.6) + forma(`M${(cx - r).toFixed(1)} ${py.toFixed(1)} L${(cx - r * 0.3).toFixed(1)} ${(py - r * 0.8).toFixed(1)} L${(cx + r * 0.7).toFixed(1)} ${(py - r * 0.6).toFixed(1)} L${(cx + r).toFixed(1)} ${py.toFixed(1)} Z`, M.hondo, 0.85);
+    }
+  }
+  return s;
+}
+
+/** Hojarasca: un montón de hojas caídas, chicas, cada una para su lado, en los pardos del lobo. Más apretadas en el medio. */
+function hojarasca(x: number, y: number, ancho: number, semilla: number): string {
+  const rnd = azar(semilla);
+  const tintas = [MONTE.ocre, M.sombra, M.sombra, MONTE.crema, 'var(--bestia-lobo-boca)', M.hondo];
+  const escala = 0.6 + ((y - 340) / 280) * 0.9;
+  let s = nube(x, y, ancho * 0.6, ancho * 0.14, M.negro, 'l', 0.45);
+  for (let i = 0; i < Math.round(ancho * 0.7); i++) {
+    const a = rnd() * Math.PI * 2;
+    const d = rnd() ** 1.6;
+    const hx = x + Math.cos(a) * d * ancho * 0.56;
+    const hy = y + Math.sin(a) * d * ancho * 0.15;
+    const l = (2.6 + rnd() * 3.4) * escala;
+    const giro = rnd() * 180;
+    const color = tintas[Math.floor(rnd() * tintas.length)]!;
+    s += `<path d="M${(-l).toFixed(1)} 0 Q0 ${(-l * 0.62).toFixed(1)} ${l.toFixed(1)} 0 Q0 ${(l * 0.5).toFixed(1)} ${(-l).toFixed(1)} 0 Z" fill="${color}" opacity="${(0.45 + rnd() * 0.45).toFixed(2)}" transform="translate(${hx.toFixed(1)} ${hy.toFixed(1)}) rotate(${giro.toFixed(0)}) scale(1 0.6)"/>`;
+  }
+  return s;
+}
+
+/** Una piedra con musgo: la piedra parda, enterrada, y encima el musgo en el verde del ojo del cordero, que es el único verde de las dos tapas. */
+function piedraConMusgo(x: number, y: number, w: number, semilla: number): string {
+  const rnd = azar(semilla);
+  const h = w * (0.5 + rnd() * 0.2);
+  const d = `M${x - w / 2} ${y} L${(x - w * 0.44).toFixed(1)} ${(y - h * 0.62).toFixed(1)} L${(x - w * 0.12).toFixed(1)} ${(y - h).toFixed(1)} L${(x + w * 0.24).toFixed(1)} ${(y - h * 0.86).toFixed(1)} L${(x + w * 0.47).toFixed(1)} ${(y - h * 0.34).toFixed(1)} L${x + w / 2} ${y} Z`;
+  const musgo = 'var(--bestia-cordero-ojo)';
+  let motas = '';
+  for (let i = 0; i < 7; i++) motas += nube(x - w * 0.3 + rnd() * w * 0.55, y - h * (0.72 + rnd() * 0.26), w * (0.07 + rnd() * 0.08), h * 0.1, musgo, 'xs', 0.6 + rnd() * 0.3);
+  return (
+    nube(x + w * 0.08, y + 2, w * 0.68, h * 0.2, M.negro, 's', 0.85) +
+    `<clipPath id="pm-${semilla}"><path d="${d}"/></clipPath><g clip-path="url(#pm-${semilla})">` +
+    forma(d, M.hondo) + nube(x - w * 0.1, y - h * 0.9, w * 0.4, h * 0.34, M.medio, 's', 0.7) + nube(x + w * 0.2, y - h * 0.1, w * 0.5, h * 0.5, M.negro, 's', 0.85) + motas +
+    `</g>` +
+    // El musgo que desborda, y la tierra que la tapa por abajo.
+    nube(x - w * 0.2, y - h * 0.98, w * 0.22, h * 0.09, musgo, 'xs', 0.6) +
+    nube(x, y + 2.4, w * 0.5, 2.2, M.oscuro, 'xs', 0.9)
+  );
+}
+
+/** Barro mojado: una mancha oscura, chata, con dos pelos de luz donde el agua agarra la luna. */
+function barroMojado(x: number, y: number, ancho: number, semilla: number): string {
+  const rnd = azar(semilla);
+  let s = nube(x, y, ancho, ancho * 0.13, M.negro, 'm', 0.72) + nube(x + ancho * 0.2, y + 2, ancho * 0.6, ancho * 0.08, M.negro, 's', 0.6);
+  for (let i = 0; i < 4; i++) {
+    const bx = x - ancho * 0.6 + rnd() * ancho * 1.1;
+    s += trazo(`M${bx.toFixed(1)} ${(y - 2 + rnd() * 6).toFixed(1)} q${(8 + rnd() * 14).toFixed(1)} -1.6 ${(18 + rnd() * 26).toFixed(1)} 0.4`, i % 2 ? M.medio : MONTE.frio, 1, 0.28 + rnd() * 0.2);
+  }
+  return s;
 }
 
 /**
@@ -158,7 +237,12 @@ function troncoHueco(x: number, y: number, largo: number, gordo: number): string
     `<ellipse cx="${x + 4}" cy="${y + gordo * 0.52}" rx="${gordo * 0.17}" ry="${gordo * 0.34}" fill="${M.negro}"/>` +
     trazo(`M${x - gordo * 0.26} ${y + gordo * 0.3} Q${x - gordo * 0.2} ${y - gordo * 0.02} ${x + 4} ${y - gordo * 0.02}`, MONTE.ocre, 1.1, 0.6) +
     nube(x + 2.6, y + gordo * 0.5, 0.9, 0.9, MONTE.ojo, 'xs', 0.9) +
-    nube(x + 6.4, y + gordo * 0.5, 0.9, 0.9, MONTE.ojo, 'xs', 0.9)
+    nube(x + 6.4, y + gordo * 0.5, 0.9, 0.9, MONTE.ojo, 'xs', 0.9) +
+    // Tercera vuelta: lo tallado también acá, en el lomo. El «P.R.» del tronco parado va en una capa que
+    // se corre a otra velocidad, y con la lupa se escapa del punto que se agranda; este está en el piso.
+    `<g transform="translate(${x + largo * 0.56} ${y + gordo * 0.42}) rotate(-3) scale(0.8)">` +
+    trazo('M-9 4 L-9 -6 L-5.5 -6 Q-3 -6 -3 -3.4 Q-3 -1 -5.5 -1 L-9 -1 M-0.6 4 l0.1 0.1 M3 4 L3 -6 L6.5 -6 Q9 -6 9 -3.4 Q9 -1 6.5 -1 L3 -1 M6 -1 L9.4 4 M11.6 4 l0.1 0.1', MONTE.crema, 1.2, 0.75) +
+    `</g>`
   );
 }
 
@@ -176,11 +260,24 @@ function pisoMonte(): string {
     brumaEntrePlanos(0, ANCHO, 366, 13, M.medio, 0.2, 813) +
     brumaEntrePlanos(0, ANCHO, 462, 26, MONTE.ocre, 0.12, 817) +
     brumaEntrePlanos(0, ANCHO, 556, 22, M.negro, 0.42, 819) +
-    // Segunda vuelta: dos senderos que se pierden entre los troncos. (Las raíces sueltas en el borde se
-    // probaron y se sacaron: sin tronco encima, en la captura eran una araña.)
-    // Nada de esto cae cerca de (660, 262), que es de otro bicho (`T-529`), ni debajo de los del elenco.
-    sendero(232, 70, 821) +
-    sendero(1936, -90, 823) +
+    // Tercera vuelta: el barro deja de ser un plano de un valor. Dos senderos en escorzo; barro mojado
+    // en los bajos; hojarasca juntada donde no pisa nadie; piedras con musgo. Nada cae cerca de
+    // (660, 262), que es de otro bicho (`T-529`): todo esto está de y = 350 para abajo.
+    barroMojado(430, 566, 120, 841) +
+    barroMojado(1180, 420, 150, 843) +
+    barroMojado(1640, 584, 130, 845) +
+    barroMojado(2260, 380, 90, 847) +
+    sendero(40, 1, 821) +
+    sendero(2140, -1, 823) +
+    hojarasca(560, 436, 150, 851) +
+    hojarasca(1010, 590, 190, 853) +
+    hojarasca(1400, 372, 120, 855) +
+    hojarasca(1800, 470, 170, 857) +
+    hojarasca(2330, 560, 130, 859) +
+    piedraConMusgo(318, 388, 44, 861) +
+    piedraConMusgo(1296, 544, 62, 863) +
+    piedraConMusgo(1352, 556, 30, 865) +
+    piedraConMusgo(2040, 372, 38, 867) +
     troncoHueco(790, 356, 150, 30) +
     `</g>`
   );
@@ -252,7 +349,8 @@ function pisoDelCampo(desde: number, hasta: number, semilla: number, claro: read
   // Lo que pesa: a la entrada, la calavera clavada en el poste de la tranquera; a la salida, el arado.
   const cosas =
     calaveraDeVaca(desde + 166, 272, 0.95) +
-    arado(hasta - 300, 468, 1.25) +
+    arado(hasta - 330, 474, 1.25) +
+    carroVolcado(hasta - 196, 446, 1.15) +
     [0, 1, 2, 3].map((i) => mataDePasto(hasta - 372 + i * 44 + rnd() * 10, 470 + (i % 2) * 5, 26 + rnd() * 12, rnd, CAMPO.hondo, CAMPO.claro, 11)).join('');
   return (
     soplo(borde(300), CAMPO.cielo, 'l') +
@@ -274,41 +372,112 @@ function pisoDelCampo(desde: number, hasta: number, semilla: number, claro: read
 }
 
 /**
- * La orilla del claro (`D-91`, segunda vuelta). El claro del recinto es un óvalo de canto liso con un
- * aro negro: de noche y con la luna atrás, se leía como un segundo sol. Acá el pasto se lo come: la
- * orilla es de mordidas desparejas, con matas encima, y el naranja se enfría y se apaga hacia afuera.
- * Lo de adentro (la soga, el palo, los bichos) no cambia de lugar.
+ * El círculo pelado (`D-91`, tercera vuelta). La pastura se presenta como «un palo, una soga, un
+ * círculo pelado», y en el camino eso era el claro del recinto: un disco naranja de canto liso, con
+ * un espiral, que en las capturas competía con la luna (se aisló escondiendo capas: era del piso
+ * impreso). Acá es **tierra gastada, pisada en redondo**:
+ *
+ * - el redondel no es un óvalo de compás: el canto sube y baja, y el pasto se le mete;
+ * - adentro, tierra parda y opaca (el pardo del lobo, no el naranja de la tapa), más clara donde más
+ *   se pisó: **la huella**, el anillo que deja el cordero dando vueltas al largo de la soga;
+ * - pisadas de pezuña sobre la huella, cascotes, y contra el palo, donde la soga no deja llegar, unas
+ *   matas que quedaron;
+ * - de la tapa de *Cordero atado* quedan una veladura naranja, apenas, en el medio, y dos espirales
+ *   de crayón rayados en la tierra.
+ *
+ * Mide lo mismo que el claro del recinto y el palo está en el mismo lugar (`PALO`): la soga, el
+ * cordero y los demás no se enteran. Arriba se recorta en el borde del piso: detrás hay cielo.
  */
 const CORTE_DEL_CLARO = 306;
 
-function orillaDelClaro(): string {
+function circuloPelado(): string {
   const rnd = azar(431);
   const { x: px, y: py } = PALO;
-  const rx = 262;
-  const ry = 138;
-  let mordidas = '';
-  let matas = '';
-  for (let i = 0; i < 54; i++) {
-    const a = (i / 54) * Math.PI * 2 + rnd() * 0.1;
-    const afuera = 6 + rnd() * 30;
-    const x = px + Math.cos(a) * (rx + afuera);
-    const y = py + Math.sin(a) * (ry + afuera * 0.6);
-    const r = 12 + rnd() * 22;
-    // Lo de arriba del borde del piso no se muerde: ahí atrás hay cielo, y la mordida sería una nube negra.
-    if (y < 322) continue;
-    // En la tinta del campo, no en negro: es pasto que avanza, no humo.
-    mordidas += nube(x, y, r * (1 + Math.abs(Math.cos(a)) * 0.2), r * 0.62, CAMPO.cielo, i % 2 ? 'm' : 's', 0.92);
-    // El pasto que avanza sobre la orilla: más en el canto de adelante, que es el que se ve.
-    if (Math.sin(a) > -0.5 && rnd() < 0.62) matas += mataDePasto(x + (rnd() - 0.5) * 16, y + r * 0.2, 10 + Math.max(0, Math.sin(a)) * 18 + rnd() * 6, rnd, rnd() < 0.5 ? CAMPO.hondo : CAMPO.cielo, CAMPO.claro, 7);
+  const rx = 258;
+  const ry = 134;
+  // El canto: un redondel con el radio movido, en tramos rectos cortos (tierra comida, no un compás).
+  const canto = (k: number, ruido: number, semilla: number): string => {
+    const r2 = azar(semilla);
+    let d = '';
+    const n = 46;
+    for (let i = 0; i < n; i++) {
+      const a = (i / n) * Math.PI * 2;
+      const m = k * (1 + (r2() - 0.5) * ruido + Math.sin(a * 3 + semilla) * ruido * 0.4);
+      d += `${i ? 'L' : 'M'}${(px + Math.cos(a) * rx * m).toFixed(1)} ${(py + Math.sin(a) * ry * m).toFixed(1)} `;
+    }
+    return d + 'Z';
+  };
+  // La huella: el anillo pisado, a lo que da la soga. No es parejo: tramos más gastados que otros.
+  let huella = '';
+  let pisadas = '';
+  for (let i = 0; i < 40; i++) {
+    const a = (i / 40) * Math.PI * 2 + rnd() * 0.1;
+    const k = 0.7 + (rnd() - 0.5) * 0.08;
+    const x = px + Math.cos(a) * rx * k;
+    const y = py + Math.sin(a) * ry * k;
+    if (y < CORTE_DEL_CLARO + 8) continue;
+    huella += nube(x, y, 20 + rnd() * 16, 5 + rnd() * 5, 'var(--bestia-cordero-pezunia)', 'm', 0.1 + rnd() * 0.16);
+    // Las pezuñas: dos medias lunas juntas, en el sentido de la vuelta.
+    if (i % 2 === 0) {
+      const giro = (Math.atan2(Math.cos(a) * ry, -Math.sin(a) * rx) * 180) / Math.PI;
+      const escala = 0.7 + ((y - py + ry) / (2 * ry)) * 0.6;
+      pisadas += `<g transform="translate(${x.toFixed(1)} ${(y + (rnd() - 0.5) * 6).toFixed(1)}) rotate(${giro.toFixed(0)}) scale(${escala.toFixed(2)} ${(escala * 0.6).toFixed(2)})">` + forma('M-3.4 -2.4 Q0.6 -3.4 3 -1.4 Q0 -1 -3.4 -0.6 Z M-3.4 2.4 Q0.6 3.4 3 1.4 Q0 1 -3.4 0.6 Z', M.oscuro, 0.75) + `</g>`;
+    }
   }
-  // El canto de atrás: el claro del recinto sube más que el borde del piso (ahí lo tapaba su halo). Acá
-  // se recorta en el borde (`CORTE_DEL_CLARO`) y el pasto del fondo le pasa por delante.
-  for (let x = px - 176; x <= px + 176; x += 15 + rnd() * 12) mordidas += nube(x, CORTE_DEL_CLARO + 6 + rnd() * 8, 15 + rnd() * 12, 8 + rnd() * 5, CAMPO.cielo, 'm', 0.95);
+  let cascotes = '';
+  for (let i = 0; i < 26; i++) {
+    const a = rnd() * Math.PI * 2;
+    const k = Math.sqrt(rnd()) * 0.92;
+    const x = px + Math.cos(a) * rx * k;
+    const y = py + Math.sin(a) * ry * k;
+    if (y < CORTE_DEL_CLARO + 14 || Math.hypot(x - px, y - py) < 30) continue;
+    const w = 2 + rnd() * 4;
+    cascotes += nube(x + 1, y + 1, w * 1.3, w * 0.5, M.negro, 'xs', 0.6) + forma(`M${(x - w).toFixed(1)} ${y.toFixed(1)} L${(x - w * 0.4).toFixed(1)} ${(y - w * 0.7).toFixed(1)} L${(x + w * 0.6).toFixed(1)} ${(y - w * 0.6).toFixed(1)} L${(x + w).toFixed(1)} ${y.toFixed(1)} Z`, rnd() < 0.5 ? M.hondo : M.medio, 0.8);
+  }
+  // El pasto que se le mete por el canto, sobre todo de este lado, que es el que se ve.
+  let orilla = '';
+  for (let i = 0; i < 60; i++) {
+    const a = (i / 60) * Math.PI * 2 + rnd() * 0.08;
+    const k = 0.96 + rnd() * 0.16;
+    const x = px + Math.cos(a) * rx * k;
+    const y = py + Math.sin(a) * ry * k;
+    if (y < CORTE_DEL_CLARO + 12) continue;
+    orilla += nube(x, y + 2, 16 + rnd() * 16, 5 + rnd() * 5, CAMPO.cielo, 's', 0.85);
+    if (rnd() < 0.7) orilla += mataDePasto(x + (rnd() - 0.5) * 14, y + 4, 9 + Math.max(0, Math.sin(a)) * 20 + rnd() * 6, rnd, rnd() < 0.5 ? CAMPO.hondo : CAMPO.cielo, CAMPO.claro, 7);
+  }
+  // Contra el palo, donde la soga no deja llegar al cordero: lo único que no se comió.
+  let alPie = '';
+  for (let i = 0; i < 5; i++) alPie += mataDePasto(px - 22 + i * 11 + rnd() * 6, py + 6 + (i % 2) * 5, 9 + rnd() * 7, rnd, CAMPO.hondo, CAMPO.claro, 6);
+  const espiral = (cx: number, cy: number, r: number): string => {
+    let d = '';
+    for (let k = 0; k <= 60; k++) {
+      const a = (k / 60) * Math.PI * 5;
+      d += `${k ? 'L' : 'M'}${(cx + Math.cos(a) * ((r * k) / 60)).toFixed(1)} ${(cy + Math.sin(a) * ((r * k) / 60) * 0.5).toFixed(1)} `;
+    }
+    return trazo(d, M.oscuro, 2.2, 0.5);
+  };
+  const fuera = canto(1, 0.16, 433);
   return (
-    // Se enfría y se apaga: es tierra pelada de noche, no una brasa.
-    nube(px, py, rx * 0.95, ry * 0.95, CAMPO.azul, 'xl', 0.2) +
-    mordidas +
-    matas
+    `<clipPath id="cp-claro"><rect x="-200" y="${CORTE_DEL_CLARO}" width="1400" height="${ALTO}"/></clipPath><g clip-path="url(#cp-claro)">` +
+    // La tierra: el canto soplado corto (no hay raya, pero tampoco halo), y adentro el pardo.
+    soplo(fuera, M.oscuro, 's', 0.95) +
+    soplo(canto(0.93, 0.12, 437), M.sombra, 'm', 0.8) +
+    // Lo más pisado, más claro; y una veladura del naranja de la tapa, que no llega a ser luz.
+    nube(px - 20, py + 6, rx * 0.6, ry * 0.5, 'var(--bestia-lobo-ocre)', 'xl', 0.3) +
+    nube(px, py, rx * 0.5, ry * 0.42, M.naranjaHonda, 'xl', 0.22) +
+    // Manchones oscuros: tierra húmeda, bosta, lo que sea que hay donde vive un bicho atado.
+    nube(px + 110, py + 50, 60, 16, M.negro, 'l', 0.4) +
+    nube(px - 150, py - 30, 50, 12, M.negro, 'l', 0.35) +
+    huella +
+    espiral(px - 196, py - 30, 26) +
+    espiral(px + 150, py + 60, 20) +
+    pisadas +
+    cascotes +
+    `</g>` +
+    // El canto de atrás, contra el borde del piso: el pasto del fondo le pasa por delante.
+    Array.from({ length: 16 }, (_, i) => nube(px - 180 + i * 24 + rnd() * 8, CORTE_DEL_CLARO + 6 + rnd() * 8, 15 + rnd() * 12, 8 + rnd() * 5, CAMPO.cielo, 'm', 0.95)).join('') +
+    orilla +
+    alPie
   );
 }
 
@@ -323,7 +492,7 @@ function pisoPastura(): string {
     nube(ANCHO - 140, 336, 150, 50, VELA, 'xl', 0.5) +
     nube(ANCHO - 140, 330, 26, 30, 'var(--entorno-templo-foco)', 'l', 0.8) +
     pisoDelCampo(0, ANCHO, 203, [dx + PALO.x - 320, dx + PALO.x + 320]) +
-    `<g transform="translate(${dx} 0)"><clipPath id="cp-claro"><rect x="-200" y="${CORTE_DEL_CLARO}" width="1400" height="${ALTO}"/></clipPath><g clip-path="url(#cp-claro)">${claroDeLaPastura(true)}</g>${orillaDelClaro()}</g>` +
+    `<g transform="translate(${dx} 0)">${circuloPelado()}${paloDeLaPastura()}</g>` +
     `</g>`
   );
 }
@@ -432,9 +601,12 @@ function piezasDeEntorno(tramo: Tramo): Pieza[] {
 }
 
 export const PIEZAS_CAMINO: readonly Pieza[] = [
-  { nombre: 'camino-monte-lejos', caja: [0, 0, LEJOS, ALTO], dibujo: lejos(), opaca: true, densidad: 1.25 },
+  // Lo lejano del monte y de la pastura se imprime más fino (`D-91`, tercera vuelta): con la lupa al máximo
+  // el teléfono pide más de tres píxeles por unidad, y a 1,25 lo tallado y el lobito de la lomada se veían
+  // blandos. 1,7 deja la imagen justo por debajo de los 4096 px de ancho.
+  { nombre: 'camino-monte-lejos', caja: [0, 0, LEJOS, ALTO], dibujo: lejos(), opaca: true, densidad: 1.7 },
   { nombre: 'camino-monte-piso', caja: [0, PISO, ANCHO, ALTO - PISO], dibujo: pisoMonte(), densidad: 1.5 },
-  { nombre: 'camino-pastura-lejos', caja: [0, 0, LEJOS, ALTO], dibujo: pasturaLejos(LEJOS, ALTO), opaca: true, densidad: 1.25 },
+  { nombre: 'camino-pastura-lejos', caja: [0, 0, LEJOS, ALTO], dibujo: pasturaLejos(LEJOS, ALTO), opaca: true, densidad: 1.7 },
   { nombre: 'camino-pastura-piso', caja: [0, PISO, ANCHO, ALTO - PISO], dibujo: pisoPastura(), densidad: 1.5 },
   { nombre: 'camino-pastura-frente', caja: [0, 0, FRENTE, ALTO], dibujo: frentePastura(), densidad: 1.25 },
   { nombre: 'camino-monte-frente', caja: [0, 0, FRENTE, ALTO], dibujo: frente(), densidad: 1.25 },
