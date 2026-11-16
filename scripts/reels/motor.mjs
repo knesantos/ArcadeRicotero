@@ -14,7 +14,7 @@
  *   SITIO_LOCAL dónde corre `npm run dev` (por defecto http://localhost:4321).
  */
 import { spawn } from 'node:child_process';
-import { mkdtempSync, readFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import puppeteer from 'puppeteer-core';
@@ -30,7 +30,13 @@ export const REPO = resolve('.');
 export const SITIO = process.env.SITIO_LOCAL ?? 'http://localhost:4321';
 /** Una carpeta de trabajo por corrida, para el video mudo y el audio antes de juntarlos. */
 export const trabajo = () => mkdtempSync(join(tmpdir(), 'reel-'));
-const FPS = 30;
+export const FPS = 30;
+/**
+ * El origen de mentira de las piezas armadas de cero (`local: true`): no hace falta `astro dev`, la página
+ * y lo que pide se sirven desde el disco. Para esas, el reel no graba el sitio: compone con sus piezas.
+ */
+const LOCAL = 'http://fichin.reel';
+const TIPOS = { webp: 'image/webp', png: 'image/png', jpg: 'image/jpeg', svg: 'image/svg+xml', woff2: 'font/woff2', woff: 'font/woff', ttf: 'font/ttf', otf: 'font/otf', css: 'text/css' };
 
 export function correr(bin, args) {
   return new Promise((ok, mal) => {
@@ -50,7 +56,7 @@ export function tokens() {
  * opciones: { url, html, duracion, salida, antes(page), virtual }
  * Con `html`, va a la raíz del sitio y reemplaza el documento (las fuentes quedan en el mismo origen).
  */
-export async function grabar({ url, html, duracion, salida, antes, virtual = false }) {
+export async function grabar({ url, html, duracion, salida, antes, virtual = false, local = false }) {
   // En un solo proceso el arranque a veces se cuelga (casi siempre al abrir la pestaña): se cierra y se vuelve a probar.
   const lanzar = () => puppeteer.launch({
     executablePath: requerida('NAVEGADOR'),
@@ -92,7 +98,19 @@ export async function grabar({ url, html, duracion, salida, antes, virtual = fal
     });
   }
   page.on('pageerror', (e) => console.error('página:', e.message));
-  if (html) {
+  if (html && local) {
+    // Sin sitio: la pieza y todo lo que pide (piezas del bestiario, fuentes, marca) salen de `public/`.
+    url = LOCAL + '/__reel.html';
+    await page.setRequestInterception(true);
+    page.on('request', (r) => {
+      if (r.url() === url) return r.respond({ status: 200, contentType: 'text/html; charset=utf-8', body: html });
+      if (!r.url().startsWith(LOCAL)) return r.abort();
+      const ruta = `${REPO}/public${decodeURIComponent(new URL(r.url()).pathname)}`;
+      if (!existsSync(ruta)) { console.error('  falta', ruta); return r.respond({ status: 404, body: '' }); }
+      const ext = ruta.split('.').pop();
+      r.respond({ status: 200, contentType: TIPOS[ext] ?? 'application/octet-stream', body: readFileSync(ruta) });
+    });
+  } else if (html) {
     // La pieza se sirve como si fuera una página del sitio: mismo origen para las fuentes, sin el cliente de Vite.
     url = SITIO + '/__reel.html';
     await page.setRequestInterception(true);
