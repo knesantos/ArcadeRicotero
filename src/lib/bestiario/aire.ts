@@ -28,7 +28,7 @@
  * Con movimiento reducido no se corre ni respira: queda impresa en su lugar, con su alfa.
  */
 
-import { ALTO, VISTA_MAX } from './camino.ts';
+import { ALTO } from './camino.ts';
 
 /** Dónde va una capa de aire entre las del camino. */
 export type Plano =
@@ -71,12 +71,6 @@ export interface CapaDeAire {
   salta: number;
   ritmoSalta: number;
   faseSalta: number;
-  /**
-   * En cuántos gajos se parte la baldosa para saltar (`D-91`, tanda 2, segunda vuelta). Una capa entera
-   * que sube y baja se lee como una capa que se mueve; partida en gajos que saltan uno después del otro,
-   * es una ola que recorre a la gente. El dibujo deja aire en cada corte (`arte-recital.ts`).
-   */
-  gajos?: number;
   /** La pieza ya la pinta y la imprime otro (`arte-entornos.ts`): acá solo se la mueve. */
   ajena?: boolean;
   /** Si suena (`entorno.ts`): el viento sube y baja con el alfa de la capa. */
@@ -208,12 +202,16 @@ export const AIRE: Readonly<Record<string, readonly CapaDeAire[]>> = {
     capa({ pieza: 'aire-arbol-hojas', plano: 'cerca', f: 1.4, y: 0, alto: ALTO, ancho: 900, deriva: -16, cae: 30, alfa: 0.95, mece: 12, ritmoMece: 0.9 }),
   ],
   // El galpón (`D-91`, tanda 2): la gente es la mitad del recital. El humo del escenario, que baja sobre
-  // los del fondo (trae adentro el polvo que ya había); el pogo, la fila del medio, que salta; y pegados a
-  // la cámara, hombros y manos fuera de foco, que saltan a contratiempo. La fila grande va en `frente`.
+  // los del fondo (trae adentro el polvo que ya había), y el pogo, la fila del medio, que salta. La fila
+  // grande va en `frente`.
+  // Segunda vuelta: el pogo son **dos capas que se alternan**, montón por medio, y saltan a contratiempo:
+  // el de al lado siempre está en otro momento del salto. Se probó partir una sola capa en ocho gajos con
+  // su salto cada uno (una ola de verdad): medido con control, duplicaba el tiempo de cuadro, y se sacó.
+  // Para hacerle lugar a la segunda se fue lo pegado a la cámara, que eran bultos negros y era lo que menos sumaba.
   'el-galpon': [
     capa({ pieza: 'aire-galpon-humo', plano: 'medio', f: 1.06, y: 270, alto: 250, ancho: 1300, deriva: -7, alfa: 0.74, late: 0.16, ritmo: 0.29, abre: 0.35 }),
-    capa({ pieza: 'aire-galpon-pogo', plano: 'medio', f: 1.14, y: 400, alto: 240, ancho: 1400, salta: 13, ritmoSalta: 5.6, gajos: 4 }),
-    capa({ pieza: 'aire-galpon-cerca', plano: 'cerca', f: 1.75, y: 512, alto: 128, ancho: 1600, salta: 12, ritmoSalta: 5.6, faseSalta: 1.1 }),
+    capa({ pieza: 'aire-galpon-pogo', plano: 'medio', f: 1.12, y: 400, alto: 240, ancho: 1400, salta: 13, ritmoSalta: 5.6 }),
+    capa({ pieza: 'aire-galpon-pogo-b', plano: 'medio', f: 1.17, y: 400, alto: 240, ancho: 1400, salta: 15, ritmoSalta: 5.6, faseSalta: 1.25 }),
   ],
 };
 
@@ -245,19 +243,11 @@ export function corridaDeAire(c: CapaDeAire, cam: number, t: number, suelta: boo
  * (apoyada). Es el rebote de una pelota: sube rápido, cuelga y cae; y la fuerza va y viene, porque un
  * pogo no salta parejo toda la noche. Las que no saltan, cero.
  */
-export function saltoDeAire(c: CapaDeAire, t: number, gajo = 0): number {
+export function saltoDeAire(c: CapaDeAire, t: number): number {
   if (!c.salta) return 0;
-  // Cada gajo va un poco después que el de al lado: la ola corre de izquierda a derecha.
-  const fase = c.faseSalta - gajo * DESFASE_DE_GAJO;
-  const ganas = 0.45 + 0.55 * Math.sin(t * 0.21 + c.faseSalta * 1.7 - gajo * 0.3) ** 2;
-  return c.salta * (1 - Math.abs(Math.sin(t * c.ritmoSalta + fase)) * ganas);
+  const ganas = 0.45 + 0.55 * Math.sin(t * 0.21 + c.faseSalta * 1.7) ** 2;
+  return c.salta * (1 - Math.abs(Math.sin(t * c.ritmoSalta + c.faseSalta)) * ganas);
 }
-
-/** Cuánto se atrasa cada gajo respecto del anterior, en radianes del salto. */
-export const DESFASE_DE_GAJO = 0.85;
-
-/** Cuántos gajos hay que poner para que la capa cubra la vista más ancha más una baldosa. */
-export const gajosDe = (c: CapaDeAire): number => (c.gajos ? Math.ceil(((VISTA_MAX + c.ancho) * c.gajos) / c.ancho) : 0);
 
 /**
  * El alfa de una capa en el momento `t`. `anda`, de 0 (quieto) a 1 (caminando a paso pleno), la
