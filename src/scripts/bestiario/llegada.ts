@@ -43,6 +43,9 @@ function loDeLaEntrada(): string[] {
     if (e.loading !== 'lazy' && e.currentSrc && cae(e)) urls.add(e.currentSrc);
   }
   for (const e of document.querySelectorAll<SVGImageElement>('main svg image, #camino svg image')) {
+    // Las miniaturas de las fichas no son la escena (`D-91`, tanda 2, cuarta vuelta): son recortes del recinto
+    // entero (hasta 1800×1280), la lista está cerrada, y esperarlas hacía bajar y decodificar 14 MB de más en el galpón.
+    if (e.closest('.bestiario-ficha')) continue;
     const href = e.getAttribute('href') ?? e.getAttribute('xlink:href');
     if (href && !href.startsWith('data:') && cae(e)) urls.add(href);
   }
