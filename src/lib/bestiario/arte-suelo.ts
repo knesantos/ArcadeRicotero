@@ -256,16 +256,16 @@ export function sueloDeLaPastura(desde: number, hasta: number, semilla: number, 
   s += bebedero('sp-beb', desde + 150, 452, 150, rnd);
   // A la salida, un bajo con agua: la luna entera, rota en rayas, y un costillar al lado.
   const bx = evita[1] + (hasta - evita[1]) * 0.42;
-  s += charco('sp-bajo', bx, 430, 150, 22, rnd, PA.negro, [PA.luna, PA.lunaHonda, PA.luna, PA.claro], PA.claro, 'rayas', 9);
+  s += charco('sp-bajo', bx, 430, 150, 22, rnd, PA.negro, [PA.luna, PA.lunaHonda, PA.luna, PA.claro], PA.claro, 'puntas', 5);
   s += asentar(`<g transform="translate(${f(bx + 120)} 462) skewX(-14) scale(1.5 1.2) translate(${f(-(bx + 120))} -462)">${costillar(bx + 120, 462, rnd)}</g>`, bx + 150, 462, 80, 0.9, PA.cielo, PA.negro);
   let n = 0;
-  for (let x = desde + 60 + rnd() * 60; x < hasta - 60; x += 70 + rnd() * 110) {
+  for (let x = desde + 60 + rnd() * 60; x < hasta - 60; x += 150 + rnd() * 190) {
     if (x > evita[0] && x < evita[1]) continue;
     if (Math.abs(x - (desde + 225)) < 130 || Math.abs(x - bx) < 190) continue;
     const hondura = rnd();
     const y = 356 + hondura * 240;
     const escala = 0.7 + hondura;
-    if (rnd() < 0.5) s += `<g opacity="${f(0.55 + 0.45 * hondura)}">${charco(`sp-ch-${n}`, x, y, (30 + rnd() * 44) * escala, (5 + rnd() * 5) * escala, rnd, PA.negro, [PA.luna, PA.claro, PA.lunaHonda], PA.claro, 'rayas')}</g>`;
+    if (rnd() < 0.5) s += `<g opacity="${f(0.55 + 0.45 * hondura)}">${charco(`sp-ch-${n}`, x, y, (30 + rnd() * 44) * escala, (5 + rnd() * 5) * escala, rnd, PA.negro, [PA.lunaHonda, PA.claro, PA.azul], PA.claro, 'puntas', 2)}</g>`;
     else {
       const w = (12 + rnd() * 18) * escala;
       s += asentar(piedra(`sp-pi-${n}`, x, y, w, rnd, PA.hondo, PA.claro, PA.negro), x, y, w, hondura, PA.cielo, PA.negro);
