@@ -5454,9 +5454,11 @@ body:has(> .lugar) .marca-chica {
   animation: velo-tinta calc(var(--duracion-velo) * 0.5) var(--curva-cinta) both reverse;
 }
 
-/* Lo que dice que está cargando. Los ojos de la región (los mismos que se abren en lo oscuro si te
-   quedás quieto, `ACECHOS`) aparecen si la carga tarda; el aviso, si tarda más. */
-.velo-ojos,
+/* Lo que dice que está cargando: el signo de espera de la región, si tiene, que aparece si la carga
+   tarda, y el aviso, si tarda más. Cada signo es de su lugar (segunda vuelta de `D-91`): los ojos del
+   monte, los mismos que se abren en lo oscuro; los faros de la ruta, que se acercan y no llegan; la
+   rueda del molino de la pastura, que gira. Las otras diez regiones y el plano, solo el aviso. */
+.velo-signo,
 .velo-aviso {
   position: absolute;
   left: 50%;
@@ -5466,12 +5468,40 @@ body:has(> .lugar) .marca-chica {
   animation: velo-asoma var(--duracion-velo) linear both;
 }
 
-.velo-ojos {
+.velo-signo {
   top: 44%;
+  translate: -50% -50%;
+  animation-delay: calc(var(--aviso-velo) * 0.4);
+}
+
+.velo-signo--ojos {
   width: min(34vw, 9rem);
   height: auto;
-  transform: translate(-50%, -50%);
-  animation-delay: calc(var(--aviso-velo) * 0.4);
+}
+
+/* La rueda del molino: la misma pieza impresa que gira en la escena. */
+.velo-signo--molino {
+  width: min(30vw, 7.5rem);
+  height: auto;
+  animation:
+    velo-asoma var(--duracion-velo) linear calc(var(--aviso-velo) * 0.4) both,
+    velo-gira calc(var(--duracion-velo) * 5) linear infinite;
+}
+
+/* Los faros: dos discos de tinta plana, sin halo, que vienen desde el fondo de la niebla. */
+.velo-signo--faros {
+  display: flex;
+  gap: 1.1rem;
+  animation:
+    velo-asoma var(--duracion-velo) linear calc(var(--aviso-velo) * 0.4) both,
+    velo-acerca calc(var(--duracion-velo) * 8) linear both;
+}
+
+.velo-signo--faros i {
+  width: 0.8rem;
+  height: 0.8rem;
+  background: var(--papel);
+  border-radius: 50%;
 }
 
 .velo-aviso {
@@ -5489,7 +5519,7 @@ body:has(> .lugar) .marca-chica {
   animation-delay: var(--aviso-velo);
 }
 
-.velo-de-llegada[data-listo] .velo-ojos,
+.velo-de-llegada[data-listo] .velo-signo,
 .velo-de-llegada[data-listo] .velo-aviso {
   visibility: hidden;
 }
@@ -5506,11 +5536,34 @@ body:has(> .lugar) .marca-chica {
   .velo-de-llegada[data-listo] {
     visibility: hidden;
   }
+
+  /* La rueda del molino no gira: queda quieta, a la vista. */
+  .velo-signo--molino {
+    animation: none;
+    opacity: 1;
+  }
 }
 
 @keyframes velo-asoma {
   to {
     opacity: 1;
+  }
+}
+
+@keyframes velo-gira {
+  to {
+    rotate: 1turn;
+  }
+}
+
+/* Vienen de lejos: chicos y juntos, y se van agrandando y separando. No llegan: antes se va la hoja. */
+@keyframes velo-acerca {
+  from {
+    scale: 0.3;
+  }
+
+  to {
+    scale: 1.7;
   }
 }
 
