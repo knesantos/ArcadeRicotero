@@ -33,13 +33,16 @@ export const CSS_JUEGO = `
 #caja{position:absolute;left:0;right:0;top:212px;height:38px;border:2px solid var(--borde);border-radius:3px;background:var(--fondo);
   padding:0 12px;display:flex;align-items:center;font-size:1rem;color:var(--texto)}
 #caja.vacia{color:var(--texto-tenue)}
+#sugerencia{position:absolute;left:0;right:0;top:176px;height:34px;border:2px solid var(--borde);border-bottom:0;border-radius:3px 3px 0 0;background:var(--fondo);
+  padding:0 12px;display:flex;align-items:center;font-size:.95rem;color:var(--texto);opacity:0;z-index:2}
+#sugerencia.tocada{background:var(--cat-mitologia);color:var(--fondo)}
 #caja .cursor{display:inline-block;width:2px;height:1.15em;background:var(--texto);margin-left:2px;vertical-align:middle}
 #boton{position:absolute;left:0;right:0;top:256px;height:40px;border-radius:var(--radio);background:var(--cat-mitologia);color:var(--fondo);
   font-family:var(--fuente-rotulada);font-size:1.12rem;display:flex;align-items:center;justify-content:center;letter-spacing:.02em}
 #boton.apretado{scale:.96}
-#grito{position:absolute;right:18px;top:262px;z-index:30;font-family:var(--fuente-rotulada);font-size:2.6rem;color:var(--acento-3);
+#grito{position:absolute;right:18px;top:300px;z-index:30;font-family:var(--fuente-rotulada);font-size:2.6rem;color:var(--acento-3);
   border:4px solid currentColor;border-radius:3px;padding:2px 14px;background:var(--fondo);opacity:0}
-#tacha{position:absolute;right:22px;top:276px;z-index:30;font-family:var(--fuente-rotulada);font-size:1.4rem;color:var(--acento-4);
+#tacha{position:absolute;right:22px;top:308px;z-index:30;font-family:var(--fuente-rotulada);font-size:1.4rem;color:var(--acento-4);
   border:3px solid currentColor;border-radius:3px;padding:2px 10px;background:var(--fondo);opacity:0}
 `;
 
@@ -54,6 +57,7 @@ export function markupJuego(intentos) {
 <table class="premios"><tr><th>Audio</th>${ESCALERA.map((x) => `<td>${x.rotulo}</td>`).join('')}</tr>
 <tr><th>Vale</th>${ESCALERA.map((x) => `<td>${x.vale}</td>`).join('')}</tr></table>
 <ul id="intentos">${intentos.map((it, i) => `<li id="i${i}" class="${it.bien ? 'bien' : 'mal'}"><span class="marca">${it.bien ? '✔' : '✕'}</span>${it.quien ? `<span class="quien" style="background-image:url(${it.quien})"></span>` : ''}<span class="titulo">${it.texto}</span><span class="vale">${it.bien ? '+' + ESCALERA[it.paso].vale : ''}</span></li>`).join('')}</ul>
+<div id="sugerencia"></div>
 <div id="caja" class="vacia"></div>
 <div id="boton">Pasá</div>
 </div>
@@ -81,9 +85,13 @@ function juego(t){
   const caja=$('#caja'),boton=$('#boton');
   let texto='',escribe=false;
   INT.forEach(it=>{
-    if(t>=it.desde&&t<it.arriesga+.25){escribe=true;const n=Math.round(cl((t-it.desde)/(it.tipea??1))*it.texto.length);texto=it.texto.slice(0,n)}
+    if(t>=it.desde&&t<it.arriesga+.25){escribe=true;let n=0;for(const [tt,k] of it.toques) if(t>=tt) n=k;texto=it.texto.slice(0,n)}
   });
   caja.className=texto?'':'vacia';
+  // La sugerencia se abre para arriba, como en el juego, mientras el título está a medias.
+  const sug=$('#sugerencia');let s=null;
+  INT.forEach(it=>{if(it.sugiere&&t>=it.toques[it.sugiere-1][0]&&t<it.toques[it.toques.length-1][0]+.12)s=it});
+  sug.style.opacity=s?1:0; if(s){sug.textContent=s.texto; sug.classList.toggle('tocada',t>=s.toques[s.toques.length-1][0]-.12)}
   const cursor=Math.floor(t*2.4)%2===0||escribe?'<span class="cursor"></span>':'';
   caja.innerHTML=texto?texto+cursor:'Escribí el tema'+(escribe?cursor:'');
   boton.textContent=texto?'Arriesgá':'Pasá';
@@ -92,9 +100,38 @@ function juego(t){
   INT.forEach((it,i)=>ver($('#i'+i),t,it.arriesga+.2));
   const ultimo=INT.filter(it=>t>=it.arriesga+.2).pop();
   const g=$('#grito'),x=$('#tacha');
-  if(ultimo&&ultimo.bien) sellar(g,t,ultimo.arriesga+.2,-6,ultimo.arriesga+2.6); else g.style.opacity=0;
+  if(ultimo&&ultimo.bien) sellar(g,t,ultimo.arriesga+.2,-6,ultimo.arriesga+1.9); else g.style.opacity=0;
   if(ultimo&&!ultimo.bien) sellar(x,t,ultimo.arriesga+.2,5,ultimo.arriesga+1.2); else x.style.opacity=0;
 }`;
+}
+
+/**
+ * Cuándo cae cada dedo sobre el teclado del teléfono: un ritmo con tropiezos, no un metrónomo. Con
+ * `sugiere`, se tipean esas letras y el último toque es la sugerencia de la lista, que completa el título
+ * (es como se juega: `src/lib/tema/buscador.ts`). Cada toque es `[segundo, letras a la vista, tipo]`.
+ */
+export function conToques(intentos) {
+  return intentos.map((it, j) => {
+    const letras = it.sugiere ?? it.texto.length;
+    const pesos = Array.from({ length: letras }, (_, i) => {
+      const r = Math.abs(Math.sin((i + 1) * 12.9898 + j * 78.233) * 43758.5453) % 1;
+      return 0.7 + 0.8 * r + (it.texto[i] === ' ' ? 0.5 : 0);
+    });
+    const largo = it.sugiere ? it.tipea * 0.78 : it.tipea;
+    const total = pesos.reduce((a, b) => a + b, 0);
+    let t = it.desde;
+    const toques = pesos.map((w, i) => { const tt = t; t += (w / total) * largo; return [+tt.toFixed(3), i + 1, 'tecla']; });
+    if (it.sugiere) toques.push([+(it.desde + it.tipea).toFixed(3), it.texto.length, 'sugerencia']);
+    return { ...it, toques };
+  });
+}
+
+/** Los sonidos de tipear: un tic por letra (tres, que varían como el dedo), la sugerencia y el botón. */
+export function sonidosDeTipeo(intentos, r) {
+  return intentos.flatMap((it) => [
+    ...it.toques.map(([t, , tipo], i) => (tipo === 'sugerencia' ? [r.sugerencia, t, 0.7] : [r['tecla' + (i % 3)], t, 0.55 + 0.25 * ((i * 7) % 3) / 2])),
+    [r.boton, it.arriesga, 0.8],
+  ]);
 }
 
 /**
@@ -103,7 +140,12 @@ function juego(t){
  */
 export async function ruidos(dir, correr, FFMPEG) {
   const hechos = {
-    tecla: "aevalsrc='0.5*(random(0)*2-1)*exp(-t*260)':s=44100:d=0.04",
+    // El teclado de un teléfono: un tic de plástico corto, con su tono y su chasquido, y tres alturas.
+    tecla0: "aevalsrc='0.45*sin(2*PI*1350*t)*exp(-t*330)+0.25*(random(0)*2-1)*exp(-t*1400)':s=44100:d=0.035",
+    tecla1: "aevalsrc='0.45*sin(2*PI*1240*t)*exp(-t*310)+0.25*(random(0)*2-1)*exp(-t*1300)':s=44100:d=0.035",
+    tecla2: "aevalsrc='0.45*sin(2*PI*1460*t)*exp(-t*350)+0.25*(random(0)*2-1)*exp(-t*1500)':s=44100:d=0.035",
+    sugerencia: "aevalsrc='0.4*sin(2*PI*880*t)*exp(-t*160)+0.2*(random(0)*2-1)*exp(-t*1100)':s=44100:d=0.06",
+    boton: "aevalsrc='0.55*sin(2*PI*(260-900*t)*t)*exp(-t*55)+0.25*(random(0)*2-1)*exp(-t*900)':s=44100:d=0.12",
     nada: "aevalsrc='0.45*sin(2*PI*t*(150-60*t))*(0.8+0.2*gt(sin(2*PI*t*55),0))*exp(-t*5)':s=44100:d=0.42",
     bien: "aevalsrc='0.32*(sin(2*PI*660*t)*lt(t,0.11)+sin(2*PI*990*t)*gte(t,0.11))*exp(-t*4)':s=44100:d=0.5",
     bum: "aevalsrc='0.95*((random(0)*2-1)*exp(-t*3.2)+0.8*sin(2*PI*t*(70-40*t))*exp(-t*2.2))':s=44100:d=1.8",
@@ -113,7 +155,7 @@ export async function ruidos(dir, correr, FFMPEG) {
   const rutas = {};
   for (const [nombre, src] of Object.entries(hechos)) {
     rutas[nombre] = `${dir}/${nombre}.wav`;
-    const filtro = nombre === 'bum' ? ['-af', 'lowpass=f=1400,lowpass=f=1400'] : [];
+    const filtro = nombre === 'bum' ? ['-af', 'lowpass=f=1400,lowpass=f=1400'] : /^(tecla|sugerencia)/.test(nombre) ? ['-af', 'highpass=f=500'] : [];
     await correr(FFMPEG, ['-y', '-f', 'lavfi', '-i', src, ...filtro, '-ac', '2', rutas[nombre]]);
   }
   return rutas;

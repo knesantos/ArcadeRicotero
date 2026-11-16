@@ -22,6 +22,10 @@
 >   `titeres.ts`). La pantalla del juego es `scripts/reels/juego.mjs`; los ruidos (teclas, "no era", acierto, estallido, soga) los hace
 >   ffmpeg. `grabar({ local: true })` sirve todo desde `public/`: **no hace falta `astro dev`**, solo `NAVEGADOR` y `FFMPEG`.
 > - Ningún cartel nombra a los bichos; el rótulo DINAMITA de los cartuchos es del dibujo y queda.
+> - **Pulida** (pedido del usuario: *"al final el perro dinamita cambia de modelo raro"*, *"que parezca de un celular"*): al terminar la
+>   explosión la pose ya no vuelve de golpe a la de antes (la mecha corta y prendida y el tizne que se borraba en un cuadro); queda
+>   entera, apagada y con el tizne yéndose. El tipeo es de teléfono: ritmo con tropiezos, unas letras y el toque en la sugerencia
+>   que se abre arriba de la caja, y un tic de teclado por letra en tres alturas, más el de la sugerencia y el del botón.
 > - **Calendario**: `DIF-16` (19/11) y `DIF-17` (21/11) en borrador; `redes validar` OK. **Verde:** `npm test` 2470, `npm run check`.
 > - **Falta**: el visto bueno del usuario a los videos y los textos, y subirlos a mano (la cola no sube video).
 

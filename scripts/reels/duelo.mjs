@@ -3,7 +3,7 @@
 // Se arma de cero con los recortes de las dos tapas (`titeres.ts`) y el monte impreso; nadie se nombra:
 // se reconocen por la tapa de la que salieron.
 import { CSS_BASE, JS_BASE, cartel, datos, estilosDeTiteres } from './comun.mjs';
-import { CSS_JUEGO, jsJuego, markupJuego, mezclar, ruidos } from './juego.mjs';
+import { CSS_JUEGO, conToques, jsJuego, markupJuego, mezclar, ruidos, sonidosDeTipeo } from './juego.mjs';
 import { FFMPEG, FPS, REPO, correr, grabar, juntar, trabajo } from './motor.mjs';
 import { lobo, cordero, imagen } from '../../src/lib/bestiario/titeres.ts';
 import { ARMADO } from '../../src/lib/bestiario/recortes.ts';
@@ -19,11 +19,12 @@ const CARA_LOBO = '/bestiario/lobo-real-cabeza.webp';
 const CARA_CORDERO = '/bestiario/cordero-real-cabeza.webp';
 
 const PASOS = [{ paso: 0, t: 1.9 }, { paso: 1, t: 3.5 }, { paso: 2, t: 5.6 }];
-const INTENTOS = [
-  { texto: 'Jijiji', desde: 2.15, tipea: 0.45, arriesga: 2.8, bien: false, paso: 0, quien: CARA_LOBO },
-  { texto: 'Juguetes perdidos', desde: 3.75, tipea: 0.7, arriesga: 4.75, bien: false, paso: 1, quien: CARA_LOBO },
-  { texto: titulo, desde: 7.9, tipea: 1.3, arriesga: 9.5, bien: true, paso: 2, quien: CARA_CORDERO },
-];
+// El lobo tipea dos letras y manotea la sugerencia; el cordero escribe el título entero, sin apuro.
+const INTENTOS = conToques([
+  { texto: 'Jijiji', desde: 2.1, tipea: 0.5, sugiere: 2, arriesga: 2.75, bien: false, paso: 0, quien: CARA_LOBO },
+  { texto: 'Juguetes perdidos', desde: 3.7, tipea: 0.7, sugiere: 3, arriesga: 4.6, bien: false, paso: 1, quien: CARA_LOBO },
+  { texto: titulo, desde: 7.75, tipea: 1.6, arriesga: 9.5, bien: true, paso: 2, quien: CARA_CORDERO },
+]);
 const [E1, E2] = INTENTOS.slice(0, 2).map((i) => i.arriesga + 0.2);
 const A = INTENTOS[2].arriesga + 0.2;
 const CARTEL = 15.5;
@@ -170,8 +171,7 @@ const video = `${T}/video.mp4`;
 await grabar({ html, local: true, duracion: DURACION, salida: video });
 
 const r = await ruidos(T, correr, FFMPEG);
-const teclas = INTENTOS.flatMap((it) => Array.from(it.texto, (_, i) => [r.tecla, it.desde + (i / it.texto.length) * it.tipea, 0.5]));
-const golpes = [...teclas, [r.nada, E1], [r.nada, E2], [r.bien, A, 0.8], [r.soga, A + 0.05, 0.9], ...SALTOS.map((s) => [r.salto, s, 0.6])];
+const golpes = [...sonidosDeTipeo(INTENTOS, r), [r.nada, E1], [r.nada, E2], [r.bien, A, 0.8], [r.soga, A + 0.05, 0.9], ...SALTOS.map((s) => [r.salto, s, 0.6])];
 const audio = `${T}/audio.m4a`;
 await mezclar({ fragmento: `${REPO}/public/audio/fragmentos/${TEMA}.mp3`, pasos: PASOS, sigue: { t: A + 0.3, desde: 2, dura: 8 }, golpes, duracion: DURACION, salida: audio, correr, FFMPEG });
 await juntar(video, audio, DESTINO);

@@ -3,7 +3,7 @@
 // la pose de cada cuadro la calcula `marcas()` (`rig-dinamita.ts`), la misma que mueve al títere en el sitio.
 // Ningún cartel dice quién es: lo dicen la mecha, el cartucho y el baldío.
 import { CSS_BASE, JS_BASE, cartel, datos, estilosDeTiteres } from './comun.mjs';
-import { CSS_JUEGO, jsJuego, markupJuego, mezclar, ruidos } from './juego.mjs';
+import { CSS_JUEGO, conToques, jsJuego, markupJuego, mezclar, ruidos, sonidosDeTipeo } from './juego.mjs';
 import { FFMPEG, FPS, REPO, correr, grabar, juntar, trabajo } from './motor.mjs';
 import { LUGAR, QUIETO, marcas } from '../../src/lib/bestiario/rig-dinamita.ts';
 import { dinamitaEn } from '../../src/lib/bestiario/arte-dinamita.ts';
@@ -18,11 +18,12 @@ const titulo = datos('adivinar-tema.json').fragmentos.find((f) => f.slug === TEM
 
 // La partida: dos errores y el acierto a los 2 segundos.
 const PASOS = [{ paso: 0, t: 1.5 }, { paso: 1, t: 3.9 }, { paso: 2, t: 6.4 }];
-const INTENTOS = [
-  { texto: 'Jijiji', desde: 2.1, tipea: 0.6, arriesga: 3.3, bien: false, paso: 0 },
-  { texto: 'Todo un palo', desde: 4.7, tipea: 0.9, arriesga: 5.8, bien: false, paso: 1 },
-  { texto: titulo, desde: 8.6, tipea: 1.1, arriesga: 9.9, bien: true, paso: 2 },
-];
+// Tipea unas letras y toca la sugerencia, como se juega en el teléfono.
+const INTENTOS = conToques([
+  { texto: 'Jijiji', desde: 2.0, tipea: 0.95, sugiere: 3, arriesga: 3.3, bien: false, paso: 0 },
+  { texto: 'Todo un palo', desde: 4.6, tipea: 1.0, sugiere: 4, arriesga: 5.8, bien: false, paso: 1 },
+  { texto: titulo, desde: 8.45, tipea: 1.15, sugiere: 4, arriesga: 9.9, bien: true, paso: 2 },
+]);
 const [E1, E2] = INTENTOS.slice(0, 2).map((i) => i.arriesga + 0.2);
 const ACIERTO = INTENTOS[2].arriesga + 0.2;
 const CARTEL = 16;
@@ -32,7 +33,8 @@ const cl = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
 const suave = (x) => { const k = cl(x); return k * k * (3 - 2 * k); };
 const rampa = (t, a, b) => suave((t - a) / (b - a));
 const meseta = (t, a, b, c, d) => Math.min(rampa(t, a, b), 1 - rampa(t, c, d));
-const PARPADEOS = [0.9, 4.4, 7.3, 9.2, 17.5];
+const PARPADEOS = [0.9, 4.4, 7.3, 9.2, 15.4, 17.5];
+const FIN_BUM = 6.6;
 
 function momento(t) {
   const m = { ...QUIETO, temblor: [0, 0], pupila: [-0.9, 0.3] };
@@ -51,7 +53,7 @@ function momento(t) {
   // La mecha: cada error quema un pedazo, y desde el segundo ya no se apaga.
   const quema = (t0, de, a) => de + (a - de) * rampa(t, t0, t0 + 0.6);
   m.mecha = t < E2 ? quema(E1, 1, 0.78) : t < 6.4 ? quema(E2, 0.78, 0.56) : 0.56 - 0.26 * rampa(t, 6.4, ACIERTO);
-  const ardiendo = (t >= E1 && t < E1 + 0.7) || t >= E2;
+  const ardiendo = (t >= E1 && t < E1 + 0.7) || (t >= E2 && t < ACIERTO);
   if (ardiendo) m.chispa = { k: 1.05 + 0.3 * Math.sin(t * 61), o: t >= E2 ? 0.85 + 0.15 * Math.sin(t * 23) : 1 };
 
   // Cada error: el respingo, la oreja aplastada y la boca que se cierra.
@@ -72,7 +74,20 @@ function momento(t) {
     if (t > E2 + 0.5) m.temblor = [Math.sin(t * 83) * tiembla, Math.cos(t * 71) * 0.6 * tiembla];
   }
   // El acierto: la mecha llega al cartucho igual, y explota de contento. Se arma tiznado y aúlla.
-  if (t >= ACIERTO) Object.assign(m, Object.fromEntries(Object.entries(explosion(1.4 + t - ACIERTO)).filter(([, v]) => v !== undefined)));
+  // Cuando la explosión termina, la pose sigue de ahí y no vuelve a la de antes: la mecha entera y
+  // apagada, el tizne que se le va yendo de a poco, y contento, con la boca abierta.
+  if (t >= ACIERTO) {
+    const u = 1.4 + t - ACIERTO;
+    const e = explosion(Math.min(u, FIN_BUM - 0.01));
+    if (u < FIN_BUM) Object.assign(m, Object.fromEntries(Object.entries(e).filter(([, v]) => v !== undefined)));
+    else {
+      m.mecha = e.mecha;
+      m.hollin = Math.max(0, e.hollin - 0.04 * (u - FIN_BUM));
+      m.fiebre = 1;
+      m.boca = 0.36 + 0.12 * Math.sin(t * 11);
+      m.oreja = 0.9;
+    }
+  }
   return m;
 }
 
@@ -155,8 +170,7 @@ await grabar({ html, local: true, duracion: DURACION, salida: video });
 
 // El sonido: la escalera del tema, las teclas, el "no era", el acierto y el estallido.
 const r = await ruidos(T, correr, FFMPEG);
-const teclas = INTENTOS.flatMap((it) => Array.from(it.texto, (_, i) => [r.tecla, it.desde + (i / it.texto.length) * it.tipea, 0.5]));
-const golpes = [...teclas, [r.nada, E1], [r.nada, E2], [r.bien, ACIERTO, 0.8], [r.bum, ACIERTO + 0.02, 1.1]];
+const golpes = [...sonidosDeTipeo(INTENTOS, r), [r.nada, E1], [r.nada, E2], [r.bien, ACIERTO, 0.8], [r.bum, ACIERTO + 0.02, 1.1]];
 const audio = `${T}/audio.m4a`;
 await mezclar({ fragmento: `${REPO}/public/audio/fragmentos/${TEMA}.mp3`, pasos: PASOS, sigue: { t: ACIERTO + 0.3, desde: 2, dura: 8 }, golpes, duracion: DURACION, salida: audio, correr, FFMPEG });
 await juntar(video, audio, DESTINO);
