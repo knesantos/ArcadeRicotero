@@ -54,7 +54,7 @@ import {
   ACECHOS, AIRE, ALIVIO, LUCES, MIRADA, PASO_PLENO, VIDAS, alfaDeAire, alivioDeEntrada, alivioTras, corridaDeAire, despejeDeLupa, estadoDeLuz, parpadeo, pasoDeVida, rutaDelFilo, tieneFiloPropio,
   tocaLaLuz,
 } from '../lib/bestiario/aire.ts';
-import { ENTERA, LUPA, acotar, centrar, conLupa, enElMundo, enfocar, entreLentes, type Lente } from '../lib/bestiario/lupa.ts';
+import { ENTERA, LUPA, acotar, camConLupa, centrar, conLupa, enElMundo, enfocar, entreLentes, type Lente } from '../lib/bestiario/lupa.ts';
 import { leerGestos } from './bestiario/pellizco.ts';
 import { miradaDe, seguir } from './bestiario/mirada.ts';
 import { alSacudon } from './bestiario/sacudon.ts';
@@ -454,6 +454,10 @@ let anchoPx = 0;
 let vistaPx = 0;
 /** Lo caminado, en píxeles: cuánto se corrió el piso. */
 let cam = 0;
+/** Dónde estaba la cámara la última vez que no había lupa: ahí se ancla el paralaje mientras se agranda (`camConLupa`, `D-91`). */
+let camSinLupa = 0;
+/** La cámara que ve una capa de velocidad `f`: la de siempre, o la anclada si la lupa está puesta. */
+const camDe = (f: number, suelta = true): number => camConLupa(f, cam, camSinLupa, lente.z, suelta);
 /** El paralaje de cada capa, en píxeles: lo que se corre por lo caminado, sin la cámara. */
 let corridas: number[] = capas.map(() => 0);
 /**
@@ -533,7 +537,7 @@ function pintarLuces(): void {
       const g = colgadas.get(l.r.sigue);
       ancla += Number(g?.dataset.ahora ?? g?.dataset.x ?? 0);
     }
-    const x = ancla * escala - (paralaje ? corrimiento(l.r.f, cam, datos.foco * escala, vistaPx) : 0);
+    const x = ancla * escala - (paralaje ? corrimiento(l.r.f, camDe(l.r.f), datos.foco * escala, vistaPx) : 0);
     const y = l.r.y * escala - lente.y;
     const base = encuadre ? transformDe(encuadre, capaX, x, z, y) : corridaDe(x, z, y);
     l.el.style.transform = `${base} rotate(${((l.r.rumbo ?? 0) + e.giro).toFixed(2)}deg) scale(${e.escala.toFixed(3)}) translate(${(l.r.caja[0] * escala).toFixed(1)}px, ${(l.r.caja[1] * escala).toFixed(1)}px)`;
@@ -655,7 +659,7 @@ function pintarVida(capaX: number): void {
     if (reloj < pasa.proxima || conLupa(lente) || quieto() || alivio >= 2) return;
     pasa.desde = reloj;
     pasa.hasta = reloj + loQuePasa.dura[0] + Math.random() * (loQuePasa.dura[1] - loQuePasa.dura[0]);
-    pasa.alReves = loQuePasa.deLosDosLados && Math.random() < 0.5;
+    pasa.alReves = loQuePasa.alReves ?? (loQuePasa.deLosDosLados && Math.random() < 0.5);
   }
   const u = (reloj - pasa.desde) / (pasa.hasta - pasa.desde);
   if (u >= 1 || conLupa(lente)) {
@@ -770,7 +774,7 @@ function pintarCapas(): void {
     // Lo de atrás del piso va despacio y es pura mancha: se corre un cuadro sí y uno no, que no se nota
     // y es un estilo menos que recalcular (salvo con la lupa, que lo agranda).
     if (a.c.plano === 'fondo' && mediaVuelta && z === 1 && a.alfa >= 0) continue;
-    const k = corridaDeAire(a.c, cam / escala, t, paralaje);
+    const k = corridaDeAire(a.c, camDe(a.c.f, paralaje) / escala, t, paralaje);
     const x = quieto() ? 0 : k.x * escala;
     const baja = k.y * escala - lente.y;
     a.el.style.transform = encuadre ? transformDe(encuadre, capaX, x, z, baja) : corridaDe(x, z, baja);
@@ -933,9 +937,10 @@ function enElCruce(): boolean {
 function encuadrar(pintar = true): void {
   cam = escenario.scrollLeft / lente.z;
   lente.x = cam;
+  if (lente.z <= 1) camSinLupa = cam;
   if (paralaje) {
     const focoPx = datos.foco * escala;
-    corridas = capas.map((c) => -corrimiento(c.f, cam, focoPx, vistaPx));
+    corridas = capas.map((c) => -corrimiento(c.f, camDe(c.f), focoPx, vistaPx));
   }
   if (pintar) pintarCapas();
   for (const a of apariciones) {
