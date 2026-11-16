@@ -41,7 +41,7 @@ import { lugarDelRotulo, simbolos, tintaDe, type Bestiario, type Bestia } from '
 import { ALTO, CAMINOS, CON_CAMINO, hrefDeRegion } from '../../../lib/bestiario/camino.ts';
 import { destinosDelCruce, HORIZONTE, PIEZAS_CAMINO } from '../../../lib/bestiario/arte-camino.ts';
 import { rutaDePieza } from '../../../lib/bestiario/aerografo.ts';
-import { ACECHOS, HUIDIZOS, LUCES, VIDAS, VISITAS, aireDe, altoDeBaldosa, type CapaDeAire, type Plano } from '../../../lib/bestiario/aire.ts';
+import { ACECHOS, FRENTE_QUE_SE_CORRE, HUIDIZOS, LUCES, VIDAS, VISITAS, aireDe, altoDeBaldosa, type CapaDeAire, type Plano } from '../../../lib/bestiario/aire.ts';
 import { pisoDelCamino } from '../../../lib/bestiario/escenas-camino.ts';
 import { EL_PLANO, VELOS, rutaDelVelo } from '../../../lib/bestiario/velos.ts';
 import { conAudio, loQueDice } from '../../../lib/bestiario/fichas.ts';
@@ -291,6 +291,7 @@ const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín
               <img
                 class="capa capa--frente"
                 data-f={tramo.velocidad.frente}
+                data-se-corre={FRENTE_QUE_SE_CORRE.includes(id) ? '' : undefined}
                 src={rutaDePieza(frente.nombre)}
                 width={frente.caja[2]}
                 height={frente.caja[3]}
