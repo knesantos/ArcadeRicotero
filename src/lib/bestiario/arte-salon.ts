@@ -37,7 +37,7 @@ const F = {
 const ANCHO = 900;
 const ALTO = 640;
 /** Donde la pared se junta con el piso, y hacia dónde se va el damero (los mismos del recinto, `arte.ts`). */
-export const SALON = { zocalo: 340, fuga: { x: 450, y: 236 }, columnas: [42, 318, 596, 868], capitel: 128, clave: 34 } as const;
+export const SALON = { zocalo: 340, fuga: { x: 450, y: 236 }, columnas: [42, 318, 596], capitel: 128, clave: 34 } as const;
 
 const elipse = (x: number, y: number, rx: number, ry: number): string =>
   `M${f(x - rx)} ${f(y)} a${f(rx)} ${f(ry)} 0 1 0 ${f(rx * 2)} 0 a${f(rx)} ${f(ry)} 0 1 0 ${f(-rx * 2)} 0 Z`;
@@ -79,11 +79,12 @@ function salon(): string {
   let piedra = '';
   let cantos = '';
   for (const x of columnas) {
-    const g = 13;
+    // Finas (segunda vuelta): con 26 de ancho, en un teléfono parado una columna partía la pantalla en dos.
+    const g = 7.5;
     piedra +=
       forma(poli([[x - g, zocalo + 6], [x - g + 2, capitel + 12], [x + g - 2, capitel + 12], [x + g, zocalo + 6]]), F.negro) +
-      forma(poli([[x - g - 9, capitel + 12], [x - g - 5, capitel - 2], [x + g + 5, capitel - 2], [x + g + 9, capitel + 12]]), F.negro) +
-      forma(poli([[x - g - 6, zocalo + 8], [x - g - 3, zocalo - 12], [x + g + 3, zocalo - 12], [x + g + 6, zocalo + 8]]), F.negro);
+      forma(poli([[x - g - 7, capitel + 10], [x - g - 4, capitel - 2], [x + g + 4, capitel - 2], [x + g + 7, capitel + 10]]), F.negro) +
+      forma(poli([[x - g - 5, zocalo + 8], [x - g - 2, zocalo - 9], [x + g + 2, zocalo - 9], [x + g + 5, zocalo + 8]]), F.negro);
     // El canto encendido: una raya fina de cada lado, cortada, no de regla.
     for (const lado of [-1, 1]) {
       const rnd = azar(4001 + x * lado);
@@ -96,10 +97,10 @@ function salon(): string {
     const b = i + 1 >= columnas.length ? columnas[columnas.length - 1]! + 276 : columnas[i + 1]!;
     const m = (a + b) / 2;
     const arco = `M${f(a + 8)} ${capitel} Q${f(a + 14)} ${f(clave + 40)} ${f(m)} ${clave} Q${f(b - 14)} ${f(clave + 40)} ${f(b - 8)} ${capitel}`;
-    piedra += trazo(arco, F.negro, 15);
+    piedra += trazo(arco, F.negro, 11);
     cantos += trazo(`M${f(a + 16)} ${capitel + 2} Q${f(a + 22)} ${f(clave + 50)} ${f(m)} ${clave + 9} Q${f(b - 22)} ${f(clave + 50)} ${f(b - 16)} ${capitel + 2}`, F.brasa, 2.4, 0.9);
     // La enjuta: lo que queda entre arco y arco, arriba de cada columna, macizo.
-    if (i >= 0) piedra += forma(poli([[a - 30, -20], [a + 30, -20], [a + 18, capitel - 30], [a + 10, capitel], [a - 10, capitel], [a - 18, capitel - 30]]), F.negro);
+    if (i >= 0) piedra += forma(poli([[a - 26, -20], [a + 26, -20], [a + 13, capitel - 34], [a + 8, capitel], [a - 8, capitel], [a - 13, capitel - 34]]), F.negro);
   }
   // El techo: lo de arriba de todo se cierra en negro, para que los arcos tengan de dónde colgar.
   const techo = soplo(`M-20 -30 L${ANCHO + 20} -30 L${ANCHO + 20} 16 L-20 16 Z`, F.negro, 'm', 0.95);
@@ -108,7 +109,7 @@ function salon(): string {
   const rnd = azar(4013);
   let lejos = '';
   let cerca = '';
-  for (const [x, t] of [[96, 0.62], [262, 0.7], [392, 0.6], [540, 0.72], [668, 0.62], [760, 0.74], [824, 0.6]] as const) {
+  for (const [x, t] of [[96, 0.62], [262, 0.7], [384, 0.6], [540, 0.72], [668, 0.62], [752, 0.74], [836, 0.6]] as const) {
     const p = pareja(x, zocalo - 2, t, -4 + rnd() * 8, rnd() < 0.6);
     if (t < 0.66) lejos += p;
     else cerca += p;
@@ -163,7 +164,7 @@ const fila = (semilla: number, alto: readonly [number, number], paso: readonly [
    ------------------------------------------------------------------ */
 
 /** Dónde está el que asoma: la caja de su pieza. */
-export const GIGANTE = { caja: [470, 6, 420, 340] as const } as const;
+export const GIGANTE = { caja: [247, 0, 420, 346] as const } as const;
 
 /**
  * El que asoma detrás de las llamas: la cabeza y los hombros de alguien demasiado grande, de cuernos
@@ -172,23 +173,30 @@ export const GIGANTE = { caja: [470, 6, 420, 340] as const } as const;
 function gigante(): string {
   const [x0, y0, w, h] = GIGANTE.caja;
   const cx = x0 + w * 0.5;
-  const cabeza = y0 + h * 0.5;
+  // En el vano del medio (segunda vuelta: estaba detrás de una columna), justo arriba de Luzbelito: se le
+  // ve la cara por encima de la llama, y los hombros llenan el vano de columna a columna.
+  const cabeza = y0 + h * 0.6;
   const silueta =
     // Los hombros, que se pierden por abajo.
     `M${f(cx - 200)} ${y0 + h + 20} Q${f(cx - 190)} ${f(cabeza + 60)} ${f(cx - 70)} ${f(cabeza + 44)} L${f(cx + 70)} ${f(cabeza + 44)} Q${f(cx + 190)} ${f(cabeza + 60)} ${f(cx + 200)} ${y0 + h + 20} Z ` +
     // La cabeza, larga, de mentón en punta.
     `M${f(cx - 56)} ${f(cabeza - 30)} Q${f(cx - 60)} ${f(cabeza - 96)} ${f(cx)} ${f(cabeza - 100)} Q${f(cx + 60)} ${f(cabeza - 96)} ${f(cx + 56)} ${f(cabeza - 30)} Q${f(cx + 46)} ${f(cabeza + 40)} ${f(cx)} ${f(cabeza + 74)} Q${f(cx - 46)} ${f(cabeza + 40)} ${f(cx - 56)} ${f(cabeza - 30)} Z ` +
     // Los cuernos: salen de la frente, se abren y vuelven hacia adentro.
-    `M${f(cx - 40)} ${f(cabeza - 84)} Q${f(cx - 150)} ${f(cabeza - 100)} ${f(cx - 132)} ${f(cabeza - 196)} Q${f(cx - 112)} ${f(cabeza - 122)} ${f(cx - 16)} ${f(cabeza - 96)} Z ` +
-    `M${f(cx + 40)} ${f(cabeza - 84)} Q${f(cx + 150)} ${f(cabeza - 100)} ${f(cx + 132)} ${f(cabeza - 196)} Q${f(cx + 112)} ${f(cabeza - 122)} ${f(cx + 16)} ${f(cabeza - 96)} Z`;
+    `M${f(cx - 40)} ${f(cabeza - 84)} Q${f(cx - 136)} ${f(cabeza - 96)} ${f(cx - 118)} ${f(cabeza - 172)} Q${f(cx - 102)} ${f(cabeza - 120)} ${f(cx - 16)} ${f(cabeza - 96)} Z ` +
+    `M${f(cx + 40)} ${f(cabeza - 84)} Q${f(cx + 136)} ${f(cabeza - 96)} ${f(cx + 118)} ${f(cabeza - 172)} Q${f(cx + 102)} ${f(cabeza - 120)} ${f(cx + 16)} ${f(cabeza - 96)} Z`;
+  // El canto: lo que el fuego de adelante le marca. Sin esto era una mancha más oscura y nada más.
+  const canto =
+    `M${f(cx - 118)} ${f(cabeza - 172)} Q${f(cx - 136)} ${f(cabeza - 96)} ${f(cx - 40)} ${f(cabeza - 84)} M${f(cx + 118)} ${f(cabeza - 172)} Q${f(cx + 136)} ${f(cabeza - 96)} ${f(cx + 40)} ${f(cabeza - 84)} ` +
+    `M${f(cx - 56)} ${f(cabeza - 30)} Q${f(cx - 60)} ${f(cabeza - 96)} ${f(cx)} ${f(cabeza - 100)} Q${f(cx + 60)} ${f(cabeza - 96)} ${f(cx + 56)} ${f(cabeza - 30)} ` +
+    `M${f(cx - 192)} ${f(cabeza + 110)} Q${f(cx - 176)} ${f(cabeza + 62)} ${f(cx - 72)} ${f(cabeza + 46)} M${f(cx + 192)} ${f(cabeza + 110)} Q${f(cx + 176)} ${f(cabeza + 62)} ${f(cx + 72)} ${f(cabeza + 46)}`;
   const ojo = (lado: number): string =>
     nube(cx + lado * 24, cabeza - 34, 16, 8, F.fuego, 's', 0.5) +
     forma(`M${f(cx + lado * 10)} ${f(cabeza - 30)} Q${f(cx + lado * 26)} ${f(cabeza - 46)} ${f(cx + lado * 42)} ${f(cabeza - 42)} Q${f(cx + lado * 28)} ${f(cabeza - 30)} ${f(cx + lado * 10)} ${f(cabeza - 30)} Z`, F.oro) +
     forma(elipse(cx + lado * 26, cabeza - 37, 1.6, 4.6), F.negro);
   return (
     `<g filter="url(#rociado)">${hoja(x0, y0, w, h)}` +
-    `<g filter="url(#soplo-s)" opacity="0.74"><path d="${silueta}" fill="${F.negro}"/></g>` +
-    // El canto que le marca el fuego de adelante, en la frente y en los cuernos.
+    `<g filter="url(#soplo-xs)" opacity="0.8"><path d="${silueta}" fill="${F.negro}"/></g>` +
+    trazo(canto, F.fuego, 2.4, 0.55) +
     nube(cx, cabeza - 96, 40, 5, F.brasa, 's', 0.7) +
     ojo(-1) + ojo(1) +
     // La boca: una raya de brasa, torcida.
