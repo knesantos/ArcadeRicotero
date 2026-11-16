@@ -1655,14 +1655,14 @@ function cieloDeChapa(ancho: number, h: number): string {
     for (let x = -60 + (fila % 2) * 170 - rnd() * 60; x < ancho; ) {
       const w = 260 + rnd() * 180;
       // Cada plancha, con su tono: unas agarran un pelo más de luz que otras.
-      s += forma(caja(x + 1.5, y0 + 1.5, w - 3, y1 - y0 - 3), rnd() < 0.5 ? R.acero : R.noche, 0.05 + rnd() * 0.09);
+      s += forma(caja(x + 1.5, y0 + 1.5, w - 3, y1 - y0 - 3), rnd() < 0.5 ? R.acero : R.noche, 0.07 + rnd() * 0.15);
       // La costura de la derecha y la de abajo, y sus remaches.
-      s += trazo(`M${f(x + w)} ${f(y0)} L${f(x + w)} ${f(y1)}`, R.negro, 1.6, 0.6);
-      for (let y = y0 + 9; y < y1 - 4; y += 15) s += forma(circulo(x + w - 5, y, 1.25), R.acero, 0.34) + forma(circulo(x + w + 5, y, 1.25), R.acero, 0.26);
-      for (let rx = x + 9; rx < x + w - 4; rx += 15) s += forma(circulo(rx, y1 - 5, 1.25), R.acero, 0.3);
+      s += trazo(`M${f(x + w)} ${f(y0)} L${f(x + w)} ${f(y1)}`, R.negro, 2.6, 0.85) + trazo(`M${f(x + w + 1.8)} ${f(y0)} L${f(x + w + 1.8)} ${f(y1)}`, R.acero, 0.7, 0.3);
+      for (let y = y0 + 9; y < y1 - 4; y += 15) s += forma(circulo(x + w - 5, y, 1.5), R.acero, 0.6) + forma(circulo(x + w + 5, y, 1.5), R.acero, 0.48);
+      for (let rx = x + 9; rx < x + w - 4; rx += 15) s += forma(circulo(rx, y1 - 5, 1.5), R.acero, 0.55);
       x += w;
     }
-    s += trazo(`M-10 ${f(y1)} L${ancho + 10} ${f(y1)}`, R.negro, 1.6, 0.6);
+    s += trazo(`M-10 ${f(y1)} L${ancho + 10} ${f(y1)}`, R.negro, 2.6, 0.85) + trazo(`M-10 ${f(y1 + 1.8)} L${ancho + 10} ${f(y1 + 1.8)}`, R.acero, 0.7, 0.3);
   });
   return s;
 }
@@ -1787,6 +1787,98 @@ function pampaDeLaRuta(ancho: number, h: number, hasta: number): string {
   return s;
 }
 
+/**
+ * El paso a nivel (`D-91`, tercera vuelta). La franja de asfalto era idéntica en todas las pantallas:
+ * acá la cruza una vía. Viene desde adelante de todo, pasa por arriba del asfalto entre tablones, y
+ * se va derecho al horizonte, con los durmientes cada vez más juntos: es el punto de fuga que le
+ * faltaba a la mitad de abajo. Al costado, la cruz de San Andrés, torcida, con sus dos luces apagadas.
+ * `x`: por dónde cruza la vía el borde de arriba del asfalto.
+ */
+function pasoANivel(x: number, alto: number, h: number): string {
+  const { arriba, abajo } = RUTA.asfalto;
+  // Los dos rieles: de la trocha de adelante (ancha) a la del horizonte (un pelo), corridos de costado.
+  const fuga: Punto = [x + 92, h + 6];
+  const en = (y: number, lado: number): number => {
+    const u = (alto + 20 - y) / (alto + 20 - fuga[1]);
+    return x - 62 + (fuga[0] - (x - 62)) * u + lado * (38 * (1 - u) + 1);
+  };
+  let s = '';
+  // El terraplén de piedra, más claro que la pampa, que se angosta hacia el fondo.
+  s += forma(poli([[en(alto + 20, -1) - 30, alto + 20], [en(alto + 20, 1) + 30, alto + 20], [en(fuga[1], 1) + 2, fuga[1]], [en(fuga[1], -1) - 2, fuga[1]]]), R.topo, 0.5);
+  // Los durmientes: cada uno más cerca del anterior. Sobre el asfalto no hay: ahí van los tablones.
+  for (let k = 0; k < 34; k++) {
+    const u = 1 - 0.9 ** k;
+    const y = alto + 14 - (alto + 14 - fuga[1]) * u;
+    if (y < fuga[1] + 4) break;
+    if (y > arriba - 2 && y < abajo + 2) continue;
+    const grosor = Math.max(0.8, 6.5 * (1 - u));
+    s += forma(poli([[en(y, -1) - 9 * (1 - u) - 1, y], [en(y, 1) + 9 * (1 - u) + 1, y], [en(y - grosor, 1) + 9 * (1 - u) + 1, y - grosor], [en(y - grosor, -1) - 9 * (1 - u) - 1, y - grosor]]), R.negro, 0.9) +
+      trazo(`M${f(en(y - grosor, -1) - 8 * (1 - u))} ${f(y - grosor)} L${f(en(y - grosor, 1) + 8 * (1 - u))} ${f(y - grosor)}`, R.tenue, 0.7, 0.5 * (1 - u));
+  }
+  // Los tablones del cruce, sobre el asfalto: madera vieja, entre los rieles y a los costados.
+  for (let i = 0; i < 9; i++) {
+    const y0 = arriba + 6 + (i * (abajo - arriba - 12)) / 9;
+    const y1 = y0 + (abajo - arriba - 12) / 9 - 1.6;
+    s += forma(poli([[en(y1, -1) - 16, y1], [en(y1, 1) + 16, y1], [en(y0, 1) + 15, y0], [en(y0, -1) - 15, y0]]), i % 2 ? R.topo : R.cuero, 0.5);
+  }
+  // Los rieles, con el lomo gastado que agarra la luz.
+  for (const lado of [-1, 1]) {
+    s += trazo(`M${f(en(alto + 20, lado))} ${alto + 20} L${f(en(fuga[1], lado))} ${f(fuga[1])}`, R.negro, 3.6) +
+      `<path d="M${f(en(alto + 20, lado))} ${alto + 20} L${f(en(arriba, lado))} ${arriba} L${f(en(fuga[1] + 20, lado))} ${f(fuga[1] + 20)}" fill="none" stroke="${R.papel}" stroke-width="1.1" opacity="0.6"/>`;
+  }
+  // La bruma se come la vía antes del horizonte.
+  s += nube(fuga[0] - 10, fuga[1] + 16, 60, 14, R.noche, 'l', 0.85);
+  // La cruz de San Andrés: el poste torcido, las dos tablas en cruz con las puntas rojas, y las luces.
+  const px = en(arriba, 1) + 54;
+  const py = arriba - 2;
+  s += `<g transform="rotate(4 ${f(px)} ${py})">` +
+    nube(px + 3, py + 1, 12, 3, R.negro, 's', 0.85) +
+    forma(caja(px - 2.2, py - 104, 4.4, 104), R.negro) + trazo(`M${f(px - 1.4)} ${py - 2} L${f(px - 1.4)} ${py - 102}`, R.tenue, 0.8, 0.5) +
+    [-1, 1].map((d) => `<g transform="rotate(${d * 33} ${f(px)} ${py - 88})">` + forma(caja(px - 31, py - 92, 62, 8), R.papel, 0.92) + forma(caja(px - 31, py - 92, 9, 8), R.vivo) + forma(caja(px + 22, py - 92, 9, 8), R.vivo) + `</g>`).join('') +
+    forma(caja(px - 15, py - 62, 30, 4), R.negro) + forma(circulo(px - 13, py - 60, 5.4), R.negro) + forma(circulo(px + 13, py - 60, 5.4), R.negro) +
+    forma(circulo(px - 13, py - 60, 3), R.vivo, 0.5) + forma(circulo(px + 13, py - 60, 3), R.vivo, 0.28) +
+    `</g>`;
+  return s;
+}
+
+/**
+ * Un guardarraíl roto, en el borde de abajo del asfalto: la chapa ondulada sobre sus postes, y en una
+ * punta, arrancada y doblada hacia la banquina. Alguien se fue de la ruta acá.
+ */
+function guardarrail(x: number, y: number, largo: number): string {
+  let s = nube(x + largo / 2, y + 2, largo * 0.56, 4, R.negro, 's', 0.8);
+  for (let px = x + 8; px < x + largo * 0.78; px += 34) s += forma(caja(px - 2, y - 22, 4, 22), R.negro) + trazo(`M${f(px - 1.2)} ${y - 1} l0 -20`, R.tenue, 0.8, 0.5);
+  const fin = x + largo * 0.78;
+  // La chapa: dos ondas claras y el valle oscuro. Derecha hasta donde aguanta, y después se retuerce y cae.
+  const chapa = `M${f(x)} ${y - 26} L${f(fin)} ${y - 26} Q${f(fin + largo * 0.12)} ${y - 30} ${f(fin + largo * 0.18)} ${y - 12} Q${f(fin + largo * 0.2)} ${y - 2} ${f(fin + largo * 0.25)} ${y + 6}`;
+  s += `<path d="${chapa}" fill="none" stroke="${R.tenue}" stroke-width="9" stroke-linecap="round"/>` + `<path d="${chapa}" fill="none" stroke="${R.negro}" stroke-width="2.2" opacity="0.8"/>` +
+    `<g transform="translate(0 -3.2)"><path d="${chapa}" fill="none" stroke="${R.papel}" stroke-width="1" opacity="0.5"/></g>`;
+  // La marca roja de la punta, y lo que quedó: un vidrio, una tasa de rueda.
+  s += forma(caja(x, y - 30.5, 12, 9), R.vivo, 0.85) + forma(circulo(fin + largo * 0.3, y + 10, 5), R.negro) + forma(circulo(fin + largo * 0.3, y + 10, 3), R.tenue, 0.8) + nube(fin + largo * 0.36, y + 4, 1.6, 1.2, R.papel, 'xs', 0.9) + nube(fin + largo * 0.2, y + 12, 1.2, 1, R.papel, 'xs', 0.8);
+  return s;
+}
+
+/** Un charco grande que devuelve una torre de alta tensión: el enrejado al revés, roto por el agua, y la baliza roja. */
+function charcoConTorre(id: string, x: number, y: number, rx: number, ry: number): string {
+  const silueta = `M${f(x - rx)} ${f(y)} C${f(x - rx)} ${f(y - ry)} ${f(x - rx * 0.3)} ${f(y - ry * 1.1)} ${f(x + rx * 0.2)} ${f(y - ry)} C${f(x + rx * 0.8)} ${f(y - ry * 0.9)} ${f(x + rx * 1.05)} ${f(y - ry * 0.3)} ${f(x + rx)} ${f(y + ry * 0.2)} C${f(x + rx * 0.9)} ${f(y + ry)} ${f(x + rx * 0.2)} ${f(y + ry * 1.1)} ${f(x - rx * 0.3)} ${f(y + ry)} C${f(x - rx * 0.8)} ${f(y + ry)} ${f(x - rx)} ${f(y + ry * 0.6)} ${f(x - rx)} ${f(y)} Z`;
+  let torre = '';
+  // La torre, patas arriba: ancha contra el canto de atrás, la punta hacia adelante. En tramos corridos: el agua tiembla.
+  for (let i = 0; i < 7; i++) {
+    const u = i / 7;
+    const yy = y - ry * 0.95 + u * ry * 1.7;
+    const w = rx * 0.34 * (1 - u * 0.8);
+    const corre = (i % 2 ? 1 : -1) * 2.2;
+    torre += trazo(`M${f(x - w + corre)} ${f(yy)} L${f(x + w * 0.8 + corre)} ${f(yy + ry * 0.2)} M${f(x + w + corre)} ${f(yy)} L${f(x - w * 0.8 + corre)} ${f(yy + ry * 0.2)}`, R.negro, 1.3, 0.9) + trazo(`M${f(x - w * 1.9 + corre)} ${f(yy + 1)} l${f(w * 3.8)} 0`, R.negro, 0.8, i < 3 ? 0.8 : 0);
+  }
+  return (
+    nube(x, y + ry * 0.2, rx * 1.15, ry * 1.5, R.negro, 's', 0.5) +
+    enmascarado(id, silueta, forma(silueta, R.noche) + nube(x, y - ry * 0.4, rx * 0.8, ry * 0.5, T.azul, 'm', 0.35) + torre + nube(x + 1.5, y + ry * 0.74, 5, 2.4, R.vivo, 's', 0.7) + forma(circulo(x + 1.5, y + ry * 0.74, 1.4), R.vivo) +
+      // Estrellas en el agua, y los remaches del cielo.
+      [-0.7, -0.45, 0.4, 0.62, 0.8].map((k, i) => nube(x + rx * k, y - ry * 0.5 + (i % 3) * ry * 0.4, 1, 0.7, R.papel, 'xs', 0.8)).join('')) +
+    trazo(`M${f(x - rx * 0.6)} ${f(y + ry * 0.96)} Q${f(x)} ${f(y + ry * 1.14)} ${f(x + rx * 0.5)} ${f(y + ry * 0.92)}`, R.tenue, 1.1, 0.5)
+  );
+}
+
 /** El santuario de la banquina: una casita de chapa a la altura de la rodilla, con una vela adentro y trapos atados. */
 function santuario(x: number, y: number): string {
   const vela = 'var(--entorno-templo-foco)';
@@ -1907,6 +1999,9 @@ function rutaPiso(ancho = ANCHO, alto = ALTO): string {
     (ancho > ANCHO ? santuario(250, arriba - 1) : '') +
     forma(caja(-10, abajo, ancho + 20, alto - abajo + 10), R.negro) +
     nube(ancho / 2, abajo + 30, ancho * 0.6, 30, R.topo, 'xl', 0.35) +
+    // Tercera vuelta: el asfalto se abre. Entre la piba (672) y la bella señora (1387), el paso a nivel;
+    // entre ella y el taxi volcado (1781), el guardarraíl roto; y a la entrada, un charco que devuelve una torre.
+    (ancho > ANCHO ? charcoConTorre('r-torre', 432, 596, 104, 17) + pasoANivel(1010, alto, RUTA.horizonte) + guardarrail(1470, abajo + 6, 170) : '') +
     `</g>` +
     yuyos(-10, ancho + 10, arriba, 30, Math.round(160 * k), 523, R.topo, R.cuero) +
     yuyos(-10, ancho + 10, alto, 50, Math.round(120 * k), 527, R.topo, R.cuero) +
