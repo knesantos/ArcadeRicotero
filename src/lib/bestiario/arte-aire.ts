@@ -20,7 +20,7 @@ import { enmascarado, forma, nube, soplo, trazo, type Pieza } from './aerografo.
 import { ACECHOS, AIRE, LUCES, VIDAS, altoDeBaldosa, type CapaDeAire } from './aire.ts';
 import { M, azar, filaDeTiras } from './arte.ts';
 import { ruedaDelMolino, troncosCercanos } from './arte-arboles.ts';
-import { galponCerca, galponHumo, galponPogo, zapatilla } from './arte-recital.ts';
+import { galponHumo, galponPogo, zapatilla } from './arte-recital.ts';
 import { lamparaDeLaMesa, mesaMoscas, moscardon } from './arte-sobremesa.ts';
 import { ALTO } from './camino.ts';
 import { ofrendasDelTemplo } from './ofrendas.ts';
@@ -1212,8 +1212,8 @@ const PINTA: Readonly<Record<string, (c: CapaDeAire) => string>> = {
   'aire-arbol-hojas': arbolHojas,
   'aire-arbol-racha': arbolRacha,
   'aire-galpon-humo': galponHumo,
-  'aire-galpon-pogo': galponPogo,
-  'aire-galpon-cerca': galponCerca,
+  'aire-galpon-pogo': (c) => galponPogo(c, 0),
+  'aire-galpon-pogo-b': (c) => galponPogo(c, 1),
 };
 
 /**
@@ -1221,7 +1221,7 @@ const PINTA: Readonly<Record<string, (c: CapaDeAire) => string>> = {
  * pura mancha y se imprime gruesa, que pesa poco; lo que tiene filo (las matas, la ceniza) va más fino.
  */
 /** Las baldosas que no son niebla sino dibujo de canto duro, y que se miran con la lupa: se imprimen finas (`D-91`). */
-const FILOSAS: ReadonlySet<string> = new Set(['aire-monte-troncos', 'aire-galpon-pogo', 'aire-mesa-moscas']);
+const FILOSAS: ReadonlySet<string> = new Set(['aire-monte-troncos', 'aire-galpon-pogo', 'aire-galpon-pogo-b', 'aire-mesa-moscas']);
 
 export const PIEZAS_AIRE: readonly Pieza[] = [...new Map(Object.values(AIRE).flat().filter((c) => !c.ajena).map((c) => [c.pieza, c] as const)).values()].map((c) => {
   const pinta = PINTA[c.pieza];
