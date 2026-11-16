@@ -1405,11 +1405,12 @@ function fotoDelEscenario(x: number, y: number, w: number, h: number): string {
   );
 }
 
-function mesaLejos(ancho = ANCHO, alto = ALTO): string {
+/** `nace`: de dónde sale el seguidor, si no es de donde sale en el recinto (el camino largo lo pone en su foto). */
+function mesaLejos(ancho = ANCHO, alto = ALTO, nace?: readonly [number, number]): string {
   const k = ancho / ANCHO;
   const { x0, x1, arriba, abajo } = MESA.ventana;
   const [vx0, vx1] = [x0 * k, x1 * k];
-  const [hx, hy] = [MESA.haz.desde[0] * k, MESA.haz.desde[1]];
+  const [hx, hy] = nace ?? [MESA.haz.desde[0] * k, MESA.haz.desde[1]];
   const [ox, oy] = [MESA.haz.hasta[0] * k, MESA.haz.hasta[1]];
   const ventana =
     forma(caja(vx0 - 8, arriba - 8, vx1 - vx0 + 16, abajo - arriba + 16), M2.negro) +
