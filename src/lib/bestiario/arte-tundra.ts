@@ -192,14 +192,20 @@ export function tundraLejos(ancho: number, alto: number): string {
   let ventisca = '';
   for (let x = 40; x < ancho; x += 150 + rnd() * 190) ventisca += nube(x, 300 + rnd() * 22, 130 + rnd() * 130, 16 + rnd() * 20, C.nieve, 'xl', 0.26 + rnd() * 0.34);
   // El plano de adelante: pocas cosas, oscuras, con huecos. Ninguna a la altura de la tele (1200), que va adelante.
+  // Tercera vuelta: tampoco hay torre entre 1290 y 1720, que es lo que cae debajo de Super Walter (parado en el aire,
+  // en 1707 del piso) según por dónde vaya la cámara: una torre ahí lo dejaba parado en la baliza.
+  // Y la chapa devuelve lo prendido: sobre cada cosa con luz, su mancha en el cielo de acero, verde agua o roja.
+  let devuelve = '';
+  for (const x of [322, 532, 928, 1664, 2078]) devuelve += nube(x, 196, 130, 62, C.lente, 'xl', 0.2) + nube(x, 236, 80, 26, C.lente, 'xl', 0.18);
+  for (const x of [170, 800, 1040, 1890, 2260]) devuelve += nube(x, 176, 70, 44, C.rojo, 'xl', 0.13);
   const cerca =
     torre(170, h + 2, 104, C.hondo) + bloque(rnd, 286, h + 2, 74, 82) +
     paredDeTeles(486, h + 4) +
     torre(800, h + 2, 122, C.hondo) + bloque(rnd, 880, h + 2, 96, 62) +
-    torre(1500, h + 2, 96, C.hondo) + bloque(rnd, 1610, h + 2, 110, 90) + torre(1890, h + 2, 128, C.hondo) + bloque(rnd, 2040, h + 2, 78, 70) + torre(2260, h + 2, 90, C.hondo);
+    torre(1040, h + 2, 96, C.hondo) + bloque(rnd, 1610, h + 2, 110, 90) + torre(1890, h + 2, 128, C.hondo) + bloque(rnd, 2040, h + 2, 78, 70) + torre(2260, h + 2, 90, C.hondo);
   // Los cables de torre a torre, combados, con el hielo colgando.
   let cables = '';
-  const torres = [[170, 104], [800, 122], [1500, 96], [1890, 128], [2260, 90]] as const;
+  const torres = [[170, 104], [800, 122], [1040, 96], [1890, 128], [2260, 90]] as const;
   for (let i = 0; i < torres.length - 1; i++) {
     const [[x0, a0], [x1, a1]] = [torres[i]!, torres[i + 1]!];
     const [y0, y1] = [h + 2 - a0 * 0.9, h + 2 - a1 * 0.9];
@@ -234,6 +240,7 @@ export function tundraLejos(ancho: number, alto: number): string {
     // La chapa se aclara hacia abajo: es el blanco de afuera, que le sube.
     nube(ancho / 2, h - 10, ancho * 0.75, 70, C.claro, 'xl', 0.55) +
     `<g fill="${C.nieve}">${escarcha}</g>` +
+    devuelve +
     hielo +
     // La tele se ve desde el horizonte: la nieve del aire, prendida de verde agua.
     nube(tx, h - 30, 320, 90, C.lente, 'xl', 0.28) +
