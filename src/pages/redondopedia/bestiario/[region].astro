@@ -41,7 +41,7 @@ import { lugarDelRotulo, simbolos, tintaDe, type Bestiario, type Bestia } from '
 import { ALTO, CAMINOS, CON_CAMINO, hrefDeRegion } from '../../../lib/bestiario/camino.ts';
 import { destinosDelCruce, HORIZONTE, PIEZAS_CAMINO } from '../../../lib/bestiario/arte-camino.ts';
 import { rutaDePieza } from '../../../lib/bestiario/aerografo.ts';
-import { ACECHOS, FRENTE_QUE_SE_CORRE, HUIDIZOS, LUCES, VIDAS, VISITAS, aireDe, altoDeBaldosa, type CapaDeAire, type Plano } from '../../../lib/bestiario/aire.ts';
+import { ACECHOS, FRENTE_QUE_SE_CORRE, HUIDIZOS, LUCES, PLANOS, VIDAS, VISITAS, aireDe, altoDeBaldosa, type CapaDeAire, type Plano } from '../../../lib/bestiario/aire.ts';
 import { pisoDelCamino } from '../../../lib/bestiario/escenas-camino.ts';
 import { EL_PLANO, VELOS, rutaDelVelo } from '../../../lib/bestiario/velos.ts';
 import { conAudio, loQueDice } from '../../../lib/bestiario/fichas.ts';
@@ -270,6 +270,8 @@ const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín
               />
             )
           }
+          {/* Lo que está parado entre lo lejano y el piso (`PLANOS`): el carguero de los astilleros, a su velocidad. */}
+          {(PLANOS[id] ?? []).map((p) => <img class="capa plano" data-f={p.f} src={rutaDePieza(p.pieza)} width={p.caja[2]} height={p.caja[3]} style={enSuLugar(p.caja, 1)} alt="" decoding="async" />)}
           {visita && <img class="capa asoma" data-f={visita.f} data-espera={visita.espera} src={rutaDePieza(visita.pieza)} width={visita.caja[2]} height={visita.caja[3]} style={estiloDeVisita} alt="" decoding="async" loading="lazy" />}
           {huidizo && <img class="capa huye" data-f={huidizo.f} src={rutaDePieza(huidizo.pieza)} width={huidizo.caja[2]} height={huidizo.caja[3]} style={enSuLugar(huidizo.caja, 1)} alt="" decoding="async" />}
           {aire('fondo').map((a) => <div class:list={['aire', `aire--${a.plano}`, { 'aire--cae': a.cae, 'aire--firme': a.firme }]} data-aire={a.pieza} style={a.estilo} />)}
