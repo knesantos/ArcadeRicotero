@@ -97,12 +97,12 @@ const apariciones = [...piso.querySelectorAll<SVGGElement>('.aparece')].map((el)
  * hasta que quien mira se queda quieto `espera` segundos; entonces aparece despacio, y se va rápido al caminar.
  */
 const respiran = [...piso.querySelectorAll<SVGGElement>('.respira')].map((el) => ({ el, base: Number(el.dataset.base), fase: Number(el.dataset.fase) }));
-const asoman = [...piso.querySelectorAll<SVGGElement>('.asoma')].map((el) => ({ el, espera: Number(el.dataset.espera), quietud: 0, alfa: 0, pintado: 0 }));
+const asoman = [...camino.querySelectorAll<SVGGElement | HTMLElement>('.asoma')].map((el) => ({ el, espera: Number(el.dataset.espera), quietud: 0, alfa: 0, pintado: 0 }));
 /** El aire (`D-90`, `lib/bestiario/aire.ts`): cada capa con su receta, y el alfa que tiene pintada. */
 const recetasDeAire = new Map((AIRE[datos.region] ?? []).map((c) => [c.pieza, c]));
 const aires = [...camino.querySelectorAll<HTMLElement>('.aire')].flatMap((el) => {
   const c = recetasDeAire.get(el.dataset.aire ?? '');
-  return c ? [{ el, c, alfa: -1 }] : [];
+  return c ? [{ el, c, alfa: -1, gajos: [...el.querySelectorAll<HTMLElement>('.gajo')] }] : [];
 });
 /** Las luces de la región (`LUCES`): la imagen, su receta y el alfa que tiene pintada. */
 const recetasDeLuz = new Map((LUCES[datos.region] ?? []).map((l) => [l.pieza, l]));
@@ -807,7 +807,9 @@ function pintarCapas(): void {
     const k = corridaDeAire(a.c, camDe(a.c.f, paralaje) / escala, t, paralaje);
     const x = quieto() ? 0 : k.x * escala;
     // Lo que salta (el pogo del galpón) baja y vuelve; con movimiento reducido queda arriba, donde está impreso.
-    const baja = (k.y + (quieto() ? 0 : saltoDeAire(a.c, t))) * escala - lente.y;
+    const baja = (k.y + (quieto() || a.gajos.length ? 0 : saltoDeAire(a.c, t))) * escala - lente.y;
+    // La que salta en ola: cada gajo con su salto, uno después del otro.
+    if (a.gajos.length && !quieto()) a.gajos.forEach((g, i) => (g.style.transform = `translate3d(0, ${(saltoDeAire(a.c, t, i) * escala).toFixed(1)}px, 0)`));
     a.el.style.transform = encuadre ? transformDe(encuadre, capaX, x, z, baja) : corridaDe(x, z, baja);
     // Con la lupa uno se mete adentro del aire: lo pegado a la cámara queda atrás, y la niebla afloja.
     const alfa = (quieto() ? a.c.alfa : alfaDeAire(a.c, t, anda)) * despejeDeLupa(a.c.plano, a.c.cae !== 0, z);
