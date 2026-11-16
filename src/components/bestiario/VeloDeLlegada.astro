@@ -1,0 +1,46 @@
+---
+/**
+ * El velo de llegada (`D-90`, octava ronda), que desde `D-91` (`T-530`) hace de loader: la tinta
+ * sólida de abajo, la hoja impresa del destino, y lo que dice que está cargando (los ojos de la
+ * región si la tinta es oscura, y un aviso seco si tarda). Los números, en `lib/bestiario/velos.ts`;
+ * cómo se mueve, en `styles/sitio.css`; quién lo suelta, `scripts/bestiario/llegada.ts`.
+ *
+ * Sin JavaScript no hay quien lo suelte: el `<noscript>` lo deja irse enseguida, como antes
+ * (`ADR-03`, molinetes abiertos).
+ */
+import { rutaDePieza } from '../../lib/bestiario/aerografo.ts';
+import { ACECHOS } from '../../lib/bestiario/aire.ts';
+import { CAMINO } from '../../lib/bestiario/copy.ts';
+import { OJOS_DEL_PLANO, SOBRA, VELOS, rutaDelVelo } from '../../lib/bestiario/velos.ts';
+
+interface Props {
+  /** La región a la que se llega, o `EL_PLANO`. */
+  destino: string;
+}
+
+const { destino } = Astro.props;
+const velo = VELOS[destino]!;
+const acecho = velo.mira ? (ACECHOS[destino] ?? ACECHOS[OJOS_DEL_PLANO]!) : null;
+---
+
+<div
+  class="velo-de-llegada"
+  aria-hidden="true"
+  data-rumbo={velo.rumbo}
+  style={`--velo: url(${rutaDelVelo(destino)}); --sobra: ${SOBRA / 100}; --tinta-velo: ${velo.tinta}`}
+>
+  {acecho && <img class="velo-ojos" src={rutaDePieza(acecho.pieza)} width={acecho.ancho} height={acecho.alto} alt="" />}
+  <p class="velo-aviso">{CAMINO.cargando}</p>
+</div>
+<noscript>
+  <style is:inline>
+    .velo-de-llegada::before,
+    .velo-de-llegada::after {
+      animation-play-state: running;
+    }
+    .velo-ojos,
+    .velo-aviso {
+      display: none;
+    }
+  </style>
+</noscript>
