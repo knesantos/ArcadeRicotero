@@ -369,28 +369,31 @@ export function bajoElMantel(ancho: number): string {
 export function lamparaDeLaMesa(): string {
   const rnd = azar(3557);
   const largo = 96;
-  const pie = 330;
+  // Cuarta vuelta de la tanda 3 de `D-91`: el cono llegaba hasta la línea de la mesa (330) y, como la lámpara va
+  // clavada en la pared y los comensales en el piso, a 1280 le cruzaba la cara a uno; con la lupa, de lleno. Ahora
+  // termina arriba de las cabezas, y es más angosto: alumbra la pared, no a la gente.
+  const pie = 212;
   const canto = (lado: number): string[] => {
     const ps: string[] = [];
     for (let u = 0.02; u < 0.99; u += 0.03 + rnd() * 0.07) {
       const muerde = (rnd() < 0.2 ? 5 + rnd() * 8 : rnd() * 3) * (0.3 + u);
-      ps.push(`L${f(lado * (30 + 86 * u - muerde))} ${f(largo + 26 + (pie - largo - 26) * u)}`);
+      ps.push(`L${f(lado * (30 + 52 * u - muerde))} ${f(largo + 26 + (pie - largo - 26) * u)}`);
     }
     return ps;
   };
-  const silueta = `M-30 ${largo + 26} ${canto(1).join(' ')} L116 ${pie} L-116 ${pie} ${canto(-1).reverse().join(' ')} Z`;
+  const silueta = `M-30 ${largo + 26} ${canto(1).join(' ')} L82 ${pie} L-82 ${pie} ${canto(-1).reverse().join(' ')} Z`;
   let rayas = '';
   for (let i = 0; i < 11; i++) {
-    const a = (rnd() - 0.5) * 200;
-    const w = 5 + rnd() * 20;
+    const a = (rnd() - 0.5) * 140;
+    const w = 4 + rnd() * 14;
     rayas += `<path d="M${f(a * 0.1)} ${largo + 20} L${f(a + w / 2)} ${pie} L${f(a - w / 2)} ${pie} Z" fill="black" opacity="${f(0.3 + rnd() * 0.4)}"/>`;
   }
   // El pie del cono se deshace en flecos: dientes negros en la máscara, desparejos.
   let flecos = '';
-  for (let x = -124; x < 124; x += 7 + rnd() * 12) flecos += `<path d="M${f(x)} ${pie + 2} L${f(x + 4 + rnd() * 5)} ${f(pie - 12 - rnd() * 36)} L${f(x + 9 + rnd() * 8)} ${pie + 2} Z" fill="black"/>`;
+  for (let x = -90; x < 90; x += 6 + rnd() * 10) flecos += `<path d="M${f(x)} ${pie + 2} L${f(x + 4 + rnd() * 5)} ${f(pie - 8 - rnd() * 24)} L${f(x + 9 + rnd() * 8)} ${pie + 2} Z" fill="black"/>`;
   return (
     `<mask id="lz-mesa"><path d="${silueta}" fill="white"/>${rayas}${flecos}</mask>` +
-    `<g mask="url(#lz-mesa)">${forma(silueta, M2.papel, 0.2)}${forma(`M-16 ${largo + 26} L16 ${largo + 26} L62 ${pie} L-62 ${pie} Z`, M2.blanco, 0.1)}</g>` +
+    `<g mask="url(#lz-mesa)">${forma(silueta, M2.papel, 0.2)}${forma(`M-16 ${largo + 26} L16 ${largo + 26} L44 ${pie} L-44 ${pie} Z`, M2.blanco, 0.1)}</g>` +
     trazo(`M0 0 L0 ${largo}`, M2.negro, 2) +
     // La pantalla: un cono de chapa, naranja por fuera, con el borde claro y la bombita que asoma.
     forma(elipse(0, largo + 28, 9, 7), M2.blanco) +
