@@ -283,31 +283,80 @@ const JAULA = { x: CUELGA_LA_JAULA.x, y: Math.round(panzaDe(RAMA_IZQ, CUELGA_LA_
 /** Lo que se agranda lo que cuelga: dibujado mide treinta unidades, que en un teléfono es una miga. */
 const TAM = 1.7;
 
-const colgado = (pasos: readonly Nudo[], x: number, largo: number, cosa: string, giro = 0): string => {
+const colgado = (pasos: readonly Nudo[], x: number, largo: number, cosa: string, giro = 0, deMas = 8): string => {
   const y = panzaDe(pasos, x);
-  return `<g transform="translate(${f(x)} ${f(y + largo)}) rotate(${giro}) scale(${TAM})">${hilo((largo + 8) / TAM)}${cosa}</g>`;
+  return `<g transform="translate(${f(x)} ${f(y + largo)}) rotate(${giro}) scale(${TAM})">${hilo((largo + deMas) / TAM)}${cosa}</g>`;
 };
+
+/**
+ * Lo que se hamaca (`aire-arbol-colgantes`, segunda vuelta): va en una capa de aire detrás del piso, que la isla
+ * mece de costado. El hilo sube de más, así la punta queda escondida atrás de la rama y no se ve que se despega.
+ * Nada a menos de 120 de los bordes de la baldosa (2400): no hay copia que cierre.
+ */
+export function boneteColgantes(): string {
+  const h = 22;
+  return (
+    colgado(RAMA_IZQ, 124, 96, bonete(A.veta), -5, h) +
+    colgado(RAMA_IZQ, 276, 38, huevoEnRed(), 2, h) +
+    colgado(RAMA_IZQ, 404, 56, bonete(A.plata), 6, h) +
+    colgado(RAMA_DER, 1846, 96, campana(), -4, h) +
+    colgado(RAMA_DER, 1912, 140, bonete(A.veta), 5, h) +
+    colgado(RAMA_DER, 1972, 70, llave(), -3, h) +
+    colgado(RAMA_DER, 2034, 118, huevoEnRed(), 2, h)
+  );
+}
 
 /** Lo que va **debajo** del piso del recinto: las dos ramas y lo que cuelga. Asoman de atrás de la copa. */
 export function boneteBajo(): string {
+  // Lo que cuelga quieto: la llave del borde, el farol (de ahí sale la luz) y la jaula (la mira la lupa). El resto se hamaca aparte.
   const loQueCuelga =
     colgado(RAMA_IZQ, 50, 50, llave(), 4) +
-    colgado(RAMA_IZQ, 104, 104, bonete(A.veta), -5) +
-    colgado(RAMA_IZQ, 150, 30, campana(), 3) +
     colgado(RAMA_IZQ, CUELGA_EL_FAROL.x, CUELGA_EL_FAROL.largo, farol()) +
-    colgado(RAMA_IZQ, CUELGA_LA_JAULA.x, CUELGA_LA_JAULA.largo, jaula(), -2) +
-    colgado(RAMA_IZQ, 276, 38, huevoEnRed(), 2) +
-    colgado(RAMA_IZQ, 404, 56, bonete(A.plata), 6) +
-    colgado(RAMA_DER, 1846, 96, campana(), -4) +
-    colgado(RAMA_DER, 1912, 140, bonete(A.veta), 5) +
-    colgado(RAMA_DER, 1972, 70, llave(), -3) +
-    colgado(RAMA_DER, 2034, 118, huevoEnRed(), 2);
+    colgado(RAMA_IZQ, CUELGA_LA_JAULA.x, CUELGA_LA_JAULA.largo, jaula(), -2);
   return (
     `<g filter="url(#rociado)">` +
     rama(RAMA_IZQ, 1327) +
     rama(RAMA_DER, 1361) +
     loQueCuelga +
     `</g>`
+  );
+}
+
+/**
+ * El gran bonete (segunda vuelta): el que le da nombre al árbol, caído en la llanura, enorme, acostado con la boca
+ * para la derecha. Es lo que pesa en el tercio de abajo de la primera pantalla, justo donde cae la luz del farol.
+ * A rayas de cobre y veta, medio enterrado, con el pompón en la punta. Adentro está oscuro: un huevo de plata
+ * que rodó hasta ahí, y dos ojos (el segundo premio de la lupa, `fino-arbol-bonete`).
+ */
+const GRAN_BONETE = { punta: [140, 566], arriba: [314, 458], abajo: [332, 588], caja: [286, 446, 76, 152] as const } as const;
+
+function bocaDelBonete(): string {
+  const [[ax, ay], [bx, by]] = [GRAN_BONETE.arriba, GRAN_BONETE.abajo];
+  const [cx, cy] = [(ax + bx) / 2, (ay + by) / 2];
+  const boca = `<ellipse cx="${cx}" cy="${cy}" rx="24" ry="${f(Math.hypot(bx - ax, by - ay) / 2)}" transform="rotate(-8 ${cx} ${cy})"`;
+  return (
+    `${boca} fill="${A.tierraHonda}"/>` + nube(cx + 6, cy + 10, 14, 40, A.negro, 's', 0.7) +
+    huevo(cx + 3, by - 14, 11) +
+    // Los dos ojos, en lo más hondo.
+    forma(elipse(cx - 5, cy - 18, 2.6, 1.7) + elipse(cx + 4, cy - 19, 2.6, 1.7), A.veta) + forma(elipse(cx - 5, cy - 18, 0.7, 1.5) + elipse(cx + 4, cy - 19, 0.7, 1.5), A.negro) +
+    `${boca} fill="none" stroke="${A.veta}" stroke-width="3.4" opacity="0.9"/>` + `${boca} fill="none" stroke="${A.cobreHondo}" stroke-width="1.2"/>`
+  );
+}
+
+function granBonete(): string {
+  const { punta: [px, py], arriba: [ax, ay], abajo: [bx, by] } = GRAN_BONETE;
+  const cono = `M${px} ${py} L${ax} ${ay} L${bx} ${by} Z`;
+  let rayas = '';
+  for (const k of [0.2, 0.42, 0.64, 0.86]) rayas += trazo(`M${f(px + (ax - px) * k)} ${f(py + (ay - py) * k - 4)} L${f(px + (bx - px) * k + 6)} ${f(py + (by - py) * k + 4)}`, A.veta, 5 + k * 16, 0.88);
+  return (
+    nube(px + 110, by + 4, 120, 11, A.negro, 'm', 0.7) +
+    recortado(cono, forma(cono, A.cobre) + rayas + nube(px + 110, py - 50, 90, 22, A.nube, 'l', 0.3) + nube(px + 120, by - 10, 110, 30, A.negro, 'l', 0.6) + nube(px + 20, py + 6, 40, 12, A.cobreHondo, 'm', 0.7)) +
+    bocaDelBonete() +
+    // El pompón, y el elástico, que quedó tirado.
+    nube(px - 4, py + 8, 13, 4, A.negro, 's', 0.6) + forma(circulo(px - 6, py - 2, 10), A.veta) + nube(px - 3, py + 2, 6, 5, A.cobreHondo, 's', 0.5) +
+    trazo(`M${bx - 6} ${by} q16 12 34 4 q14 -7 22 4`, A.veta, 1.1, 0.6) +
+    // Medio enterrado: la tierra le tapa el canto de abajo de a manchones.
+    nube(px + 60, py + 16, 34, 6, A.tierraHonda, 's', 0.9) + nube(px + 150, by - 4, 30, 6, A.tierraHonda, 's', 0.9) + nube(bx - 10, by + 3, 22, 5, A.tierraHonda, 's', 0.9)
   );
 }
 
@@ -340,6 +389,7 @@ export function boneteSobre(): string {
     trazo(linea(ps, -0.4), A.tierraHonda, 1.6, 0.45) + trazo(linea(ps, 0.4), A.tierraHonda, 1.6, 0.45) +
     pisadas +
     huevos +
+    granBonete() +
     `</g>`
   );
 }
@@ -413,5 +463,11 @@ export const PIEZAS_DEL_BONETE: readonly Pieza[] = [
     caja: CAJA_DE_LA_JAULA,
     dibujo: `<g filter="url(#rociado)"><rect x="${CAJA_DE_LA_JAULA[0]}" y="${CAJA_DE_LA_JAULA[1]}" width="${CAJA_DE_LA_JAULA[2]}" height="${CAJA_DE_LA_JAULA[3]}" fill="${A.negro}" fill-opacity="0"/>${colgado(RAMA_IZQ, CUELGA_LA_JAULA.x, CUELGA_LA_JAULA.largo, jaula(), -2)}</g>`,
     densidad: 4,
+  },
+  {
+    nombre: 'fino-arbol-bonete',
+    caja: GRAN_BONETE.caja,
+    dibujo: `<g filter="url(#rociado)"><rect x="${GRAN_BONETE.caja[0]}" y="${GRAN_BONETE.caja[1]}" width="${GRAN_BONETE.caja[2]}" height="${GRAN_BONETE.caja[3]}" fill="${A.negro}" fill-opacity="0"/>${bocaDelBonete()}</g>`,
+    densidad: 3,
   },
 ];
