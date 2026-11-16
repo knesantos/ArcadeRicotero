@@ -29,7 +29,7 @@ import { pisoDelCamino } from './escenas-camino.ts';
 import { ALTO, CAMINOS, VISTA_MAX } from './camino.ts';
 import { ENTORNOS } from './arte-entornos.ts';
 import { CARGUERO, GATO } from './arte-puerto.ts';
-import { boneteColgantes } from './arte-bonete.ts';
+import { COLGANTES } from './arte-bonete.ts';
 import { PLANOS } from './aire.ts';
 import { COLOSO } from './arte-tundra.ts';
 import { FAROL, OJO } from './arte-bonete.ts';
@@ -68,8 +68,7 @@ test('cada capa de aire entra en la escena y su baldosa es más ancha que cualqu
     // La que cae o sube ocupa la pantalla entera: su baldosa se repite para arriba con el alto de la escena.
     if (c.cae !== 0) assert.deepEqual([c.y, c.alto], [0, ALTO], `${c.pieza}: lo que cae va de pantalla entera`);
     // Lo de atrás va más despacio que el piso, y lo pegado a la cámara, más rápido que lo de adelante.
-    // (Tanda 3: lo que cuelga de las ramas del árbol va **con** el piso, porque las ramas están pintadas en él: a 1, no más.)
-    if (c.plano === 'fondo') assert.ok(c.pieza === 'aire-arbol-colgantes' ? c.f === 1 : c.f < 1, `${c.pieza}: lo de atrás del piso no puede ir más rápido que el piso`);
+    if (c.plano === 'fondo') assert.ok(c.f < 1, `${c.pieza}: lo de atrás del piso no puede ir más rápido que el piso`);
     if (c.plano === 'cerca') assert.ok(c.f > (CAMINOS[region]!.velocidad.frente || 1), `${c.pieza}: lo pegado a la cámara pasa más rápido que lo de adelante`);
   }
 });
@@ -731,8 +730,8 @@ test('con movimiento reducido la linterna de los techos no queda prendida del to
 
 test('D-91/2: los troncos gordos del monte no se apagan en liviano; la bruma de las demás, sí', () => {
   const firmes = Object.entries(AIRE).flatMap(([r, cs]) => cs.filter((c) => c.firme).map((c) => `${r}:${c.pieza}`));
-  // Tanda 3, segunda vuelta: lo que cuelga del árbol también es dibujo y no bruma.
-  assert.deepEqual([...new Set(firmes)].sort(), ['el-arbol:aire-arbol-colgantes', 'el-monte:aire-monte-troncos']);
+  // (En la segunda vuelta de la tanda 3 lo que cuelga del árbol fue una capa firme; en la tercera pasó a ser piezas del piso.)
+  assert.deepEqual([...new Set(firmes)].sort(), ['el-monte:aire-monte-troncos']);
   const pagina = readFileSync('src/pages/redondopedia/bestiario/[region].astro', 'utf-8');
   assert.match(pagina, /'aire--firme': a\.firme/);
 });
@@ -1261,7 +1260,8 @@ test('D-91/t3: el río se mueve en una franja chica, la chata pasa por detrás, 
   // Los astilleros: la bruma de atrás se imprimió en lo lejano; la capa de atrás del piso es el río, angosta.
   const rio = AIRE['los-astilleros']!.find((c) => c.plano === 'fondo')!;
   assert.equal(rio.pieza, 'aire-astillero-rio');
-  assert.ok(rio.alto <= 100 && rio.y + rio.alto <= ASTILLERO.muelle + 10 && rio.deriva !== 0 && rio.late > 0);
+  // Tercera vuelta: llega hasta la otra orilla (128 de alto); sigue siendo una franja, no una capa de pantalla.
+  assert.ok(rio.alto <= 130 && rio.y >= ASTILLERO.orilla && rio.y + rio.alto <= ASTILLERO.muelle + 10 && rio.deriva !== 0 && rio.late > 0);
   assert.ok(!existsSync('public/bestiario/aire-astillero-bruma.webp'), 'la bruma vieja no queda impresa');
   // El carguero ya no está en lo lejano (segunda vuelta): va en su capa.
   assert.doesNotMatch(dibujoDe('camino-astillero-lejos'), /pt-casco/);
@@ -1302,25 +1302,60 @@ test('D-91/t3v2: el carguero va en su capa, a otra velocidad, y deja ver las gr�
   assert.ok(pagina.indexOf('class="capa plano"') > pagina.indexOf('capa capa--lejos') && pagina.indexOf('class="capa plano"') < pagina.indexOf('class="capa capa--piso bestiario-svg"'));
 });
 
-test('D-91/t3v2: lo que cuelga del árbol se hamaca en su capa; la jaula y el farol cuelgan quietos', () => {
-  const capa = AIRE['el-arbol']!.find((c) => c.pieza === 'aire-arbol-colgantes')!;
-  assert.ok(capa.plano === 'fondo' && capa.firme && capa.f === 1 && capa.mece > 0 && capa.mece <= 8 && capa.ancho >= CAMINOS['el-arbol']!.escena);
-  assert.equal(AIRE['el-arbol']!.length, 3);
-  assert.ok(existsSync('public/bestiario/aire-arbol-colgantes.webp'));
-  // La jaula (la mira la lupa) y el farol (de él sale la luz) no se mueven: están en el piso, no en la capa.
-  const cuelga = boneteColgantes();
-  const piso = dibujoDe('camino-arbol-piso');
-  for (const [que, marca] of [['la puerta de la jaula', 'M13 22 L22 19 L22 31 L13 34'], ['la llama del farol', 'M0 11 Q4 18 0 25 Q-4 18 0 11 Z']] as const) {
-    assert.ok(!cuelga.includes(marca) && piso.includes(marca), `${que} tiene que colgar quieta`);
+test('D-91/t3v3: lo que cuelga del árbol es un péndulo que gira desde su nudo; la jaula y el farol cuelgan quietos', () => {
+  // Ya no es una capa de aire: el árbol vuelve a tener dos, y la baldosa de la segunda vuelta no queda impresa.
+  assert.equal(AIRE['el-arbol']!.length, 2);
+  assert.ok(!existsSync('public/bestiario/aire-arbol-colgantes.webp'));
+  const t = CAMINOS['el-arbol']!;
+  const piso = pisoDelCamino(t, new Map());
+  const impreso = dibujoDe('camino-arbol-piso');
+  assert.equal(COLGANTES.length, 7);
+  let memoria = 0;
+  for (const c of COLGANTES) {
+    const pieza = PIEZAS_CAMINO.find((q) => q.nombre === c.pieza)!;
+    assert.ok(existsSync(`public${rutaDePieza(c.pieza)}`), `falta imprimir ${c.pieza}`);
+    memoria += c.caja[2] * c.caja[3] * (pieza.densidad ?? 1) ** 2 * 4;
+    // Va en el piso, detrás del piso impreso (la rama lo tapa), en un grupo que la isla gira desde el nudo.
+    const grupo = piso.indexOf(`<g class="pendula" data-x="${c.x}" data-y="${c.y}" data-largo="${c.largo}"`);
+    assert.ok(grupo >= 0 && grupo < piso.indexOf(rutaDePieza(t.piezas.piso!)), `${c.pieza}: no cuelga detrás del piso`);
+    // El nudo es el borde de arriba de la pieza, al medio; y el péndulo entra entero aunque gire.
+    assert.deepEqual([c.x, c.y], [c.caja[0] + c.caja[2] / 2, c.caja[1]]);
+    assert.ok(c.caja[1] + c.caja[3] < 352, `${c.pieza}: llega al piso`);
   }
-  // Y nada de lo que se hamaca cae cerca del borde de la baldosa, que no tiene copia que la cierre.
-  for (const m of cuelga.matchAll(/<g transform="translate\(([\d.]+) /g)) assert.ok(Number(m[1]) > 120 && Number(m[1]) < capa.ancho - 120);
-  // El gran bonete, caído en la primera pantalla, abajo, donde cae la luz del farol y lejos del angelito frito (469).
+  // Las siete piezas juntas pesan menos de un tercio de lo que pesaba la baldosa (3360×476×4).
+  assert.ok(memoria < (3360 * 476 * 4) / 3, `los colgantes ocupan ${(memoria / 1048576).toFixed(1)} MB`);
+  // La jaula (la mira la lupa) y el farol (de él sale la luz) no se mueven: están en el piso impreso.
+  for (const marca of ['M13 22 L22 19 L22 31 L13 34', 'M0 11 Q4 18 0 25 Q-4 18 0 11 Z']) {
+    assert.ok(impreso.includes(marca) && COLGANTES.every((c) => !c.dibujo.includes(marca)));
+  }
+  // La isla: gira desde el nudo, solo lo que se ve, y con movimiento reducido no entra.
+  const isla = readFileSync('src/scripts/camino.ts', 'utf-8');
+  const suelto = isla.slice(isla.indexOf('function moverLoSuelto('), isla.indexOf('function moverElSalon('));
+  assert.match(suelto, /p\.el\.setAttribute\('transform', `rotate\(\$\{a\.toFixed\(2\)\} \$\{p\.x\} \$\{p\.y\}\)`\)/);
+  assert.match(suelto, /if \(p\.x < desde - 90 \|\| p\.x > hasta \+ 90\) continue;/);
+  assert.doesNotMatch(suelto, /\.style\./);
+  assert.match(isla, /if \(!quieto\(\)\) \{[\s\S]*?moverLoSuelto\(cam \/ escala, /);
+  // El gran bonete, caído en la primera pantalla, abajo, donde cae la luz del farol. Tercera vuelta: se corrió a la
+  // izquierda del angelito frito (469), que a 1280 le quedaba pegado a la boca.
   const fuente = readFileSync('src/lib/bestiario/arte-bonete.ts', 'utf-8');
   const [px, , ax, , bx, by] = /GRAN_BONETE = \{ punta: \[(\d+), (\d+)\], arriba: \[(\d+), (\d+)\], abajo: \[(\d+), (\d+)\]/.exec(fuente)!.slice(1).map(Number);
   const luz = LUCES['el-arbol']![0]!;
-  assert.ok(px! > 96 && Math.max(ax!, bx!) < 416 && Math.max(ax!, bx!) < 469 - 80 && by! > 426);
-  assert.ok(luz.x > px! && luz.x < bx!);
+  assert.ok(px! > 96 && Math.max(ax!, bx!) < 416 && Math.max(ax!, bx!) + 24 < 469 - 110 && by! > 426);
+  assert.ok(luz.x + luz.caja[0] < bx! && luz.x + luz.caja[0] + luz.caja[2] > bx!, 'el cono del farol no le pega al bonete');
+});
+
+test('D-91/t3v3: el río llega a la otra orilla, el carguero va pintado encima, y los reflejos que temblaban se sacaron', () => {
+  // Se probaron reflejos sueltos que la isla ensanchaba desde su eje: en la tira de seis cuadros no se leían. No quedan.
+  const isla = readFileSync('src/scripts/camino.ts', 'utf-8');
+  assert.doesNotMatch(isla, /tiembla/);
+  assert.doesNotMatch(pisoDelCamino(CAMINOS['los-astilleros']!, new Map()), /class="tiembla"/);
+  assert.deepEqual(readdirSync('public/bestiario').filter((n) => n.startsWith('reflejo-astillero')), []);
+  // El carguero va después del aire de atrás (el río) y antes del piso.
+  const pagina = readFileSync('src/pages/redondopedia/bestiario/[region].astro', 'utf-8');
+  assert.ok(pagina.indexOf('class="capa plano"') > pagina.indexOf("{aire('fondo').map(") && pagina.indexOf('class="capa plano"') < pagina.indexOf('class="capa capa--piso bestiario-svg"'));
+  // Y ninguna torre de lo lejano de Cybersiberia cae debajo de Super Walter (entre 1290 y 1720).
+  const torres = /const torres = (\[\[.*?\]\]) as const;/.exec(readFileSync('src/lib/bestiario/arte-tundra.ts', 'utf-8'))![1]!;
+  for (const [x] of JSON.parse(torres) as [number, number][]) assert.ok(x < 1290 || x > 1720, `una torre en ${x}`);
 });
 
 test('D-91/t3v2: en Cybersiberia lo prendido tiñe la nieve, y el primer poste entra en la primera pantalla', () => {
