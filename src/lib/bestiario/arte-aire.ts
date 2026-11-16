@@ -340,22 +340,35 @@ function cyberNevisca(c: CapaDeAire): string {
     }
     return s;
   };
+  // Tanda 3 de `D-91`: era una lluvia de rayitas iguales. Ahora son tres distancias en la misma baldosa:
+  // el polvo de nieve de lejos (mucho, chico, flojo), los copos del medio, y unos pocos copos grandes y
+  // blandos, pegados a la cámara. Y las rachas ya no están sembradas parejo: van en **manojos**, cada uno
+  // con sus hebras de distinto largo abiertas en abanico, y entre manojo y manojo, aire.
   let s = '';
-  for (let i = 0; i < 116; i++) {
-    const x = rnd() * c.ancho;
-    const y = rnd() * alto;
-    const grande = rnd() < 0.12;
-    const r = grande ? 2.6 + rnd() * 2.4 : 0.8 + rnd() * 1.4;
-    const o = grande ? 0.28 + rnd() * 0.2 : 0.55 + rnd() * 0.4;
-    s += copia(x, y, 14, (xx, yy) => nube(xx, yy, r, r, C.nieve, grande ? 's' : 'xs', o));
+  for (let i = 0; i < 150; i++) {
+    const [x, y, r, o] = [rnd() * c.ancho, rnd() * alto, 0.5 + rnd() * 0.6, 0.3 + rnd() * 0.3];
+    s += copia(x, y, 8, (xx, yy) => `<circle cx="${f(xx)}" cy="${f(yy)}" r="${f(r)}" fill="${C.nieve}" opacity="${f(o)}"/>`);
   }
-  for (let i = 0; i < 32; i++) {
-    const x = rnd() * c.ancho;
-    const y = rnd() * alto;
-    const rx = 18 + rnd() * 46;
-    const ry = 1 + rnd() * 1.4;
-    const o = 0.3 + rnd() * 0.35;
-    s += copia(x, y, rx + 12, (xx, yy) => nube(xx, yy, rx, ry, C.nieve, 'xs', o, sesgo));
+  for (let i = 0; i < 58; i++) {
+    const [x, y, r, o] = [rnd() * c.ancho, rnd() * alto, 1.2 + rnd() * 1.1, 0.6 + rnd() * 0.35];
+    s += copia(x, y, 14, (xx, yy) => nube(xx, yy, r, r, C.nieve, 'xs', o));
+  }
+  for (let i = 0; i < 9; i++) {
+    const [x, y, r, o] = [rnd() * c.ancho, rnd() * alto, 4 + rnd() * 3.4, 0.2 + rnd() * 0.14];
+    s += copia(x, y, 34, (xx, yy) => nube(xx, yy, r, r * 0.86, C.nieve, 'm', o));
+  }
+  for (let m = 0; m < 5; m++) {
+    const [mx, my] = [(c.ancho / 5) * (m + rnd() * 0.8), rnd() * alto];
+    const hebras = 3 + Math.floor(rnd() * 4);
+    for (let i = 0; i < hebras; i++) {
+      const x = mx + (rnd() - 0.5) * 90;
+      const y = my + (rnd() - 0.5) * 70;
+      const rx = 14 + rnd() * rnd() * 80;
+      const ry = 0.8 + rnd() * 1.6;
+      const o = 0.22 + rnd() * 0.3;
+      const giro = sesgo + (rnd() - 0.5) * 14;
+      s += copia(((x % c.ancho) + c.ancho) % c.ancho, ((y % alto) + alto) % alto, rx + 12, (xx, yy) => nube(xx, yy, rx, ry, C.nieve, 'xs', o, giro));
+    }
   }
   return `<g filter="url(#rociado)"><rect x="-20" y="-20" width="${c.ancho + 40}" height="${alto + 40}" fill="var(--fondo)" fill-opacity="0"/>${s}</g>`;
 }
@@ -423,8 +436,25 @@ function cyberCerca(c: CapaDeAire): string {
    Los astilleros
    ------------------------------------------------------------------ */
 
-function astilleroBruma(c: CapaDeAire): string {
-  return rociado(c, manchas(c, 611, 14, 236, 316, [[T.azul, 0.32], [T.clara, 0.11], [T.noche, 0.5]], 30) + manchas(c, 613, 6, 206, 280, [[T.sodio, 0.08], [T.clara, 0.09]], 16, [40, 100]));
+/**
+ * El río (`D-91`, tanda 3): la franja de agua pegada al muelle. Destellos cortos, combados, en el sodio
+ * de los faroles y en la tiza; más largos y más gordos cuanto más cerca. La isla la corre de costado y le
+ * sube y baja el alfa: es la corriente. Arriba y abajo no hay nada, así la franja no tiene canto.
+ */
+function astilleroRio(c: CapaDeAire): string {
+  const rnd = azar(611);
+  let s = '';
+  for (let i = 0; i < 64; i++) {
+    const hondura = rnd();
+    const x = rnd() * c.ancho;
+    const y = c.y + 12 + hondura * (c.alto - 26);
+    const largo = 7 + hondura * 22 + rnd() * 8;
+    const que = rnd();
+    const color = que < 0.3 ? T.sodio : que < 0.75 ? T.clara : T.azul;
+    const o = (que < 0.3 ? 0.5 : 0.3) + rnd() * 0.3;
+    s += vuelta(x, largo + 6, c.ancho, (xx) => trazo(`M${f(xx - largo / 2)} ${f(y)} q${f(largo / 2)} ${f(-1.2 - hondura * 1.6)} ${f(largo)} 0`, color, 1 + hondura * 1.1, o));
+  }
+  return rociado(c, manchas(c, 613, 6, c.y + 34, c.y + 70, [[T.clara, 0.12], [T.azul, 0.2]], 12, [50, 110]) + s);
 }
 
 function astilleroVaho(c: CapaDeAire): string {
@@ -994,6 +1024,8 @@ const QUIEN_ALUMBRA: Readonly<Record<string, () => string>> = {
   'luz-astillero-cono': () => haz('lz-a', 340, 300, T.sodio, 'var(--entorno-mesa-papel)'),
   'luz-infierno-brasa': brasa,
   'luz-cyber-haz': () => haz('lz-c', 560, 330, C.lente, C.nieve),
+  // El farol de cobre del árbol (`D-91`, tanda 3): corto y tibio, en el cobre y la veta del mármol.
+  'luz-arbol-farol': () => haz('lz-b', 300, 180, AR.cobre, AR.veta),
   'luz-ruta-faros': () => haz('lz-r', 260, 190, RU.faro, RU.papel) + polillas(260, 190),
   'luz-pastura-rueda': ruedaDelMolino,
   'luz-techos-farol': () => haz('lz-t', 380, 320, B.lila, B.luz),
@@ -1113,6 +1145,13 @@ const QUIEN_PASA: Readonly<Record<string, () => string>> = {
   },
   // El vellón (`D-91`, cuarta vuelta): un copo de lana que el viento lleva rodando por el pasto.
   'vida-vellon': () => nube(11, 8, 7, 5, PT.papel, 's', 0.9) + nube(7, 6, 4, 3.4, PT.papel, 'xs', 0.95) + nube(15, 9.6, 4.6, 3.2, PT.claro, 'xs', 0.9) + nube(11, 5, 3, 2.2, PT.papel, 'xs', 1) + trazo('M4 11 q-3 1 -4 3 M17 11 q3 0.6 4 2', PT.papel, 0.7, 0.7),
+  // La chata del río (`D-91`, tanda 3): baja, larga, cargada, de perfil y lejos, con la proa para la derecha.
+  // La casilla atrás con su ventana, la luz de proa, la roja de popa, y el canto de tiza.
+  'vida-chata': () =>
+    forma('M4 15 L146 15 L137 25 L13 25 Z', T.negro) + forma('M20 7 l26 0 l0 8 l-26 0 Z M50 9 l30 0 l0 6 l-30 0 Z M84 6 l20 0 l0 9 l-20 0 Z', T.noche) +
+    forma('M6 3 l22 0 l0 12 l-22 0 Z', T.negro) + forma('M11 6 l8 0 l0 4 l-8 0 Z', T.sodio, 0.9) + trazo('M24 3 l0 -3', T.negro, 1.4) +
+    trazo('M4 15 L146 15', T.clara, 1, 0.6) + trazo('M20 7 l26 0 M50 9 l30 0 M84 6 l20 0', T.clara, 0.8, 0.4) +
+    nube(141, 12, 5, 4, T.sodio, 'xs', 0.7) + forma('M140 11 l2.4 0 l0 2.4 l-2.4 0 Z', 'var(--papel)') + forma('M5 12 l2 0 l0 2 l-2 0 Z', 'var(--marca-rojo)'),
   // El barquito de papel: dos pliegues y la vela, con su raya de agua.
   'vida-barquito': () =>
     forma('M4 18 L36 18 L29 27 L11 27 Z', J.luz) + forma('M20 3 L30 18 L10 18 Z', J.luz) + forma('M20 3 L20 18 L10 18 Z', J.celeste, 0.6) + trazo('M2 28.5 l12 0 M20 29 l16 0', J.celeste, 1.2, 0.7),
@@ -1164,7 +1203,7 @@ const PINTA: Readonly<Record<string, (c: CapaDeAire) => string>> = {
   'aire-cyber-vaho': cyberVaho,
   'aire-cyber-nevisca': cyberNevisca,
   'aire-cyber-cerca': cyberCerca,
-  'aire-astillero-bruma': astilleroBruma,
+  'aire-astillero-rio': astilleroRio,
   'aire-astillero-vaho': astilleroVaho,
   'aire-astillero-cerca': astilleroCerca,
   'aire-infierno-humo': infiernoHumo,
