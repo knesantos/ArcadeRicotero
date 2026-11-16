@@ -5,7 +5,30 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-11-14
+**Última actualización:** 2026-11-16
+
+> ## 🎪 DIEZ ROCAMBOLESCAS: OPUS PLANIFICA Y CRITICA, FABLE DIBUJA (2026-11-16) — `D-73` enmienda 29, `T-529`
+>
+> **Sin integrar**: rama `claude/bestiario-rocambole-3238c6`, sobre `main` en `57bdae8`, PR abierto. Pedido del usuario: *"Hace otra
+> sesion de diseño de bestias con opus como planificador y criticdor y fable como diseñador. Que sea bien creativo y rocambolesco."*
+> Diez que eran ojos o una cosa pintada pasan a títere: la **fiera más fiera** (no se dibuja: un collar de púas flotando en la jaula
+> abierta) y el **pajarito del Lavi-rap** (flaco, pelado, con el precio más grande que él) en la prisión; el **perro manso** (xilofón
+> de costillas numeradas) y el **gato que llamás con silbidos** (linyera en una señal de tren) en los techos; el **ángel guardián**
+> (la lona tendida mirando una percha vacía) en el árbol; los **camellos prestigiosos** (venden nieve en la nieve) en Cybersiberia;
+> el **as del Club París** (un naipe que cabe en la valija) en los astilleros; el **Sheriff** (tiro al blanco sin Alí Babá) en el
+> templo; los **nenes de oro** (dos trofeos de natación) en el bajo, y el **animal que no late** (embalsamado con una radio en el
+> pecho) en el monte.
+>
+> - El hilo principal (Opus) eligió, encargó, pidió dos o tres ideas por bestia, eligió la más fuerte y criticó a PNG en dos vueltas.
+>   Tres subagentes Fable dibujaron, animaron e imprimieron. Lo compartido lo integró el hilo principal.
+> - Se reimprimieron `prision-lejos`, `arbol-piso`, `arbol-lejos`, `cyber-piso`, `astillero-piso` y sus caminos. Del monte no se
+>   reimprimió nada: lo está rehaciendo otra sesión (`D-91`, `T-530`).
+> - **Visto**: cada una a PNG de cerca, en su recinto, en el camino y en la tira del toque, y las diez en el HTML armado con todas sus
+>   piezas. **No visto**: vivas en el navegador (el panel quedó trabado) ni en un teléfono de verdad.
+> - **Verde:** `npm test` 2537, `npm run check` 0 errores, `npm run build` 200 páginas. `elenco.test.ts` pasa de 70 a 80.
+> - **Falta** (`T-529`): mirarlas vivas y en un teléfono, que `contenido` lea las diez estampas, las tintas al lienzo, el roce del tren
+>   del gato con el Atila, los nenes chicos en el bajo, y borrar `prision-jaula.webp` y `prision-puerta.webp` (sin uso) si el usuario
+>   da el OK.
 
 > ## 🐑 DIEZ BESTIAS MÁS EN EL ELENCO (2026-11-13) — `D-73` enmienda 28, `T-528`
 >
