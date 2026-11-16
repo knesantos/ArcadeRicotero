@@ -612,7 +612,12 @@ function medirFilos(): void {
   for (const l of luces) {
     if (!l.r.filo) continue;
     const mios = filos.filter((f) => f.luz === l.r.pieza);
-    const alcance = l.r.caja[2] * 0.75;
+    // `D-91`: una luz colgada de un bicho que anda (los faros del bondi) se mide desde donde está él ahora;
+    // y si apunta de costado, le toca a lo que tiene adelante, a lo largo del haz, esté arriba o abajo.
+    const colgada = l.r.sigue ? colgadas.get(l.r.sigue) : null;
+    const anclaX = l.r.x + Number(colgada?.dataset.ahora ?? colgada?.dataset.x ?? 0);
+    const deCostado = Math.abs(l.r.rumbo ?? 0) > 45;
+    const alcance = deCostado ? l.r.caja[3] * 1.5 : l.r.caja[2] * 0.75;
     const cerca: { x: number; y: number; cy: number; ancho: number; d: number; g: SVGGElement }[] = [];
     for (const g of piso.querySelectorAll<SVGGElement>(BICHOS)) {
       if (g.dataset.velocidad) continue;
@@ -621,11 +626,11 @@ function medirFilos(): void {
       // Del dibujo al piso: lo deslizado se suma siempre (con capas o sin ellas, el piso se corrió eso).
       const x = ((r.left + r.width / 2 - caja.left) / z + cam) / escala;
       const y = ((r.top - caja.top) / z + lente.y) / escala;
-      const d = Math.abs(x - l.r.x);
+      const d = deCostado ? (x - anclaX) * -Math.sign(l.r.rumbo!) : Math.abs(x - anclaX);
       // Los muy altos (la drácula, Barbazul) no llevan la medialuna genérica, que les quedaría como un
       // sombrero; el canto impreso sí, porque les sigue la silueta.
-      if (d < alcance && r.height > innerHeight * 0.7 && !vestirConFilo(g)) continue;
-      if (d < alcance && y > l.r.y + 40) cerca.push({ x, y: y + 6, cy: y + r.height / z / escala / 2, ancho: Math.min(170, r.width / z / escala), d, g });
+      if (Math.abs(d) < alcance && r.height > innerHeight * 0.7 && !vestirConFilo(g)) continue;
+      if (d > (deCostado ? 20 : -1) && d < alcance && (deCostado || y > l.r.y + 40)) cerca.push({ x, y: y + 6, cy: y + r.height / z / escala / 2, ancho: Math.min(170, r.width / z / escala), d, g });
     }
     cerca.sort((p, q) => p.d - q.d);
     mios.forEach((f, i) => {
