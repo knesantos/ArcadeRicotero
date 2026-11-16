@@ -28,7 +28,9 @@ import { ofrendasDelTemplo, paradosEnElTemplo } from './ofrendas.ts';
 import { pisoDelCamino } from './escenas-camino.ts';
 import { ALTO, CAMINOS, VISTA_MAX } from './camino.ts';
 import { ENTORNOS } from './arte-entornos.ts';
-import { GATO } from './arte-puerto.ts';
+import { CARGUERO, GATO } from './arte-puerto.ts';
+import { boneteColgantes } from './arte-bonete.ts';
+import { PLANOS } from './aire.ts';
 import { COLOSO } from './arte-tundra.ts';
 import { FAROL, OJO } from './arte-bonete.ts';
 import { ARBOL, ASTILLERO, CYBER } from './rig-entornos.ts';
@@ -66,7 +68,8 @@ test('cada capa de aire entra en la escena y su baldosa es más ancha que cualqu
     // La que cae o sube ocupa la pantalla entera: su baldosa se repite para arriba con el alto de la escena.
     if (c.cae !== 0) assert.deepEqual([c.y, c.alto], [0, ALTO], `${c.pieza}: lo que cae va de pantalla entera`);
     // Lo de atrás va más despacio que el piso, y lo pegado a la cámara, más rápido que lo de adelante.
-    if (c.plano === 'fondo') assert.ok(c.f < 1, `${c.pieza}: lo de atrás del piso no puede ir más rápido que el piso`);
+    // (Tanda 3: lo que cuelga de las ramas del árbol va **con** el piso, porque las ramas están pintadas en él: a 1, no más.)
+    if (c.plano === 'fondo') assert.ok(c.pieza === 'aire-arbol-colgantes' ? c.f === 1 : c.f < 1, `${c.pieza}: lo de atrás del piso no puede ir más rápido que el piso`);
     if (c.plano === 'cerca') assert.ok(c.f > (CAMINOS[region]!.velocidad.frente || 1), `${c.pieza}: lo pegado a la cámara pasa más rápido que lo de adelante`);
   }
 });
@@ -728,7 +731,8 @@ test('con movimiento reducido la linterna de los techos no queda prendida del to
 
 test('D-91/2: los troncos gordos del monte no se apagan en liviano; la bruma de las demás, sí', () => {
   const firmes = Object.entries(AIRE).flatMap(([r, cs]) => cs.filter((c) => c.firme).map((c) => `${r}:${c.pieza}`));
-  assert.deepEqual([...new Set(firmes)], ['el-monte:aire-monte-troncos']);
+  // Tanda 3, segunda vuelta: lo que cuelga del árbol también es dibujo y no bruma.
+  assert.deepEqual([...new Set(firmes)].sort(), ['el-arbol:aire-arbol-colgantes', 'el-monte:aire-monte-troncos']);
   const pagina = readFileSync('src/pages/redondopedia/bestiario/[region].astro', 'utf-8');
   assert.match(pagina, /'aire--firme': a\.firme/);
 });
@@ -901,8 +905,9 @@ test('D-91/4: lo que premia a la lupa va otra vez, fino, encima del piso y en su
       assert.match(piso, new RegExp(`href="${rutaDePieza(n).replace(/[.]/g, '\\.')}" x="${p.caja[0]}" y="${p.caja[1]}"`));
     }
   }
+  // (Segunda vuelta de la tanda 3: son diez, con un segundo premio en cada una de las tres; el tope pasa a 300 kB.)
   // Siete piezas chicas pesan menos que subirle la densidad a un solo piso (el tope era 120 kB con cuatro; cambia con la tanda 3).
-  assert.ok(peso < 210_000, `las finas pesan ${Math.round(peso / 1024)} kB`);
+  assert.ok(peso < 300_000, `las finas pesan ${Math.round(peso / 1024)} kB`);
 });
 
 test('D-91/4: lo que se mueve raro: el tren del horizonte, el vellón con el viento, y el charco de la luna', () => {
@@ -1075,7 +1080,8 @@ test('D-91/t2: la mesa tiene fondo sin perder la tinta plana: la puerta, la lám
   assert.match(readFileSync('src/pages/redondopedia/bestiario/[region].astro', 'utf-8'), /class="capa huye"[^>]*style=\{enSuLugar\(huidizo\.caja, 1\)\}/);
   // Quinta vuelta: con la lupa, lo de adelante de la mesa (los respaldos) y del galpón (la fila grande) se corre,
   // como ya hacía el aire pegado a la cámara. Solo en esas dos: las demás no cambian.
-  assert.deepEqual([...FRENTE_QUE_SE_CORRE].sort(), ['el-galpon', 'la-mesa']);
+  // Las tres de la tanda 3 se sumaron en su segunda vuelta.
+  assert.deepEqual([...FRENTE_QUE_SE_CORRE].sort(), ['cybersiberia', 'el-arbol', 'el-galpon', 'la-mesa', 'los-astilleros']);
   assert.match(readFileSync('src/scripts/camino.ts', 'utf-8'), /if \(frenteQueSeCorre\.el\) \{\s*const alfa = despejeDeLupa\('cerca', false, z\);/);
   assert.equal(despejeDeLupa('cerca', false, 1), 1);
   // Tercera vuelta: el seguidor nace de la foto (antes salía de la pared pelada), y en el paño de su derecha hay un reloj de pie.
@@ -1239,8 +1245,9 @@ test('D-91/t3: lo que aparece si te quedás quieto está en la primera pantalla,
     assert.ok(v.espera >= 5);
     // El gato va con el piso (asoma de atrás de la pila); los otros dos, clavados en lo lejano.
     assert.equal(v.f, region === 'los-astilleros' ? 1 : t.velocidad.lejos);
-    for (const vista of [VISTA_MIN, 1024]) {
-      const x = v.caja[0] - corrimiento(v.f, 0, t.foco, vista);
+    // Un teléfono parado ve 320 unidades, y al llegar la cámara ya dio su primer paso (~96). A 1280 se ven 1024.
+    for (const [vista, cam] of [[320, 96], [1024, 0], [1024, 96]] as const) {
+      const x = v.caja[0] - corrimiento(v.f, cam, t.foco, vista);
       assert.ok(x >= 0 && x + v.caja[2] <= vista, `${region}: con ${vista} de vista, la visita cae en ${Math.round(x)}`);
     }
   }
@@ -1256,7 +1263,9 @@ test('D-91/t3: el río se mueve en una franja chica, la chata pasa por detrás, 
   assert.equal(rio.pieza, 'aire-astillero-rio');
   assert.ok(rio.alto <= 100 && rio.y + rio.alto <= ASTILLERO.muelle + 10 && rio.deriva !== 0 && rio.late > 0);
   assert.ok(!existsSync('public/bestiario/aire-astillero-bruma.webp'), 'la bruma vieja no queda impresa');
-  assert.match(dibujoDe('camino-astillero-lejos'), /pt-casco/);
+  // El carguero ya no está en lo lejano (segunda vuelta): va en su capa.
+  assert.doesNotMatch(dibujoDe('camino-astillero-lejos'), /pt-casco/);
+  assert.match(dibujoDe('camino-astillero-carguero'), /pt-casco/);
   const chata = VIDAS['los-astilleros']!;
   assert.ok(chata.atras && chata.dura[0] >= 20 && chata.espera[0] >= 30 && !chata.aletea);
   // Cybersiberia: la nevisca sigue siendo la única capa de pantalla entera, y ya no es una siembra pareja de rayas.
@@ -1270,4 +1279,58 @@ test('D-91/t3: el río se mueve en una franja chica, la chata pasa por detrás, 
   // El cono no llega a nadie: el primero que vive en esa llanura es el angelito frito, en 469.
   assert.ok(luz.x + luz.caja[0] + luz.caja[2] < 469 - 40);
   assert.ok(existsSync(`public${rutaDePieza(luz.pieza)}`));
+});
+
+test('D-91/t3v2: el carguero va en su capa, a otra velocidad, y deja ver las grúas', () => {
+  const [barco] = PLANOS['los-astilleros']!;
+  const t = CAMINOS['los-astilleros']!;
+  assert.deepEqual([...barco!.caja], [...CARGUERO.caja]);
+  // Más rápido que la otra orilla y más despacio que el muelle.
+  assert.ok(barco!.f > t.velocidad.lejos + 0.1 && barco!.f < 0.9);
+  assert.ok(existsSync(`public${rutaDePieza(barco!.pieza)}`));
+  // En un teléfono (320 de vista) se lo ve en dos de las cinco posiciones de la recorrida, no en tres; y nunca al llegar.
+  const visto = [0, 0.33, 0.5, 0.66, 1].filter((u) => {
+    const x = barco!.caja[0] - corrimiento(barco!.f, u * (t.ancho - 320), t.foco, 320);
+    return x < 320 && x + barco!.caja[2] > 0;
+  });
+  assert.deepEqual(visto, [0.33, 0.5]);
+  // El casco tiene valor: la traca azul, el óxido y el sodio de los faroles en la panza, no solo negro.
+  const casco = dibujoDe('camino-astillero-carguero');
+  for (const tinta of ['--entorno-astillero-noche', '--entorno-pastura-honda', '--disco-cordero-atado-tinta', '--entorno-astillero-azul']) assert.ok(casco.includes(tinta), `al casco le falta ${tinta}`);
+  // Es una capa como las demás: la isla la corre por `data-f`, entre lo lejano y el piso.
+  const pagina = readFileSync('src/pages/redondopedia/bestiario/[region].astro', 'utf-8');
+  assert.ok(pagina.indexOf('class="capa plano"') > pagina.indexOf('capa capa--lejos') && pagina.indexOf('class="capa plano"') < pagina.indexOf('class="capa capa--piso bestiario-svg"'));
+});
+
+test('D-91/t3v2: lo que cuelga del árbol se hamaca en su capa; la jaula y el farol cuelgan quietos', () => {
+  const capa = AIRE['el-arbol']!.find((c) => c.pieza === 'aire-arbol-colgantes')!;
+  assert.ok(capa.plano === 'fondo' && capa.firme && capa.f === 1 && capa.mece > 0 && capa.mece <= 8 && capa.ancho >= CAMINOS['el-arbol']!.escena);
+  assert.equal(AIRE['el-arbol']!.length, 3);
+  assert.ok(existsSync('public/bestiario/aire-arbol-colgantes.webp'));
+  // La jaula (la mira la lupa) y el farol (de él sale la luz) no se mueven: están en el piso, no en la capa.
+  const cuelga = boneteColgantes();
+  const piso = dibujoDe('camino-arbol-piso');
+  for (const [que, marca] of [['la puerta de la jaula', 'M13 22 L22 19 L22 31 L13 34'], ['la llama del farol', 'M0 11 Q4 18 0 25 Q-4 18 0 11 Z']] as const) {
+    assert.ok(!cuelga.includes(marca) && piso.includes(marca), `${que} tiene que colgar quieta`);
+  }
+  // Y nada de lo que se hamaca cae cerca del borde de la baldosa, que no tiene copia que la cierre.
+  for (const m of cuelga.matchAll(/<g transform="translate\(([\d.]+) /g)) assert.ok(Number(m[1]) > 120 && Number(m[1]) < capa.ancho - 120);
+  // El gran bonete, caído en la primera pantalla, abajo, donde cae la luz del farol y lejos del angelito frito (469).
+  const fuente = readFileSync('src/lib/bestiario/arte-bonete.ts', 'utf-8');
+  const [px, , ax, , bx, by] = /GRAN_BONETE = \{ punta: \[(\d+), (\d+)\], arriba: \[(\d+), (\d+)\], abajo: \[(\d+), (\d+)\]/.exec(fuente)!.slice(1).map(Number);
+  const luz = LUCES['el-arbol']![0]!;
+  assert.ok(px! > 96 && Math.max(ax!, bx!) < 416 && Math.max(ax!, bx!) < 469 - 80 && by! > 426);
+  assert.ok(luz.x > px! && luz.x < bx!);
+});
+
+test('D-91/t3v2: en Cybersiberia lo prendido tiñe la nieve, y el primer poste entra en la primera pantalla', () => {
+  const fuente = readFileSync('src/lib/bestiario/arte-tundra.ts', 'utf-8');
+  const x0 = Number(/POSTES = \{ desde: \[(\d+), /.exec(fuente)![1]);
+  // Al llegar, un teléfono mira desde ~96: el poste y su caja prendida quedan adentro, y a la izquierda de los camellos (190).
+  assert.ok(x0 > 96 + 10 && x0 + 36 < 190);
+  assert.match(fuente, /tenidos\(rnd, p0\.x \+ 20/);
+  const bajo = dibujoDe('camino-cyber-piso');
+  assert.ok((bajo.match(/entorno-cyber-lente/g) ?? []).length > 60, 'la caja no tiñe');
+  // El coloso camina lejos de la pared de teles (486 a 578) y sus pies siguen en el horizonte.
+  assert.ok(COLOSO.caja[0] >= 578 + 40);
 });
