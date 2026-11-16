@@ -18,6 +18,7 @@ import { rutaDePieza, type Pieza } from './aerografo.ts';
 import { FINAS_DE, PIEZAS_CAMINO, cajaDelCruce } from './arte-camino.ts';
 import { LENGUAS } from './arte-salon.ts';
 import { VAPOR } from './arte-sobremesa.ts';
+import { COLGANTES } from './arte-bonete.ts';
 import { K_ENTORNO, RECINTO, type Tramo } from './camino.ts';
 import { escenaBajo, escenaBaldio, escenaInfierno, escenaPrision, escenaTemplo, ojos, type Tinta } from './escenas.ts';
 import { cosa, VELOCIDAD_DE_CARRIL } from './escenas-entornos.ts';
@@ -179,6 +180,8 @@ function pisoDeEntorno(t: Tramo, nombres: Nombres): string {
   // obligaba a repintar el piso entero en cada cuadro. Es una capa de aire (`aire.ts`), que nieva igual.
   return (
     capasDe(t.region, 'atras', nombres, K_ENTORNO) +
+    // Tanda 3 de `D-91`, tercera vuelta: lo que cuelga de las ramas del árbol. La isla lo gira desde el nudo; va detrás del piso impreso.
+    (t.region === 'el-arbol' ? COLGANTES.map((c) => `<g class="pendula" data-x="${c.x}" data-y="${c.y}" data-largo="${c.largo}" pointer-events="none">${imagenDePieza(piezaDelCamino(c.pieza), true)}</g>`).join('') : '') +
     imagenDePieza(piezaDelCamino(t.piezas.piso!)) +
     finasDe(t) +
     // El vapor de la olla de la mesa (`arte-sobremesa.ts`): la isla lo estira desde la boca de la olla.
