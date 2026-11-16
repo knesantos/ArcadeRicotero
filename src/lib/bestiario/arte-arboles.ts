@@ -253,18 +253,17 @@ export function caraEnElTronco(t: Miembro, altura: number, grosor: number): stri
   const nudo = (dx: number, dy: number, r: number, cae: number): string =>
     `<ellipse cx="${f(dx)}" cy="${f(dy)}" rx="${f(r)}" ry="${f(r * 1.35)}" fill="${M.negro}" transform="rotate(${cae} ${f(dx)} ${f(dy)})"/>` +
     // El reborde de la corteza, que agarra la luz de arriba.
-    trazo(`M${f(dx - r * 1.25)} ${f(dy - r * 0.3)} Q${f(dx)} ${f(dy - r * 2.1)} ${f(dx + r * 1.25)} ${f(dy - r * 0.1)}`, MONTE.ocre, 1.4, 0.55) +
-    // Algo, adentro, que devuelve la luz.
-    nube(dx + r * 0.2, dy + r * 0.25, r * 0.22, r * 0.22, MONTE.ojo, 'xs', 0.5);
-  const grieta =
-    `M${f(-w * 1.5)} ${f(w * 2.7)} L${f(-w * 0.8)} ${f(w * 3.2)} L${f(-w * 0.3)} ${f(w * 2.8)} L${f(w * 0.3)} ${f(w * 3.5)} L${f(w * 0.9)} ${f(w * 2.9)} L${f(w * 1.6)} ${f(w * 3.3)} ` +
-    `L${f(w * 0.9)} ${f(w * 3.9)} L${f(w * 0.2)} ${f(w * 4.4)} L${f(-w * 0.5)} ${f(w * 3.8)} L${f(-w * 1.1)} ${f(w * 4)} Z`;
+    trazo(`M${f(dx - r * 1.25)} ${f(dy - r * 0.3)} Q${f(dx)} ${f(dy - r * 2.1)} ${f(dx + r * 1.25)} ${f(dy - r * 0.1)}`, MONTE.ocre, 1.2, 0.4) +
+    // Algo, adentro, que apenas devuelve la luz: se ve con la lupa.
+    nube(dx + r * 0.2, dy + r * 0.25, r * 0.16, r * 0.16, MONTE.ojo, 'xs', 0.32);
+  // Segunda vuelta: la boca en zigzag era una calabaza de Halloween. Ahora es una rajadura de la
+  // corteza, casi derecha, que baja torcida: la cara se adivina, no se dibuja.
+  const grieta = `M${f(-w * 0.5)} ${f(w * 2.6)} L${f(w * 0.2)} ${f(w * 3.3)} L${f(-w * 0.1)} ${f(w * 4.3)} L${f(w * 0.5)} ${f(w * 5.4)} L${f(w * 0.1)} ${f(w * 4.2)} L${f(w * 0.55)} ${f(w * 3.3)} Z`;
   return (
     `<g transform="translate(${f(p[0])} ${f(p[1])}) rotate(${f(giro)})">` +
-    nudo(-w * 1.05, -w * 0.4, w * 0.62, -12) +
-    nudo(w * 1.1, w * 0.3, w * 0.5, 9) +
+    nudo(-w * 1.05, -w * 0.4, w * 0.5, -12) +
+    nudo(w * 1.1, w * 0.3, w * 0.4, 9) +
     forma(grieta, M.negro) +
-    trazo(`M${f(-w * 1.5)} ${f(w * 2.7)} L${f(-w * 0.8)} ${f(w * 3.2)} L${f(-w * 0.3)} ${f(w * 2.8)} L${f(w * 0.3)} ${f(w * 3.5)} L${f(w * 0.9)} ${f(w * 2.9)} L${f(w * 1.6)} ${f(w * 3.3)}`, MONTE.ocre, 1, 0.4) +
     `</g>`
   );
 }
@@ -394,8 +393,28 @@ function lomada(desde: number, hasta: number, y: number, alto: number, paso: num
   return forma(`${d} L${f(hasta + paso)} ${f(y + 80)} L${f(desde)} ${f(y + 80)} Z`, color, o);
 }
 
+/** Las aspas de un molino, alrededor de su eje. */
+function aspas(cx: number, cy: number, r: number): string {
+  let s = '';
+  for (let i = 0; i < 12; i++) {
+    const a = (i / 12) * Math.PI * 2 + 0.2;
+    s += forma(`M${f(cx)} ${f(cy)} L${f(cx + Math.cos(a - 0.11) * r * 0.8)} ${f(cy + Math.sin(a - 0.11) * r)} L${f(cx + Math.cos(a + 0.11) * r * 0.8)} ${f(cy + Math.sin(a + 0.11) * r)} Z`, M.negro);
+  }
+  return s + forma(`M${f(cx - 1.6)} ${f(cy)} a1.6 1.6 0 1 0 3.2 0 a1.6 1.6 0 1 0 -3.2 0 Z`, M.negro);
+}
+
+/**
+ * El molino que gira (`D-91`, segunda vuelta): el primero de la pastura, el que se ve al entrar. Su
+ * rueda no está impresa en lo lejano: es una pieza suelta que la isla gira (`LUCES`, en `aire.ts`).
+ * `MOLINO` dice dónde está el eje, en coordenadas de lo lejano.
+ */
+export const MOLINO = { x: 188, pie: 306, alto: 86 } as const;
+export const EJE_DEL_MOLINO = { x: MOLINO.x, y: MOLINO.pie - MOLINO.alto, r: MOLINO.alto * 0.24 } as const;
+/** La rueda, alrededor del cero: es lo que imprime la pieza `luz-pastura-rueda`. */
+export const ruedaDelMolino = (): string => aspas(0, 0, EJE_DEL_MOLINO.r);
+
 /** El molino de campo: la torre de fierro, la rueda y la cola. Y el tanque al pie. */
-function molino(x: number, pie: number, alto: number): string {
+function molino(x: number, pie: number, alto: number, sinRueda = false): string {
   const c: P = [x, pie - alto];
   let s = trazo(`M${f(x - alto * 0.16)} ${pie} L${f(x - 2)} ${f(c[1] + 4)} M${f(x + alto * 0.16)} ${pie} L${f(x + 2)} ${f(c[1] + 4)}`, M.negro, 2);
   // Las cruces de la torre.
@@ -408,12 +427,9 @@ function molino(x: number, pie: number, alto: number): string {
     const y1 = pie - (alto - 4) * u1;
     s += trazo(`M${f(x - w0)} ${f(y0)} L${f(x + w1)} ${f(y1)} M${f(x + w0)} ${f(y0)} L${f(x - w1)} ${f(y1)}`, M.negro, 1);
   }
-  // La rueda: aspas, vista medio de costado.
+  // La rueda: aspas, vista medio de costado. La del primer molino gira (`ruedaDelMolino`): va aparte.
   const r = alto * 0.24;
-  for (let i = 0; i < 12; i++) {
-    const a = (i / 12) * Math.PI * 2 + 0.2;
-    s += forma(`M${f(c[0])} ${f(c[1])} L${f(c[0] + Math.cos(a - 0.11) * r * 0.8)} ${f(c[1] + Math.sin(a - 0.11) * r)} L${f(c[0] + Math.cos(a + 0.11) * r * 0.8)} ${f(c[1] + Math.sin(a + 0.11) * r)} Z`, M.negro);
-  }
+  if (!sinRueda) s += aspas(c[0], c[1], r);
   s += forma(`M${f(c[0] + 2)} ${f(c[1] - 1.5)} L${f(c[0] + r * 1.5)} ${f(c[1] - r * 0.4)} L${f(c[0] + r * 1.7)} ${f(c[1] + r * 0.3)} L${f(c[0] + 2)} ${f(c[1] + 1.5)} Z`, M.negro);
   // El tanque australiano, y un pelo de luna en el borde.
   s += forma(`M${f(x + alto * 0.3)} ${pie} l0 ${f(-alto * 0.15)} l${f(alto * 0.5)} 0 l0 ${f(alto * 0.15)} Z`, M.negro);
@@ -458,7 +474,8 @@ export function pasturaLejos(ancho: number, alto: number): string {
     espiral(LUNA.x + 40, LUNA.y - 34, 17, CAMPO.lunaHonda, 2.6, 0.7, 0.85) +
     espiral(LUNA.x + 4, LUNA.y - 92, 11, CAMPO.lunaHonda, 2.2, 0.65, 0.9);
   let molinos = '';
-  for (const [x, a] of [[188, 86], [1420, 58], [2140, 74]] as const) if (x < ancho) molinos += molino(x, h + 2, a);
+  molinos += molino(MOLINO.x, MOLINO.pie, MOLINO.alto, true);
+  for (const [x, a] of [[1420, 58], [2140, 74]] as const) if (x < ancho) molinos += molino(x, h + 2, a);
   return (
     `<g filter="url(#rociado)">` +
     `<rect x="-10" y="-10" width="${ancho + 20}" height="${alto + 20}" fill="${CAMPO.cielo}"/>` +
@@ -568,3 +585,53 @@ export function cardo(x: number, y: number, alto: number, rnd: Azar): string {
     forma(`M${f(c[0] - alto * 0.08)} ${f(c[1] + alto * 0.04)} l${f(alto * 0.08)} ${f(alto * 0.12)} l${f(alto * 0.08)} ${f(-alto * 0.12)} Z`, CAMPO.hondo)
   );
 }
+
+/**
+ * Una calavera de vaca clavada en un poste: lo que queda de «te van a carnear». Los cuernos para
+ * arriba, las cuencas negras, el hocico largo. Es lo que mira al que entra a la pastura.
+ */
+export function calaveraDeVaca(x: number, y: number, k = 1): string {
+  const hueso = CAMPO.papel;
+  const craneo = 'M-7 -4 Q-9 -11 -4 -13 L4 -13 Q9 -11 7 -4 L5 4 Q4.4 11 2.6 14 L-2.6 14 Q-4.4 11 -5 4 Z';
+  return (
+    `<g transform="translate(${f(x)} ${f(y)}) scale(${f(k)}) rotate(-5)">` +
+    // Los cuernos, que se abren y suben.
+    trazo('M-5.6 -11 Q-15 -11 -17 -21', hueso, 2.6, 0.95) + trazo('M5.6 -11 Q15 -11 18 -20', hueso, 2.6, 0.95) +
+    forma(craneo, hueso) +
+    nube(3, 2, 5, 9, CAMPO.azul, 's', 0.55) +
+    // Las cuencas y los agujeros del hocico.
+    forma('M-5.6 -7 q2.4 -2.6 4 0.4 q-1 3 -3.4 2.2 Z M5.6 -7 q-2.4 -2.6 -4 0.4 q1 3 3.4 2.2 Z', M.negro) +
+    forma('M-1.8 9 q0.8 -2 1.4 0 q-0.2 2 -1.4 0 Z M1.8 9 q-0.8 -2 -1.4 0 q0.2 2 1.4 0 Z', M.negro) +
+    trazo('M0 -4 L0 6', CAMPO.azul, 0.7, 0.6) +
+    `</g>`
+  );
+}
+
+/**
+ * Un arado de mancera abandonado: la reja medio enterrada, el timón, las dos manceras para arriba y
+ * la rueda chica. Fierro negro con un pelo de luna. Es lo que hay al salir de la pastura.
+ */
+export function arado(x: number, y: number, k = 1): string {
+  const luz = CAMPO.claro;
+  let rayos = '';
+  for (let i = 0; i < 6; i++) {
+    const a = (i / 6) * Math.PI;
+    rayos += `M${f(-46 + Math.cos(a) * 11)} ${f(-11 + Math.sin(a) * 11)} L${f(-46 - Math.cos(a) * 11)} ${f(-11 - Math.sin(a) * 11)} `;
+  }
+  return (
+    `<g transform="translate(${f(x)} ${f(y)}) scale(${f(k)})">` +
+    nube(0, 2, 62, 5, M.negro, 's', 0.85) +
+    // El timón, de la rueda a la reja; y las manceras, que suben para atrás.
+    trazo('M-46 -12 Q-10 -30 22 -14', M.negro, 4) +
+    trazo('M18 -16 Q40 -34 58 -52 M14 -14 Q40 -24 64 -40', M.negro, 3.2) +
+    trazo('M56 -51 l7 -4 M62 -39 l7 -3', M.negro, 4.4) +
+    // La reja y la vertedera: una uña grande que se clava.
+    forma('M10 -20 Q30 -16 34 0 L8 3 Q-6 -2 -10 -12 Z', M.negro) +
+    trazo('M-8 -11 Q8 -17 30 -4', luz, 1.2, 0.6) +
+    // La rueda.
+    `<circle cx="-46" cy="-11" r="11" fill="none" stroke="${M.negro}" stroke-width="2.6"/>` + trazo(rayos, M.negro, 1) +
+    trazo('M-55 -17 A11 11 0 0 1 -40 -20.4', luz, 1, 0.55) + trazo('M-44 -13 Q-10 -31 20 -15.6', luz, 0.9, 0.45) +
+    `</g>`
+  );
+}
+
