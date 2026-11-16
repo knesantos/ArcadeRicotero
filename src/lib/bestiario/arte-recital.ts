@@ -142,6 +142,11 @@ function persona(x: number, cy: number, rx: number, base: number, rnd: Rnd, gest
     poli([[hx0 - rx * 0.44, cy + rx * 0.5], [hx0 + rx * 0.44, cy + rx * 0.5], [x + rx * 0.56, sy], [x - rx * 0.56, sy]]) +
     // Los hombros y la espalda, hasta la base.
     `M${f(x - wi)} ${f(base)} L${f(x - wi)} ${f(sy + rx * 0.95 + ci)} Q${f(x - wi)} ${f(sy + ci)} ${f(x - wi * 0.62)} ${f(sy - rx * 0.1 + ci * 0.5)} L${f(x - rx * 0.5)} ${f(sy - rx * 0.34)} L${f(x + rx * 0.5)} ${f(sy - rx * 0.34)} L${f(x + wd * 0.62)} ${f(sy - rx * 0.1 + cd * 0.5)} Q${f(x + wd)} ${f(sy + cd)} ${f(x + wd)} ${f(sy + rx * 0.95 + cd)} L${f(x + wd)} ${f(base)} Z`;
+  // El trazo de canto de este: de un hombro al otro pasando por la coronilla, uno solo (quinta vuelta).
+  TRAZO.d =
+    `M${f(x - wi)} ${f(sy + ci + rx * 0.4)} Q${f(x - wi)} ${f(sy + ci)} ${f(x - wi * 0.62)} ${f(sy - rx * 0.1 + ci * 0.5)} L${f(x - rx * 0.5)} ${f(sy - rx * 0.34)} ` +
+    `L${f(hx0 - rx * 0.84)} ${f(cy + rx * 0.2)} A${f(rx * 0.84)} ${f(rx * 1.1)} 0 0 1 ${f(hx0 + rx * 0.84)} ${f(cy + rx * 0.2)} ` +
+    `L${f(x + rx * 0.5)} ${f(sy - rx * 0.34)} L${f(x + wd * 0.62)} ${f(sy - rx * 0.1 + cd * 0.5)} Q${f(x + wd)} ${f(sy + cd)} ${f(x + wd)} ${f(sy + cd + rx * 0.4)}`;
   if (gesto === 'nada') return d;
   const lados = gesto === 'dos' ? [-1, 1] : [rnd() < 0.5 ? -1 : 1];
   for (const lado of lados) {
@@ -157,7 +162,14 @@ function persona(x: number, cy: number, rx: number, base: number, rnd: Rnd, gest
 
 type Cabeza = { x: number; y: number; r: number };
 /** Cómo se pinta cada uno: recibe su silueta y dónde tiene la cabeza. */
-type Pinta = (d: string, x: number, y: number, r: number) => string;
+type Pinta = (d: string, x: number, y: number, r: number, trazo?: string) => string;
+
+/**
+ * El trazo de canto de la última persona que se armó (`persona()` lo deja acá): la línea que va de un
+ * hombro al otro por la coronilla. Es lo que el seguidor le prende a cada uno: un solo trazo, no el
+ * canto de toda la silueta, que con tanta gente junta se leía a bandas.
+ */
+const TRAZO = { d: '' };
 
 /**
  * La trama de *En directo* como relleno: puntos en tresbolillo sobre un fondo. Con esto se pinta el
@@ -209,7 +221,7 @@ function gentio(desde: number, hasta: number, arriba: number, abajo: number, rad
       const mx = x + rx * (0.9 + rnd() * 0.6);
       const mano = brazo(mx, cy + rx * 2.4, mx + (rnd() - 0.5) * rx, cy - rx * (1.2 + rnd() * 1.6), rx * 0.46, GESTOS[Math.floor(rnd() * GESTOS.length)]!, rnd() < 0.5 ? -1 : 1);
       if (queda) {
-        figuras.push({ y: cy, s: pinta(d, x, cy, rx) });
+        figuras.push({ y: cy, s: pinta(d, x, cy, rx, TRAZO.d) });
         if (suelta) figuras.push({ y: cy - 0.5, s: pinta(mano, mx, cy, rx) });
         cabezas.push({ x, y: cy, r: rx });
       }
@@ -422,11 +434,10 @@ export function galponFrenteLargo(ancho: number, alto: number, modo: 'gente' | '
    * coronilla y los hombros. El que tiene una bengala cerca la tiene de costado: el canto es ancho, en
    * el rojo vivo, y mira para la bengala.
    */
-  const pinta: Pinta = (d, x, y, r) => {
-    // El mismo canto que la gente ya tiene en rojo, ni más ancho ni más fino (cuarta vuelta): con otro grosor
-    // quedaba una raya clara al lado de la roja, y se leían rayas sobre las cabezas. Así, al pasar el haz, el
-    // canto de cada uno cambia de tinta: del rojo al oro.
-    if (modo === 'canto') return figura(`gl-c-${n++}`, d, 'white', 'black', 0, 4.4 + r * 0.2);
+  const pinta: Pinta = (d, x, y, r, trazo) => {
+    // Quinta vuelta: un solo trazo por persona. El cuerpo va en negro (tapa el trazo de los de atrás) y encima,
+    // en blanco, la línea de hombro a hombro por la coronilla. Las manos sueltas y los brazos no llevan trazo.
+    if (modo === 'canto') return `<path d="${d}" fill="black"/>` + (trazo ? `<path d="${trazo}" fill="none" stroke="white" stroke-width="${f(2.6 + r * 0.1)}" stroke-linecap="round" stroke-linejoin="round"/>` : '');
     let cerca: { x: number; y: number } | null = null;
     for (const b of bengalas) if (Math.hypot(x - b.x, (y - b.y) * 0.6) < 170 && (!cerca || Math.abs(x - b.x) < Math.abs(x - cerca.x))) cerca = b;
     if (!cerca) return figura(`gl-g-${n++}`, d, 'gl-trama', 'gl-cuerpo', 0, 4.4 + r * 0.2);
@@ -445,7 +456,8 @@ export function galponFrenteLargo(ancho: number, alto: number, modo: 'gente' | '
   for (const u of [0.05, 0.29, 0.61, 0.72]) {
     const c = cabezas.reduce((m, q) => (Math.abs(q.x - ancho * u) < Math.abs(m.x - ancho * u) ? q : m), cabezas[0]!);
     const y = c.y - c.r * 1.2 - 38;
-    gente += pinta(persona(c.x + 2, y, 13, c.y + 26, rnd, 'dos', 38), c.x, y, 13);
+    const jinete = persona(c.x + 2, y, 13, c.y + 26, rnd, 'dos', 38);
+    gente += pinta(jinete, c.x, y, 13, TRAZO.d);
   }
   // Dos que van en andas, pasando por arriba de las cabezas.
   for (const [u, lado] of [[0.36, 1], [0.66, -1]] as const) gente += pinta(enAndas(ancho * u, GRANDES.arriba - 6, 1.05, lado), ancho * u, GRANDES.arriba - 6, 16);
@@ -468,7 +480,7 @@ export function galponFrenteLargo(ancho: number, alto: number, modo: 'gente' | '
       `<g filter="url(#grano)">` +
       `<rect x="-40" y="240" width="${ancho + 80}" height="${alto - 240}" fill="${G.negro}" fill-opacity="0"/>` +
       // Tinta caliente y clara: el oro con el punto de papel. Con la del haz (un gris rosado) se leía como otra trama gris.
-      patron('gl-trama-luz', 4.4, G.oro, G.papel, 1.5) +
+      patron('gl-trama-luz', 3.2, G.oro, G.papel, 1.1) +
       // Cada zona se apaga soplada hacia sus costados: cortada a cuchillo, la luz terminaba en una raya vertical.
       `<mask id="gl-canto" maskUnits="userSpaceOnUse" x="-40" y="240" width="${ancho + 80}" height="${alto - 240}">${gente}` +
       (zona ? `<g filter="url(#soplo-l)" fill="black"><rect x="-80" y="200" width="${f(zona[0] + 110)}" height="${alto}"/><rect x="${f(zona[1] - 30)}" y="200" width="${f(ancho - zona[1] + 120)}" height="${alto}"/></g>` : '') +
