@@ -941,8 +941,10 @@ test('D-91/t2: la gente del galpón va en planos, y el pogo son dos capas que sa
       max = Math.max(max, y);
     }
     assert.ok(min >= 0 && max <= c.salta + 1e-9 && max - min > c.salta * 0.5, `${c.pieza}: salta de ${min} a ${max}`);
-    // Lo que baja no deja ver el borde de abajo: la capa llega al fondo de la pantalla.
-    assert.equal(c.y + c.alto, ALTO);
+    // Tercera vuelta: la capa ya no llega al fondo de la pantalla (se achicó por la cuenta). Termina detrás de
+    // la fila grande, que arranca en `GALPON.gente`, y su pie se deshace soplado en vez de cortarse.
+    assert.ok(c.y + c.alto < ALTO && c.y + c.alto > GALPON.gente + 60);
+    assert.match(PIEZAS_AIRE.find((q) => q.nombre === c.pieza)!.dibujo, /<mask id="gl-pie-\d"/);
   }
   assert.ok([0.3, 1.1, 2.7].some((t) => Math.abs(saltoDeAire(pogo, t) - saltoDeAire(otra, t)) > 3), 'las dos capas van al mismo compás');
   // Las que no saltan, cero: el aire de las otras doce regiones no se entera.
@@ -967,6 +969,22 @@ test('D-91/t2: la gente del galpón va en planos, y el pogo son dos capas que sa
   const recital = readFileSync('src/lib/bestiario/arte-recital.ts', 'utf-8');
   for (const marca of ['// Pelo largo', '// Rulos', '// Gorra', '// Capucha', '// De perfil', '// Cresta', '// El cuello.', 'function enAndas(']) assert.ok(recital.includes(marca), `falta ${marca}`);
   assert.doesNotMatch(recital, /luzDeCabezas/, 'volvió la luz en disco, que hacía de cada cabeza un globo');
+  // Tercera vuelta: el seguidor le prende el canto a la fila grande, por zonas. Cada zona es una pieza chica que va
+  // con la capa de adelante, apagada hasta que el haz le apunta; con movimiento reducido no se prenden.
+  const zonas = LUCES['el-galpon']![0]!.cantos!;
+  assert.equal(zonas.length, 3);
+  for (const [i, z] of zonas.entries()) {
+    assert.equal(z.f, CAMINOS['el-galpon']!.velocidad.frente);
+    assert.ok(existsSync(`public${rutaDePieza(z.pieza)}`), `falta imprimir ${z.pieza}`);
+    assert.ok(statSync(`public${rutaDePieza(z.pieza)}`).size < 40_000);
+    // De izquierda a derecha el ángulo baja (el haz gira a la izquierda con el ángulo positivo), y se pisan un poco.
+    if (i) assert.ok(z.angulo < zonas[i - 1]!.angulo && z.caja[0] < zonas[i - 1]!.caja[0] + zonas[i - 1]!.caja[2] && z.caja[0] > zonas[i - 1]!.caja[0]);
+    const d = PIEZAS_CAMINO.find((q) => q.nombre === z.pieza)!.dibujo;
+    assert.match(d, /<mask id="gl-canto"[^>]*>/);
+    assert.match(d, /filter="url\(#soplo-l\)" fill="black"/, 'la zona termina a cuchillo');
+  }
+  assert.match(isla, /if \(l\.cantos\.length && l\.r\.cantos && !quieto\(\)\) \{/);
+  assert.match(readFileSync('src/pages/redondopedia/bestiario/[region].astro', 'utf-8'), /class="capa canto-de-luz" data-f=\{c\.f\}/);
   // El techo: la parrilla y los bafles van en lo lejano del camino, por arriba de los trapos.
   const lejos = PIEZAS_CAMINO.find((q) => q.nombre === 'camino-galpon-lejos')!.dibujo;
   assert.notEqual(lejos, PIEZAS_ENTORNOS.find((q) => q.nombre === 'galpon-lejos')!.dibujo);
@@ -1011,6 +1029,9 @@ test('D-91/t2: la mesa tiene fondo sin perder la tinta plana: la puerta, la lám
   assert.ok(lampara.y + lampara.caja[1] + lampara.caja[3] <= MESA.tablero.atras + 6, 'el cono baja de la línea de la mesa');
   const fuenteMesa = readFileSync('src/lib/bestiario/arte-sobremesa.ts', 'utf-8');
   for (const m of fuenteMesa.matchAll(/retrato\('ms-r\d', (\d+), \d+, (\d+),/g)) assert.ok(Number(m[1]) + Number(m[2]) < lampara.x - 60 || Number(m[1]) > lampara.x + 60, `un retrato en ${m[1]} queda detrás de la lámpara`);
+  // Tercera vuelta: el seguidor nace de la foto (antes salía de la pared pelada), y en el paño de su derecha hay un reloj de pie.
+  assert.match(fuenteMesa, /mesaLejos\(ancho, alto, \[586 \* k \+ 280 \* 0\.97, 32 \+ 168 \* 0\.05\]\)/);
+  assert.match(fuenteMesa, /relojDePie\(1960, piso\)/);
   // El vapor de la olla respira (la isla lo estira desde la boca), y en la puerta del fondo se para alguien si te quedás quieto.
   const pisoDeLaMesa = pisoDelCamino(CAMINOS['la-mesa']!, new Map());
   assert.match(pisoDeLaMesa, /<g class="respira" data-base="290" data-fase="1\.3" pointer-events="none"><image href="\/bestiario\/camino-mesa-vapor\.webp"/);
@@ -1025,9 +1046,9 @@ test('D-91/t2: la mesa tiene fondo sin perder la tinta plana: la puerta, la lám
   const papel = PIEZAS_DE_LUZ.find((q) => q.nombre === 'luz-mesa-lampara')!.dibujo;
   assert.match(papel, /<mask id="lz-mesa">/);
   assert.doesNotMatch(papel, /soplo-|Gradient/i);
-  // Las moscas: segunda capa, de franja (no de pantalla entera), que deriva, se hamaca y salta.
-  const moscas = AIRE['la-mesa']!.find((c) => c.pieza === 'aire-mesa-moscas')!;
-  assert.ok(moscas.cae === 0 && moscas.alto < ALTO && moscas.deriva !== 0 && moscas.mece > 0 && moscas.salta > 0);
+  // Las moscas en capa se fueron en la tercera vuelta, por la cuenta (la mesa pasaba del +15 % contra main): queda el moscardón que cruza.
+  assert.equal(AIRE['la-mesa']!.length, 1);
+  assert.ok(!existsSync('public/bestiario/aire-mesa-moscas.webp'), 'quedó impresa la capa que se fue');
   assert.equal(VIDAS['la-mesa']!.pieza, 'vida-moscardon');
   // Debajo del mantel: va en el piso impreso, y la cueva del ratón además fina, para la lupa.
   const piso = PIEZAS_CAMINO.find((q) => q.nombre === 'camino-mesa-piso')!.dibujo;
@@ -1061,9 +1082,13 @@ test('D-91/t2: el salón del infierno: arcada, lenguas que respiran, el que asom
   // El que asoma está en el vano del medio, entre dos columnas, arriba de Luzbelito.
   const medio = GIGANTE.caja[0] + GIGANTE.caja[2] / 2;
   assert.ok(medio > SALON.columnas[1]! + 60 && medio < SALON.columnas[2]! - 60);
-  // El calor: una franja (no una pantalla entera) que tiembla rápido de costado; y la brasa le sube a Luzbelito.
-  const calor = AIRE['el-infierno']!.find((c) => c.pieza === 'aire-infierno-calor')!;
-  assert.ok(calor.cae === 0 && calor.alto < ALTO / 2 && calor.mece > 0 && calor.ritmoMece >= 8);
+  // El calor que tiembla se probó y se sacó (tercera vuelta): en la tira de seis cuadros no se leía. La brasa le sube a Luzbelito.
+  assert.equal(AIRE['el-infierno']!.length, 2);
+  assert.ok(!existsSync('public/bestiario/aire-infierno-calor.webp'), 'quedó impresa la capa que se fue');
+  // El que asoma es fuego más oscuro, no un objeto: la silueta en brasa a media tinta, comida por una máscara, y solo los ojos prenden.
+  const asoma = PIEZAS_DEL_SALON.find((q) => q.nombre === 'camino-infierno-gigante')!.dibujo;
+  assert.match(asoma, /<mask id="sl-asoma">/);
+  assert.match(asoma, /opacity="0\.62"><path d="[^"]+" fill="var\(--entorno-infierno-brasa\)"/);
   assert.ok(LUCES['el-infierno']![0]!.caja[1] <= -200, 'la brasa no llega a los flancos del busto');
   assert.ok(LENGUAS.base >= SALON.zocalo && LENGUAS.caja[1] + LENGUAS.caja[3] >= LENGUAS.base && GIGANTE.caja[1] + GIGANTE.caja[3] <= SALON.zocalo + 10);
   // El damero: más filas que el del recinto y la alfombra hasta el punto de fuga.
