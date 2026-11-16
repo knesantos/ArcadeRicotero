@@ -19,6 +19,7 @@
 import { enmascarado, forma, nube, soplo, trazo, type Pieza } from './aerografo.ts';
 import { ACECHOS, AIRE, LUCES, VIDAS, altoDeBaldosa, type CapaDeAire } from './aire.ts';
 import { M, azar, filaDeTiras } from './arte.ts';
+import { troncosCercanos } from './arte-arboles.ts';
 import { ALTO } from './camino.ts';
 import { ofrendasDelTemplo } from './ofrendas.ts';
 
@@ -39,6 +40,8 @@ const T = {
   sodio: 'var(--disco-cordero-atado-tinta)',
   negro: 'var(--fondo)',
 };
+/** La pastura: los azules del cordero (`arte-arboles.ts`). */
+const PT = { cielo: 'var(--bestia-cordero-lana-oscura)', azul: 'var(--bestia-cordero-lana)', claro: 'var(--bestia-cordero-lana-clara)', papel: 'var(--papel)' };
 const I = {
   brasa: 'var(--entorno-infierno-brasa)',
   fuego: 'var(--entorno-infierno-fuego)',
@@ -160,13 +163,6 @@ const receta = (region: string, pieza: string): CapaDeAire => AIRE[region]!.find
    El monte (y la pastura, que es su claro)
    ------------------------------------------------------------------ */
 
-function monteBruma(c: CapaDeAire): string {
-  return rociado(c,     manchas(c, 311, 15, 236, 312, [[M.medio, 0.4], [M.claro, 0.2], [M.hondo, 0.44]], 30) +
-      // Unas hebras más claras, finas, que cruzan: la bruma tiene vetas.
-      manchas(c, 313, 8, 214, 286, [[M.claro, 0.13]], 14, [40, 90]),
-  );
-}
-
 function monteRasante(c: CapaDeAire): string {
   return rociado(c,     manchas(c, 331, 14, 400, 590, [[M.medio, 0.3], [M.claro, 0.14], [M.hondo, 0.2]], 26, [45, 105]) +
       jirones('mr', c, 337, 13, 372, 612, [[M.medio, 0.4], [M.claro, 0.26], [M.medio, 0.34]]),
@@ -208,6 +204,81 @@ function monteCerca(c: CapaDeAire): string {
     n++;
   }
   return rociado(c, fueraDeFoco(tiras + matas) + apagon(c, M.negro));
+}
+
+/**
+ * Los troncos de adelante del monte (`D-91`): pocos, gordos, negros, de arriba abajo, cada uno alguien.
+ * El segundo es casi una cara; el tercero tiene algo tallado; el cuarto se venció contra el de al lado.
+ * Van en una baldosa que cierra: ninguno queda a menos de un brazo del borde.
+ */
+function monteTroncos(c: CapaDeAire): string {
+  const troncos = [
+    { x: 150, grosor: 46 },
+    { x: 452, grosor: 66, que: 'cara' },
+    { x: 720, grosor: 40, que: 'tallado' },
+    { x: 842, grosor: 30, que: 'caido' },
+    { x: 1118, grosor: 54 },
+    { x: 1296, grosor: 30 },
+  ] as const;
+  return rociado(c,
+    troncosCercanos(troncos, 352, 4101, 'tr') +
+    // La bruma que se les enreda en los pies: delante de ellos, detrás del piso.
+    manchas(c, 4103, 9, 316, 344, [[M.hondo, 0.5], [M.medio, 0.22]], 22, [60, 120]),
+  );
+}
+
+/* ------------------------------------------------------------------
+   La pastura (`D-91`): campo abierto, viento y niebla baja
+   ------------------------------------------------------------------ */
+
+/**
+ * La ola: el viento pasando por el pasto. Cada frente es un manchón sesgado de puntas claras,
+ * peinadas para donde sopla, más largas cuanto más cerca. La isla lo corre rápido y lo hace latir:
+ * se ve la racha cruzar el campo y perderse.
+ */
+function pasturaOla(c: CapaDeAire): string {
+  const rnd = azar(4201);
+  let s = '';
+  const frentes = 5;
+  for (let i = 0; i < frentes; i++) {
+    const x0 = (c.ancho / frentes) * (i + rnd() * 0.7);
+    const largo = 150 + rnd() * 110;
+    let frente = '';
+    for (let j = 0; j < 46; j++) {
+      const hondura = rnd();
+      const y = c.y + 26 + hondura * (c.alto - 60);
+      // Sesgado: el frente de la racha llega antes adelante que atrás.
+      const x = hondura * 90 + (rnd() - 0.5) * largo * (0.5 + hondura * 0.5);
+      const h = 5 + hondura * 14 + rnd() * 4;
+      frente += trazo(`M${f(x)} ${f(y)} q${f(-h * 0.5)} ${f(-h * 0.5)} ${f(-h * 1.3)} ${f(-h * 0.62)}`, j % 4 ? PT.claro : PT.papel, 0.9 + hondura * 0.9, 0.3 + rnd() * 0.4);
+    }
+    // El lomo de la racha: un soplo chato y claro donde el pasto se acuesta.
+    frente += nube(40, c.y + c.alto * 0.55, largo * 0.5, 16, PT.claro, 'l', 0.12);
+    s += vuelta(x0, largo, c.ancho, (xx) => `<g transform="translate(${f(xx)} 0)">${frente}</g>`);
+  }
+  return rociado(c, s);
+}
+
+/** La niebla baja: chata, larga, pegada al piso, en el azul claro del cordero. Más pesada que la del monte. */
+function pasturaRasante(c: CapaDeAire): string {
+  return rociado(c,
+    manchas(c, 4211, 12, 470, 600, [[PT.claro, 0.2], [M.claro, 0.1], [PT.azul, 0.3]], 20, [60, 120]) +
+      jirones('pr', c, 4217, 12, 440, 610, [[PT.claro, 0.36], [M.claro, 0.2], [PT.claro, 0.28]]),
+  );
+}
+
+/** Pegado a la cámara: pasto alto, fuera de foco, que la isla hamaca con el viento. */
+function pasturaCerca(c: CapaDeAire): string {
+  const rnd = azar(4223);
+  let s = '';
+  let n = 0;
+  for (let x = 120; x < c.ancho - 60; x += 230 + rnd() * 200) {
+    const ancho = 120 + rnd() * 100;
+    const alto = 86 + rnd() * 44;
+    s += vuelta(x, ancho / 2 + 60, c.ancho, (xx) => mata(xx, ancho, alto, azar(4230 + n), n % 2 ? M.negro : PT.cielo, PT.claro));
+    n++;
+  }
+  return rociado(c, fueraDeFoco(s) + apagon(c, M.negro));
 }
 
 /* ------------------------------------------------------------------
@@ -469,7 +540,11 @@ function rayado(
 /* ---- La ruta ---- */
 
 function rutaBruma(c: CapaDeAire): string {
-  return rociado(c, manchas(c, 811, 13, 250, 326, [[RU.noche, 0.5], [RU.tenue, 0.1], [RU.topo, 0.24]], 28) + manchas(c, 813, 6, 220, 290, [[RU.tenue, 0.07]], 14, [40, 100]));
+  // `D-91`: unos faros, lejos, en la pampa. Van con la bruma, que deriva despacio y late: vienen
+  // desde siempre y no llegan nunca. Dos puntos, su halo, y el haz que barre el pasto para este lado.
+  const faros = (x: number, y: number): string =>
+    nube(x - 34, y + 3, 40, 3.2, RU.faro, 'm', 0.2) + nube(x, y, 11, 5, RU.faro, 'm', 0.5) + nube(x - 2.6, y, 1.3, 1.1, RU.papel, 'xs', 1) + nube(x + 2.6, y, 1.3, 1.1, RU.papel, 'xs', 1);
+  return rociado(c, manchas(c, 811, 13, 250, 326, [[RU.noche, 0.5], [RU.tenue, 0.1], [RU.topo, 0.24]], 28) + manchas(c, 813, 6, 220, 290, [[RU.tenue, 0.07]], 14, [40, 100]) + faros(c.ancho * 0.62, 356));
 }
 
 /** El polvo que levantan los fierros: motas y rachas cortas, tibias, que se van para donde va el tránsito. */
@@ -1015,7 +1090,10 @@ export const PIEZAS_DE_LUZ: readonly Pieza[] = [
 
 /** Quién pinta cada baldosa. */
 const PINTA: Readonly<Record<string, (c: CapaDeAire) => string>> = {
-  'aire-monte-bruma': monteBruma,
+  'aire-monte-troncos': monteTroncos,
+  'aire-pastura-ola': pasturaOla,
+  'aire-pastura-rasante': pasturaRasante,
+  'aire-pastura-cerca': pasturaCerca,
   'aire-monte-rasante': monteRasante,
   'aire-monte-cerca': monteCerca,
   'aire-cyber-vaho': cyberVaho,
@@ -1047,6 +1125,9 @@ const PINTA: Readonly<Record<string, (c: CapaDeAire) => string>> = {
  * Las baldosas del aire, una por pieza (el monte y la pastura comparten las suyas). La niebla es
  * pura mancha y se imprime gruesa, que pesa poco; lo que tiene filo (las matas, la ceniza) va más fino.
  */
+/** Las baldosas que no son niebla sino dibujo de canto duro, y que se miran con la lupa: se imprimen finas (`D-91`). */
+const FILOSAS: ReadonlySet<string> = new Set(['aire-monte-troncos']);
+
 export const PIEZAS_AIRE: readonly Pieza[] = [...new Map(Object.values(AIRE).flat().filter((c) => !c.ajena).map((c) => [c.pieza, c] as const)).values()].map((c) => {
   const pinta = PINTA[c.pieza];
   if (!pinta) throw new Error(`nadie pinta la baldosa "${c.pieza}" (arte-aire.ts)`);
@@ -1055,9 +1136,9 @@ export const PIEZAS_AIRE: readonly Pieza[] = [...new Map(Object.values(AIRE).fla
     nombre: c.pieza,
     caja: [0, c.y, c.ancho, c.alto] as const,
     dibujo: pinta(receta(region, c.pieza)),
-    densidad: c.cae ? 1.5 : c.plano === 'cerca' ? 1.25 : 1,
+    densidad: FILOSAS.has(c.pieza) ? 1.25 : c.cae ? 1.5 : c.plano === 'cerca' ? 1.25 : 1,
     // El grano pesa: la niebla aguanta más compresión que un títere, porque no tiene filo que cuidar.
-    calidad: c.plano === 'cerca' ? 78 : 58,
+    calidad: FILOSAS.has(c.pieza) ? 76 : c.plano === 'cerca' ? 78 : 58,
     // La que se repite también para arriba (la ceniza) son motas sueltas: no hay soplo que cruce el borde.
     sangria: c.cae ? 0 : SANGRIA,
   };
