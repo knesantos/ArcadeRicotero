@@ -182,7 +182,7 @@ export const AIRE: Readonly<Record<string, readonly CapaDeAire[]>> = {
     capa({ pieza: 'aire-mesa-humo', plano: 'medio', f: 1.1, y: 0, alto: ALTO, ancho: 900, deriva: 4, cae: -15, alfa: 0.55, late: 0.12, ritmo: 0.3, mece: 5, ritmoMece: 0.5 }),
     // Las moscas (`D-91`, tanda 2): un puñado suelto sobre la mesa. La baldosa deriva, se hamaca rápido y
     // salta a otro compás: entre las tres cosas, el enjambre no repite el dibujo.
-    capa({ pieza: 'aire-mesa-moscas', plano: 'medio', f: 1.22, y: 130, alto: 300, ancho: 1200, deriva: -21, alfa: 0.92, mece: 15, ritmoMece: 2.3, salta: 11, ritmoSalta: 1.55 }),
+    capa({ pieza: 'aire-mesa-moscas', plano: 'medio', f: 1.22, y: 170, alto: 200, ancho: 1200, deriva: -21, alfa: 0.92, mece: 15, ritmoMece: 2.3, salta: 11, ritmoSalta: 1.55 }),
   ],
   // El templo: el incienso, que sube en hebras tibias entre los focos de la guirnalda.
   'el-templo': [
