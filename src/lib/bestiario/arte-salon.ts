@@ -180,27 +180,47 @@ function gigante(): string {
     // Los hombros, que se pierden por abajo.
     `M${f(cx - 200)} ${y0 + h + 20} Q${f(cx - 190)} ${f(cabeza + 60)} ${f(cx - 70)} ${f(cabeza + 44)} L${f(cx + 70)} ${f(cabeza + 44)} Q${f(cx + 190)} ${f(cabeza + 60)} ${f(cx + 200)} ${y0 + h + 20} Z ` +
     // La cabeza, larga, de mentón en punta.
-    `M${f(cx - 56)} ${f(cabeza - 30)} Q${f(cx - 60)} ${f(cabeza - 96)} ${f(cx)} ${f(cabeza - 100)} Q${f(cx + 60)} ${f(cabeza - 96)} ${f(cx + 56)} ${f(cabeza - 30)} Q${f(cx + 46)} ${f(cabeza + 40)} ${f(cx)} ${f(cabeza + 74)} Q${f(cx - 46)} ${f(cabeza + 40)} ${f(cx - 56)} ${f(cabeza - 30)} Z ` +
+    // (Tercera vuelta: era un óvalo, y casi opaco: una máscara de huevo. Ahora es de pómulos y mentón en cuña.)
+    `M${f(cx - 44)} ${f(cabeza - 34)} L${f(cx - 36)} ${f(cabeza - 90)} Q${f(cx)} ${f(cabeza - 106)} ${f(cx + 36)} ${f(cabeza - 90)} L${f(cx + 44)} ${f(cabeza - 34)} L${f(cx + 26)} ${f(cabeza + 28)} L${f(cx)} ${f(cabeza + 70)} L${f(cx - 26)} ${f(cabeza + 28)} Z ` +
     // Los cuernos: salen de la frente, se abren y vuelven hacia adentro.
     `M${f(cx - 40)} ${f(cabeza - 84)} Q${f(cx - 136)} ${f(cabeza - 96)} ${f(cx - 118)} ${f(cabeza - 172)} Q${f(cx - 102)} ${f(cabeza - 120)} ${f(cx - 16)} ${f(cabeza - 96)} Z ` +
     `M${f(cx + 40)} ${f(cabeza - 84)} Q${f(cx + 136)} ${f(cabeza - 96)} ${f(cx + 118)} ${f(cabeza - 172)} Q${f(cx + 102)} ${f(cabeza - 120)} ${f(cx + 16)} ${f(cabeza - 96)} Z`;
   // El canto: lo que el fuego de adelante le marca. Sin esto era una mancha más oscura y nada más.
   const canto =
     `M${f(cx - 118)} ${f(cabeza - 172)} Q${f(cx - 136)} ${f(cabeza - 96)} ${f(cx - 40)} ${f(cabeza - 84)} M${f(cx + 118)} ${f(cabeza - 172)} Q${f(cx + 136)} ${f(cabeza - 96)} ${f(cx + 40)} ${f(cabeza - 84)} ` +
-    `M${f(cx - 56)} ${f(cabeza - 30)} Q${f(cx - 60)} ${f(cabeza - 96)} ${f(cx)} ${f(cabeza - 100)} Q${f(cx + 60)} ${f(cabeza - 96)} ${f(cx + 56)} ${f(cabeza - 30)} ` +
+    `M${f(cx - 44)} ${f(cabeza - 34)} L${f(cx - 36)} ${f(cabeza - 90)} Q${f(cx)} ${f(cabeza - 106)} ${f(cx + 36)} ${f(cabeza - 90)} L${f(cx + 44)} ${f(cabeza - 34)} ` +
     `M${f(cx - 192)} ${f(cabeza + 110)} Q${f(cx - 176)} ${f(cabeza + 62)} ${f(cx - 72)} ${f(cabeza + 46)} M${f(cx + 192)} ${f(cabeza + 110)} Q${f(cx + 176)} ${f(cabeza + 62)} ${f(cx + 72)} ${f(cabeza + 46)}`;
   const ojo = (lado: number): string =>
     nube(cx + lado * 24, cabeza - 34, 16, 8, F.fuego, 's', 0.5) +
     forma(`M${f(cx + lado * 10)} ${f(cabeza - 30)} Q${f(cx + lado * 26)} ${f(cabeza - 46)} ${f(cx + lado * 42)} ${f(cabeza - 42)} Q${f(cx + lado * 28)} ${f(cabeza - 30)} ${f(cx + lado * 10)} ${f(cabeza - 30)} Z`, F.oro) +
     forma(elipse(cx + lado * 26, cabeza - 37, 1.6, 4.6), F.negro);
+  // Es fuego más oscuro, no un objeto: la silueta va en brasa, a media tinta, y la máscara le come
+  // lenguas desde abajo y tajos sueltos por donde se sigue viendo arder la pared. El contorno, quemado:
+  // una raya negra rota, no un filo. Lo único que prende son los ojos.
+  const rnd = azar(4057);
+  let comido = '';
+  for (let x = x0 - 10; x < x0 + w + 10; x += 16 + rnd() * 26) {
+    const alto = 40 + rnd() ** 1.4 * 190;
+    const g = 9 + rnd() * 14;
+    const t = (rnd() - 0.5) * 30;
+    comido += `<path d="M${f(x - g)} ${y0 + h + 10} Q${f(x - g * 1.3 + t)} ${f(y0 + h - alto * 0.5)} ${f(x + t)} ${f(y0 + h - alto)} Q${f(x + g * 1.3 + t)} ${f(y0 + h - alto * 0.45)} ${f(x + g)} ${y0 + h + 10} Z" fill="black" opacity="${f(0.55 + rnd() * 0.45)}"/>`;
+  }
+  for (let i = 0; i < 16; i++) {
+    const x = cx + (rnd() - 0.5) * 300;
+    const y = cabeza - 150 + rnd() * 250;
+    const largo = 14 + rnd() * 34;
+    comido += `<path d="M${f(x)} ${f(y)} q${f(4 + rnd() * 6)} ${f(-largo * 0.5)} ${f((rnd() - 0.5) * 8)} ${f(-largo)} q${f(-6 - rnd() * 6)} ${f(largo * 0.5)} ${f(-2)} ${f(largo)} Z" fill="black" opacity="${f(0.5 + rnd() * 0.4)}"/>`;
+  }
   return (
     `<g filter="url(#rociado)">${hoja(x0, y0, w, h)}` +
-    `<g filter="url(#soplo-xs)" opacity="0.8"><path d="${silueta}" fill="${F.negro}"/></g>` +
-    trazo(canto, F.fuego, 2.4, 0.55) +
-    nube(cx, cabeza - 96, 40, 5, F.brasa, 's', 0.7) +
+    `<mask id="sl-asoma"><path d="${silueta}" fill="white"/><g filter="url(#soplo-xs)">${comido}</g></mask>` +
+    `<g mask="url(#sl-asoma)">` +
+    `<g filter="url(#soplo-xs)" opacity="0.62"><path d="${silueta}" fill="${F.brasa}"/></g>` +
+    // Lo hondo de la cara y del pecho, donde no le llega nada.
+    nube(cx, cabeza - 20, 34, 60, F.negro, 'l', 0.5) + nube(cx, cabeza + 120, 150, 50, F.negro, 'xl', 0.45) +
+    `<path d="${canto}" fill="none" stroke="${F.negro}" stroke-width="3" stroke-dasharray="9 5 3 6 14 4" stroke-linecap="round" opacity="0.7"/>` +
+    `</g>` +
     ojo(-1) + ojo(1) +
-    // La boca: una raya de brasa, torcida.
-    trazo(`M${f(cx - 20)} ${f(cabeza + 30)} Q${f(cx)} ${f(cabeza + 40)} ${f(cx + 24)} ${f(cabeza + 26)}`, F.fuego, 2.2, 0.7) +
     `</g>`
   );
 }
