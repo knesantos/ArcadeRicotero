@@ -35,6 +35,7 @@
  */
 import Base from '../../../layouts/Base.astro';
 import FichaBestia from '../../../components/bestiario/FichaBestia.astro';
+import VeloDeLlegada from '../../../components/bestiario/VeloDeLlegada.astro';
 import { BESTIARIO, CAMINO } from '../../../lib/bestiario/copy.ts';
 import { lugarDelRotulo, simbolos, tintaDe, type Bestiario, type Bestia } from '../../../lib/bestiario/mapa.ts';
 import { ALTO, CAMINOS, CON_CAMINO, hrefDeRegion } from '../../../lib/bestiario/camino.ts';
@@ -42,7 +43,7 @@ import { destinosDelCruce, HORIZONTE, PIEZAS_CAMINO } from '../../../lib/bestiar
 import { rutaDePieza } from '../../../lib/bestiario/aerografo.ts';
 import { ACECHOS, LUCES, VIDAS, aireDe, altoDeBaldosa, type CapaDeAire, type Plano } from '../../../lib/bestiario/aire.ts';
 import { pisoDelCamino } from '../../../lib/bestiario/escenas-camino.ts';
-import { EL_PLANO, SOBRA, VELOS, rutaDelVelo } from '../../../lib/bestiario/velos.ts';
+import { EL_PLANO, VELOS, rutaDelVelo } from '../../../lib/bestiario/velos.ts';
 import { conAudio, loQueDice } from '../../../lib/bestiario/fichas.ts';
 import { fondoDe } from '../../../lib/bestiario/sonido.ts';
 import { tituloDelDisco } from '../../../lib/letra/discos.ts';
@@ -189,7 +190,7 @@ const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín
     <link rel="preload" as="image" href={rutaDelVelo(id)} fetchpriority="high" />
     {[...region.vecinas, EL_PLANO].filter((v) => VELOS[v]).map((v) => <link rel="prefetch" as="image" href={rutaDelVelo(v)} />)}
   </Fragment>
-  <div class="velo-de-llegada" aria-hidden="true" data-rumbo={VELOS[id]!.rumbo} style={`--velo: url(${rutaDelVelo(id)}); --sobra: ${SOBRA / 100}`}></div>
+  <VeloDeLlegada destino={id} />
   <section
     class="camino"
     id="camino"
