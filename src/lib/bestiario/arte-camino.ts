@@ -22,6 +22,9 @@ import { tintaDe } from './mapa.ts';
 import { sueloDeCybersiberia, sueloDeLaMesa, sueloDeLaPastura, sueloDeLaRuta, sueloDeLosAstilleros, sueloDelArbol, sueloDelGalpon, sueloDelMonte } from './arte-suelo.ts';
 import { CAMPO, MONTE, alambrado, arado, carroVolcado, brumaEntrePlanos, calaveraDeVaca, cardo, mataDePasto, pasturaLejos, planoLejano, planoMedio } from './arte-arboles.ts';
 import { ARBOL, GALPON, MESA, RUTA } from './rig-entornos.ts';
+import { galponFrenteLargo, galponPisoLargo } from './arte-recital.ts';
+import { PIEZAS_DEL_SALON } from './arte-salon.ts';
+import { CUEVA, bajoElMantel, cuevaDelRaton, mesaLejosLarga } from './arte-sobremesa.ts';
 import { ASTILLERO } from './rig-entornos.ts';
 import { PALO } from './rig.ts';
 
@@ -601,7 +604,7 @@ function conSuelo(tramo: Tramo, piso: string): string {
   // Sexta ronda. El árbol es aerógrafo: con el rociado, y sin nada contra el pie del tronco.
   if (tramo.region === 'el-arbol') return piso + rociado(sueloDelArbol(tramo.escena, ARBOL.tronco.x * K_ENTORNO));
   // La mesa es un afiche: tinta plana con el grano fino, abajo de donde cuelga el mantel.
-  if (tramo.region === 'la-mesa') return piso + `<g filter="url(#grano)">${sueloDeLaMesa(tramo.escena, MESA.tablero.cuelga + 22)}</g>`;
+  if (tramo.region === 'la-mesa') return piso + `<g filter="url(#grano)">${sueloDeLaMesa(tramo.escena, MESA.tablero.cuelga + 22)}${bajoElMantel(tramo.escena)}</g>`;
   // El galpón: tinta plana contra el borde del tablado, lejos de lo que está parado ahí.
   if (tramo.region === 'el-galpon') {
     return piso + `<g filter="url(#grano)">${sueloDelGalpon(tramo.escena, GALPON.tablado.borde, [GALPON.silla.x, GALPON.fuente.x, GALPON.bestiaPop.x].map((x) => x * K_ENTORNO))}</g>`;
@@ -609,8 +612,19 @@ function conSuelo(tramo: Tramo, piso: string): string {
   return piso;
 }
 
+/**
+ * Las capas que el camino pinta por su cuenta (`D-91`, tanda 2): el recinto de 900 sigue con las de
+ * `arte-entornos.ts`, y el tramo largo se lleva las suyas. No reutilizar la pieza del recinto en el
+ * camino fue la lección más cara de la tanda 1.
+ */
+type Capa = (ancho: number, alto: number) => string;
+const A_LO_LARGO: Readonly<Record<string, Partial<Record<'lejos' | 'piso' | 'frente', Capa>>>> = {
+  'el-galpon': { piso: galponPisoLargo, frente: galponFrenteLargo },
+  'la-mesa': { lejos: mesaLejosLarga },
+};
+
 function piezasDeEntorno(tramo: Tramo): Pieza[] {
-  const capas = ENTORNOS[tramo.region as keyof typeof ENTORNOS];
+  const capas = { ...ENTORNOS[tramo.region as keyof typeof ENTORNOS], ...A_LO_LARGO[tramo.region] };
   const pieza = tramo.piezas.piso!.replace(/^camino-|-piso$/g, '');
   const frente = anchoDeCapa(tramo.velocidad.frente, tramo.ancho);
   const yPiso = arribaDe(`${pieza}-piso`);
@@ -618,7 +632,8 @@ function piezasDeEntorno(tramo: Tramo): Pieza[] {
   return [
     { nombre: tramo.piezas.lejos!, caja: [0, 0, tramo.escena, ALTO], dibujo: capas.lejos(tramo.escena, ALTO), opaca: true, densidad: 1.25 },
     { nombre: tramo.piezas.piso!, caja: [0, yPiso, tramo.escena, ALTO - yPiso], dibujo: conSuelo(tramo, capas.piso(tramo.escena, ALTO)), densidad: 1.25 },
-    { nombre: tramo.piezas.frente!, caja: [0, yFrente, frente, ALTO - yFrente], dibujo: capas.frente(frente, ALTO), densidad: 1.25 },
+    // La gente del galpón es pura trama de puntos, que pesa: se comprime un poco más, que el punto lo aguanta.
+    { nombre: tramo.piezas.frente!, caja: [0, yFrente, frente, ALTO - yFrente], dibujo: capas.frente(frente, ALTO), densidad: 1.25, ...(tramo.region === 'el-galpon' ? { calidad: 70 } : {}) },
   ];
 }
 
@@ -632,10 +647,10 @@ function piezasDeEntorno(tramo: Tramo): Pieza[] {
    `FINAS_DE` dice cuáles lleva cada región; las pone `escenas-camino.ts` arriba del piso impreso.
 */
 
-const fina = (nombre: string, caja: readonly [number, number, number, number], dibujo: string): Pieza => ({
+const fina = (nombre: string, caja: readonly [number, number, number, number], dibujo: string, mano = 'rociado'): Pieza => ({
   nombre,
   caja,
-  dibujo: `<g filter="url(#rociado)"><rect x="${caja[0]}" y="${caja[1]}" width="${caja[2]}" height="${caja[3]}" fill="var(--fondo)" fill-opacity="0"/>${dibujo}</g>`,
+  dibujo: `<g filter="url(#${mano})"><rect x="${caja[0]}" y="${caja[1]}" width="${caja[2]}" height="${caja[3]}" fill="var(--fondo)" fill-opacity="0"/>${dibujo}</g>`,
   densidad: 4,
 });
 
@@ -643,6 +658,8 @@ export const PIEZAS_FINAS: readonly Pieza[] = [
   fina('fino-monte-hueco', [764, 328, 196, 74], troncoHueco(790, 356, 150, 30)),
   fina('fino-pastura-calavera', [140, 244, 54, 50], calaveraDeVaca(166, 272, 0.95)),
   fina('fino-ruta-santuario', [208, 388, 86, 48], santuario(250, RUTA.asfalto.arriba - 1)),
+  // La cueva del ratón, debajo de la mesa (`D-91`, tanda 2): tinta plana, con el grano fino del afiche.
+  fina('fino-mesa-cueva', [CUEVA.x - 30, CUEVA.y - 34, 64, 50], cuevaDelRaton(CUEVA.x, CUEVA.y), 'grano'),
 ];
 
 /** Las piezas finas de cada región, en el orden en que van sobre el piso. */
@@ -650,6 +667,7 @@ export const FINAS_DE: Readonly<Record<string, readonly string[]>> = {
   'el-monte': ['fino-monte-hueco'],
   'la-pastura': ['fino-pastura-calavera'],
   'la-ruta': ['fino-ruta-santuario'],
+  'la-mesa': ['fino-mesa-cueva'],
 };
 
 export const PIEZAS_CAMINO: readonly Pieza[] = [
@@ -664,6 +682,7 @@ export const PIEZAS_CAMINO: readonly Pieza[] = [
   { nombre: 'camino-monte-frente', caja: [0, 0, FRENTE, ALTO], dibujo: frente(), densidad: 1.25 },
   ...DE_ENTORNO.flatMap(piezasDeEntorno),
   ...PIEZAS_FINAS,
+  ...PIEZAS_DEL_SALON,
 ];
 
 /* ------------------------------------------------------------------
