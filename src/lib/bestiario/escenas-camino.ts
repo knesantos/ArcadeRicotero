@@ -17,6 +17,7 @@
 import { rutaDePieza, type Pieza } from './aerografo.ts';
 import { FINAS_DE, PIEZAS_CAMINO, cajaDelCruce } from './arte-camino.ts';
 import { LENGUAS } from './arte-salon.ts';
+import { VAPOR } from './arte-sobremesa.ts';
 import { K_ENTORNO, RECINTO, type Tramo } from './camino.ts';
 import { escenaBajo, escenaBaldio, escenaInfierno, escenaPrision, escenaTemplo, ojos, type Tinta } from './escenas.ts';
 import { cosa, VELOCIDAD_DE_CARRIL } from './escenas-entornos.ts';
@@ -180,6 +181,8 @@ function pisoDeEntorno(t: Tramo, nombres: Nombres): string {
     capasDe(t.region, 'atras', nombres, K_ENTORNO) +
     imagenDePieza(piezaDelCamino(t.piezas.piso!)) +
     finasDe(t) +
+    // El vapor de la olla de la mesa (`arte-sobremesa.ts`): la isla lo estira desde la boca de la olla.
+    (t.region === 'la-mesa' ? `<g class="respira" data-base="${VAPOR.base}" data-fase="1.3" pointer-events="none">${imagenDePieza(piezaDelCamino('camino-mesa-vapor'), true)}</g>` : '') +
     cruce(t) +
     `<g class="ojos-del-recinto">${quietas ? ojosDelEntorno.replaceAll('class="bestia bestia--ojos"', 'class="bestia bestia--ojos" data-quieto=""') : ojosDelEntorno}${lasCosas}</g>` +
     extra +
