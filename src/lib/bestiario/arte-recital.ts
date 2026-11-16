@@ -423,7 +423,10 @@ export function galponFrenteLargo(ancho: number, alto: number, modo: 'gente' | '
    * el rojo vivo, y mira para la bengala.
    */
   const pinta: Pinta = (d, x, y, r) => {
-    if (modo === 'canto') return figura(`gl-c-${n++}`, d, 'white', 'black', 0, 5.4 + r * 0.16);
+    // El mismo canto que la gente ya tiene en rojo, ni más ancho ni más fino (cuarta vuelta): con otro grosor
+    // quedaba una raya clara al lado de la roja, y se leían rayas sobre las cabezas. Así, al pasar el haz, el
+    // canto de cada uno cambia de tinta: del rojo al oro.
+    if (modo === 'canto') return figura(`gl-c-${n++}`, d, 'white', 'black', 0, 4.4 + r * 0.2);
     let cerca: { x: number; y: number } | null = null;
     for (const b of bengalas) if (Math.hypot(x - b.x, (y - b.y) * 0.6) < 170 && (!cerca || Math.abs(x - b.x) < Math.abs(x - cerca.x))) cerca = b;
     if (!cerca) return figura(`gl-g-${n++}`, d, 'gl-trama', 'gl-cuerpo', 0, 4.4 + r * 0.2);
@@ -464,7 +467,8 @@ export function galponFrenteLargo(ancho: number, alto: number, modo: 'gente' | '
     return (
       `<g filter="url(#grano)">` +
       `<rect x="-40" y="240" width="${ancho + 80}" height="${alto - 240}" fill="${G.negro}" fill-opacity="0"/>` +
-      patron('gl-trama-luz', 5, G.luz, G.papel, 1.8) +
+      // Tinta caliente y clara: el oro con el punto de papel. Con la del haz (un gris rosado) se leía como otra trama gris.
+      patron('gl-trama-luz', 4.4, G.oro, G.papel, 1.5) +
       // Cada zona se apaga soplada hacia sus costados: cortada a cuchillo, la luz terminaba en una raya vertical.
       `<mask id="gl-canto" maskUnits="userSpaceOnUse" x="-40" y="240" width="${ancho + 80}" height="${alto - 240}">${gente}` +
       (zona ? `<g filter="url(#soplo-l)" fill="black"><rect x="-80" y="200" width="${f(zona[0] + 110)}" height="${alto}"/><rect x="${f(zona[1] - 30)}" y="200" width="${f(ancho - zona[1] + 120)}" height="${alto}"/></g>` : '') +
