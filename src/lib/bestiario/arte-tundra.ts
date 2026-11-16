@@ -58,6 +58,17 @@ function carambanos(rnd: () => number, x: number, y: number, cuantos: number, la
   return s;
 }
 
+/** Copos teñidos: la nevada que pasa por delante de algo prendido agarra su color. */
+function tenidos(rnd: () => number, x: number, y: number, rx: number, ry: number, cuantos: number, color: string): string {
+  let s = '';
+  for (let i = 0; i < cuantos; i++) {
+    const a = rnd() * Math.PI * 2;
+    const d = Math.sqrt(rnd());
+    s += `<circle cx="${f(x + Math.cos(a) * rx * d)}" cy="${f(y + Math.sin(a) * ry * d)}" r="${f(0.7 + rnd() * 1.5)}" fill="${color}" opacity="${f((0.9 - d * 0.6) * (0.5 + rnd() * 0.5))}"/>`;
+  }
+  return s;
+}
+
 /** Una torre de fierro con su baliza roja y la nieve en los travesaños. */
 function torre(x: number, pie: number, alto: number, color: string, o = 1): string {
   const t = pie - alto;
@@ -70,7 +81,9 @@ function torre(x: number, pie: number, alto: number, color: string, o = 1): stri
   return (
     trazo(d, color, Math.max(1.2, alto * 0.022), o) + trazo(brazos, color, Math.max(1.6, alto * 0.03), o) +
     `<g transform="translate(0 -1.6)">${trazo(brazos, C.nieve, 1.2, 0.6 * o)}</g>` +
-    nube(x, t - 3, 5, 5, C.rojo, 's', 0.7 * o) + forma(circulo(x, t - 3, 1.5), C.rojo, o)
+    // La baliza tiñe el aire que tiene alrededor y deja su mancha roja en la nieve del pie.
+    nube(x, t - 3, alto * 0.16, alto * 0.14, C.rojo, 'l', 0.3 * o) + nube(x, pie + 6, alto * 0.34, 5, C.rojo, 'l', 0.26 * o) +
+    nube(x, t - 3, 5, 5, C.rojo, 's', 0.8 * o) + forma(circulo(x, t - 3, 1.7), C.rojo, o)
   );
 }
 
@@ -87,7 +100,7 @@ function bloque(rnd: () => number, x: number, pie: number, w: number, alto: numb
   return (
     forma(caja(x, pie - alto, w, alto + 4), C.hondo) +
     forma(caja(x + w * 0.6, pie - alto - 16, w * 0.24, 18), C.hondo) +
-    nube(x + w * 0.4, pie - alto * 0.5, w * 0.6, alto * 0.5, C.lente, 'l', 0.12) +
+    nube(x + w * 0.4, pie - alto * 0.5, w * 0.8, alto * 0.7, C.lente, 'xl', 0.3) + nube(x + w * 0.5, pie + 9, w * 0.8, 9, C.lente, 'l', 0.4) +
     ventanas +
     soplo(`M${f(x - 3)} ${f(pie - alto + 3)} Q${f(x + w * 0.3)} ${f(pie - alto - 7)} ${f(x + w * 0.58)} ${f(pie - alto - 1)} L${f(x + w + 3)} ${f(pie - alto + 3)} L${f(x + w + 3)} ${f(pie - alto + 5)} L${f(x - 3)} ${f(pie - alto + 5)} Z`, C.nieve, 'xs', 0.85)
   );
@@ -108,7 +121,9 @@ function paredDeTeles(x: number, pie: number): string {
     }
   }
   return (
-    nube(x + 46, pie + 10, 80, 14, C.lente, 'l', 0.4) +
+    // Segunda vuelta: lo prendido tiñe. El verde agua se derrama en la nieve y en el aire, y la tele roja deja su mancha.
+    nube(x + 46, pie + 18, 140, 28, C.lente, 'xl', 0.55) + nube(x + 46, pie - 40, 100, 66, C.lente, 'xl', 0.26) + nube(x + 66, pie + 9, 30, 7, C.rojo, 'm', 0.34) +
+    tenidos(rnd, x + 46, pie - 30, 120, 80, 46, C.lente) +
     `<g transform="rotate(-5 ${x + 46} ${pie})">` +
     trazo(`M${x + 14} ${pie - 4} l-6 12 M${x + 78} ${pie - 4} l6 12`, C.hondo, 3.4) +
     forma(caja(x, pie - 72, 92, 70), C.hondo) +
@@ -180,11 +195,11 @@ export function tundraLejos(ancho: number, alto: number): string {
   const cerca =
     torre(170, h + 2, 104, C.hondo) + bloque(rnd, 286, h + 2, 74, 82) +
     paredDeTeles(486, h + 4) +
-    torre(716, h + 2, 122, C.hondo) + bloque(rnd, 880, h + 2, 96, 62) +
+    torre(800, h + 2, 122, C.hondo) + bloque(rnd, 880, h + 2, 96, 62) +
     torre(1500, h + 2, 96, C.hondo) + bloque(rnd, 1610, h + 2, 110, 90) + torre(1890, h + 2, 128, C.hondo) + bloque(rnd, 2040, h + 2, 78, 70) + torre(2260, h + 2, 90, C.hondo);
   // Los cables de torre a torre, combados, con el hielo colgando.
   let cables = '';
-  const torres = [[170, 104], [716, 122], [1500, 96], [1890, 128], [2260, 90]] as const;
+  const torres = [[170, 104], [800, 122], [1500, 96], [1890, 128], [2260, 90]] as const;
   for (let i = 0; i < torres.length - 1; i++) {
     const [[x0, a0], [x1, a1]] = [torres[i]!, torres[i + 1]!];
     const [y0, y1] = [h + 2 - a0 * 0.9, h + 2 - a1 * 0.9];
@@ -243,11 +258,11 @@ export function tundraLejos(ancho: number, alto: number): string {
    ------------------------------------------------------------------ */
 
 /** La huella de la oruga y la fila de postes, que se juntan en el horizonte. */
-const HUELLA = { desde: [70, 644], hasta: [705, 335], cerca: 124, lejos: 3 } as const;
-const POSTES = { desde: [16, 632], hasta: [700, 334], hondos: [0, 0.58, 0.74, 0.84, 0.9, 0.94, 0.97], alto: 660 } as const;
+const HUELLA = { desde: [190, 644], hasta: [705, 335], cerca: 124, lejos: 3 } as const;
+const POSTES = { desde: [118, 632], hasta: [700, 334], hondos: [0, 0.58, 0.74, 0.84, 0.9, 0.94, 0.97], alto: 660 } as const;
 
 /** Dónde quedó el charco de hielo, y lo que tiene adentro: la caja es la de la pieza fina. */
-const HIELO = { x: 136, y: 558, rx: 62, ry: 14, caja: [66, 536, 140, 42] as const };
+const HIELO = { x: 292, y: 520, rx: 50, ry: 13, caja: [234, 500, 116, 40] as const };
 
 function charcoDeHielo(): string {
   const { x, y, rx, ry } = HIELO;
@@ -273,6 +288,21 @@ function charcoDeHielo(): string {
     trazo(`M${x - 40} ${y + 4} l22 -5 l14 4 l26 -7 M${x - 4} ${y + 3} l8 7 M${x + 22} ${y - 4} l10 -5`, C.nieve, 0.8, 0.7) +
     `</g>` +
     trazo(canto, C.nieve, 1.6, 0.8)
+  );
+}
+
+/**
+ * El muñeco de nieve del segundo poste: del alto de un dedo, con antena de alambre y un led rojo por nariz.
+ * Es el segundo premio de la lupa (`fino-cyber-muneco`).
+ */
+const MUNECO = { x: 476, y: 464, caja: [462, 438, 28, 30] as const };
+function muneco(): string {
+  const { x, y } = MUNECO;
+  return (
+    nube(x + 4, y + 0.6, 9, 2, C.acero, 'xs', 0.8) +
+    forma(circulo(x, y - 5, 5.4), C.nieve) + forma(circulo(x, y - 13, 3.6), C.nieve) + nube(x + 2, y - 4, 3, 4, C.claro, 'xs', 0.5) +
+    trazo(`M${x - 4} ${y - 8} l-6 -4 M${x + 4} ${y - 8} l6 -5 M${x} ${y - 16} l-2 -8 l4 -2`, C.hondo, 0.8) +
+    forma(circulo(x - 1.4, y - 14, 0.6) + circulo(x + 1.4, y - 14, 0.6), C.hondo) + forma(circulo(x, y - 12.4, 0.9), C.rojo) + nube(x, y - 12.4, 2.4, 2.4, C.rojo, 'xs', 0.5)
   );
 }
 
@@ -328,7 +358,9 @@ export function tundraBajo(): string {
   // La caja del primer poste: una pantalla que sigue prendida, y el led.
   const p0 = palos[0]!;
   const cajaPrendida =
-    nube(p0.x + 30, 470, 60, 60, C.lente, 'xl', 0.22) +
+    // La caja tiñe: verde agua en la nieve y en los copos que le pasan por delante, y el rojo del led al pie.
+    nube(p0.x + 26, 486, 120, 74, C.lente, 'xl', 0.46) + nube(p0.x + 14, 420, 60, 50, C.lente, 'xl', 0.3) + nube(p0.x + 4, 452, 24, 10, C.rojo, 'l', 0.4) +
+    tenidos(rnd, p0.x + 20, 440, 86, 80, 40, C.lente) +
     forma(caja(p0.x - 4, 398, 36, 50), C.hondo) + forma(caja(p0.x + 1, 404, 26, 18), C.lente, 0.9) +
     trazo(`M${p0.x + 1} 409 l26 0 M${p0.x + 1} 414 l26 0 M${p0.x + 1} 419 l26 0`, C.hondo, 1, 0.4) +
     trazo(`M${p0.x + 4} 417 l5 -6 l4 4 l5 -8 l6 5`, C.hondo, 1.2, 0.75) +
@@ -336,7 +368,7 @@ export function tundraBajo(): string {
     [0, 1, 2].map((i) => forma(circulo(p0.x + 15 + i * 6, 434, 1.6), C.claro)).join('') +
     soplo(`M${p0.x - 7} 400 Q${p0.x + 12} 388 ${p0.x + 35} 400 L${p0.x + 35} 402 L${p0.x - 7} 402 Z`, C.nieve, 'xs', 0.9) +
     carambanos(rnd, p0.x - 1, 448, 5, 13, 0.8);
-  return `<g filter="url(#rociado)">${huella}${cables}${postes}${cajaPrendida}${charcoDeHielo()}</g>`;
+  return `<g filter="url(#rociado)">${huella}${cables}${postes}${cajaPrendida}${charcoDeHielo()}${muneco()}</g>`;
 }
 
 /* ------------------------------------------------------------------
@@ -344,7 +376,7 @@ export function tundraBajo(): string {
    ------------------------------------------------------------------ */
 
 /** El coloso: dónde camina, en lo lejano. A la izquierda de donde esperan los camellos, y por arriba de sus cabezas. */
-export const COLOSO = { caja: [584, 160, 96, 176] as const } as const;
+export const COLOSO = { caja: [620, 160, 96, 176] as const } as const;
 
 /**
  * Algo enorme que camina en el blanco: tres patas de fierro quebradas, un plato por cabeza y un ojo
@@ -357,8 +389,9 @@ function coloso(): string {
   const patas = `M${x - 6} ${y + 10} L${x - 26} ${y + 70} L${x - 34} ${pie} M${x} ${y + 12} L${x + 8} ${y + 78} L${x + 2} ${pie} M${x + 6} ${y + 10} L${x + 30} ${y + 62} L${x + 38} ${pie}`;
   return (
     `<g filter="url(#rociado)"><rect x="${x0}" y="${y0}" width="${w}" height="${h}" fill="${C.negro}" fill-opacity="0"/>` +
-    `<g opacity="0.62">` +
-    trazo(patas, C.acero, 4) +
+    // Segunda vuelta: más oscuro (a 0,62 no se lo adivinaba: no se lo veía) y lejos de la pared de teles.
+    `<g opacity="0.92">` +
+    trazo(patas, C.acero, 4.6) +
     forma(circulo(x - 26, y + 70, 3.4) + circulo(x + 8, y + 78, 3.4) + circulo(x + 30, y + 62, 3.4), C.acero) +
     forma(`M${x - 30} ${y + 4} Q${x} ${y - 12} ${x + 30} ${y + 4} Q${x} ${y + 16} ${x - 30} ${y + 4} Z`, C.acero) +
     forma(`M${x - 12} ${y - 3} Q${x} ${y - 20} ${x + 12} ${y - 3} Z`, C.acero) +
@@ -366,8 +399,8 @@ function coloso(): string {
     soplo(`M${x - 28} ${y + 1} Q${x} ${y - 13} ${x + 28} ${y + 1} L${x + 24} ${y} Q${x} ${y - 9} ${x - 24} ${y} Z`, C.nieve, 'xs', 0.7) +
     `</g>` +
     // Los pies, tragados por la ventisca.
-    nube(x, pie - 4, 46, 16, C.nieve, 'l', 0.55) +
-    nube(x + 9, y + 5, 6, 5, C.rojo, 's', 0.6) + forma(circulo(x + 9, y + 5, 1.8), C.rojo) +
+    nube(x, pie - 2, 46, 13, C.nieve, 'l', 0.5) +
+    nube(x + 9, y + 5, 13, 11, C.rojo, 'm', 0.5) + forma(circulo(x + 9, y + 5, 1.8), C.rojo) +
     `</g>`
   );
 }
@@ -380,5 +413,11 @@ export const PIEZAS_DE_LA_TUNDRA: readonly Pieza[] = [
     caja: HIELO.caja,
     dibujo: `<g filter="url(#rociado)"><rect x="${HIELO.caja[0]}" y="${HIELO.caja[1]}" width="${HIELO.caja[2]}" height="${HIELO.caja[3]}" fill="${C.negro}" fill-opacity="0"/>${charcoDeHielo()}</g>`,
     densidad: 4,
+  },
+  {
+    nombre: 'fino-cyber-muneco',
+    caja: MUNECO.caja,
+    dibujo: `<g filter="url(#rociado)"><rect x="${MUNECO.caja[0]}" y="${MUNECO.caja[1]}" width="${MUNECO.caja[2]}" height="${MUNECO.caja[3]}" fill="${C.negro}" fill-opacity="0"/>${muneco()}</g>`,
+    densidad: 5,
   },
 ];
