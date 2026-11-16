@@ -42,5 +42,11 @@ const acecho = velo.mira ? (ACECHOS[destino] ?? ACECHOS[OJOS_DEL_PLANO]!) : null
     .velo-aviso {
       display: none;
     }
+    /* Con movimiento reducido la hoja no se anima: sin nadie que la suelte, no va. */
+    @media (prefers-reduced-motion: reduce) {
+      .velo-de-llegada {
+        display: none;
+      }
+    }
   </style>
 </noscript>
