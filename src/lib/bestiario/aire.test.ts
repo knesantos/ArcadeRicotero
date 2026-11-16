@@ -9,7 +9,8 @@ import {
   parpadeo, pasoDeVida, resto, tocaLaLuz,
 } from './aire.ts';
 import { PIEZAS_AIRE, PIEZAS_DE_FILO, PIEZAS_DE_LUZ, PIEZAS_DE_VIDA } from './arte-aire.ts';
-import { PIEZAS_CAMINO } from './arte-camino.ts';
+import { FINAS_DE, PELADO, PIEZAS_CAMINO, PIEZAS_FINAS } from './arte-camino.ts';
+import { camConLupa, LUPA_ANCLA } from './lupa.ts';
 import { EJE_DEL_MOLINO, LUNA } from './arte-arboles.ts';
 import { PIEZAS } from './arte.ts';
 import { PIEZAS_ENTORNOS } from './arte-entornos.ts';
@@ -723,12 +724,19 @@ test('D-91/3: el círculo pelado es tierra gastada y pisada en redondo, no un di
   assert.doesNotMatch(piso, /stroke-width="44"/, 'sigue el aro negro');
   // El pardo del lobo manda sobre el naranja de la tapa, que queda de veladura.
   const pelado = fuente.slice(fuente.indexOf('function circuloPelado'), fuente.indexOf('function pisoPastura'));
-  assert.match(pelado, /soplo\(canto\(0\.93, 0\.12, 437\), M\.sombra, 'm', 0\.8\)/);
+  // Cuarta vuelta: no tiene canto. Ni silueta, ni recorte de caja, ni fila de manchas en el borde del
+  // piso: son manchas sopladas que se ralean hacia afuera. Y entra entero adentro del piso.
+  assert.doesNotMatch(pelado, /clipPath|canto\(|forma\(fuera/);
+  assert.match(pelado, /const afuera = Math\.max\(0, d - 0\.72\) \/ 0\.44;/);
+  assert.ok(PALO.y + PELADO.dy - PELADO.ry * 1.16 >= 322, 'el redondel sube hasta el borde del piso');
+  // El pasto llega hasta el redondel, no hasta una caja alrededor.
+  assert.match(fuente, /if \(enLoPelado\(x, y\)\) continue;/);
+  assert.doesNotMatch(fuente, /enElClaro\(x\) && y > 350/);
   const naranjas = [...pelado.matchAll(/M\.naranja(Honda)?, '[a-z]+', (0\.\d+)/g)].map((m) => Number(m[2]));
-  assert.ok(naranjas.length >= 1 && naranjas.every((o) => o <= 0.3), `el naranja vuelve a mandar: ${naranjas}`);
-  // La huella en redondo, con pezuñas; y arriba se recorta en el borde del piso (detrás hay cielo).
+  assert.ok(naranjas.length >= 1 && naranjas.every((o) => o <= 0.15), `el naranja vuelve a mandar: ${naranjas}`);
+  // La huella en redondo, con pezuñas.
   assert.match(pelado, /pisadas \+=/);
-  assert.match(piso, /<clipPath id="cp-claro"><rect x="-200" y="306"/);
+  assert.doesNotMatch(piso, /cp-claro/);
   // El palo está donde siempre, y el recinto sigue con su claro de siempre.
   assert.match(piso, /<clipPath id="m-palo">/);
   assert.match(PIEZAS.find((q) => q.nombre === 'monte-cerca')!.dibujo, /stroke-width="44"/);
@@ -824,5 +832,76 @@ test('D-91/3: el asfalto de la ruta se abre: paso a nivel, guardarraíl roto y u
     const p = PIEZAS_CAMINO.find((q) => q.nombre === n)!;
     assert.ok((p.densidad ?? 0) >= 1.6 && p.caja[2] * (p.densidad ?? 0) <= 4096, `${n}: ${p.caja[2] * (p.densidad ?? 0)} px`);
   }
+});
+
+/* ------------------------------------------------------------------
+   `D-91`, cuarta vuelta
+   ------------------------------------------------------------------ */
+
+test('D-91/4: con la lupa el paralaje se ancla: lo que se apunta en una capa de atrás queda donde se apunta', () => {
+  // Sin lupa, la cámara de siempre, para cualquier capa.
+  for (const f of [0.45, 0.72, 1, 1.3, 1.75]) assert.equal(camConLupa(f, 800, 500, 1), 800);
+  // El piso no se entera nunca.
+  assert.equal(camConLupa(1, 800, 500, 2.6), 800);
+  // Con la lupa del todo puesta, una capa de velocidad f se corrió f·camSinLupa + lo que se corrió el piso desde ahí.
+  for (const f of [0.45, 0.72, 1.3, 1.75]) {
+    const corrida = f * camConLupa(f, 800, 500, 1 + LUPA_ANCLA);
+    assert.ok(Math.abs(corrida - (f * 500 + (800 - 500))) < 1e-9, `f = ${f}`);
+    // Lo mismo para la capa que viaja con la tira, a la que solo le falta la diferencia.
+    const conLaTira = (f - 1) * camConLupa(f, 800, 500, 2, false);
+    assert.ok(Math.abs(conLaTira - (f - 1) * 500) < 1e-9, `f = ${f}, con la tira`);
+  }
+  // Entra de a poco: a medio camino está entre las dos, y es continua al sacar y al poner la lupa.
+  const medio = camConLupa(0.72, 800, 500, 1 + LUPA_ANCLA / 2);
+  assert.ok(medio > 800 && medio < camConLupa(0.72, 800, 500, 2));
+  assert.ok(Math.abs(camConLupa(0.72, 800, 500, 1.0001) - 800) < 0.2);
+  // La isla la usa en las tres cuentas con paralaje: las capas, el aire y las luces.
+  const isla = readFileSync('src/scripts/camino.ts', 'utf-8');
+  assert.match(isla, /corrimiento\(c\.f, camDe\(c\.f\), focoPx, vistaPx\)/);
+  assert.match(isla, /corridaDeAire\(a\.c, camDe\(a\.c\.f, paralaje\) \/ escala, t, paralaje\)/);
+  assert.match(isla, /corrimiento\(l\.r\.f, camDe\(l\.r\.f\), datos\.foco \* escala, vistaPx\)/);
+  assert.match(isla, /if \(lente\.z <= 1\) camSinLupa = cam;/);
+});
+
+test('D-91/4: lo que premia a la lupa va otra vez, fino, encima del piso y en su mismo lugar', () => {
+  assert.deepEqual(Object.keys(FINAS_DE).sort(), ['el-monte', 'la-pastura', 'la-ruta']);
+  let peso = 0;
+  for (const [region, nombres] of Object.entries(FINAS_DE)) {
+    const piso = pisoDelCamino(CAMINOS[region]!, new Map());
+    for (const n of nombres) {
+      const p = PIEZAS_FINAS.find((q) => q.nombre === n)!;
+      assert.ok(p && (p.densidad ?? 0) >= 3, `${n}: no es fina`);
+      assert.ok(existsSync(`public${rutaDePieza(n)}`), `${n}: falta imprimirla`);
+      peso += statSync(`public${rutaDePieza(n)}`).size;
+      // Va en el piso, después del piso impreso (encima), en la caja que dice la pieza.
+      const dePiso = piso.indexOf(rutaDePieza(CAMINOS[region]!.piezas.piso!));
+      const deFina = piso.indexOf(rutaDePieza(n));
+      assert.ok(dePiso >= 0 && deFina > dePiso, `${n}: no está encima del piso`);
+      assert.match(piso, new RegExp(`href="${rutaDePieza(n).replace(/[.]/g, '\\.')}" x="${p.caja[0]}" y="${p.caja[1]}"`));
+    }
+  }
+  // Tres piezas chicas pesan menos que subirle la densidad a un solo piso.
+  assert.ok(peso < 120_000, `las finas pesan ${Math.round(peso / 1024)} kB`);
+});
+
+test('D-91/4: lo que se mueve raro: el tren del horizonte, el vellón con el viento, y el charco de la luna', () => {
+  const tren = VIDAS['la-ruta']!;
+  assert.equal(tren.pieza, 'vida-tren');
+  // Lejos y despacio: tarda casi medio minuto, y pasa uno cada 44 segundos o más. No aletea ni sube ni baja.
+  assert.ok(tren.dura[0] >= 20 && tren.espera[0] >= 40 && tren.aletea === 0 && tren.y[0] === tren.y[1]);
+  assert.ok(tren.y[0] < RUTA.horizonte, 'el tren no va por el horizonte');
+  const vellon = VIDAS['la-pastura']!;
+  // Va para donde sopla el viento de la ola, que es para la izquierda, y rodando.
+  assert.ok(vellon.alReves === true && AIRE['la-pastura']!.find((c) => c.pieza === 'aire-pastura-ola')!.deriva < 0 && vellon.bamboleo > 20);
+  assert.ok(vellon.espera[0] >= 14, 'si se ve siempre, deja de ser misterio');
+  assert.match(readFileSync('src/scripts/camino.ts', 'utf-8'), /pasa\.alReves = loQuePasa\.alReves \?\? \(/);
+  for (const v of [tren, vellon]) assert.ok(existsSync(`public${rutaDePieza(v.pieza)}`), `falta imprimir ${v.pieza}`);
+  assert.ok(!existsSync('public/bestiario/vida-fugaz.webp'), 'quedó impresa la estrella que ya no cruza');
+  // El charco grande del monte, en el tercio de abajo, devuelve la luna en tajadas.
+  const piso = PIEZAS_CAMINO.find((q) => q.nombre === 'camino-monte-piso')!.dibujo;
+  assert.match(piso, /<clipPath id="ch-luna">/);
+  assert.match(readFileSync('src/lib/bestiario/arte-camino.ts', 'utf-8'), /charcoDeLaLuna\(1500, 560,/);
+  // Y pegado a la cámara hay helechos, además de matas.
+  assert.match(readFileSync('src/lib/bestiario/arte-aire.ts', 'utf-8'), /function helecho\(/);
 });
 
