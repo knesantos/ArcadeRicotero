@@ -1880,7 +1880,7 @@ function charcoConTorre(id: string, x: number, y: number, rx: number, ry: number
 }
 
 /** El santuario de la banquina: una casita de chapa a la altura de la rodilla, con una vela adentro y trapos atados. */
-function santuario(x: number, y: number): string {
+export function santuario(x: number, y: number): string {
   const vela = 'var(--entorno-templo-foco)';
   return (
     nube(x, y - 10, 34, 18, vela, 'l', 0.3) +
