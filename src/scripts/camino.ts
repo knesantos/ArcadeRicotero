@@ -97,6 +97,11 @@ const apariciones = [...piso.querySelectorAll<SVGGElement>('.aparece')].map((el)
  * hasta que quien mira se queda quieto `espera` segundos; entonces aparece despacio, y se va rápido al caminar.
  */
 const respiran = [...piso.querySelectorAll<SVGGElement>('.respira')].map((el) => ({ el, base: Number(el.dataset.base), fase: Number(el.dataset.fase) }));
+/**
+ * Lo que cuelga (`D-91`, tanda 3, tercera vuelta): un grupo del piso que gira desde su nudo, como un péndulo:
+ * más largo, más lento. Solo se mueve lo que está a la vista.
+ */
+const pendulan = [...piso.querySelectorAll<SVGGElement>('.pendula')].map((el, i) => ({ el, x: Number(el.dataset.x), y: Number(el.dataset.y), ritmo: 2.4 / Math.sqrt(Math.max(40, Number(el.dataset.largo)) / 100), fase: i * 1.9 }));
 const asoman = [...camino.querySelectorAll<SVGGElement | HTMLElement>('.asoma')].map((el) => ({ el, espera: Number(el.dataset.espera), quietud: 0, alfa: 0, pintado: 0 }));
 /** Lo de adelante que se corre con la lupa (`FRENTE_QUE_SE_CORRE`), y el alfa que tiene pintada. */
 const frenteQueSeCorre = { el: camino.querySelector<HTMLElement>('.capa--frente[data-se-corre]'), alfa: 1 };
@@ -765,6 +770,20 @@ function moverAcecho(dt: number, seMueve: boolean): void {
   if (mira.quiere && reloj > mira.hasta) cerrarLosOjos(7);
   // Se abren despacio y se cierran de golpe.
   mira.abierto = Math.min(1, Math.max(0, mira.abierto + dt * (mira.quiere ? 1.1 : -5)));
+}
+
+/**
+ * Lo suelto del piso: los péndulos del árbol, en cada cuadro (un hilo fino a tirones se nota). `desde` y `hasta`:
+ * lo que se ve, en unidades de escena. Solo `transform`. Con el teléfono al límite (`alivio` 2) quedan quietos, como
+ * el fuego del salón.
+ */
+function moverLoSuelto(desde: number, hasta: number): void {
+  if (alivio >= 2) return;
+  for (const p of pendulan) {
+    if (p.x < desde - 90 || p.x > hasta + 90) continue;
+    const a = 3.4 * Math.sin(reloj * p.ritmo + p.fase) + 1.2 * Math.sin(reloj * p.ritmo * 0.37 + p.fase * 2);
+    p.el.setAttribute('transform', `rotate(${a.toFixed(2)} ${p.x} ${p.y})`);
+  }
 }
 
 /**
@@ -1604,6 +1623,7 @@ function cuadro(ahora: number): void {
     pasoAhora = dt > 0 && Math.abs(paso) < 160 ? paso / dt : 0;
     moverAcecho(dt, dt > 0 && Math.abs(paso) / dt > 6);
     moverElSalon(dt, dt > 0 && Math.abs(paso) / dt > 6);
+    if (pendulan.length) moverLoSuelto(cam / escala, (cam + vistaPx) / escala);
     camEnElCuadro = cam;
     camara.retumbar(retumboDeLaRuta());
     encuadre = camara.encuadre(reloj, dt, vistaPx, escenario.clientHeight);
