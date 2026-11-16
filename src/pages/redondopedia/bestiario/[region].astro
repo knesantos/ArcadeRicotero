@@ -41,7 +41,7 @@ import { lugarDelRotulo, simbolos, tintaDe, type Bestiario, type Bestia } from '
 import { ALTO, CAMINOS, CON_CAMINO, hrefDeRegion } from '../../../lib/bestiario/camino.ts';
 import { destinosDelCruce, HORIZONTE, PIEZAS_CAMINO } from '../../../lib/bestiario/arte-camino.ts';
 import { rutaDePieza } from '../../../lib/bestiario/aerografo.ts';
-import { ACECHOS, LUCES, VIDAS, VISITAS, aireDe, altoDeBaldosa, type CapaDeAire, type Plano } from '../../../lib/bestiario/aire.ts';
+import { ACECHOS, HUIDIZOS, LUCES, VIDAS, VISITAS, aireDe, altoDeBaldosa, type CapaDeAire, type Plano } from '../../../lib/bestiario/aire.ts';
 import { pisoDelCamino } from '../../../lib/bestiario/escenas-camino.ts';
 import { EL_PLANO, VELOS, rutaDelVelo } from '../../../lib/bestiario/velos.ts';
 import { conAudio, loQueDice } from '../../../lib/bestiario/fichas.ts';
@@ -122,9 +122,11 @@ const vida = VIDAS[id] ?? null;
  * todas las capas, así la cámara y la lupa la mueven igual. No se ve hasta que la isla la trae.
  */
 const visita = VISITAS[id] ?? null;
-const estiloDeVisita = visita
-  ? `--px: calc(var(--alto-escena) / var(--alto)); left: calc(var(--px) * ${visita.caja[0]}); top: calc(var(--px) * ${visita.caja[1]}); width: calc(var(--px) * ${visita.caja[2]}); height: calc(var(--px) * ${visita.caja[3]}); transform-origin: calc(var(--px) * ${-visita.caja[0]}) calc(var(--px) * ${-visita.caja[1]}); opacity: 0; pointer-events: none`
-  : '';
+const enSuLugar = (caja: readonly number[], alfa: number): string =>
+  `--px: calc(var(--alto-escena) / var(--alto)); left: calc(var(--px) * ${caja[0]}); top: calc(var(--px) * ${caja[1]}); width: calc(var(--px) * ${caja[2]}); height: calc(var(--px) * ${caja[3]}); transform-origin: calc(var(--px) * ${-caja[0]!}) calc(var(--px) * ${-caja[1]!}); opacity: ${alfa}; pointer-events: none`;
+const estiloDeVisita = visita ? enSuLugar(visita.caja, 0) : '';
+/** Lo que se va si lo mirás de cerca (`HUIDIZOS`): igual que la visita, pero a la vista hasta que se saca la lupa. */
+const huidizo = HUIDIZOS[id] ?? null;
 
 /**
  * Lo que la luz le prende a lo impreso (`Luz.cantos`): cada zona es una capa chica puesta en su lugar,
@@ -269,6 +271,7 @@ const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín
             )
           }
           {visita && <img class="capa asoma" data-f={visita.f} data-espera={visita.espera} src={rutaDePieza(visita.pieza)} width={visita.caja[2]} height={visita.caja[3]} style={estiloDeVisita} alt="" decoding="async" loading="lazy" />}
+          {huidizo && <img class="capa huye" data-f={huidizo.f} src={rutaDePieza(huidizo.pieza)} width={huidizo.caja[2]} height={huidizo.caja[3]} style={enSuLugar(huidizo.caja, 1)} alt="" decoding="async" />}
           {aire('fondo').map((a) => <div class:list={['aire', `aire--${a.plano}`, { 'aire--cae': a.cae, 'aire--firme': a.firme }]} data-aire={a.pieza} style={a.estilo} />)}
           {/* Lo que cruza por detrás del piso (`Vida.atras`): el tren de la ruta, detrás de los postes. */}
           {vida?.atras && (
