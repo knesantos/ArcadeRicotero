@@ -130,6 +130,26 @@
   will-change: transform, opacity;
 }
 
+/* La capa que salta en ola (D-91, tanda 2): no pinta la baldosa entera sino por gajos, y cada gajo
+   muestra su tajada. La isla le da a cada uno su salto, con `transform`. Sin isla quedan en su lugar
+   y se ve la baldosa de corrido. */
+.camino .aire--gajos { background-image: none; }
+
+.camino .aire--gajos .gajo {
+  --gw: calc(var(--px) * var(--tw) / var(--g));
+  position: absolute;
+  top: 0;
+  left: calc(var(--gw) * var(--i));
+  width: var(--gw);
+  height: 100%;
+  background-image: var(--baldosa);
+  background-repeat: repeat-x;
+  background-size: calc(var(--px) * var(--tw)) 100%;
+  background-position-x: calc(var(--gw) * var(--i) * -1);
+}
+
+.camino--andando .aire--gajos .gajo { will-change: transform; }
+
 /* La luz que se ve en el aire y los ojos sin dueño (D-90, segunda ronda). Las dos son imágenes
    impresas: un cono o un resplandor soplados, con grano, y un par de ojos. La isla las mueve con
    `transform` y `opacity`; ni resplandor de CSS, ni sombra, ni modo de mezcla. Sin isla, la luz queda
