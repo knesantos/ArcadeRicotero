@@ -22,7 +22,7 @@
  */
 
 import { enmascarado, forma, trazo, type Pieza } from './aerografo.ts';
-import { VISITAS } from './aire.ts';
+import { HUIDIZOS, VISITAS } from './aire.ts';
 import { TINTAS_DE_LA_MESA as M2, mesaLejos, rasgado, recorte } from './arte-entornos.ts';
 import { azar } from './pincel.ts';
 import { MESA, OJOS_DE_LA_MESA } from './rig-entornos.ts';
@@ -212,9 +212,8 @@ function porLaVentana(x0: number, x1: number, arriba: number, abajo: number): st
     forma(elipse(x0 + w * 0.26 + 6, arriba + 30, 11, 11), M2.petroleo) +
     forma(poli([[mx - 5, abajo], [mx - 1.6, my - 40], [mx + 1.6, my - 40], [mx + 5, abajo]]) + aspas + postes, M2.negro) +
     trazo(`M${x0} ${abajo - 11} L${x1} ${abajo - 11} M${x0} ${abajo - 5} L${x1} ${abajo - 5}`, M2.negro, 0.8) +
-    // Los ojos: alguien mira para adentro, apoyado en el marco.
-    forma(elipse(x0 + w * 0.42, abajo - 20, 3.4, 2), M2.oro) + forma(elipse(x0 + w * 0.42 + 12, abajo - 20, 3.4, 2), M2.oro) +
-    forma(elipse(x0 + w * 0.42, abajo - 20, 0.8, 1.8), M2.negro) + forma(elipse(x0 + w * 0.42 + 12, abajo - 20, 0.8, 1.8), M2.negro);
+    // Los ojos que miran para adentro ya no van impresos acá: son una pieza aparte (`HUIDIZOS`), que se va si la mirás con la lupa.
+    '';
   // La cruz del marco, otra vez encima de lo de afuera.
   const cruz = trazo(`M${f(medio)} ${arriba} L${f(medio)} ${abajo} M${f(x0)} ${f((arriba + abajo) / 2)} L${f(x1)} ${f((arriba + abajo) / 2)}`, M2.negro, 6);
   // Las cortinas: dos tiras de papel rasgado, recogidas, que tapan los costados.
@@ -246,7 +245,8 @@ export function mesaLejosLarga(ancho: number, alto: number): string {
     // la pared pelada, 300 unidades a su derecha.
     mesaLejos(ancho, alto, [586 * k + 280 * 0.97, 32 + 168 * 0.05]) +
     `<g filter="url(#grano)">` +
-    relojDePie(1960, piso) +
+    // A 1280 el verdugo tapaba el reloj en 1960: va más a la derecha, entre él y los dos últimos retratos.
+    relojDePie(2112, piso) +
     zocalo(-10, ancho + 10, 246, piso, [puerta]) +
     puertaDelFondo(piso) +
     retrato('ms-r1', 452, 92, 62, -3, 'mosca', 3521) +
@@ -450,6 +450,14 @@ function visitaDeLaPuerta(caja: readonly [number, number, number, number]): stri
   );
 }
 
+/** Los dos ojos que miran para adentro por la ventana, apoyados en el marco: de almendra, con la pupila en raya. */
+function ojosDeLaVentana(caja: readonly [number, number, number, number]): string {
+  const [x0, y0, w, h] = caja;
+  const y = y0 + h * 0.56;
+  const ojo = (x: number): string => forma(elipse(x, y, 3.6, 2.1), M2.oro) + forma(elipse(x, y, 0.8, 1.9), M2.negro);
+  return `<g filter="url(#grano)"><rect x="${x0}" y="${y0}" width="${w}" height="${h}" fill="${M2.negro}" fill-opacity="0"/>${ojo(x0 + 9)}${ojo(x0 + 21)}</g>`;
+}
+
 /** Un candelabro de tres velas, en la punta de la mesa: le da peso a la primera pantalla. `piso`: donde apoya. */
 export function candelabro(x: number, piso: number): string {
   const brazo = (dx: number, alto: number): string =>
@@ -472,6 +480,7 @@ export function candelabro(x: number, piso: number): string {
 /** Las piezas sueltas de la mesa larga: el vapor, que la isla estira, y el que se para en la puerta. */
 export const PIEZAS_DE_LA_SOBREMESA: readonly Pieza[] = [
   { nombre: 'camino-mesa-vapor', caja: VAPOR.caja, dibujo: vaporDeLaOlla(), densidad: 2 },
+  { nombre: 'camino-mesa-ojos', caja: HUIDIZOS['la-mesa']!.caja, dibujo: ojosDeLaVentana(HUIDIZOS['la-mesa']!.caja), densidad: 4 },
   { nombre: 'camino-mesa-visita', caja: VISITAS['la-mesa']!.caja, dibujo: visitaDeLaPuerta(VISITAS['la-mesa']!.caja), densidad: 3 },
 ];
 
