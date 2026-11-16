@@ -693,9 +693,9 @@ export const FINAS_DE: Readonly<Record<string, readonly string[]>> = {
   'la-pastura': ['fino-pastura-calavera'],
   'la-ruta': ['fino-ruta-santuario'],
   'la-mesa': ['fino-mesa-cueva'],
-  'los-astilleros': ['fino-astillero-rayuela'],
-  cybersiberia: ['fino-cyber-hielo'],
-  'el-arbol': ['fino-arbol-jaula'],
+  'los-astilleros': ['fino-astillero-rayuela', 'fino-astillero-cordero'],
+  cybersiberia: ['fino-cyber-hielo', 'fino-cyber-muneco'],
+  'el-arbol': ['fino-arbol-jaula', 'fino-arbol-bonete'],
 };
 
 export const PIEZAS_CAMINO: readonly Pieza[] = [
