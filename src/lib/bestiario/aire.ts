@@ -82,13 +82,26 @@ const capa = (c: Partial<CapaDeAire> & Pick<CapaDeAire, 'pieza' | 'plano' | 'f' 
 });
 
 /**
- * La bruma de atrás, la niebla rasante y lo pegado a la cámara del monte. La pastura es un claro
- * del mismo monte (`camino.ts`): respira el mismo aire.
+ * El monte (`D-91`): atrás del piso ya no hay una bruma suelta sino **los troncos de adelante** del
+ * bosque, impresos en una baldosa que se corre más rápido que lo lejano y más despacio que el piso.
+ * Es lo que da el fondo de verdad al caminar: tres planos de árboles que se cruzan. La bruma de atrás
+ * está impresa entre los planos de lo lejano. La rasante y lo pegado a la cámara siguen.
  */
 const DEL_MONTE: readonly CapaDeAire[] = [
-  capa({ pieza: 'aire-monte-bruma', plano: 'fondo', f: 0.72, y: 110, alto: 320, ancho: 1200, deriva: 5, alfa: 0.7, late: 0.12, ritmo: 0.23 }),
+  capa({ pieza: 'aire-monte-troncos', plano: 'fondo', f: 0.72, y: 0, alto: 360, ancho: 1400 }),
   capa({ pieza: 'aire-monte-rasante', plano: 'medio', f: 1.12, y: 300, alto: 340, ancho: 1400, deriva: -9, alfa: 0.82, late: 0.1, ritmo: 0.31, abre: 0.6 }),
   capa({ pieza: 'aire-monte-cerca', plano: 'cerca', f: 1.75, y: 380, alto: 260, ancho: 1600 }),
+];
+
+/**
+ * La pastura (`D-91`) dejó de respirar el aire del monte: es campo abierto. **La ola**: el viento que
+ * pasa por el pasto, frentes de puntas claras que cruzan rápido y se pierden. **La rasante**: niebla
+ * baja, chata, que lame el piso y se abre al caminar. Y pegado a la cámara, pasto alto que se hamaca.
+ */
+const DE_LA_PASTURA: readonly CapaDeAire[] = [
+  capa({ pieza: 'aire-pastura-ola', plano: 'medio', f: 1.04, y: 330, alto: 270, ancho: 1300, deriva: -64, alfa: 0.6, late: 0.3, ritmo: 0.43, suena: 'viento' }),
+  capa({ pieza: 'aire-pastura-rasante', plano: 'medio', f: 1.12, y: 380, alto: 260, ancho: 1400, deriva: 8, alfa: 0.8, late: 0.1, ritmo: 0.27, abre: 0.6 }),
+  capa({ pieza: 'aire-pastura-cerca', plano: 'cerca', f: 1.75, y: 420, alto: 220, ancho: 1600, mece: 5, ritmoMece: 0.8 }),
 ];
 
 /**
@@ -97,7 +110,7 @@ const DEL_MONTE: readonly CapaDeAire[] = [
  */
 export const AIRE: Readonly<Record<string, readonly CapaDeAire[]>> = {
   'el-monte': DEL_MONTE,
-  'la-pastura': DEL_MONTE,
+  'la-pastura': DE_LA_PASTURA,
   // Cybersiberia: el vaho helado contra la chapa, la ventisca que cruza el piso y los médanos de nieve pegados a la cámara.
   cybersiberia: [
     capa({ pieza: 'aire-cyber-vaho', plano: 'fondo', f: 0.8, y: 110, alto: 320, ancho: 1200, deriva: -12, alfa: 0.75, late: 0.15, ritmo: 0.19 }),
@@ -374,8 +387,8 @@ export interface Acecho {
 }
 
 export const ACECHOS: Readonly<Record<string, Acecho>> = {
-  'el-monte': { pieza: 'acecho-monte', ancho: 46, alto: 20, lugares: [[0.16, 596, 1], [0.8, 604, 1.15], [0.5, 612, 0.9], [0.3, 268, 0.5], [0.72, 252, 0.45]], espera: [5, 6.5], dura: [6, 9] },
-  'la-pastura': { pieza: 'acecho-monte', ancho: 46, alto: 20, lugares: [[0.14, 600, 1], [0.84, 606, 1.1], [0.24, 262, 0.5], [0.66, 250, 0.45]], espera: [5, 6.5], dura: [6, 9] },
+  'el-monte': { pieza: 'acecho-monte', ancho: 46, alto: 20, lugares: [[0.16, 596, 1], [0.8, 604, 1.15], [0.5, 612, 0.9], [0.3, 268, 0.5], [0.72, 252, 0.45], [0.55, 196, 0.38], [0.12, 226, 0.42], [0.88, 172, 0.34]], espera: [5, 6.5], dura: [6, 9] },
+  'la-pastura': { pieza: 'acecho-monte', ancho: 46, alto: 20, lugares: [[0.14, 600, 1], [0.84, 606, 1.1], [0.24, 299, 0.34], [0.66, 298, 0.32], [0.46, 332, 0.4]], espera: [5, 6.5], dura: [6, 9] },
   cybersiberia: { pieza: 'acecho-cyber', ancho: 46, alto: 20, lugares: [[0.14, 598, 1], [0.82, 606, 1.1], [0.36, 168, 0.6], [0.7, 232, 0.6]], espera: [5, 6.5], dura: [5, 8] },
   'los-astilleros': { pieza: 'acecho-astillero', ancho: 46, alto: 30, lugares: [[0.2, 600, 1], [0.78, 606, 1.1], [0.62, 372, 0.55], [0.3, 380, 0.5]], espera: [5, 6.5], dura: [6, 9] },
   'el-infierno': { pieza: 'acecho-infierno', ancho: 46, alto: 20, lugares: [[0.18, 606, 1.1], [0.8, 610, 1.2], [0.5, 616, 0.9]], espera: [5, 6.5], dura: [5, 8] },
