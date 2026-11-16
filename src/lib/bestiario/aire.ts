@@ -63,6 +63,14 @@ export interface CapaDeAire {
   /** Lo que se hamaca de costado, en unidades, y a qué ritmo: la ropa tendida, los juncos. */
   mece: number;
   ritmoMece: number;
+  /**
+   * Lo que salta (`D-91`, tanda 2): cuánto baja y vuelve a subir, en unidades, y a qué ritmo. Es el pogo
+   * del galpón: la gente está impresa arriba del salto y cae `salta` unidades; el borde de abajo se pierde
+   * afuera de la pantalla. `faseSalta` corre el compás, así dos filas no saltan juntas.
+   */
+  salta: number;
+  ritmoSalta: number;
+  faseSalta: number;
   /** La pieza ya la pinta y la imprime otro (`arte-entornos.ts`): acá solo se la mueve. */
   ajena?: boolean;
   /** Si suena (`entorno.ts`): el viento sube y baja con el alfa de la capa. */
@@ -83,6 +91,9 @@ const capa = (c: Partial<CapaDeAire> & Pick<CapaDeAire, 'pieza' | 'plano' | 'f' 
   abre: 0,
   mece: 0,
   ritmoMece: 0.8,
+  salta: 0,
+  ritmoSalta: 6,
+  faseSalta: 0,
   ...c,
 });
 
@@ -167,7 +178,12 @@ export const AIRE: Readonly<Record<string, readonly CapaDeAire[]>> = {
   ],
   // Las cuatro que faltaban (quinta ronda). La mesa: el humo que sube, fino, del lado de la olla. Es
   // tinta plana con grano, como el afiche de *La mosca y la sopa*: volutas de papel, no una nube.
-  'la-mesa': [capa({ pieza: 'aire-mesa-humo', plano: 'medio', f: 1.1, y: 0, alto: ALTO, ancho: 900, deriva: 4, cae: -15, alfa: 0.55, late: 0.12, ritmo: 0.3, mece: 5, ritmoMece: 0.5 })],
+  'la-mesa': [
+    capa({ pieza: 'aire-mesa-humo', plano: 'medio', f: 1.1, y: 0, alto: ALTO, ancho: 900, deriva: 4, cae: -15, alfa: 0.55, late: 0.12, ritmo: 0.3, mece: 5, ritmoMece: 0.5 }),
+    // Las moscas (`D-91`, tanda 2): un puñado suelto sobre la mesa. La baldosa deriva, se hamaca rápido y
+    // salta a otro compás: entre las tres cosas, el enjambre no repite el dibujo.
+    capa({ pieza: 'aire-mesa-moscas', plano: 'medio', f: 1.22, y: 130, alto: 300, ancho: 1200, deriva: -21, alfa: 0.92, mece: 15, ritmoMece: 2.3, salta: 11, ritmoSalta: 1.55 }),
+  ],
   // El templo: el incienso, que sube en hebras tibias entre los focos de la guirnalda.
   'el-templo': [
     // Las ofrendas (sexta ronda): velas, platitos y el humo que baja, en el piso, entre el medallón y el
@@ -182,8 +198,14 @@ export const AIRE: Readonly<Record<string, readonly CapaDeAire[]>> = {
     capa({ pieza: 'aire-arbol-racha', plano: 'medio', f: 1.2, y: 60, alto: 400, ancho: 1300, deriva: -70, alfa: 0.34, late: 0.3, ritmo: 0.37, mece: 10, ritmoMece: 0.6, suena: 'viento' }),
     capa({ pieza: 'aire-arbol-hojas', plano: 'cerca', f: 1.4, y: 0, alto: ALTO, ancho: 900, deriva: -16, cae: 30, alfa: 0.95, mece: 12, ritmoMece: 0.9 }),
   ],
-  // El galpón: el polvo del recital, que se ve donde le pega el seguidor.
-  'el-galpon': [capa({ pieza: 'aire-galpon-polvo', plano: 'medio', f: 1.15, y: 40, alto: 420, ancho: 1300, deriva: 9, alfa: 0.6, late: 0.2, ritmo: 0.33 })],
+  // El galpón (`D-91`, tanda 2): la gente es la mitad del recital. El humo del escenario, que baja sobre
+  // los del fondo (trae adentro el polvo que ya había); el pogo, la fila del medio, que salta; y pegados a
+  // la cámara, hombros y manos fuera de foco, que saltan a contratiempo. La fila grande va en `frente`.
+  'el-galpon': [
+    capa({ pieza: 'aire-galpon-humo', plano: 'medio', f: 1.06, y: 270, alto: 250, ancho: 1300, deriva: -7, alfa: 0.74, late: 0.16, ritmo: 0.29, abre: 0.35 }),
+    capa({ pieza: 'aire-galpon-pogo', plano: 'medio', f: 1.14, y: 400, alto: 240, ancho: 1400, salta: 9, ritmoSalta: 5.6 }),
+    capa({ pieza: 'aire-galpon-cerca', plano: 'cerca', f: 1.75, y: 512, alto: 128, ancho: 1600, salta: 12, ritmoSalta: 5.6, faseSalta: 1.1 }),
+  ],
 };
 
 /** Las capas de aire de una región, de atrás para adelante adentro de cada plano; vacío si no tiene. */
@@ -207,6 +229,17 @@ export function corridaDeAire(c: CapaDeAire, cam: number, t: number, suelta: boo
   const hamaca = c.mece ? Math.sin(t * c.ritmoMece) * c.mece : 0;
   const x = -resto(paralaje - c.deriva * t - hamaca, c.ancho);
   return { x: x === 0 ? 0 : x, y: alto ? resto(c.cae * t, alto) : 0 };
+}
+
+/**
+ * Cuánto bajó una capa que salta, en unidades de escena: de 0 (arriba, donde está impresa) a `salta`
+ * (apoyada). Es el rebote de una pelota: sube rápido, cuelga y cae; y la fuerza va y viene, porque un
+ * pogo no salta parejo toda la noche. Las que no saltan, cero.
+ */
+export function saltoDeAire(c: CapaDeAire, t: number): number {
+  if (!c.salta) return 0;
+  const ganas = 0.45 + 0.55 * Math.sin(t * 0.21 + c.faseSalta * 1.7) ** 2;
+  return c.salta * (1 - Math.abs(Math.sin(t * c.ritmoSalta + c.faseSalta)) * ganas);
 }
 
 /**
@@ -289,6 +322,9 @@ export const LUCES: Readonly<Record<string, readonly Luz[]>> = {
   // lo lejano (`f` de `VELOCIDAD.lejos`), en el eje (`EJE_DEL_MOLINO`, `arte-arboles.ts`). El vaivén es tan
   // ancho y tan lento que es una vuelta tras otra, y cada tanto afloja y cambia de mano, como con el viento.
   'la-pastura': [{ pieza: 'luz-pastura-rueda', f: 0.45, x: 188, y: 220, caja: [-24, -24, 48, 48], vaiven: 1500, ritmo: 0.03, alfa: 1, late: 0, pulso: 'barre', crece: 0 }],
+  // La mesa (`D-91`, tanda 2): la lámpara que cuelga del techo, entre Pituca y la olla, y se hamaca.
+  // Es de papel, como todo ahí: el cono cortado a mano y casi sin tinta. La pantalla queda arriba de las cabezas.
+  'la-mesa': [{ pieza: 'luz-mesa-lampara', f: 1, x: 1010, y: -8, caja: [-150, -4, 300, 440], vaiven: 5.5, ritmo: 0.66, alfa: 0.94, late: 0.04, pulso: 'barre', crece: 0 }],
   'el-bajo': [{ pieza: 'luz-bajo-reflejo', f: 1, x: 806, y: 492, caja: [-70, -12, 140, 140], vaiven: 2.5, ritmo: 1.7, alfa: 0.62, late: 0.2, pulso: 'titila', crece: 0 }],
   // Los techos: el farol del baldío (650, 130 en su recinto), que titila.
   'los-techos': [{ pieza: 'luz-techos-farol', f: 1, x: 650, y: 140, caja: [-180, -14, 360, 420], vaiven: 2.5, ritmo: 0.7, alfa: 0.4, late: 0.16, pulso: 'titila', crece: 0, suena: 'zumbido', filo: { pieza: 'filo-lila', cuantos: 4, abre: 34 } }],
@@ -449,6 +485,10 @@ export interface Vida {
   deLosDosLados: boolean;
   /** Siempre de la derecha: lo que lleva el viento, que en la pastura sopla para la izquierda (`D-91`). */
   alReves?: boolean;
+  /** Lo que sube en el medio del cruce, en unidades: lo que alguien tiró vuela en arco (`D-91`, tanda 2). */
+  arco?: number;
+  /** Pasa por detrás del piso y de lo que está parado en él: el tren de la ruta, detrás de los postes. */
+  atras?: boolean;
 }
 
 const AVE = { pieza: 'vida-ave', ancho: 40, alto: 18, tam: 0.55, y: [70, 150], dura: [9, 14], espera: [22, 40], aletea: 1, bamboleo: 0, alfa: 0.8, deLosDosLados: true } as const;
@@ -467,11 +507,15 @@ export const VIDAS: Readonly<Record<string, Vida>> = {
   // La ruta: una estrella que se cae.
   // La ruta (`D-91`, cuarta vuelta): ya no la estrella fugaz sino un tren, lejos, por el horizonte. Tarda
   // casi medio minuto en cruzar y pasa uno cada minuto o más: el que se queda lo ve.
-  'la-ruta': { pieza: 'vida-tren', ancho: 280, alto: 22, tam: 0.62, y: [304, 304], dura: [24, 30], espera: [44, 80], aletea: 0, bamboleo: 0, alfa: 0.9, deLosDosLados: false },
+  'la-ruta': { pieza: 'vida-tren', ancho: 280, alto: 22, tam: 0.62, y: [304, 304], dura: [24, 30], espera: [44, 80], aletea: 0, bamboleo: 0, alfa: 0.9, deLosDosLados: false, atras: true },
   // El bajo: un barquito de papel que se lleva el agua, despacio.
   // El árbol: el pájaro que vuelve a la copa. La mesa: una polilla, chica y rápida, arriba.
   'el-arbol': { ...AVE, y: [50, 120] },
-  'la-mesa': { ...AVE, tam: 0.3, y: [90, 200], dura: [4, 6], espera: [20, 36] },
+  // El galpón (`D-91`, tanda 2): una zapatilla, de las que se pierden en el pogo. Vuela en arco por arriba
+  // de la gente, dando vueltas, en tres segundos; una cada medio minuto.
+  'el-galpon': { pieza: 'vida-zapatilla', ancho: 30, alto: 18, tam: 1, y: [452, 470], dura: [2.6, 3.4], espera: [22, 44], aletea: 0, bamboleo: 170, alfa: 1, deLosDosLados: true, arco: 150 },
+  // La mesa (`D-91`, tanda 2): ya no una polilla sino un moscardón, gordo, que cruza zumbando por arriba de los platos.
+  'la-mesa': { pieza: 'vida-moscardon', ancho: 34, alto: 22, tam: 0.9, y: [170, 250], dura: [3.2, 4.6], espera: [18, 32], aletea: 1, bamboleo: 9, alfa: 1, deLosDosLados: true },
   'el-bajo': { pieza: 'vida-barquito', ancho: 40, alto: 30, tam: 0.7, y: [500, 506], dura: [34, 46], espera: [14, 26], aletea: 0, bamboleo: 5, alfa: 0.9, deLosDosLados: true },
 };
 
@@ -486,7 +530,7 @@ export function pasoDeVida(v: Vida, u: number, t: number, alReves: boolean): { f
   const onda = v.aletea ? Math.sin(k * Math.PI * 3) * 6 : 0;
   return {
     fx,
-    y: v.y[0] + (v.y[1] - v.y[0]) * k + onda,
+    y: v.y[0] + (v.y[1] - v.y[0]) * k + onda - (v.arco ? Math.sin(k * Math.PI) * v.arco : 0),
     aleteo: v.aletea ? 0.3 + 0.7 * Math.abs(Math.sin(t * 7.5)) : 1,
     giro: v.bamboleo ? Math.sin(t * 1.3) * v.bamboleo : 0,
   };
