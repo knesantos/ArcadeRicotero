@@ -190,6 +190,25 @@ function mata(x: number, ancho: number, alto: number, rnd: () => number, cuerpo:
   return s;
 }
 
+/** Un helecho, pegado a la cámara: el tallo que se comba y las hojitas de a pares, cada vez más chicas. */
+function helecho(x: number, alto: number, cae: number, rnd: () => number, cuerpo: string): string {
+  const base = ALTO + 24;
+  let s = '';
+  const n = 11;
+  let d = '';
+  for (let i = 0; i <= n; i++) {
+    const u = i / n;
+    const px = x + cae * u * u;
+    const py = base - alto * (u - u * u * 0.22);
+    d += `${i ? 'L' : 'M'}${f(px)} ${f(py)} `;
+    if (i > 1 && i < n) {
+      const l = alto * 0.3 * (1 - u) * (0.8 + rnd() * 0.4);
+      for (const lado of [-1, 1]) s += forma(`M${f(px)} ${f(py)} L${f(px + lado * l)} ${f(py - l * 0.34 + cae * 0.004 * l)} L${f(px + lado * l * 0.2)} ${f(py - l * 0.3)} Z`, cuerpo);
+    }
+  }
+  return s + trazo(d, cuerpo, 2.4);
+}
+
 function monteCerca(c: CapaDeAire): string {
   const rnd = azar(349);
   let matas = '';
@@ -201,6 +220,17 @@ function monteCerca(c: CapaDeAire): string {
     matas += vuelta(x, ancho / 2 + 60, c.ancho, (xx) => mata(xx, ancho, alto, azar(400 + n), n % 2 ? M.negro : M.oscuro, M.hondo));
     // Cada tanto, una tira de las del monte, enorme y de espaldas: es el mismo bosque, visto desde adentro.
     if (n % 3 === 1 && x + ancho * 0.7 + 170 < c.ancho) tiras += filaDeTiras(470 + rnd() * 40, ALTO + 30, M.negro, M.sombra, 600 + n, `mc-${n}`, x + ancho * 0.7, x + ancho * 0.7 + 30);
+    // Cuarta vuelta: entre mata y mata, helechos (dos o tres frondes que se abren) y alguna rama caída
+    // que cruza al sesgo. Nada sube más que el quinto de abajo (`aire.test.ts` lo mide en lo impreso).
+    const hx = x + ancho * 0.5 + 70 + rnd() * 40;
+    if (hx < c.ancho - 150) {
+      const semilla = 450 + n;
+      matas += vuelta(hx, 110, c.ancho, (xx) => {
+        const r2 = azar(semilla);
+        return [-1, 0.2, 1].map((lado) => helecho(xx + lado * 10, 84 + r2() * 30, lado * (50 + r2() * 30), r2, n % 2 ? M.oscuro : M.negro)).join('');
+      });
+      if (n % 2 === 0) matas += vuelta(hx + 60, 120, c.ancho, (xx) => trazo(`M${f(xx - 90)} ${ALTO + 6} Q${f(xx - 10)} ${ALTO - 44} ${f(xx + 96)} ${ALTO - 22} M${f(xx + 20)} ${ALTO - 34} l22 -30 M${f(xx + 52)} ${ALTO - 30} l30 -12`, M.negro, 7));
+    }
     n++;
   }
   return rociado(c, fueraDeFoco(tiras + matas) + apagon(c, M.negro));
@@ -1070,8 +1100,19 @@ const ave = (color: string): string =>
 const QUIEN_PASA: Readonly<Record<string, () => string>> = {
   'vida-ave': () => ave(M.medio),
   'vida-ave-papel': () => ave(P.papel),
-  // La estrella que se cae: la cabeza, y la cola que se pierde para atrás (cae hacia la derecha y abajo).
-  'vida-fugaz': () => soplo('M4 4 L84 22 L86 26 L82 27 Z', RU.papel, 'xs', 0.7) + nube(84, 25, 3.4, 3, RU.papel, 'xs', 1),
+  // El tren del horizonte (`D-91`, cuarta vuelta): la locomotora con su farol y seis vagones con las
+  // ventanillas prendidas, de perfil y lejos. Va de izquierda a derecha, con la trompa adelante.
+  'vida-tren': () => {
+    let s = forma('M236 6 L262 6 L268 12 L268 19 L236 19 Z', RU.negro) + forma('M240 2 l8 0 l0 4 l-8 0 Z', RU.negro) + nube(276, 14, 12, 4, RU.faro, 's', 0.6) + nube(269, 14, 1.6, 1.4, RU.papel, 'xs', 1);
+    for (let i = 0; i < 6; i++) {
+      const x = 4 + i * 38;
+      s += forma(`M${x} 8 l34 0 l0 11 l-34 0 Z`, RU.negro) + trazo(`M${x + 34} 17 l4 0`, RU.negro, 1.4);
+      for (let k = 0; k < 4; k++) s += forma(`M${x + 4 + k * 7.6} 10.6 l4.4 0 l0 3.4 l-4.4 0 Z`, RU.faro, i === 2 && k > 1 ? 0.2 : 0.85);
+    }
+    return s + trazo('M0 20 L280 20', RU.negro, 1, 0.8);
+  },
+  // El vellón (`D-91`, cuarta vuelta): un copo de lana que el viento lleva rodando por el pasto.
+  'vida-vellon': () => nube(11, 8, 7, 5, PT.papel, 's', 0.9) + nube(7, 6, 4, 3.4, PT.papel, 'xs', 0.95) + nube(15, 9.6, 4.6, 3.2, PT.claro, 'xs', 0.9) + nube(11, 5, 3, 2.2, PT.papel, 'xs', 1) + trazo('M4 11 q-3 1 -4 3 M17 11 q3 0.6 4 2', PT.papel, 0.7, 0.7),
   // El barquito de papel: dos pliegues y la vela, con su raya de agua.
   'vida-barquito': () =>
     forma('M4 18 L36 18 L29 27 L11 27 Z', J.luz) + forma('M20 3 L30 18 L10 18 Z', J.luz) + forma('M20 3 L20 18 L10 18 Z', J.celeste, 0.6) + trazo('M2 28.5 l12 0 M20 29 l16 0', J.celeste, 1.2, 0.7),
