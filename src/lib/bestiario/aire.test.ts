@@ -10,6 +10,10 @@ import {
 } from './aire.ts';
 import { PIEZAS_AIRE, PIEZAS_DE_FILO, PIEZAS_DE_LUZ, PIEZAS_DE_VIDA } from './arte-aire.ts';
 import { PIEZAS_CAMINO } from './arte-camino.ts';
+import { LUNA } from './arte-arboles.ts';
+import { PIEZAS_ENTORNOS } from './arte-entornos.ts';
+import { ACECHO, PALO } from './rig.ts';
+import { OJOS_DE_LA_RUTA } from './rig-entornos.ts';
 import { ofrendasDelTemplo, paradosEnElTemplo } from './ofrendas.ts';
 import { pisoDelCamino } from './escenas-camino.ts';
 import { ALTO, CAMINOS, VISTA_MAX } from './camino.ts';
@@ -178,7 +182,7 @@ test('la niebla rasante es de jirones rasgados, y ninguno cruza una pantalla de 
 });
 
 test('el piso de las regiones con aire ya no es liso: charcos, piedras y lo que dejó cada lugar', () => {
-  for (const [pieza, marca] of [['camino-monte-piso', 'sm-ch-'], ['camino-pastura-piso', 'sm-ch-'], ['camino-cyber-piso', 'sc-ch-'], ['camino-astillero-piso', 'sa-ch-']] as const) {
+  for (const [pieza, marca] of [['camino-monte-piso', 'sm-ch-'], ['camino-pastura-piso', 'sp-'], ['camino-cyber-piso', 'sc-ch-'], ['camino-astillero-piso', 'sa-ch-']] as const) {
     const p = PIEZAS_CAMINO.find((q) => q.nombre === pieza)!;
     const charcos = (p.dibujo.match(new RegExp(`<clipPath id="${marca}`, 'g')) ?? []).length;
     assert.ok(charcos >= 5, `${pieza}: ${charcos} charcos`);
@@ -466,14 +470,81 @@ test('lo tirado en el piso apoya: su mancha, la tierra que lo tapa, y más apaga
   assert.ok(apagados.size >= 4, `el piso del monte tiene ${apagados.size} valores de distancia`);
 });
 
-test('lo lejano del monte no es una cinta: tramos a distinta altura, huecos, alguno vencido y bruma entre las filas', () => {
+test('D-91: lo lejano del monte son árboles en planos, no una fila de tiras', () => {
   const lejos = PIEZAS_CAMINO.find((q) => q.nombre === 'camino-monte-lejos')!.dibujo;
-  // Algún tramo caído de costado.
-  assert.ok((lejos.match(/<g transform="rotate\(-?\d/g) ?? []).length >= 3, 'ningún tramo vencido');
-  // Bruma soplada entre las tres filas y al pie.
-  assert.ok((lejos.match(/filter="url\(#soplo-xl\)"/g) ?? []).length >= 30, 'poca bruma entre las filas');
+  // Ya no hay ni una tira de las de `filaDeTiras` (cada una era una máscara `cl-…`): era el serrucho.
+  assert.doesNotMatch(lejos, /<clipPath id="cl-/);
+  assert.doesNotMatch(readFileSync('src/lib/bestiario/arte-camino.ts', 'utf-8').split('function pisoDelMonte')[0]!, /filaDeTiras\(/);
+  // Bruma soplada entre los planos y al pie, y el frío de lo lejano: el petróleo de *Lobo suelto*.
+  assert.ok((lejos.match(/filter="url\(#soplo-xl\)"/g) ?? []).length >= 30, 'poca bruma entre los planos');
+  assert.match(lejos, /var\(--disco-lobo-suelto-apoyo\)/);
+  // Lo de atrás va a media tinta (cada árbol con su opacidad); lo del medio, lleno y con su canto prendido.
+  const tintas = new Set([...lejos.matchAll(/<g opacity="(0\.\d+)"><path/g)].map((m) => m[1]));
+  assert.ok(tintas.size >= 3, `los árboles de atrás tienen ${tintas.size} valores`);
   // El canto del piso va bien soplado: no arranca con una raya.
   assert.match(readFileSync('src/lib/bestiario/arte-camino.ts', 'utf-8'), /soplo\(borde\(300\), M\.oscuro, 'l'\)/);
+});
+
+test('D-91: los troncos de adelante van aparte y cada uno es alguien', () => {
+  const capa = AIRE['el-monte']!.find((c) => c.pieza === 'aire-monte-troncos')!;
+  // Entre lo lejano y el piso, a una velocidad del medio, quietos (no son niebla: ni derivan ni laten).
+  assert.equal(capa.plano, 'fondo');
+  assert.ok(capa.f > CAMINOS['el-monte']!.velocidad.lejos && capa.f < 1);
+  assert.deepEqual([capa.deriva, capa.late, capa.abre, capa.alfa], [0, 0, 0, 1]);
+  const p = PIEZAS_AIRE.find((q) => q.nombre === 'aire-monte-troncos')!;
+  const troncos = [...p.dibujo.matchAll(/data-tronco="tr-(\d)"/g)].map((m) => m[1]);
+  // La baldosa cierra: los que caen cerca del borde se repiten del otro lado, así que hay más grupos que troncos.
+  assert.ok(new Set(troncos).size >= 6, `${new Set(troncos).size} troncos`);
+  // La cara (dos nudos con algo adentro que devuelve la luz) y lo tallado, que son para la lupa.
+  assert.ok((p.dibujo.match(/<ellipse [^>]*transform="rotate\(-?\d+ /g) ?? []).length >= 2, 'falta la cara');
+  assert.match(p.dibujo, /var\(--bestia-lobo-crema\)/, 'falta lo tallado');
+  // Y se imprime fina, porque tiene canto duro y se mira de cerca.
+  assert.ok((p.densidad ?? 0) >= 1.25 && (p.calidad ?? 0) >= 76);
+  assert.ok(statSync('public/bestiario/aire-monte-troncos.webp').size < 180_000);
+});
+
+test('D-91: la pastura tiene lo suyo: su cielo, su piso, su alambrado y su aire', () => {
+  const t = CAMINOS['la-pastura']!;
+  const m = CAMINOS['el-monte']!;
+  assert.notEqual(t.piezas.lejos, m.piezas.lejos);
+  assert.notEqual(t.piezas.frente, m.piezas.frente);
+  assert.ok(AIRE['la-pastura']!.every((c) => c.pieza.startsWith('aire-pastura-')), 'la pastura respira el aire del monte');
+  const lejos = PIEZAS_CAMINO.find((q) => q.nombre === t.piezas.lejos)!.dibujo;
+  const piso = PIEZAS_CAMINO.find((q) => q.nombre === t.piezas.piso)!.dibujo;
+  // El cielo y el campo van en los azules del cordero, con la luna en el naranja de su tapa; el barro del monte no está.
+  assert.match(lejos, /var\(--bestia-cordero-lana-oscura\)/);
+  assert.match(lejos, new RegExp(`<circle cx="${LUNA.x}" cy="${LUNA.y}" r="${LUNA.r}" fill="var\\(--entorno-pastura\\)"`));
+  assert.match(piso, /var\(--bestia-cordero-lana\)/);
+  assert.doesNotMatch(piso, /sm-ch-/, 'el piso de la pastura sigue sembrado con lo del monte');
+  // El viento pasa por el pasto: una capa que corre rápido, late y suena.
+  const ola = AIRE['la-pastura']!.find((c) => c.pieza === 'aire-pastura-ola')!;
+  assert.ok(Math.abs(ola.deriva) >= 40 && ola.late >= 0.2 && ola.suena === 'viento');
+  // La niebla baja se abre al caminar, como pidió el usuario para el monte.
+  assert.ok(AIRE['la-pastura']!.find((c) => c.pieza === 'aire-pastura-rasante')!.abre >= 0.5);
+  // El alambrado se corta en el claro: ahí asoma el lobo y están los bichos, y nada fijo les cruza la cara.
+  const fuente = readFileSync('src/lib/bestiario/arte-camino.ts', 'utf-8');
+  assert.match(fuente, /alambrado\(desde - 10, claro\[0\] \+ 30,/);
+  assert.match(fuente, /alambrado\(claro\[1\] - 30, hasta - 190,/);
+  const dx = t.claro!.dx;
+  assert.ok(dx + PALO.x - 320 + 30 <= dx + ACECHO.desde, 'el alambrado pasa por donde asoma el lobo');
+  assert.ok(dx + PALO.x + 320 - 30 >= dx + ACECHO.hasta, 'el alambrado pasa por donde asoma el lobo');
+});
+
+test('D-91: la ruta larga tiene fondo, y el recinto de 900 queda como estaba', () => {
+  const largo = PIEZAS_CAMINO.find((q) => q.nombre === 'camino-ruta-lejos')!.dibujo;
+  const recinto = PIEZAS_ENTORNOS.find((q) => q.nombre === 'ruta-lejos')!.dibujo;
+  // Los caminos que se van al horizonte con sus postes cada vez más chicos, y las sierras: solo a lo largo.
+  assert.match(largo, /var\(--entorno-astillero-azul\)/);
+  assert.doesNotMatch(recinto, /var\(--entorno-astillero-azul\)/);
+  const fuente = readFileSync('src/lib/bestiario/arte-entornos.ts', 'utf-8');
+  assert.match(fuente, /const u = 1 - 0\.72 \*\* k;/, 'los postes del camino que se va no están en perspectiva');
+  // La segunda fila de postes del piso no le echa niebla a la bella señora.
+  assert.match(fuente, /const libre = Math\.abs\(x - X\(520\)\) > 150;/);
+  assert.equal(OJOS_DE_LA_RUTA['la-bella-senora-desencarnada']![0], 520);
+  // Los faros que no llegan nunca van con la bruma, que deriva despacio y late.
+  const bruma = AIRE['la-ruta']!.find((c) => c.pieza === 'aire-ruta-bruma')!;
+  assert.ok(bruma.deriva > 0 && bruma.deriva < 10 && bruma.late > 0);
+  assert.match(PIEZAS_AIRE.find((q) => q.nombre === 'aire-ruta-bruma')!.dibujo, /var\(--entorno-templo-foco\)/);
 });
 
 test('el alivio se puede forzar para mirarlo, y entonces no se mide', () => {
