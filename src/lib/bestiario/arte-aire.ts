@@ -21,7 +21,7 @@ import { ACECHOS, AIRE, LUCES, VIDAS, altoDeBaldosa, type CapaDeAire } from './a
 import { M, azar, filaDeTiras } from './arte.ts';
 import { ruedaDelMolino, troncosCercanos } from './arte-arboles.ts';
 import { galponHumo, galponPogo, zapatilla } from './arte-recital.ts';
-import { lamparaDeLaMesa, mesaMoscas, moscardon } from './arte-sobremesa.ts';
+import { lamparaDeLaMesa, moscardon } from './arte-sobremesa.ts';
 import { ALTO } from './camino.ts';
 import { ofrendasDelTemplo } from './ofrendas.ts';
 
@@ -481,32 +481,6 @@ function astilleroCerca(c: CapaDeAire): string {
 /* ------------------------------------------------------------------
    El infierno
    ------------------------------------------------------------------ */
-
-/**
- * El calor que tiembla: hebras finas, casi verticales, que serpentean hacia arriba contra la pared de
- * fuego. Casi sin tinta. La isla las sacude rápido de costado (`mece`): no se ve la hebra, se ve que
- * el aire no está quieto.
- */
-function infiernoCalor(c: CapaDeAire): string {
-  const rnd = azar(743);
-  let s = '';
-  for (let i = 0; i < 44; i++) {
-    const x = (c.ancho / 44) * (i + rnd());
-    const y0 = c.y + c.alto - 16 - rnd() * 70;
-    const largo = 50 + rnd() * 100;
-    const onda = 3 + rnd() * 5;
-    const fase = rnd() * 6;
-    const grosor = 1.2 + rnd() * 1.8;
-    const o = 0.14 + rnd() * 0.2;
-    const d = (xx: number): string => {
-      let p = `M${f(xx)} ${f(y0)}`;
-      for (let k = 1; k <= 8; k++) p += ` L${f(xx + Math.sin(fase + k * 0.9) * onda * (0.4 + k / 8))} ${f(y0 - (largo * k) / 8)}`;
-      return p;
-    };
-    s += vuelta(x, 20, c.ancho, (xx) => trazo(d(xx), i % 3 ? I.fuego : I.chispa, grosor, o));
-  }
-  return rociado(c, `<g filter="url(#soplo-xs)">${s}</g>`);
-}
 
 function infiernoHumo(c: CapaDeAire): string {
   return rociado(c,     manchas(c, 711, 13, 380, 590, [[I.brasa, 0.42], [I.negro, 0.34], [I.fuego, 0.09]], 26, [45, 105]) +
@@ -1193,7 +1167,6 @@ const PINTA: Readonly<Record<string, (c: CapaDeAire) => string>> = {
   'aire-astillero-bruma': astilleroBruma,
   'aire-astillero-vaho': astilleroVaho,
   'aire-astillero-cerca': astilleroCerca,
-  'aire-infierno-calor': infiernoCalor,
   'aire-infierno-humo': infiernoHumo,
   'aire-infierno-ceniza': infiernoCeniza,
   'aire-ruta-bruma': rutaBruma,
@@ -1206,7 +1179,6 @@ const PINTA: Readonly<Record<string, (c: CapaDeAire) => string>> = {
   'aire-prision-frio': prisionFrio,
   'aire-prision-rejas': prisionRejas,
   'aire-mesa-humo': mesaHumo,
-  'aire-mesa-moscas': mesaMoscas,
   'aire-templo-incienso': temploIncienso,
   'aire-templo-ofrendas': temploOfrendas,
   'aire-arbol-hojas': arbolHojas,
@@ -1221,7 +1193,7 @@ const PINTA: Readonly<Record<string, (c: CapaDeAire) => string>> = {
  * pura mancha y se imprime gruesa, que pesa poco; lo que tiene filo (las matas, la ceniza) va más fino.
  */
 /** Las baldosas que no son niebla sino dibujo de canto duro, y que se miran con la lupa: se imprimen finas (`D-91`). */
-const FILOSAS: ReadonlySet<string> = new Set(['aire-monte-troncos', 'aire-galpon-pogo', 'aire-galpon-pogo-b', 'aire-mesa-moscas']);
+const FILOSAS: ReadonlySet<string> = new Set(['aire-monte-troncos', 'aire-galpon-pogo', 'aire-galpon-pogo-b']);
 
 export const PIEZAS_AIRE: readonly Pieza[] = [...new Map(Object.values(AIRE).flat().filter((c) => !c.ajena).map((c) => [c.pieza, c] as const)).values()].map((c) => {
   const pinta = PINTA[c.pieza];
