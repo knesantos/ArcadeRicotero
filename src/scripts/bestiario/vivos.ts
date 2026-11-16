@@ -82,6 +82,9 @@ import { armarRebano } from './rebano.ts';
 import { armarLobocaido } from './lobocaido.ts';
 import { armarBunuelos } from './bunuelos.ts';
 import { armarBuitres } from './buitres.ts';
+// [T-529 A importa]
+// [T-529 B importa]
+// [T-529 C importa]
 
 /**
  * Lo que la escena le presta a un personaje. Las coordenadas de `hablar` van en las del recinto
@@ -179,6 +182,9 @@ const CONDUCTAS: Readonly<Record<string, Armar | null>> = {
   'el-lobo-caido': armarLobocaido,
   'redonditos-de-ricota': armarBunuelos,
   'los-buitres-de-la-tele': armarBuitres,
+  // [T-529 A conductas]
+  // [T-529 B conductas]
+  // [T-529 C conductas]
 };
 
 /** Los ids que tienen conducta: el test mira que coincidan con los que tienen dibujo. */
