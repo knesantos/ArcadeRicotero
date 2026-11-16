@@ -221,9 +221,11 @@ function monteTroncos(c: CapaDeAire): string {
     { x: 1296, grosor: 30 },
   ] as const;
   return rociado(c,
-    troncosCercanos(troncos, 352, 4101, 'tr') +
-    // La bruma que se les enreda en los pies: delante de ellos, detrás del piso.
-    manchas(c, 4103, 9, 316, 344, [[M.hondo, 0.5], [M.medio, 0.22]], 22, [60, 120]),
+    // Tercera vuelta: pisan en el borde del piso (antes, 50 unidades más abajo: las raíces quedaban
+    // enterradas atrás del piso y no se veían nunca). Ahora las raíces asoman sobre el borde soplado.
+    troncosCercanos(troncos, 302, 4101, 'tr') +
+    // La bruma que se les enreda en los pies: delante de ellos, detrás del piso. Rala, para no taparlas.
+    manchas(c, 4103, 7, 300, 330, [[M.hondo, 0.34], [M.medio, 0.16]], 18, [60, 120]),
   );
 }
 
@@ -1158,9 +1160,9 @@ export const PIEZAS_AIRE: readonly Pieza[] = [...new Map(Object.values(AIRE).fla
     nombre: c.pieza,
     caja: [0, c.y, c.ancho, c.alto] as const,
     dibujo: pinta(receta(region, c.pieza)),
-    densidad: FILOSAS.has(c.pieza) ? 1.25 : c.cae ? 1.5 : c.plano === 'cerca' ? 1.25 : 1,
+    densidad: FILOSAS.has(c.pieza) ? 1.75 : c.cae ? 1.5 : c.plano === 'cerca' ? 1.25 : 1,
     // El grano pesa: la niebla aguanta más compresión que un títere, porque no tiene filo que cuidar.
-    calidad: FILOSAS.has(c.pieza) ? 76 : c.plano === 'cerca' ? 78 : 58,
+    calidad: FILOSAS.has(c.pieza) ? 72 : c.plano === 'cerca' ? 78 : 58,
     // La que se repite también para arriba (la ceniza) son motas sueltas: no hay soplo que cruce el borde.
     sangria: c.cae ? 0 : SANGRIA,
   };
