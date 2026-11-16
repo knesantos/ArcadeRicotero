@@ -1029,7 +1029,7 @@ function polillas(largo: number, ancho: number): string {
 }
 
 /** Las luces que tienen canto fino y se imprimen más finas que una mancha (`D-91`): la rueda del molino. */
-const DE_FILO: Readonly<Record<string, number>> = { 'luz-pastura-rueda': 3, 'luz-mesa-lampara': 2 };
+const DE_FILO: Readonly<Record<string, number>> = { 'luz-pastura-rueda': 3, 'luz-mesa-lampara': 1.5 };
 
 const SIN_ROCIADO: Readonly<Record<string, string>> = { 'luz-bajo-reflejo': 'xerox-fino', 'luz-prision-reflector': '', 'luz-mesa-lampara': 'grano' };
 
