@@ -10,10 +10,11 @@ import {
 } from './aire.ts';
 import { PIEZAS_AIRE, PIEZAS_DE_FILO, PIEZAS_DE_LUZ, PIEZAS_DE_VIDA } from './arte-aire.ts';
 import { PIEZAS_CAMINO } from './arte-camino.ts';
-import { LUNA } from './arte-arboles.ts';
+import { EJE_DEL_MOLINO, LUNA } from './arte-arboles.ts';
+import { PIEZAS } from './arte.ts';
 import { PIEZAS_ENTORNOS } from './arte-entornos.ts';
 import { ACECHO, PALO } from './rig.ts';
-import { OJOS_DE_LA_RUTA } from './rig-entornos.ts';
+import { OJOS_DE_LA_RUTA, RUTA } from './rig-entornos.ts';
 import { ofrendasDelTemplo, paradosEnElTemplo } from './ofrendas.ts';
 import { pisoDelCamino } from './escenas-camino.ts';
 import { ALTO, CAMINOS, VISTA_MAX } from './camino.ts';
@@ -361,7 +362,7 @@ test('el alivio: sube de a un escalón si los cuadros vienen lentos, y saca prim
   assert.equal(alivioDeEntrada(8, 1), 1);
   assert.equal(alivioDeEntrada(undefined, undefined), 0, 'el que no dice nada arranca con todo');
   const css = readFileSync('src/styles/camino.css', 'utf-8');
-  assert.match(css, /\.camino--liviano \.aire--fondo,\s*\.camino--muy-liviano \.luz,\s*\.camino--muy-liviano \.filo,\s*\.camino--muy-liviano \.vida \{ display: none; \}/);
+  assert.match(css, /\.camino--liviano \.aire--fondo:not\(\.aire--firme\),\s*\.camino--muy-liviano \.luz,\s*\.camino--muy-liviano \.filo,\s*\.camino--muy-liviano \.vida \{ display: none; \}/);
   // Lo que hace la escena no se apaga nunca.
   assert.doesNotMatch(css, /liviano \.aire--(medio|cerca)/);
   const isla = readFileSync('src/scripts/camino.ts', 'utf-8');
@@ -391,7 +392,7 @@ test('Cybersiberia arranca aliviada en cualquier teléfono; las demás, solo en 
 });
 
 test('el filo a medida: cada pieza de los títeres que pasan bajo una luz tiene su canto impreso', () => {
-  assert.deepEqual(Object.keys(FILO_PROPIO).sort(), ['la-prision', 'los-astilleros', 'los-techos']);
+  assert.deepEqual(Object.keys(FILO_PROPIO).sort(), ['la-prision', 'la-ruta', 'los-astilleros', 'los-techos']);
   // Lo que no es cuerpo no lleva canto: ni el humo, ni los ojos, ni los muebles de la celda.
   assert.ok(tieneFiloPropio('dracula-cuerpo', 'la-prision') && !tieneFiloPropio('dracula-cuerpo', 'el-monte'));
   assert.ok(!tieneFiloPropio('atila-vaho', 'los-techos') || existsSync(`public${rutaDelFilo('atila-vaho')}`));
@@ -590,7 +591,7 @@ test('la luz toca a los bichos: un filo impreso, que se prende con el haz encima
   assert.equal(tocaLaLuz(-35, 20), 0);
   assert.ok(tocaLaLuz(8, 20) > tocaLaLuz(14, 20) && tocaLaLuz(14, 20) > 0);
   const conFilo = Object.entries(LUCES).filter(([, l]) => l[0]!.filo);
-  assert.deepEqual(conFilo.map(([r]) => r).sort(), ['la-prision', 'los-astilleros', 'los-techos']);
+  assert.deepEqual(conFilo.map(([r]) => r).sort(), ['la-prision', 'la-ruta', 'los-astilleros', 'los-techos']);
   for (const [region, [l]] of conFilo) {
     const p = PIEZAS_DE_FILO.find((q) => q.nombre === l!.filo!.pieza);
     assert.ok(p && existsSync(`public${rutaDePieza(p.nombre)}`), `${region}: falta imprimir el filo`);
@@ -700,3 +701,73 @@ test('con movimiento reducido la linterna de los techos no queda prendida del to
   assert.match(isla, /const fuerza = \(\): number => \(ctx\.quieto\(\) \? 0\.28 : 0\.85\);/);
   assert.match(isla, /const brillo = \{ der: fuerza\(\), izq: 0 \};/);
 });
+
+/* ------------------------------------------------------------------
+   `D-91`, segunda vuelta: lo que se vio mal en la primera
+   ------------------------------------------------------------------ */
+
+test('D-91/2: los troncos gordos del monte no se apagan en liviano; la bruma de las demás, sí', () => {
+  const firmes = Object.entries(AIRE).flatMap(([r, cs]) => cs.filter((c) => c.firme).map((c) => `${r}:${c.pieza}`));
+  assert.deepEqual([...new Set(firmes)], ['el-monte:aire-monte-troncos']);
+  const pagina = readFileSync('src/pages/redondopedia/bestiario/[region].astro', 'utf-8');
+  assert.match(pagina, /'aire--firme': a\.firme/);
+});
+
+test('D-91/2: el claro de la pastura ya no es un segundo sol: sin halo, sin aro, con la orilla comida', () => {
+  const piso = PIEZAS_CAMINO.find((q) => q.nombre === 'camino-pastura-piso')!.dibujo;
+  // El aro negro de canto liso del recinto no está en el camino (era lo que lo hacía un disco).
+  assert.doesNotMatch(piso, /<ellipse [^>]*fill="none" stroke="var\(--fondo\)" stroke-width="44"/);
+  const fuente = readFileSync('src/lib/bestiario/arte-camino.ts', 'utf-8');
+  assert.match(fuente, /claroDeLaPastura\(true\)\}<\/g>\$\{orillaDelClaro\(\)\}/);
+  // Y el recinto, que es otra pieza, sigue con el suyo.
+  assert.match(PIEZAS.find((q) => q.nombre === 'monte-cerca')!.dibujo, /stroke-width="44"/);
+  // Los charcos devuelven la luna rota, no rayas parejas.
+  assert.doesNotMatch(readFileSync('src/lib/bestiario/arte-suelo.ts', 'utf-8').split('export function sueloDeLaPastura')[1]!.split('/* ----')[0]!, /'rayas'/);
+  // El campo se compone en manchones, con la huella entre ellos, y algo que pesa a la entrada y a la salida.
+  assert.match(fuente, /const tupido = \(x: number, y: number\): number =>/);
+  assert.match(fuente, /calaveraDeVaca\(/);
+  assert.match(fuente, /arado\(hasta - 300,/);
+});
+
+test('D-91/2: el molino gira, clavado en lo lejano, y su rueda no está impresa dos veces', () => {
+  const [rueda] = LUCES['la-pastura']!;
+  assert.equal(rueda!.f, CAMINOS['la-pastura']!.velocidad.lejos);
+  assert.deepEqual([rueda!.x, rueda!.y], [EJE_DEL_MOLINO.x, EJE_DEL_MOLINO.y]);
+  // Una vuelta tras otra: en veinte segundos no cambia de mano.
+  const giros = Array.from({ length: 20 }, (_, i) => estadoDeLuz(rueda!, i).giro);
+  assert.ok(giros.every((g, i) => i === 0 || g > giros[i - 1]!), 'la rueda va y viene en vez de girar');
+  assert.ok(giros[19]! - giros[0]! > 360, 'no da ni una vuelta en veinte segundos');
+  assert.match(readFileSync('src/lib/bestiario/arte-arboles.ts', 'utf-8'), /molino\(MOLINO\.x, MOLINO\.pie, MOLINO\.alto, true\)/);
+});
+
+test('D-91/2: la ruta larga tiene punto de fuga y cielo de chapa; el polvo no tapa lo lejano', () => {
+  const largo = PIEZAS_CAMINO.find((q) => q.nombre === 'camino-ruta-lejos')!.dibujo;
+  const recinto = PIEZAS_ENTORNOS.find((q) => q.nombre === 'ruta-lejos')!.dibujo;
+  // La plata vieja de *Último bondi* en las planchas del cielo y el ojo de buey: solo a lo largo.
+  assert.match(largo, /var\(--disco-ultimo-bondi-a-finisterre-tinta\)/);
+  assert.doesNotMatch(recinto, /var\(--disco-ultimo-bondi-a-finisterre-tinta\)/);
+  const fuente = readFileSync('src/lib/bestiario/arte-entornos.ts', 'utf-8');
+  // Las torres se achican en perspectiva hasta el horizonte, y la bruma se las va tragando.
+  assert.match(fuente, /const u = 1 - 0\.64 \*\* k;/);
+  assert.match(fuente, /const traga = Math\.min\(0\.92, t\.u \* 1\.25\);/);
+  // El polvo va sobre el asfalto: no sube al horizonte.
+  const polvo = AIRE['la-ruta']!.find((c) => c.pieza === 'aire-ruta-polvo')!;
+  assert.ok(polvo.y >= RUTA.asfalto.arriba - 30, 'el polvo tapa lo lejano');
+});
+
+test('D-91/2: los faros del bondi tocan a los de la banquina, y llevan polillas', () => {
+  const [faros] = LUCES['la-ruta']!;
+  assert.ok(faros!.filo && faros!.sigue === 'el-zumba' && faros!.rumbo === -90);
+  for (const p of ['taxi-carroceria', 'desencarnada-torso', 'piba-torso']) {
+    assert.ok(tieneFiloPropio(p, 'la-ruta'), `${p}: sin filo`);
+    assert.ok(existsSync(`public${rutaDelFilo(p)}`), `${p}: falta imprimir su filo`);
+  }
+  // Lo que no es cuerpo no se prende: el haz del taxi, las matas de su banquina, la zeta del sueño.
+  for (const p of ['taxi-haz', 'taxi-banquina', 'piba-zeta']) assert.ok(!tieneFiloPropio(p, 'la-ruta'), `${p}: con filo`);
+  // La isla mide desde donde está el bondi ahora, y a lo largo del haz.
+  const isla = readFileSync('src/scripts/camino.ts', 'utf-8');
+  assert.match(isla, /const anclaX = l\.r\.x \+ Number\(colgada\?\.dataset\.ahora/);
+  assert.match(isla, /const deCostado = Math\.abs\(l\.r\.rumbo \?\? 0\) > 45;/);
+  assert.match(PIEZAS_DE_LUZ.find((q) => q.nombre === 'luz-ruta-faros')!.dibujo, /rotate\(/, 'sin polillas');
+});
+
