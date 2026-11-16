@@ -7,11 +7,11 @@
  *
  * 1. **El fondo de la gente** (va impreso en el piso): contra el borde del tablado, cabezas chicas y
  *    apretadas, las más claras, prendidas de rojo por las luces del escenario.
- * 2. **El pogo** (una capa de aire que salta, `salta` en `aire.ts`): la fila del medio, con las manos
- *    arriba y algún trapo.
+ * 2. **El pogo** (dos capas de aire que saltan a contratiempo, `salta` en `aire.ts`): la fila del medio,
+ *    con las manos arriba y algún trapo.
  * 3. **Lo de adelante** (la capa `frente` del camino): los grandes, negros, con sus banderas de palo, las
  *    bengalas y el que va a caballito.
- * 4. **Lo pegado a la cámara** (otra capa de aire, que salta a contratiempo): hombros y manos fuera de foco.
+ * (En la primera vuelta hubo un cuarto plano, bultos fuera de foco pegados a la cámara: se fue en la segunda.)
  *
  * Entre el 1 y el 2 baja **el humo del escenario**. Todo sigue siendo la mano de *En directo*: siluetas
  * de tinta plana impresas en trama de puntos, que crecen con la luz. No es aerógrafo de cuerpo: el
@@ -474,61 +474,28 @@ export function galponFrenteLargo(ancho: number, alto: number): string {
 /** La hoja entera de una baldosa, sin tinta: el filtro del grano mide por la caja de lo que tiene adentro. */
 const hoja = (c: CapaDeAire): string => `<rect x="-200" y="${c.y - 40}" width="${c.ancho + 400}" height="${c.alto + 80}" fill="${G.negro}" fill-opacity="0"/>`;
 
-/**
- * El pogo: la fila del medio. Cabezas medianas, más manos arriba que en ninguna otra, y un par de
- * trapos chicos. La baldosa cierra sola: la gente se siembra un poco más allá de cada borde con la
- * misma semilla corrida, y lo que cae cerca de un borde está también del otro lado.
- */
-export function galponPogo(c: CapaDeAire): string {
-  const base = c.y + c.alto + 30;
-  const arriba = c.y + 62;
-  // Un montón por gajo (`gajos` en `aire.ts`), con aire en los bordes: cada gajo salta a su tiempo, y
-  // el corte entre uno y otro cae en un hueco, no en la cabeza de nadie.
-  const gajos = c.gajos ?? 1;
-  const paso = c.ancho / gajos;
-  const rnd = azar(3389);
-  let gente = '';
-  let n = 0;
-  for (let g = 0; g < gajos; g++) {
-    // El trapo, en el medio de su gajo y detrás de su gente, así salta entero con ella.
-    if (g % 2 === 0) gente += bandera(`gl-pogo-trapo-${g}`, paso * (g + 0.5), arriba + 60, arriba - 40 + g * 4, 58 + g * 6, 32, FRANJAS[(g + 2) % FRANJAS.length]!, g ? -12 : 14, rnd);
-    // Los hombros miden hasta dos cabezas y media: el margen los deja adentro del gajo.
-    gente += gentio(g * paso + 48, (g + 1) * paso - 48, arriba, arriba + 34, [9.5, 14.5], base, 0.55, 3373 + g * 7, (d) => figura(`gl-p-${n++}`, d, 'gl-trama-pogo', 'gl-cuerpo-pogo', 0, 3.4)).dibujo;
-  }
-  return `<g filter="url(#grano)">${hoja(c)}${patron('gl-trama-pogo', 3.8, G.brasa, G.rojo, 1.45)}${patron('gl-cuerpo-pogo', 4.6, G.negro, G.noche, 1.1, 0.8)}${gente}</g>`;
-}
+/** En cuántos montones se parte la baldosa del pogo: los pares van en una capa y los impares en la otra. */
+export const MONTONES = 4;
 
 /**
- * Lo pegado a la cámara: hombros, nucas y manos enormes, fuera de foco, con el canto prendido de rojo
- * por lo que viene del escenario. No pasan del quinto de la pantalla.
+ * El pogo: la fila del medio. Cabezas medianas, más manos arriba que en ninguna otra, y algún trapo.
+ * Va en **dos capas** (`aire.ts`): esta pinta los montones pares o los impares (`cual`), con aire entre
+ * uno y otro, así cada montón tiene de vecinos a dos de la otra capa, que salta a contratiempo.
  */
-export function galponCerca(c: CapaDeAire): string {
-  const rnd = azar(3391);
-  const base = ALTO + 40;
-  let bultos = '';
-  let cantos = '';
-  let x = 60;
+export function galponPogo(c: CapaDeAire, cual: 0 | 1): string {
+  const base = c.y + c.alto + 30;
+  const arriba = c.y + 62 + cual * 8;
+  const paso = c.ancho / MONTONES;
+  const rnd = azar(3389 + cual);
+  let gente = '';
   let n = 0;
-  while (x < c.ancho - 40) {
-    const rx = 40 + rnd() * 22;
-    const cy = ALTO - 6 - rnd() * 34 + rx * 0.2;
-    const copia = (dx: number): void => {
-      bultos += persona(x + dx, cy, rx, base, azar(3400 + n), n % 3 === 1 ? 'puno' : n % 4 === 2 ? 'cuernos' : 'nada', 36);
-      cantos += `<ellipse cx="${f(x + dx)}" cy="${f(cy - rx * 1.05)}" rx="${f(rx * 0.74)}" ry="5" fill="${G.rojo}" opacity="0.5"/>`;
-    };
-    copia(0);
-    if (x < 260) copia(c.ancho);
-    if (x > c.ancho - 260) copia(-c.ancho);
-    x += rx * 2.6 + 90 + rnd() * 260;
-    n++;
+  for (let g = cual; g < MONTONES; g += 2) {
+    // El trapo, en el medio de su montón y detrás de su gente, así salta entero con ella.
+    if (g < 2) gente += bandera(`gl-pogo-trapo-${g}`, paso * (g + 0.5), arriba + 60, arriba - 40 + g * 4, 58 + g * 6, 32, FRANJAS[(g + 2) % FRANJAS.length]!, g ? -12 : 14, rnd);
+    // Un poco más ancho que su cuarto: se pisa con los vecinos, que están en la otra capa.
+    gente += gentio(g * paso + 12, (g + 1) * paso - 12, arriba, arriba + 34, [9.5, 14.5], base, 0.55, 3373 + g * 7, (d) => figura(`gl-p${cual}-${n++}`, d, 'gl-trama-pogo', 'gl-cuerpo-pogo', 0, 3.4)).dibujo;
   }
-  return (
-    `<g filter="url(#rociado)">${hoja(c)}` +
-    `<g filter="url(#soplo-s)">${forma(bultos, G.negro)}</g>` +
-    `<g filter="url(#soplo-m)">${cantos}</g>` +
-    soplo(`M-260 ${ALTO - 10} L${c.ancho + 260} ${ALTO - 10} L${c.ancho + 260} ${ALTO + 80} L-260 ${ALTO + 80} Z`, G.negro, 'l', 0.85) +
-    `</g>`
-  );
+  return `<g filter="url(#grano)">${hoja(c)}${patron('gl-trama-pogo', 3.8, G.brasa, G.rojo, 1.45)}${patron('gl-cuerpo-pogo', 4.6, G.negro, G.noche, 1.1, 0.8)}${gente}</g>`;
 }
 
 /**
