@@ -98,6 +98,8 @@ const apariciones = [...piso.querySelectorAll<SVGGElement>('.aparece')].map((el)
  */
 const respiran = [...piso.querySelectorAll<SVGGElement>('.respira')].map((el) => ({ el, base: Number(el.dataset.base), fase: Number(el.dataset.fase) }));
 const asoman = [...camino.querySelectorAll<SVGGElement | HTMLElement>('.asoma')].map((el) => ({ el, espera: Number(el.dataset.espera), quietud: 0, alfa: 0, pintado: 0 }));
+/** Lo de adelante que se corre con la lupa (`FRENTE_QUE_SE_CORRE`), y el alfa que tiene pintada. */
+const frenteQueSeCorre = { el: camino.querySelector<HTMLElement>('.capa--frente[data-se-corre]'), alfa: 1 };
 /** Lo que se va si lo mirás de cerca (`HUIDIZOS`): está siempre, y se apaga con la lupa puesta. */
 const huyen = [...camino.querySelectorAll<HTMLElement>('.huye')].map((el) => ({ el, alfa: 1, pintado: 1 }));
 /** El aire (`D-90`, `lib/bestiario/aire.ts`): cada capa con su receta, y el alfa que tiene pintada. */
@@ -565,7 +567,7 @@ function pintarLuces(): void {
       l.cantos.forEach((c, i) => {
         const z = l.r.cantos![i]!;
         const xf = dondeCaeElHaz(ancla, l.r.y, apunta, l.r.cantosEn ?? ALTO, z.f, camDe(z.f) / escala);
-        const k = alivio >= 2 ? 0 : 0.9 * tocaLaZona(xf, z.caja) * Math.min(1, e.alfa / l.r.alfa);
+        const k = alivio >= 2 ? 0 : 0.9 * tocaLaZona(xf, z.caja) * Math.min(1, e.alfa / l.r.alfa) * despejeDeLupa('cerca', false, lente.z);
         if (Math.abs(k - c.alfa) > 0.02) {
           c.alfa = k;
           c.el.style.opacity = k.toFixed(2);
@@ -824,6 +826,14 @@ function pintarCapas(): void {
     const corrida = corridas[i]!;
     c.el.style.transform = encuadre ? transformDe(encuadre, capaX, corrida, z, -lente.y) : corridaDe(corrida, z, -lente.y);
   });
+  // Lo de adelante, donde se corre con la lupa: como lo pegado a la cámara, queda atrás al acercarse.
+  if (frenteQueSeCorre.el) {
+    const alfa = despejeDeLupa('cerca', false, z);
+    if (Math.abs(alfa - frenteQueSeCorre.alfa) > 0.012) {
+      frenteQueSeCorre.alfa = alfa;
+      frenteQueSeCorre.el.style.opacity = alfa.toFixed(3);
+    }
+  }
   // El aire: cada capa a su velocidad, con su viento, y el alfa que respira y se abre al paso.
   const t = quieto() ? 0 : reloj;
   mediaVuelta = !mediaVuelta;
