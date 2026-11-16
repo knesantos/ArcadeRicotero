@@ -19,7 +19,7 @@
 import { enmascarado, forma, nube, soplo, trazo, type Pieza } from './aerografo.ts';
 import { ACECHOS, AIRE, LUCES, VIDAS, altoDeBaldosa, type CapaDeAire } from './aire.ts';
 import { M, azar, filaDeTiras } from './arte.ts';
-import { troncosCercanos } from './arte-arboles.ts';
+import { ruedaDelMolino, troncosCercanos } from './arte-arboles.ts';
 import { ALTO } from './camino.ts';
 import { ofrendasDelTemplo } from './ofrendas.ts';
 
@@ -966,7 +966,8 @@ const QUIEN_ALUMBRA: Readonly<Record<string, () => string>> = {
   'luz-astillero-cono': () => haz('lz-a', 340, 300, T.sodio, 'var(--entorno-mesa-papel)'),
   'luz-infierno-brasa': brasa,
   'luz-cyber-haz': () => haz('lz-c', 560, 330, C.lente, C.nieve),
-  'luz-ruta-faros': () => haz('lz-r', 260, 190, RU.faro, RU.papel),
+  'luz-ruta-faros': () => haz('lz-r', 260, 190, RU.faro, RU.papel) + polillas(260, 190),
+  'luz-pastura-rueda': ruedaDelMolino,
   'luz-techos-farol': () => haz('lz-t', 380, 320, B.lila, B.luz),
   'luz-templo-foco': () => haz('lz-m', 360, 300, TE.foco, TE.papel),
   'luz-galpon-seguidor': () => haz('lz-g', 420, 340, GA.luz, GA.luz),
@@ -984,6 +985,27 @@ const QUIEN_ALUMBRA: Readonly<Record<string, () => string>> = {
 };
 
 /** Las luces que no son de aerógrafo: van con la mano de su recinto (crayón, gubia), sin rociado. */
+/**
+ * Las polillas en el haz (`D-91`, segunda vuelta): motas claras adentro del cono, más juntas contra el
+ * faro, cada una con su par de alas. Van impresas en la luz, así que tiemblan y barren con ella.
+ */
+function polillas(largo: number, ancho: number): string {
+  const rnd = azar(977);
+  let s = '';
+  for (let i = 0; i < 22; i++) {
+    const u = 0.1 + rnd() ** 1.5 * 0.82;
+    const x = (rnd() - 0.5) * 2 * (5 + (ancho / 2 - 5) * u) * 0.72;
+    const y = largo * u;
+    const r = 1 + rnd() * 1.5;
+    const giro = rnd() * 180;
+    s += nube(x, y, r * 2.4, r * 1.4, RU.papel, 'xs', 0.25) + `<g transform="translate(${f(x)} ${f(y)}) rotate(${f(giro)})">` + forma(`M0 0 L${f(-r * 1.9)} ${f(-r * 1.3)} L${f(-r * 0.5)} ${f(r * 0.5)} Z M0 0 L${f(r * 1.9)} ${f(-r * 1.3)} L${f(r * 0.5)} ${f(r * 0.5)} Z`, RU.papel, 0.5 + rnd() * 0.4) + `</g>`;
+  }
+  return s;
+}
+
+/** Las luces que tienen canto fino y se imprimen más finas que una mancha (`D-91`): la rueda del molino. */
+const DE_FILO: Readonly<Record<string, number>> = { 'luz-pastura-rueda': 3 };
+
 const SIN_ROCIADO: Readonly<Record<string, string>> = { 'luz-bajo-reflejo': 'xerox-fino', 'luz-prision-reflector': '' };
 
 /** Un ojo de almendra: la silueta dura, el iris soplado adentro y la pupila. `giro`, lo torcido. */
@@ -1073,8 +1095,8 @@ export const PIEZAS_DE_LUZ: readonly Pieza[] = [
       nombre: l.pieza,
       caja: l.caja,
       dibujo: `<g${SIN_ROCIADO[l.pieza] === '' ? '' : ` filter="url(#${SIN_ROCIADO[l.pieza] ?? 'rociado'})"`}><rect x="${x}" y="${y}" width="${ancho}" height="${alto}" fill="var(--fondo)" fill-opacity="0"/>${pinta()}</g>`,
-      densidad: l.pieza in SIN_ROCIADO ? 1.5 : 1,
-      calidad: 60,
+      densidad: DE_FILO[l.pieza] ?? (l.pieza in SIN_ROCIADO ? 1.5 : 1),
+      calidad: l.pieza in DE_FILO ? 84 : 60,
     };
   }),
   ...[...new Map(Object.values(ACECHOS).map((a) => [a.pieza, a] as const)).values()].map((a) => {
