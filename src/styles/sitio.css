@@ -5494,6 +5494,20 @@ body:has(> .lugar) .marca-chica {
   visibility: hidden;
 }
 
+/* Con movimiento reducido el velo espera igual y se va de un corte. Una animación de duración cero
+   ya está en su último cuadro aunque esté en pausa (la hoja nacía afuera y no tapaba nada): acá la
+   hoja y la tinta no se animan, y lo que las saca es `data-listo`. El respaldo de la caja sigue. */
+@media (prefers-reduced-motion: reduce) {
+  .velo-de-llegada[data-rumbo]::before,
+  .velo-de-llegada[data-rumbo]::after {
+    animation-name: none;
+  }
+
+  .velo-de-llegada[data-listo] {
+    visibility: hidden;
+  }
+}
+
 @keyframes velo-asoma {
   to {
     opacity: 1;
