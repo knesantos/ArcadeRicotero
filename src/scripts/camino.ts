@@ -773,12 +773,13 @@ function moverAcecho(dt: number, seMueve: boolean): void {
 }
 
 /**
- * Lo suelto del piso: los péndulos del árbol, en cada cuadro (un hilo fino a tirones se nota). `desde` y `hasta`:
- * lo que se ve, en unidades de escena. Solo `transform`. Con el teléfono al límite (`alivio` 2) quedan quietos, como
- * el fuego del salón.
+ * Lo suelto del piso: los péndulos del árbol. `desde` y `hasta`: lo que se ve, en unidades de escena. Solo
+ * `transform`. Van un cuadro sí y uno no, como las lenguas del salón: en cada cuadro, medido en cuatro tandas
+ * con control, el árbol costaba de un 8 a un 15 % más que en main (`D-91`, tanda 3, cuarta vuelta). Con el
+ * teléfono al límite (`alivio` 2) quedan quietos.
  */
 function moverLoSuelto(desde: number, hasta: number): void {
-  if (alivio >= 2) return;
+  if (alivio >= 2 || cuadros % 2) return;
   for (const p of pendulan) {
     if (p.x < desde - 90 || p.x > hasta + 90) continue;
     const a = 3.4 * Math.sin(reloj * p.ritmo + p.fase) + 1.2 * Math.sin(reloj * p.ritmo * 0.37 + p.fase * 2);
