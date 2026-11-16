@@ -22,9 +22,10 @@ import { tintaDe } from './mapa.ts';
 import { sueloDeCybersiberia, sueloDeLaMesa, sueloDeLaPastura, sueloDeLaRuta, sueloDeLosAstilleros, sueloDelArbol, sueloDelGalpon, sueloDelMonte } from './arte-suelo.ts';
 import { CAMPO, MONTE, alambrado, arado, carroVolcado, brumaEntrePlanos, calaveraDeVaca, cardo, mataDePasto, pasturaLejos, planoLejano, planoMedio } from './arte-arboles.ts';
 import { ARBOL, GALPON, MESA, RUTA } from './rig-entornos.ts';
-import { galponFrenteLargo, galponPisoLargo } from './arte-recital.ts';
+import { galponFrenteLargo, galponLejosLargo, galponPisoLargo } from './arte-recital.ts';
 import { PIEZAS_DEL_SALON } from './arte-salon.ts';
-import { CUEVA, bajoElMantel, cuevaDelRaton, mesaLejosLarga } from './arte-sobremesa.ts';
+import { ADORNOS_DEL_CRUCE } from './arte-cruces.ts';
+import { CUEVA, PIEZAS_DE_LA_SOBREMESA, bajoElMantel, candelabro, cuevaDelRaton, mesaLejosLarga } from './arte-sobremesa.ts';
 import { ASTILLERO } from './rig-entornos.ts';
 import { PALO } from './rig.ts';
 
@@ -604,7 +605,7 @@ function conSuelo(tramo: Tramo, piso: string): string {
   // Sexta ronda. El árbol es aerógrafo: con el rociado, y sin nada contra el pie del tronco.
   if (tramo.region === 'el-arbol') return piso + rociado(sueloDelArbol(tramo.escena, ARBOL.tronco.x * K_ENTORNO));
   // La mesa es un afiche: tinta plana con el grano fino, abajo de donde cuelga el mantel.
-  if (tramo.region === 'la-mesa') return piso + `<g filter="url(#grano)">${sueloDeLaMesa(tramo.escena, MESA.tablero.cuelga + 22)}${bajoElMantel(tramo.escena)}</g>`;
+  if (tramo.region === 'la-mesa') return piso + `<g filter="url(#grano)">${sueloDeLaMesa(tramo.escena, MESA.tablero.cuelga + 22)}${bajoElMantel(tramo.escena)}${candelabro(204, MESA.olla.piso + 12)}</g>`;
   // El galpón: tinta plana contra el borde del tablado, lejos de lo que está parado ahí.
   if (tramo.region === 'el-galpon') {
     return piso + `<g filter="url(#grano)">${sueloDelGalpon(tramo.escena, GALPON.tablado.borde, [GALPON.silla.x, GALPON.fuente.x, GALPON.bestiaPop.x].map((x) => x * K_ENTORNO))}</g>`;
@@ -619,7 +620,7 @@ function conSuelo(tramo: Tramo, piso: string): string {
  */
 type Capa = (ancho: number, alto: number) => string;
 const A_LO_LARGO: Readonly<Record<string, Partial<Record<'lejos' | 'piso' | 'frente', Capa>>>> = {
-  'el-galpon': { piso: galponPisoLargo, frente: galponFrenteLargo },
+  'el-galpon': { lejos: galponLejosLargo, piso: galponPisoLargo, frente: galponFrenteLargo },
   'la-mesa': { lejos: mesaLejosLarga },
 };
 
@@ -683,6 +684,7 @@ export const PIEZAS_CAMINO: readonly Pieza[] = [
   ...DE_ENTORNO.flatMap(piezasDeEntorno),
   ...PIEZAS_FINAS,
   ...PIEZAS_DEL_SALON,
+  ...PIEZAS_DE_LA_SOBREMESA,
 ];
 
 /* ------------------------------------------------------------------
@@ -773,6 +775,8 @@ export function piezaDelCruce(t: Tramo, luces: readonly string[]): Pieza {
       luz +
       picadas +
       pastos +
+      // Por dónde se sale es de cada lugar (`arte-cruces.ts`): el portón, el arco, la puerta del pasillo.
+      (ADORNOS_DEL_CRUCE[t.region]?.(t.escena) ?? '') +
       // Abajo, lo más cerca, se apaga, como en el monte.
       soplo(`M${borde - 60} ${ALTO - 50} L${fin + 40} ${ALTO - 50} L${fin + 40} ${ALTO + 40} L${borde - 60} ${ALTO + 40} Z`, M.negro, 'l', 0.7) +
       `</g>`,
