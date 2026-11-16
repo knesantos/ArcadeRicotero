@@ -27,6 +27,12 @@ import { OJOS_DE_LA_RUTA, RUTA } from './rig-entornos.ts';
 import { ofrendasDelTemplo, paradosEnElTemplo } from './ofrendas.ts';
 import { pisoDelCamino } from './escenas-camino.ts';
 import { ALTO, CAMINOS, VISTA_MAX } from './camino.ts';
+import { ENTORNOS } from './arte-entornos.ts';
+import { GATO } from './arte-puerto.ts';
+import { COLOSO } from './arte-tundra.ts';
+import { FAROL, OJO } from './arte-bonete.ts';
+import { ARBOL, ASTILLERO, CYBER } from './rig-entornos.ts';
+import { VISTA_MIN, corrimiento } from './camino.ts';
 import { LUPA } from './lupa.ts';
 
 /**
@@ -878,7 +884,8 @@ test('D-91/4: con la lupa el paralaje se ancla: lo que se apunta en una capa de 
 
 test('D-91/4: lo que premia a la lupa va otra vez, fino, encima del piso y en su mismo lugar', () => {
   // La mesa se sumó en la tanda 2 (la cueva del ratón, debajo del mantel).
-  assert.deepEqual(Object.keys(FINAS_DE).sort(), ['el-monte', 'la-mesa', 'la-pastura', 'la-ruta']);
+  // Y en la tanda 3, las tres de esa tanda: la rayuela del muelle, el hielo con el casete y la jaula del árbol.
+  assert.deepEqual(Object.keys(FINAS_DE).sort(), ['cybersiberia', 'el-arbol', 'el-monte', 'la-mesa', 'la-pastura', 'la-ruta', 'los-astilleros']);
   let peso = 0;
   for (const [region, nombres] of Object.entries(FINAS_DE)) {
     const piso = pisoDelCamino(CAMINOS[region]!, new Map());
@@ -894,8 +901,8 @@ test('D-91/4: lo que premia a la lupa va otra vez, fino, encima del piso y en su
       assert.match(piso, new RegExp(`href="${rutaDePieza(n).replace(/[.]/g, '\\.')}" x="${p.caja[0]}" y="${p.caja[1]}"`));
     }
   }
-  // Tres piezas chicas pesan menos que subirle la densidad a un solo piso.
-  assert.ok(peso < 120_000, `las finas pesan ${Math.round(peso / 1024)} kB`);
+  // Siete piezas chicas pesan menos que subirle la densidad a un solo piso (el tope era 120 kB con cuatro; cambia con la tanda 3).
+  assert.ok(peso < 210_000, `las finas pesan ${Math.round(peso / 1024)} kB`);
 });
 
 test('D-91/4: lo que se mueve raro: el tren del horizonte, el vellón con el viento, y el charco de la luna', () => {
@@ -1155,7 +1162,8 @@ test('D-91/t2: el salón del infierno: arcada, lenguas que respiran, el que asom
 });
 
 test('D-91/t2: por dónde se sale es de cada lugar: el portón, el arco y la puerta del pasillo', () => {
-  assert.deepEqual(Object.keys(ADORNOS_DEL_CRUCE).sort(), ['el-galpon', 'el-infierno', 'la-mesa']);
+  // La tanda 3 sumó tres: la barrera del puerto, la compuerta de la chapa y la última rama del árbol.
+  assert.deepEqual(Object.keys(ADORNOS_DEL_CRUCE).sort(), ['cybersiberia', 'el-arbol', 'el-galpon', 'el-infierno', 'la-mesa', 'los-astilleros']);
   for (const [region, pinta] of Object.entries(ADORNOS_DEL_CRUCE)) {
     const t = CAMINOS[region]!;
     const con = piezaDelCruce(t, ['var(--papel)', 'var(--papel)', 'var(--papel)', 'var(--papel)']).dibujo;
@@ -1167,4 +1175,99 @@ test('D-91/t2: por dónde se sale es de cada lugar: el portón, el arco y la pue
   }
   // Las otras diez quedan como estaban.
   assert.equal(ADORNOS_DEL_CRUCE['el-monte'], undefined);
+});
+
+/* ------------------------------------------------------------------
+   `D-91`, tanda 3: los astilleros, Cybersiberia y el árbol
+   ------------------------------------------------------------------ */
+
+const TANDA_3 = [['los-astilleros', 'astillero'], ['cybersiberia', 'cyber'], ['el-arbol', 'arbol']] as const;
+const dibujoDe = (nombre: string): string => PIEZAS_CAMINO.find((q) => q.nombre === nombre)!.dibujo;
+
+test('D-91/t3: el camino le suma al piso del recinto sin editarlo, y lo lejano es suyo', () => {
+  for (const [region, pieza] of TANDA_3) {
+    // El piso del recinto va entero y tal cual adentro del piso largo: lo del camino va antes o después, nunca en el medio.
+    const delRecinto = ENTORNOS[region].piso(CAMINOS[region]!.escena, ALTO);
+    const largo = dibujoDe(`camino-${pieza}-piso`);
+    assert.ok(largo.includes(delRecinto), `${region}: el piso del recinto no está entero en el camino`);
+    assert.ok(largo.length > delRecinto.length + 2000, `${region}: el camino no le suma nada al piso`);
+    // Lo lejano largo ya no es el del recinto estirado; el recinto de 900 queda como estaba.
+    assert.notEqual(dibujoDe(`camino-${pieza}-lejos`), ENTORNOS[region].lejos(CAMINOS[region]!.escena, ALTO));
+    assert.equal(PIEZAS_ENTORNOS.find((q) => q.nombre === `${pieza}-lejos`)!.dibujo, ENTORNOS[region].lejos());
+    for (const n of [`camino-${pieza}-lejos`, `camino-${pieza}-piso`]) assert.ok(existsSync(`public${rutaDePieza(n)}`), `falta imprimir ${n}`);
+  }
+  // Ninguno de los tres archivos nuevos toca los que está editando la otra sesión (`T-529`).
+  for (const archivo of ['arte-puerto.ts', 'arte-tundra.ts', 'arte-bonete.ts']) {
+    const fuente = readFileSync(`src/lib/bestiario/${archivo}`, 'utf-8');
+    assert.doesNotMatch(fuente, /from '\.\/(arte-entornos|elenco|escenas|recintos)\.ts'/, `${archivo} importa lo que no debe`);
+    assert.match(fuente, /from '\.\/escorzo\.ts'/, `${archivo}: sin punto de fuga`);
+  }
+});
+
+test('D-91/t3: un punto de fuga por región, y nada donde van a pararse los tres títeres que vienen', () => {
+  const fuente = (a: string): string => readFileSync(`src/lib/bestiario/${a}`, 'utf-8');
+  // El espigón sale del canto del muelle y se pierde contra la otra orilla; las vías llegan hasta él.
+  const puerto = fuente('arte-puerto.ts');
+  const espigon = /ESPIGON = \{ desde: \[(\d+), (\d+)\], hasta: \[(\d+), (\d+)\]/.exec(puerto)!.slice(1).map(Number);
+  assert.ok(Math.abs(espigon[1]! - ASTILLERO.muelle) < 8 && Math.abs(espigon[3]! - ASTILLERO.orilla) < 10, 'el espigón no va del muelle a la otra orilla');
+  // El as del Club París espera entre 600 y 760, sobre los tablones: el espigón y las vías pasan lejos, y la tiza queda antes.
+  assert.ok(espigon[0]! > 900);
+  assert.match(puerto, /const \[cx, cy\] = \[196, 288\]/);
+  assert.match(puerto, /RAYUELA = \{ x: 168, cerca: 608/);
+  // La huella de la oruga y los postes se juntan en el horizonte de la nieve.
+  const tundra = fuente('arte-tundra.ts');
+  const huella = /HUELLA = \{ desde: \[(\d+), (\d+)\], hasta: \[(\d+), (\d+)\]/.exec(tundra)!.slice(1).map(Number);
+  assert.ok(Math.abs(huella[3]! - CYBER.horizonte) < 8 && huella[1]! >= ALTO);
+  // Los camellos esperan entre 190 y 340, de 350 a 470 de alto: a esa altura la huella ya pasó a su derecha.
+  const xDeLaHuella = (y: number): number => huella[0]! + ((huella[2]! - huella[0]!) * (huella[1]! - y)) / (huella[1]! - huella[3]!);
+  assert.ok(xDeLaHuella(470) > 340 + 40, `la huella pasa por ${Math.round(xDeLaHuella(470))} a la altura de los camellos`);
+  // La huella de tierra del árbol cruza la llanura entre el angelito frito (469) y el jocker (848), lejos del ángel guardián (1483).
+  const bonete = fuente('arte-bonete.ts');
+  const tierra = /HUELLA = \{ desde: \[(\d+), (\d+)\], hasta: \[(\d+), ARBOL\.horizonte/.exec(bonete)!.slice(1).map(Number);
+  assert.ok(tierra[0]! > 469 + 100 && tierra[2]! < 848 - 40);
+  // Y los huevos de lo lejano no quedan a la altura de su cabeza.
+  assert.match(bonete, /if \(y > 370 && x > 1040 && x < 1640\) x \+= 620/);
+});
+
+test('D-91/t3: lo que aparece si te quedás quieto está en la primera pantalla, en un teléfono y a 1280', () => {
+  const cajas = { 'los-astilleros': GATO.caja, cybersiberia: COLOSO.caja, 'el-arbol': OJO.caja } as const;
+  for (const [region] of TANDA_3) {
+    const v = VISITAS[region]!;
+    const t = CAMINOS[region]!;
+    assert.deepEqual([...v.caja], [...cajas[region]], `${region}: la caja de la visita no es la de su pieza`);
+    assert.ok(existsSync(`public${rutaDePieza(v.pieza)}`), `falta imprimir ${v.pieza}`);
+    assert.ok(v.espera >= 5);
+    // El gato va con el piso (asoma de atrás de la pila); los otros dos, clavados en lo lejano.
+    assert.equal(v.f, region === 'los-astilleros' ? 1 : t.velocidad.lejos);
+    for (const vista of [VISTA_MIN, 1024]) {
+      const x = v.caja[0] - corrimiento(v.f, 0, t.foco, vista);
+      assert.ok(x >= 0 && x + v.caja[2] <= vista, `${region}: con ${vista} de vista, la visita cae en ${Math.round(x)}`);
+    }
+  }
+  // El gato se sienta en el canto de arriba de la pila; el coloso pisa el horizonte y no baja hasta los camellos; el ojo, adentro de la luna, sobre el horizonte.
+  assert.ok(GATO.caja[1] < ASTILLERO.pila.arriba && GATO.caja[1] + GATO.caja[3] > ASTILLERO.pila.arriba);
+  assert.ok(Math.abs(COLOSO.caja[1] + COLOSO.caja[3] - CYBER.horizonte) < 8 && COLOSO.caja[1] + COLOSO.caja[3] < 350);
+  assert.ok(OJO.caja[1] + OJO.caja[3] < ARBOL.horizonte);
+});
+
+test('D-91/t3: el río se mueve en una franja chica, la chata pasa por detrás, y el árbol tiene su farol', () => {
+  // Los astilleros: la bruma de atrás se imprimió en lo lejano; la capa de atrás del piso es el río, angosta.
+  const rio = AIRE['los-astilleros']!.find((c) => c.plano === 'fondo')!;
+  assert.equal(rio.pieza, 'aire-astillero-rio');
+  assert.ok(rio.alto <= 100 && rio.y + rio.alto <= ASTILLERO.muelle + 10 && rio.deriva !== 0 && rio.late > 0);
+  assert.ok(!existsSync('public/bestiario/aire-astillero-bruma.webp'), 'la bruma vieja no queda impresa');
+  assert.match(dibujoDe('camino-astillero-lejos'), /pt-casco/);
+  const chata = VIDAS['los-astilleros']!;
+  assert.ok(chata.atras && chata.dura[0] >= 20 && chata.espera[0] >= 30 && !chata.aletea);
+  // Cybersiberia: la nevisca sigue siendo la única capa de pantalla entera, y ya no es una siembra pareja de rayas.
+  assert.match(readFileSync('src/lib/bestiario/arte-aire.ts', 'utf-8'), /for \(let m = 0; m < 5; m\+\+\)/);
+  assert.match(dibujoDe('camino-cyber-lejos'), /entorno-cyber-lente/);
+  // El árbol: la luz es el farol que cuelga de la rama grande, en la primera pantalla, y su boca es la del farol pintado.
+  const luz = LUCES['el-arbol']![0]!;
+  assert.deepEqual([luz.x, luz.y, luz.f], [FAROL.x, FAROL.y, 1]);
+  // La primera pantalla: al llegar, la cámara da su primer paso sola (`PRIMER_PASO`) y un teléfono queda mirando desde ~96 hasta ~416.
+  assert.ok(luz.x > 96 + 40 && luz.x < VISTA_MIN + 96 - 40 && luz.vaiven > 0 && luz.vaiven <= 8);
+  // El cono no llega a nadie: el primero que vive en esa llanura es el angelito frito, en 469.
+  assert.ok(luz.x + luz.caja[0] + luz.caja[2] < 469 - 40);
+  assert.ok(existsSync(`public${rutaDePieza(luz.pieza)}`));
 });
