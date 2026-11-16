@@ -31,6 +31,9 @@ const C = {
   negro: 'var(--fondo)',
   papel: 'var(--papel)',
   rojo: 'var(--marca-rojo)',
+  // El verde agua de la aurora: el ojo del cordero, que es el único verde frío de las tapas (el lente de la tele es
+  // celeste pálido y sobre la nieve gris no llegaba a ser color). Cuarta vuelta de la tanda 3.
+  aurora: 'var(--bestia-cordero-ojo)',
 };
 
 const f = (v: number): string => (Math.round(v * 10) / 10).toString();
@@ -65,6 +68,28 @@ function tenidos(rnd: () => number, x: number, y: number, rx: number, ry: number
     const a = rnd() * Math.PI * 2;
     const d = Math.sqrt(rnd());
     s += `<circle cx="${f(x + Math.cos(a) * rx * d)}" cy="${f(y + Math.sin(a) * ry * d)}" r="${f(0.7 + rnd() * 1.5)}" fill="${color}" opacity="${f((0.9 - d * 0.6) * (0.5 + rnd() * 0.5))}"/>`;
+  }
+  return s;
+}
+
+/**
+ * La aurora (cuarta vuelta): la segunda fuente grande de luz de Cybersiberia, además de la tele. Una cortina verde
+ * agua, baja, pegada al horizonte: hebras verticales sopladas, de distinto alto, sobre una línea que ondula, con el
+ * pie más cargado y un pelo de rojo arriba. Es fría: la misma tinta de la pantalla. Lo de la orilla se recorta
+ * contra ella, y abajo tiñe la nieve.
+ */
+function aurora(rnd: () => number, desde: number, hasta: number, pie: number, fuerza = 1): string {
+  const ancho = hasta - desde;
+  let s = nube((desde + hasta) / 2, pie - 76, ancho * 0.5, 104, C.aurora, 'xl', 0.5 * fuerza) + nube((desde + hasta) / 2, pie - 30, ancho * 0.42, 40, C.lente, 'xl', 0.3 * fuerza);
+  for (let x = desde; x < hasta; x += 7 + rnd() * 9) {
+    const u = (x - desde) / ancho;
+    // Más alta en el medio, y se deshace en las puntas.
+    const cuerpo = Math.sin(u * Math.PI) ** 0.7;
+    const base = pie - 6 + Math.sin(u * Math.PI * 3.2) * 16 + Math.sin(u * Math.PI * 7) * 5;
+    const alto = (60 + rnd() * 140) * (0.35 + cuerpo * 0.65);
+    s += nube(x, base - alto / 2, 4 + rnd() * 7, alto / 2, rnd() < 0.62 ? C.aurora : C.lente, 'm', (0.3 + rnd() * 0.4) * cuerpo * fuerza);
+    if (rnd() < 0.3) s += nube(x, base - alto, 4 + rnd() * 4, 9, C.rojo, 'm', 0.2 * cuerpo * fuerza);
+    if (rnd() < 0.5) s += nube(x, base - 3, 6 + rnd() * 6, 5, C.nieve, 's', 0.32 * cuerpo * fuerza);
   }
   return s;
 }
@@ -246,12 +271,18 @@ export function tundraLejos(ancho: number, alto: number): string {
     nube(tx, h - 30, 320, 90, C.lente, 'xl', 0.28) +
     atras +
     ventisca +
+    // La aurora: dos cortinas, una a cada lado de la tele (que ya tiene su luz). Va delante de la ventisca (detrás
+    // quedaba lavada: en la primera prueba no se veía) y detrás de lo oscuro de la orilla, que se recorta contra ella.
+    aurora(rnd, 480, 1040, 306, 1) + aurora(rnd, 1640, 2260, 304, 0.9) +
     cables + cerca +
     // La nieve: gris donde no llega nada, blanca en el horizonte y donde le pega la tele.
     forma(caja(-10, h, ancho + 20, alto - h + 10), C.claro) +
     nube(ancho / 2, h + 4, ancho * 0.75, 15, C.nieve, 'l', 0.75) +
     nube(ancho / 2, h - 4, ancho * 0.75, 9, C.nieve, 'l', 0.4) +
     lucesLejos +
+    // La nieve bajo la aurora, teñida: una mancha ancha contra el horizonte y otra, más floja, que baja hacia acá.
+    nube(760, h + 26, 300, 28, C.aurora, 'xl', 0.55) + nube(760, h + 90, 250, 56, C.aurora, 'xl', 0.24) + nube(760, h + 16, 220, 12, C.lente, 'l', 0.4) +
+    nube(1950, h + 26, 320, 28, C.aurora, 'xl', 0.5) + nube(1950, h + 90, 260, 56, C.aurora, 'xl', 0.2) + nube(1950, h + 16, 230, 12, C.lente, 'l', 0.36) +
     nube(tx, CYBER.tele.piso + 20, 380, 150, C.nieve, 'xl', 0.75) +
     nube(tx, CYBER.tele.piso + 20, 220, 80, C.lente, 'xl', 0.35) +
     ventisqueros +
@@ -375,7 +406,10 @@ export function tundraBajo(): string {
     [0, 1, 2].map((i) => forma(circulo(p0.x + 15 + i * 6, 434, 1.6), C.claro)).join('') +
     soplo(`M${p0.x - 7} 400 Q${p0.x + 12} 388 ${p0.x + 35} 400 L${p0.x + 35} 402 L${p0.x - 7} 402 Z`, C.nieve, 'xs', 0.9) +
     carambanos(rnd, p0.x - 1, 448, 5, 13, 0.8);
-  return `<g filter="url(#rociado)">${huella}${cables}${postes}${cajaPrendida}${charcoDeHielo()}${muneco()}</g>`;
+  // Cuarta vuelta: la nevada que pasa por delante de lo prendido agarra su color. Copos verde agua alrededor de la
+  // tele grande (va con el piso, en 1200) y de la tele chica; van quietos, impresos: son los que la luz alcanza.
+  const nevadaTenida = tenidos(rnd, CYBER.tele.x * (2400 / 900), CYBER.tele.pantalla.y, 250, 200, 130, C.lente) + tenidos(rnd, CYBER.teleChica.x * (2400 / 900), CYBER.teleChica.piso - 50, 90, 70, 34, C.lente);
+  return `<g filter="url(#rociado)">${huella}${cables}${postes}${cajaPrendida}${charcoDeHielo()}${muneco()}${nevadaTenida}</g>`;
 }
 
 /* ------------------------------------------------------------------
