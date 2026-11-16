@@ -1337,6 +1337,8 @@ test('D-91/t3v3: lo que cuelga del árbol es un péndulo que gira desde su nudo;
   const suelto = isla.slice(isla.indexOf('function moverLoSuelto('), isla.indexOf('function moverElSalon('));
   assert.match(suelto, /p\.el\.setAttribute\('transform', `rotate\(\$\{a\.toFixed\(2\)\} \$\{p\.x\} \$\{p\.y\}\)`\)/);
   assert.match(suelto, /if \(p\.x < desde - 90 \|\| p\.x > hasta \+ 90\) continue;/);
+  // Un cuadro sí y uno no (cuarta vuelta): en cada cuadro el árbol medía de un 8 a un 15 % más que en main.
+  assert.match(suelto, /if \(alivio >= 2 \|\| cuadros % 2\) return;/);
   assert.doesNotMatch(suelto, /\.style\./);
   assert.match(isla, /if \(!quieto\(\)\) \{[\s\S]*?moverLoSuelto\(cam \/ escala, /);
   // El gran bonete, caído en la primera pantalla, abajo, donde cae la luz del farol. Tercera vuelta: se corrió a la
