@@ -17,8 +17,10 @@ import { PIEZAS_ENTORNOS } from './arte-entornos.ts';
 import { GIGANTE, LENGUAS, PIEZAS_DEL_SALON, SALON } from './arte-salon.ts';
 import { CUEVA, PUERTA } from './arte-sobremesa.ts';
 import { escenaInfierno } from './escenas.ts';
-import { GALPON, MESA, OJOS_DE_LA_MESA } from './rig-entornos.ts';
-import { saltoDeAire } from './aire.ts';
+import { GALPON, MESA } from './rig-entornos.ts';
+import { VISITAS, gajosDe, saltoDeAire } from './aire.ts';
+import { ADORNOS_DEL_CRUCE, ANCHO_DEL_ADORNO } from './arte-cruces.ts';
+import { destinosDelCruce, piezaDelCruce } from './arte-camino.ts';
 import { ACECHO, PALO } from './rig.ts';
 import { OJOS_DE_LA_RUTA, RUTA } from './rig-entornos.ts';
 import { ofrendasDelTemplo, paradosEnElTemplo } from './ofrendas.ts';
@@ -315,7 +317,9 @@ test('nada de lo de adelante ni de lo pegado a la cámara tapa más de un quinto
    * La única que pasa, y por qué: en el galpón lo de adelante es la gente del recital, de espaldas, y
    * de ahí sale un brazo con la bengala, que es la luz de la escena. Es una, es fina, y es el dibujo.
    */
-  const EXCEPCIONES: Readonly<Record<string, number>> = { 'camino-galpon-frente': 0.42 };
+  // Segunda vuelta de la tanda 2 de `D-91`: con la gente rehecha (cada uno con su canto, sin la trama a
+  // campo lleno) el tope bajó de 0,42 a 0,34, y la pieza mide 0,31: ya no pasa raspando.
+  const EXCEPCIONES: Readonly<Record<string, number>> = { 'camino-galpon-frente': 0.34 };
   const piezas: { nombre: string; densidad: number }[] = [];
   for (const t of Object.values(CAMINOS)) if (t.piezas.frente) piezas.push({ nombre: t.piezas.frente, densidad: PIEZAS_CAMINO.find((p) => p.nombre === t.piezas.frente)!.densidad ?? 2.5 });
   for (const p of PIEZAS_AIRE) if (capas.some(({ c }) => c.pieza === p.nombre && c.plano === 'cerca' && !c.cae)) piezas.push({ nombre: p.nombre, densidad: p.densidad ?? 2.5 });
@@ -938,13 +942,33 @@ test('D-91/t2: la gente del galpón va en planos, y dos de ellos saltan a contra
   // Las que no saltan, cero: el aire de las otras doce regiones no se entera.
   for (const { c } of capas.filter((x) => !x.c.salta)) assert.equal(saltoDeAire(c, 7.3), 0);
   const isla = readFileSync('src/scripts/camino.ts', 'utf-8');
-  assert.match(isla, /\(quieto\(\) \? 0 : saltoDeAire\(a\.c, t\)\)/, 'con movimiento reducido nadie salta');
+  assert.match(isla, /\(quieto\(\) \|\| a\.gajos\.length \? 0 : saltoDeAire\(a\.c, t\)\)/, 'con movimiento reducido nadie salta');
+  // La ola (segunda vuelta): el pogo se parte en gajos, y cada gajo salta un poco después que el de al lado.
+  assert.equal(pogo.gajos, 4);
+  assert.ok(gajosDe(pogo) * (pogo.ancho / pogo.gajos!) >= VISTA_MAX + pogo.ancho, 'los gajos no cubren la vista más ancha');
+  assert.equal(gajosDe(cerca), 0);
+  assert.ok([0.3, 1.1, 2.7].some((t) => Math.abs(saltoDeAire(pogo, t, 0) - saltoDeAire(pogo, t, 1)) > pogo.salta * 0.2), 'dos gajos vecinos saltan juntos');
+  assert.match(isla, /if \(a\.gajos\.length && !quieto\(\)\) a\.gajos\.forEach\(\(g, i\) => \(g\.style\.transform = /);
+  const hoja = readFileSync('src/styles/camino.css', 'utf-8');
+  assert.match(hoja, /\.camino \.aire--gajos \.gajo \{[^}]*background-position-x: calc\(var\(--gw\) \* var\(--i\) \* -1\);/);
+  // En el dibujo, nadie cae en el corte: cada montón deja 48 unidades de aire a cada lado de su gajo.
+  assert.match(readFileSync('src/lib/bestiario/arte-recital.ts', 'utf-8'), /gentio\(g \* paso \+ 48, \(g \+ 1\) \* paso - 48,/);
   // El camino pinta su gente: el piso con las filas del fondo y lo de adelante con banderas y bengalas.
   // El recinto de 900 sigue con la fila de siempre.
   const [piso, frente] = ['camino-galpon-piso', 'camino-galpon-frente'].map((n) => PIEZAS_CAMINO.find((q) => q.nombre === n)!.dibujo);
-  assert.equal((piso.match(/<clipPath id="gl-fondo-/g) ?? []).length, 3, 'tres filas de gente contra el tablado');
-  assert.ok((frente.match(/<clipPath id="gl-bandera-/g) ?? []).length >= 3 && /<clipPath id="gl-gente">/.test(frente));
-  for (const n of ['galpon-piso', 'galpon-frente']) assert.doesNotMatch(PIEZAS_ENTORNOS.find((q) => q.nombre === n)!.dibujo, /gl-(fondo|gente|bandera)/, `${n}: el recinto no lleva lo del camino`);
+  assert.equal((piso.match(/<pattern id="gl-trama-fondo-/g) ?? []).length, 3, 'tres filas de gente contra el tablado');
+  // Segunda vuelta: cada uno es una figura con su canto (su silueta, y la misma corrida encima), no una máscara para toda la fila.
+  assert.ok((frente.match(/<clipPath id="gl-bandera-/g) ?? []).length >= 3 && (frente.match(/<clipPath id="gl-g-\d+">/g) ?? []).length > 60);
+  assert.ok((piso.match(/<clipPath id="gl-f\d-\d+">/g) ?? []).length > 300);
+  for (const n of ['galpon-piso', 'galpon-frente', 'galpon-lejos']) assert.doesNotMatch(PIEZAS_ENTORNOS.find((q) => q.nombre === n)!.dibujo, /gl-(trama|f\d|g-|bandera)|Un tacho/, `${n}: el recinto no lleva lo del camino`);
+  // La gente no son globos: la cabeza se arma con pelo, gorra, capucha, cresta o perfil, y lleva cuello y hombros.
+  const recital = readFileSync('src/lib/bestiario/arte-recital.ts', 'utf-8');
+  for (const marca of ['// Pelo largo', '// Rulos', '// Gorra', '// Capucha', '// De perfil', '// Cresta', '// El cuello.', 'function enAndas(']) assert.ok(recital.includes(marca), `falta ${marca}`);
+  assert.doesNotMatch(recital, /luzDeCabezas/, 'volvió la luz en disco, que hacía de cada cabeza un globo');
+  // El techo: la parrilla y los bafles van en lo lejano del camino, por arriba de los trapos.
+  const lejos = PIEZAS_CAMINO.find((q) => q.nombre === 'camino-galpon-lejos')!.dibujo;
+  assert.notEqual(lejos, PIEZAS_ENTORNOS.find((q) => q.nombre === 'galpon-lejos')!.dibujo);
+  assert.match(recital, /colgados\(820, 96, 1\) \+\s*colgados\(1592, 96, -1\)/);
   // Las banderas no le cruzan la cara a los que están en el tablado: la punta del palo no pasa del borde.
   assert.match(readFileSync('src/lib/bestiario/arte-recital.ts', 'utf-8'), /const punta = GALPON\.tablado\.borde \+ 2 \+ rnd\(\) \* 26;/);
   assert.ok(GALPON.tablado.borde < GALPON.gente);
@@ -974,10 +998,28 @@ test('D-91/t2: la mesa tiene fondo sin perder la tinta plana: la puerta, la lám
   assert.doesNotMatch(PIEZAS_ENTORNOS.find((q) => q.nombre === 'mesa-lejos')!.dibujo, /ms-puerta/, 'el recinto de 900 queda como estaba');
   // La puerta termina en la línea de la mesa y su punto de fuga queda adentro del vano.
   assert.ok(PUERTA.fuga.x > PUERTA.x && PUERTA.fuga.x < PUERTA.x + PUERTA.ancho && PUERTA.fuga.y > PUERTA.arriba && PUERTA.fuga.y < MESA.tablero.atras);
-  // La lámpara: una luz de papel, que se hamaca, colgada arriba de la mesa y lejos de la cabeza de los que cenan.
+  // La lámpara: una luz de papel, que se hamaca. Segunda vuelta: clavada en la pared (va con lo lejano), en
+  // el paño libre entre la puerta del fondo y la ventana, y el cono termina en la línea de la mesa. Así no le
+  // cruza por delante a la ventana ni a un retrato en ninguna pantalla (antes iba con el piso y a 1280 los cruzaba).
   const lampara = LUCES['la-mesa']![0]!;
   assert.ok(lampara.vaiven > 0 && lampara.pulso === 'barre' && lampara.y < 0);
-  for (const [id, [x]] of Object.entries(OJOS_DE_LA_MESA)) assert.ok(Math.abs(x * (CAMINOS['la-mesa']!.escena / 900) - lampara.x) > 90, `la lámpara cuelga encima de ${id}`);
+  assert.equal(lampara.f, CAMINOS['la-mesa']!.velocidad.lejos);
+  const k = CAMINOS['la-mesa']!.escena / 900;
+  assert.ok(lampara.x - 40 > PUERTA.x + PUERTA.ancho + 12 && lampara.x + 40 < MESA.ventana.x0 * k - 30, 'la pantalla de la lámpara pisa la puerta o la cortina');
+  assert.ok(lampara.y + lampara.caja[1] + lampara.caja[3] <= MESA.tablero.atras + 6, 'el cono baja de la línea de la mesa');
+  const fuenteMesa = readFileSync('src/lib/bestiario/arte-sobremesa.ts', 'utf-8');
+  for (const m of fuenteMesa.matchAll(/retrato\('ms-r\d', (\d+), \d+, (\d+),/g)) assert.ok(Number(m[1]) + Number(m[2]) < lampara.x - 60 || Number(m[1]) > lampara.x + 60, `un retrato en ${m[1]} queda detrás de la lámpara`);
+  // El vapor de la olla respira (la isla lo estira desde la boca), y en la puerta del fondo se para alguien si te quedás quieto.
+  const pisoDeLaMesa = pisoDelCamino(CAMINOS['la-mesa']!, new Map());
+  assert.match(pisoDeLaMesa, /<g class="respira" data-base="290" data-fase="1\.3" pointer-events="none"><image href="\/bestiario\/camino-mesa-vapor\.webp"/);
+  const visita = VISITAS['la-mesa']!;
+  assert.ok(visita.f === lampara.f && visita.caja[0] >= PUERTA.x && visita.caja[0] + visita.caja[2] <= PUERTA.x + PUERTA.ancho && visita.caja[1] + visita.caja[3] <= MESA.tablero.atras && visita.espera >= 5);
+  const pagina = readFileSync('src/pages/redondopedia/bestiario/[region].astro', 'utf-8');
+  assert.ok(pagina.indexOf('class="capa asoma"') > 0 && pagina.indexOf('class="capa asoma"') < pagina.indexOf('class="capa capa--piso bestiario-svg"'));
+  assert.match(pagina, /transform-origin: calc\(var\(--px\) \* \$\{-visita\.caja\[0\]\}\)/);
+  for (const n of ['camino-mesa-vapor', 'camino-mesa-visita']) assert.ok(existsSync(`public${rutaDePieza(n)}`), `falta imprimir ${n}`);
+  // Y la primera pantalla tiene peso: el candelabro, en la punta de la mesa.
+  assert.match(readFileSync('src/lib/bestiario/arte-camino.ts', 'utf-8'), /\$\{candelabro\(204, /);
   const papel = PIEZAS_DE_LUZ.find((q) => q.nombre === 'luz-mesa-lampara')!.dibujo;
   assert.match(papel, /<mask id="lz-mesa">/);
   assert.doesNotMatch(papel, /soplo-|Gradient/i);
@@ -1009,7 +1051,18 @@ test('D-91/t2: el salón del infierno: arcada, lenguas que respiran, el que asom
     assert.match(p.dibujo, /filter="url\(#rociado\)"/);
   }
   // Las columnas no caen detrás de la puerta ni de la piedra de Luzbelito, y las lenguas se estiran desde el zócalo.
+  const fuenteDelSalon = readFileSync('src/lib/bestiario/arte-salon.ts', 'utf-8');
   for (const x of SALON.columnas) assert.ok((x < 120 || x > 240) && (x < 350 || x > 560), `una columna en ${x}`);
+  // Segunda vuelta: columnas finas (una gruesa partía la pantalla de un teléfono en dos) y ninguna pegada al cruce.
+  assert.match(fuenteDelSalon, /const g = 7\.5;/);
+  assert.ok(Math.max(...SALON.columnas) < 700);
+  // El que asoma está en el vano del medio, entre dos columnas, arriba de Luzbelito.
+  const medio = GIGANTE.caja[0] + GIGANTE.caja[2] / 2;
+  assert.ok(medio > SALON.columnas[1]! + 60 && medio < SALON.columnas[2]! - 60);
+  // El calor: una franja (no una pantalla entera) que tiembla rápido de costado; y la brasa le sube a Luzbelito.
+  const calor = AIRE['el-infierno']!.find((c) => c.pieza === 'aire-infierno-calor')!;
+  assert.ok(calor.cae === 0 && calor.alto < ALTO / 2 && calor.mece > 0 && calor.ritmoMece >= 8);
+  assert.ok(LUCES['el-infierno']![0]!.caja[1] <= -200, 'la brasa no llega a los flancos del busto');
   assert.ok(LENGUAS.base >= SALON.zocalo && LENGUAS.caja[1] + LENGUAS.caja[3] >= LENGUAS.base && GIGANTE.caja[1] + GIGANTE.caja[3] <= SALON.zocalo + 10);
   // El damero: más filas que el del recinto y la alfombra hasta el punto de fuga.
   const piso = PIEZAS_DEL_SALON.find((q) => q.nombre === 'camino-infierno-piso')!.dibujo;
@@ -1024,4 +1077,19 @@ test('D-91/t2: el salón del infierno: arcada, lenguas que respiran, el que asom
   assert.deepEqual([...new Set([...salon.matchAll(/\.style\.(\w+)/g)].map((m) => m[1]))], ['opacity']);
   assert.match(salon, /a\.quietud = seMueve \|\| !hoja\.hidden \|\| agarre !== null \? 0 : a\.quietud \+ dt;/);
   assert.match(isla, /if \(!quieto\(\)\) \{[\s\S]*?moverElSalon\(dt, /, 'con movimiento reducido el salón queda quieto y nadie asoma');
+});
+
+test('D-91/t2: por dónde se sale es de cada lugar: el portón, el arco y la puerta del pasillo', () => {
+  assert.deepEqual(Object.keys(ADORNOS_DEL_CRUCE).sort(), ['el-galpon', 'el-infierno', 'la-mesa']);
+  for (const [region, pinta] of Object.entries(ADORNOS_DEL_CRUCE)) {
+    const t = CAMINOS[region]!;
+    const con = piezaDelCruce(t, ['var(--papel)', 'var(--papel)', 'var(--papel)', 'var(--papel)']).dibujo;
+    assert.ok(con.includes(pinta(t.escena)), `${region}: el adorno no está en su cruce`);
+    assert.doesNotMatch(pinta(t.escena), /Gradient/i);
+    // Nada abajo de los carteles: el adorno termina antes del primer poste, con los cruces de hasta cinco vecinas.
+    for (const n of [3, 4, 5]) assert.ok(t.escena + ANCHO_DEL_ADORNO <= destinosDelCruce(t, n)[0]! + 16, `${region}: el adorno llega a los carteles`);
+    assert.ok(existsSync(`public${rutaDePieza(t.piezas.cruce!)}`));
+  }
+  // Las otras diez quedan como estaban.
+  assert.equal(ADORNOS_DEL_CRUCE['el-monte'], undefined);
 });
