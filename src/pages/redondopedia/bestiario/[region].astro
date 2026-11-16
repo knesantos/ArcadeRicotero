@@ -126,6 +126,22 @@ const estiloDeVisita = visita
   ? `--px: calc(var(--alto-escena) / var(--alto)); left: calc(var(--px) * ${visita.caja[0]}); top: calc(var(--px) * ${visita.caja[1]}); width: calc(var(--px) * ${visita.caja[2]}); height: calc(var(--px) * ${visita.caja[3]}); transform-origin: calc(var(--px) * ${-visita.caja[0]}) calc(var(--px) * ${-visita.caja[1]}); opacity: 0; pointer-events: none`
   : '';
 
+/**
+ * Lo que la luz le prende a lo impreso (`Luz.cantos`): cada zona es una capa chica puesta en su lugar,
+ * como la visita. Apagadas hasta que la isla les sube el alfa cuando el haz les apunta.
+ */
+const cantos = (LUCES[id] ?? []).flatMap((l) =>
+  (l.cantos ?? []).map((c, i) => ({
+    luz: l.pieza,
+    i,
+    f: c.f,
+    pieza: c.pieza,
+    ancho: c.caja[2],
+    alto: c.caja[3],
+    estilo: `--px: calc(var(--alto-escena) / var(--alto)); left: calc(var(--px) * ${c.caja[0]}); top: calc(var(--px) * ${c.caja[1]}); width: calc(var(--px) * ${c.caja[2]}); height: calc(var(--px) * ${c.caja[3]}); transform-origin: calc(var(--px) * ${-c.caja[0]}) calc(var(--px) * ${-c.caja[1]}); opacity: 0; pointer-events: none`,
+  })),
+);
+
 /** El piso, que es la capa de los bichos (`escenas-camino.ts`). */
 const pisoSvg = pisoDelCamino(tramo, nombres);
 
@@ -282,6 +298,7 @@ const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín
             )
           }
 
+          {cantos.map((c) => <img class="capa canto-de-luz" data-f={c.f} data-luz={c.luz} data-canto={c.i} src={rutaDePieza(c.pieza)} width={c.ancho} height={c.alto} style={c.estilo} alt="" decoding="async" loading="lazy" />)}
           {aire('cerca').map((a) => <div class:list={['aire', `aire--${a.plano}`, { 'aire--cae': a.cae }]} data-aire={a.pieza} style={a.estilo} />)}
           {filos.map((fl) => <img class="filo" data-filo={fl.luz} src={rutaDePieza(fl.pieza)} width="100" height="50" style="--lw: 100; --lh: 50" alt="" decoding="async" loading="lazy" />)}
           {vida && !vida.atras && (
