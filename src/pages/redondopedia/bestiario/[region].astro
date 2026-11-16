@@ -41,7 +41,7 @@ import { lugarDelRotulo, simbolos, tintaDe, type Bestiario, type Bestia } from '
 import { ALTO, CAMINOS, CON_CAMINO, hrefDeRegion } from '../../../lib/bestiario/camino.ts';
 import { destinosDelCruce, HORIZONTE, PIEZAS_CAMINO } from '../../../lib/bestiario/arte-camino.ts';
 import { rutaDePieza } from '../../../lib/bestiario/aerografo.ts';
-import { ACECHOS, LUCES, VIDAS, VISITAS, aireDe, altoDeBaldosa, gajosDe, type CapaDeAire, type Plano } from '../../../lib/bestiario/aire.ts';
+import { ACECHOS, LUCES, VIDAS, VISITAS, aireDe, altoDeBaldosa, type CapaDeAire, type Plano } from '../../../lib/bestiario/aire.ts';
 import { pisoDelCamino } from '../../../lib/bestiario/escenas-camino.ts';
 import { EL_PLANO, VELOS, rutaDelVelo } from '../../../lib/bestiario/velos.ts';
 import { conAudio, loQueDice } from '../../../lib/bestiario/fichas.ts';
@@ -94,9 +94,6 @@ const aire = (plano: Plano) =>
     plano,
     cae: altoDeBaldosa(c) > 0,
     firme: !!c.firme,
-    /** Los gajos de una capa que salta en ola (`gajos` en `aire.ts`): cada uno muestra su tajada de la baldosa. */
-    gajos: Array.from({ length: gajosDe(c) }, (_, i) => i),
-    porBaldosa: c.gajos ?? 0,
     estilo:
       `--baldosa: url(${rutaDePieza(c.pieza)}); --tw: ${c.ancho}; --th: ${c.alto}; --alfa: ${c.alfa}` +
       (altoDeBaldosa(c) > 0 ? '' : `; ${enLaAltura([0, c.y, c.ancho, c.alto])}`),
@@ -268,11 +265,7 @@ const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín
             style={`aspect-ratio: ${tramo.ancho} / ${ALTO}`}
             set:html={pisoSvg}
           />
-          {aire('medio').map((a) => (
-            <div class:list={['aire', `aire--${a.plano}`, { 'aire--cae': a.cae, 'aire--gajos': a.gajos.length > 0 }]} data-aire={a.pieza} style={a.gajos.length ? `${a.estilo}; --g: ${a.porBaldosa}` : a.estilo}>
-              {a.gajos.map((i) => <i class="gajo" style={`--i: ${i}`} />)}
-            </div>
-          ))}
+          {aire('medio').map((a) => <div class:list={['aire', `aire--${a.plano}`, { 'aire--cae': a.cae }]} data-aire={a.pieza} style={a.estilo} />)}
           {luces.map((l) => <img class="luz" data-luz={l.pieza} src={rutaDePieza(l.pieza)} width={l.ancho} height={l.alto} style={l.estilo} alt="" decoding="async" />)}
           {
             frente && (
