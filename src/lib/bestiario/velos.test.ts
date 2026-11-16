@@ -114,6 +114,12 @@ test('D-91: espera a la isla, y nunca deja a nadie adentro', () => {
   // …y sin JavaScript se va enseguida, como siempre (`ADR-03`, molinetes abiertos).
   const componente = readFileSync('src/components/bestiario/VeloDeLlegada.astro', 'utf-8');
   assert.match(componente, /<noscript>\s*<style is:inline>[\s\S]*\.velo-de-llegada::after \{\s*animation-play-state: running;/);
+  // Con movimiento reducido espera igual y se va de un corte: una animación de duración cero ya nace
+  // en su último cuadro (afuera), así que ahí la hoja no se anima y la saca `data-listo`.
+  const quieto = sitio.slice(sitio.indexOf('.velo-de-llegada[data-listo] .velo-ojos'), sitio.indexOf('@keyframes velo-asoma'));
+  assert.match(quieto, /@media \(prefers-reduced-motion: reduce\) \{\s*\.velo-de-llegada\[data-rumbo\]::before,\s*\.velo-de-llegada\[data-rumbo\]::after \{\s*animation-name: none;/);
+  assert.match(quieto, /\.velo-de-llegada\[data-listo\] \{\s*visibility: hidden;/);
+  assert.match(componente, /@media \(prefers-reduced-motion: reduce\) \{\s*\.velo-de-llegada \{\s*display: none;/, 'sin JavaScript y con movimiento reducido, el velo se queda');
   // La isla lo suelta al final de su arranque, y un error de script también.
   const llegada = readFileSync('src/scripts/bestiario/llegada.ts', 'utf-8');
   assert.match(llegada, /Promise\.race\(\[[\s\S]*espera\(queda\)\]\)/, 'sin tope');
