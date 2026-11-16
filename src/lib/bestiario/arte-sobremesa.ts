@@ -16,13 +16,13 @@
  * - **Debajo del mantel** pasa lo que arriba no se ve: las patas de la mesa, los pies de cada uno de los
  *   que cenan (las pezuñas de la mula, los tacos de Pituca), un papelito que pasa de mano en mano, el
  *   perro con su hueso, y la cueva del ratón, que tiene su propia mesa servida.
- * - **La lámpara** que cuelga y se hamaca, con su cono de papel; y **las moscas**.
+ * - **La lámpara** que cuelga y se hamaca, con su cono de papel; y **el moscardón** que cruza.
  *
  * Todo plano, con el grano encima. El recinto de 900 no se toca: esto es solo del camino.
  */
 
 import { enmascarado, forma, trazo, type Pieza } from './aerografo.ts';
-import { VISITAS, type CapaDeAire } from './aire.ts';
+import { VISITAS } from './aire.ts';
 import { TINTAS_DE_LA_MESA as M2, mesaLejos, rasgado, recorte } from './arte-entornos.ts';
 import { azar } from './pincel.ts';
 import { MESA, OJOS_DE_LA_MESA } from './rig-entornos.ts';
@@ -167,6 +167,32 @@ function retrato(id: string, x: number, y: number, w: number, giro: number, quie
   return trazo(`M${f(cx - w * 0.2)} ${f(y)} L${f(cx)} ${f(y - 16)} L${f(cx + w * 0.2)} ${f(y)}`, M2.negro, 1.2, 0.8) + recorte(id, x, y, w, h, giro, adentro, semilla);
 }
 
+/**
+ * El reloj de pie, en el paño que quedaba vacío a la derecha de la foto: la caja de madera, la esfera
+ * sin agujas (acá no pasa la hora) y el péndulo quieto, torcido. `piso`: donde apoya.
+ */
+function relojDePie(x: number, piso: number): string {
+  const arriba = piso - 236;
+  return (
+    forma(caja(x - 26, arriba + 70, 52, piso - arriba - 70), M2.sepiaHonda) +
+    forma(caja(x - 32, arriba + 8, 64, 66), M2.sepiaHonda) +
+    forma(poli([[x - 36, arriba + 10], [x, arriba - 12], [x + 36, arriba + 10]]), M2.sepia) +
+    forma(caja(x - 34, piso - 14, 68, 14), M2.sepia) +
+    // La esfera, con las doce rayitas y ninguna aguja.
+    forma(elipse(x, arriba + 40, 22, 22), M2.papel) +
+    Array.from({ length: 12 }, (_, i) => {
+      const a = (i * Math.PI) / 6;
+      return trazo(`M${f(x + Math.sin(a) * 16)} ${f(arriba + 40 - Math.cos(a) * 16)} L${f(x + Math.sin(a) * 19.4)} ${f(arriba + 40 - Math.cos(a) * 19.4)}`, M2.sepiaHonda, 1.5);
+    }).join('') +
+    forma(elipse(x, arriba + 40, 2.4, 2.4), M2.sepiaHonda) +
+    // La ventanita del péndulo: el vidrio oscuro y el péndulo, parado a un costado.
+    forma(caja(x - 15, arriba + 86, 30, 112), M2.negro) +
+    trazo(`M${f(x)} ${f(arriba + 88)} L${f(x + 8)} ${f(arriba + 166)}`, M2.oro, 1.6) +
+    forma(elipse(x + 9, arriba + 174, 8, 8), M2.oro) +
+    trazo(`M${f(x - 25)} ${f(arriba + 72)} L${f(x - 25)} ${f(piso - 14)}`, M2.sepia, 1.4, 0.8)
+  );
+}
+
 /** Lo que se ve por la ventana, y sus cortinas. `x0`, `x1`, `arriba`, `abajo`: el vidrio. */
 function porLaVentana(x0: number, x1: number, arriba: number, abajo: number): string {
   const w = x1 - x0;
@@ -216,8 +242,11 @@ export function mesaLejosLarga(ancho: number, alto: number): string {
   const { x0, x1, arriba, abajo } = MESA.ventana;
   const puerta: readonly [number, number] = [PUERTA.x, PUERTA.x + PUERTA.ancho];
   return (
-    mesaLejos(ancho, alto) +
+    // El seguidor nace de la foto (tercera vuelta): en el tramo largo la foto no se estira y el haz salía de
+    // la pared pelada, 300 unidades a su derecha.
+    mesaLejos(ancho, alto, [586 * k + 280 * 0.97, 32 + 168 * 0.05]) +
     `<g filter="url(#grano)">` +
+    relojDePie(1960, piso) +
     zocalo(-10, ancho + 10, 246, piso, [puerta]) +
     puertaDelFondo(piso) +
     retrato('ms-r1', 452, 92, 62, -3, 'mosca', 3521) +
@@ -436,7 +465,7 @@ export function candelabro(x: number, piso: number): string {
     forma(elipse(x, piso - 30, 6, 4.4), M2.sepiaClara) +
     brazo(-30, 96) + brazo(30, 90) + brazo(0, 118) +
     // La luz de las velas en el mantel: un redondel plano.
-    forma(elipse(x, piso + 5, 58, 9), M2.blanco, 0.4)
+    forma(elipse(x + 16, piso + 6, 34, 6), M2.blanco, 0.4)
   );
 }
 
@@ -445,34 +474,6 @@ export const PIEZAS_DE_LA_SOBREMESA: readonly Pieza[] = [
   { nombre: 'camino-mesa-vapor', caja: VAPOR.caja, dibujo: vaporDeLaOlla(), densidad: 2 },
   { nombre: 'camino-mesa-visita', caja: VISITAS['la-mesa']!.caja, dibujo: visitaDeLaPuerta(VISITAS['la-mesa']!.caja), densidad: 3 },
 ];
-
-/** Una mosca chica, vista de arriba, girada a gusto: el cuerpo, la cabeza y las dos alas de vidrio. */
-function mosquita(x: number, y: number, t: number, giro: number, o: number): string {
-  return (
-    `<g transform="translate(${f(x)} ${f(y)}) rotate(${f(giro)})"${o < 1 ? ` opacity="${f(o)}"` : ''}>` +
-    forma(elipse(-t * 0.9, t * 0.2, t * 0.95, t * 0.42), M2.haz, 0.55) + forma(elipse(t * 0.9, t * 0.2, t * 0.95, t * 0.42), M2.haz, 0.55) +
-    forma(elipse(0, t * 0.2, t * 0.42, t * 0.74) + elipse(0, -t * 0.66, t * 0.36, t * 0.34), M2.negro) +
-    `</g>`
-  );
-}
-
-/**
- * Las moscas: un puñado suelto que anda sobre la mesa, más juntas del lado de la olla. La baldosa se
- * corre con el viento, se hamaca y salta (`aire.ts`), así que el enjambre nunca hace dos veces lo mismo.
- */
-export function mesaMoscas(c: CapaDeAire): string {
-  const rnd = azar(3559);
-  let s = '';
-  for (let i = 0; i < 19; i++) {
-    // Tres montones y algunas sueltas.
-    const monton = i % 4;
-    const cx = monton === 3 ? rnd() * c.ancho : c.ancho * (0.18 + monton * 0.3) + (rnd() - 0.5) * 150;
-    const x = Math.min(c.ancho - 14, Math.max(14, cx));
-    const y = c.y + 30 + rnd() ** 1.4 * (c.alto - 70);
-    s += mosquita(x, y, 2.6 + rnd() * 2.8, rnd() * 360, 0.75 + rnd() * 0.25);
-  }
-  return `<g filter="url(#grano)"><rect x="-200" y="${c.y - 40}" width="${c.ancho + 400}" height="${c.alto + 80}" fill="${M2.negro}" fill-opacity="0"/>${s}</g>`;
-}
 
 /** El moscardón que cruza: gordo, de perfil, con el ala levantada y el ojo rojo. */
 export function moscardon(): string {
