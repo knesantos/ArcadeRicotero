@@ -500,8 +500,8 @@ test('D-91: los troncos de adelante van aparte y cada uno es alguien', () => {
   assert.ok((p.dibujo.match(/<ellipse [^>]*transform="rotate\(-?\d+ /g) ?? []).length >= 2, 'falta la cara');
   assert.match(p.dibujo, /var\(--bestia-lobo-crema\)/, 'falta lo tallado');
   // Y se imprime fina, porque tiene canto duro y se mira de cerca.
-  assert.ok((p.densidad ?? 0) >= 1.25 && (p.calidad ?? 0) >= 76);
-  assert.ok(statSync('public/bestiario/aire-monte-troncos.webp').size < 180_000);
+  assert.ok((p.densidad ?? 0) >= 1.6 && (p.calidad ?? 0) >= 70);
+  assert.ok(statSync('public/bestiario/aire-monte-troncos.webp').size < 330_000);
 });
 
 test('D-91: la pastura tiene lo suyo: su cielo, su piso, su alambrado y su aire', () => {
@@ -713,20 +713,31 @@ test('D-91/2: los troncos gordos del monte no se apagan en liviano; la bruma de 
   assert.match(pagina, /'aire--firme': a\.firme/);
 });
 
-test('D-91/2: el claro de la pastura ya no es un segundo sol: sin halo, sin aro, con la orilla comida', () => {
+test('D-91/3: el círculo pelado es tierra gastada y pisada en redondo, no un disco naranja', () => {
   const piso = PIEZAS_CAMINO.find((q) => q.nombre === 'camino-pastura-piso')!.dibujo;
-  // El aro negro de canto liso del recinto no está en el camino (era lo que lo hacía un disco).
-  assert.doesNotMatch(piso, /<ellipse [^>]*fill="none" stroke="var\(--fondo\)" stroke-width="44"/);
   const fuente = readFileSync('src/lib/bestiario/arte-camino.ts', 'utf-8');
-  assert.match(fuente, /claroDeLaPastura\(true\)\}<\/g>\$\{orillaDelClaro\(\)\}/);
-  // Y el recinto, que es otra pieza, sigue con el suyo.
+  // El camino ya no usa el claro del recinto (el óvalo naranja de canto liso con su aro negro): pinta el suyo.
+  assert.doesNotMatch(fuente, /claroDeLaPastura/);
+  assert.match(fuente, /\$\{circuloPelado\(\)\}\$\{paloDeLaPastura\(\)\}/);
+  assert.doesNotMatch(piso, /<ellipse [^>]*fill="var\(--entorno-pastura-honda\)" filter="url\(#soplo-s\)"/, 'sigue el óvalo naranja');
+  assert.doesNotMatch(piso, /stroke-width="44"/, 'sigue el aro negro');
+  // El pardo del lobo manda sobre el naranja de la tapa, que queda de veladura.
+  const pelado = fuente.slice(fuente.indexOf('function circuloPelado'), fuente.indexOf('function pisoPastura'));
+  assert.match(pelado, /soplo\(canto\(0\.93, 0\.12, 437\), M\.sombra, 'm', 0\.8\)/);
+  const naranjas = [...pelado.matchAll(/M\.naranja(Honda)?, '[a-z]+', (0\.\d+)/g)].map((m) => Number(m[2]));
+  assert.ok(naranjas.length >= 1 && naranjas.every((o) => o <= 0.3), `el naranja vuelve a mandar: ${naranjas}`);
+  // La huella en redondo, con pezuñas; y arriba se recorta en el borde del piso (detrás hay cielo).
+  assert.match(pelado, /pisadas \+=/);
+  assert.match(piso, /<clipPath id="cp-claro"><rect x="-200" y="306"/);
+  // El palo está donde siempre, y el recinto sigue con su claro de siempre.
+  assert.match(piso, /<clipPath id="m-palo">/);
   assert.match(PIEZAS.find((q) => q.nombre === 'monte-cerca')!.dibujo, /stroke-width="44"/);
   // Los charcos devuelven la luna rota, no rayas parejas.
   assert.doesNotMatch(readFileSync('src/lib/bestiario/arte-suelo.ts', 'utf-8').split('export function sueloDeLaPastura')[1]!.split('/* ----')[0]!, /'rayas'/);
   // El campo se compone en manchones, con la huella entre ellos, y algo que pesa a la entrada y a la salida.
   assert.match(fuente, /const tupido = \(x: number, y: number\): number =>/);
   assert.match(fuente, /calaveraDeVaca\(/);
-  assert.match(fuente, /arado\(hasta - 300,/);
+  assert.match(fuente, /arado\(hasta - 330,[^\n]*\n\s*carroVolcado\(hasta - 196,/);
 });
 
 test('D-91/2: el molino gira, clavado en lo lejano, y su rueda no está impresa dos veces', () => {
@@ -769,5 +780,49 @@ test('D-91/2: los faros del bondi tocan a los de la banquina, y llevan polillas'
   assert.match(isla, /const anclaX = l\.r\.x \+ Number\(colgada\?\.dataset\.ahora/);
   assert.match(isla, /const deCostado = Math\.abs\(l\.r\.rumbo \?\? 0\) > 45;/);
   assert.match(PIEZAS_DE_LUZ.find((q) => q.nombre === 'luz-ruta-faros')!.dibujo, /rotate\(/, 'sin polillas');
+});
+
+/* ------------------------------------------------------------------
+   `D-91`, tercera vuelta
+   ------------------------------------------------------------------ */
+
+test('D-91/3: el piso del monte deja de ser un plano marrón: sendero en escorzo, matas con peso, hojarasca, musgo', () => {
+  const fuente = readFileSync('src/lib/bestiario/arte-camino.ts', 'utf-8');
+  const piso = PIEZAS_CAMINO.find((q) => q.nombre === 'camino-monte-piso')!.dibujo;
+  // El sendero se angosta con la distancia (no sube derecho como un haz) y lleva surcos y matas en el canto.
+  assert.match(fuente, /const hondo = 1 - \(1 - u\) \*\* 2\.2;/);
+  assert.match(fuente, /ps\.push\(\[px, y, 108 \* lejos \*\* 1\.7 \+ 3\.5\]\);/);
+  // Los pastos son matas juntas, pocas: una cada 150 a 320 unidades, no una lluvia pareja.
+  assert.match(fuente, /cx \+= 150 \+ rnd\(\) \* 170\)/);
+  // Hojarasca, barro mojado y piedras con musgo (el verde del ojo del cordero, el único de las dos tapas).
+  assert.ok((fuente.match(/^\s+hojarasca\(/gm) ?? []).length >= 4);
+  assert.ok((fuente.match(/^\s+barroMojado\(/gm) ?? []).length >= 3);
+  assert.ok((piso.match(/<clipPath id="pm-/g) ?? []).length >= 4);
+  assert.match(piso, /var\(--bestia-cordero-ojo\)/);
+  // Nada de lo nuevo cae en la zona del bicho de `T-529`, (660, 262): todo está de y = 350 para abajo.
+  for (const m of fuente.matchAll(/^\s+(?:hojarasca|barroMojado|piedraConMusgo)\((\d+), (\d+),/gm)) assert.ok(Number(m[2]) >= 350, `algo en (${m[1]}, ${m[2]})`);
+  // Los troncos gordos pisan en el borde del piso: las raíces asoman.
+  assert.match(readFileSync('src/lib/bestiario/arte-aire.ts', 'utf-8'), /troncosCercanos\(troncos, 302, 4101, 'tr'\)/);
+});
+
+test('D-91/3: el asfalto de la ruta se abre: paso a nivel, guardarraíl roto y un charco con una torre', () => {
+  const largo = PIEZAS_CAMINO.find((q) => q.nombre === 'camino-ruta-piso')!.dibujo;
+  const recinto = PIEZAS_ENTORNOS.find((q) => q.nombre === 'ruta-piso')!.dibujo;
+  assert.match(largo, /<clipPath id="r-torre">/);
+  assert.doesNotMatch(recinto, /<clipPath id="r-torre">/, 'el recinto de 900 cambió');
+  const fuente = readFileSync('src/lib/bestiario/arte-entornos.ts', 'utf-8');
+  // La vía se va al horizonte con los durmientes cada vez más juntos, y no pisa a nadie de la banquina.
+  assert.match(fuente, /const u = 1 - 0\.9 \*\* k;/);
+  const [, via, riel] = /pasoANivel\((\d+), alto, RUTA\.horizonte\) \+ guardarrail\((\d+),/.exec(fuente)!;
+  const k = 2400 / 900;
+  for (const [x] of Object.values(OJOS_DE_LA_RUTA)) {
+    assert.ok(Math.abs(x * k - Number(via)) > 200, 'la vía pasa por un bicho');
+    assert.ok(x * k < Number(riel) - 40 || x * k > Number(riel) + 230, 'el guardarraíl pasa por un bicho');
+  }
+  // Lo lejano de las dos de aerógrafo se imprime más fino, para la lupa, sin pasar los 4096 px de ancho.
+  for (const n of ['camino-monte-lejos', 'camino-pastura-lejos']) {
+    const p = PIEZAS_CAMINO.find((q) => q.nombre === n)!;
+    assert.ok((p.densidad ?? 0) >= 1.6 && p.caja[2] * (p.densidad ?? 0) <= 4096, `${n}: ${p.caja[2] * (p.densidad ?? 0)} px`);
+  }
 });
 
