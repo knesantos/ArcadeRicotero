@@ -81,6 +81,26 @@ function nubes(): string {
   );
 }
 
+/* El cierre (cuarta vuelta): el cielo cerrado. Al tocar un cartel, las nubes del borde se cerraban achicándose, y un
+   anillo fino de jirones no tapa nada: casi no se veía. Esto es una segunda imagen, impresa chica, con treinta bancos gordos
+   repartidos del galpón al borde. Espera apagada y entra girando cuando se baja a una región. */
+export const BANCOS_DEL_CIERRE: readonly (readonly [number, number, number, number])[] = (() => {
+  // Desparejos a propósito: en vueltas prolijas (la primera prueba) se leían como sogas trenzadas, no como cielo.
+  const rnd = azar(8399);
+  const bancos: [number, number, number, number][] = [];
+  for (let i = 0; i < 30; i++) bancos.push([Math.round(i * 137.5 + rnd() * 40) % 360, Math.round(60 + Math.sqrt((i + 0.5) / 30) * 380 + (rnd() - 0.5) * 50), Math.round(130 + rnd() * 90), Math.round(84 + rnd() * 44)]);
+  return bancos;
+})();
+
+function cierre(): string {
+  const { medio, radio } = DISCO;
+  return (
+    `<mask id="pl-cierre"><rect x="0" y="0" width="1000" height="1000" fill="black"/><circle cx="${medio}" cy="${medio}" r="${radio - 10}" fill="white" filter="url(#soplo-m)"/></mask>` +
+    `<g filter="url(#rociado)"><rect x="0" y="0" width="1000" height="1000" fill="${T.negro}" fill-opacity="0"/>` +
+    `<g mask="url(#pl-cierre)">${BANCOS_DEL_CIERRE.map(([ang, dist, largo, alto], i) => banco(ang, dist, largo, alto, 8400 + i)).join('')}</g></g>`
+  );
+}
+
 /** La lechuza, vista desde arriba: las alas abiertas, la cabeza redonda adelante, la cola en abanico. Vuela para la derecha. */
 export const LECHUZA = { caja: [0, 0, 150, 120] as const } as const;
 
@@ -109,7 +129,7 @@ function lechuza(): string {
 /* ------------------------------------------------------------------
    Los hitos (segunda vuelta): lo que las tandas le sumaron a cada región, en chiquito, para la lupa
    ------------------------------------------------------------------
-   Cinco dibujos de 44 unidades, cada uno en el borde de afuera de su porción, del lado de la ruta. En un teléfono
+   Tres dibujos de 44 unidades (eran cinco hasta la cuarta vuelta), cada uno en el borde de afuera de su porción, del lado de la ruta. En un teléfono
    miden dieciocho píxeles: de lejos son una mancha, y con la lupa se leen. Tinta plana con grano, como las figuras
    del plano; cada uno con una sola tinta de su región además del negro y el papel.
 */
@@ -126,10 +146,9 @@ export const HITOS: readonly { region: string; ang: number; r: number; dibujo: (
   { region: 'la-prision', ang: 225, r: 398, dibujo: () => forma('M-16 18 L-16 -6 Q-16 -19 0 -19 Q16 -19 16 -6 L16 18 Z', T.negro) + linea('M-16 18 L-16 -6 Q-16 -19 0 -19 Q16 -19 16 -6 L16 18', 2, PAPEL) + linea('M-15 -3 L15 -6 M-14 16 l0 -5 l5 0 l0 -5 l5 0 l0 -5 l5 0 l0 -5 l6 0', 1.4, PAPEL) + linea('M6 -4 l0 9 q0 3 -3 2', 1, PAPEL) },
   // Los astilleros: el carguero, con su chimenea y la grúa.
   { region: 'los-astilleros', ang: 113, r: 400, dibujo: () => forma('M-20 6 L20 6 L15 15 L-16 15 Z', T.negro) + forma('M-12 6 l0 -8 l12 0 l0 8 Z M3 6 l0 -14 l5 0 l0 14 Z', T.negro) + linea('M-19 7 L19 7', 1.2, 'var(--entorno-astillero-tiza-clara)') + linea('M12 6 L12 -17 L-2 -10 M12 -17 l6 5', 1.4) + linea('M-9 -1 l2 0 M-5 -1 l2 0', 1, PAPEL) },
-  // El templo: la puerta del fondo, prendida, con los telones recogidos.
-  { region: 'el-templo', ang: 74, r: 398, dibujo: () => forma('M-7 16 L-7 -8 Q0 -17 7 -8 L7 16 Z', 'var(--entorno-templo-foco)') + forma('M-7 -10 C-16 -8 -13 10 -19 16 L-7 16 Z M7 -10 C16 -8 13 10 19 16 L7 16 Z', T.negro) + linea('M-4 18 L-9 22 M4 18 L9 22', 1.2, 'var(--entorno-templo-foco)') },
-  // Los techos: el arco pintado con cal, y la pelota.
-  { region: 'los-techos', ang: 291, r: 400, dibujo: () => linea('M-15 14 L-14 -10 L15 -12 L16 14', 3, PAPEL) + linea('M-15 14 L-14 -10 L15 -12 L16 14', 1) + `<circle cx="2" cy="12" r="4" fill="${T.negro}"/>` + linea('M0 10 q2 2 4 0', 0.8, PAPEL) },
+  // Cuarta vuelta: la puerta del templo y el arco del potrero se fueron. No se leían ni con la lupa al máximo, y al doble
+  // (88 unidades) quedaban más grandes que el protagonista de su zona (unas 70) y se le encimaban: Momo está a 107 del
+  // lugar de la puerta. Quedan los tres que sí se leen.
   // El bajo: el pasillo que se pierde, con la lamparita y su escalera de rayas en el agua.
   { region: 'el-bajo', ang: 152, r: 398, dibujo: () => forma('M-13 18 L-13 -17 L13 -17 L13 18 Z', T.negro) + linea('M-13 18 L-13 -17 L13 -17 L13 18 M-8 14 L-8 -11 L8 -11 L8 14 M-4 9 L-4 -6 L4 -6 L4 9', 1.3, PAPEL) + `<circle cx="0" cy="-1" r="2" fill="var(--entorno-bajo-llama-clara)"/>` + linea('M-2 5 l4 0 M-4 10 l8 0 M-6 15 l12 0', 1.3, 'var(--entorno-bajo-llama)') },
 ];
@@ -199,7 +218,8 @@ export interface TitereDelPlano {
 /* Tercera vuelta: el gesto. Cinco protagonistas se redibujan acá, cada uno en su pose, en vez de salir del molde de
    `figuras.ts` (que sigue igual para las fichas): el gordo Pierre brindando con el agua a la cintura, Barbazul con la
    barba hasta la panza y la llave, Luzbelito con la llama en la cabeza, Momo como el medallón que cuelga, y el lobo
-   aullando. Los otros veintiuno salen del molde. Todos, propios o de molde, pasan por el mismo aerógrafo. */
+   aullando. En la cuarta vuelta se sumaron los otros ocho protagonistas: los trece tienen dibujo propio. Las trece
+   segundas figuras salen del molde. Todos, propios o de molde, pasan por el mismo aerógrafo. */
 
 const N = 'var(--fondo)';
 const P_ = 'var(--papel)';
@@ -252,6 +272,115 @@ export const PROPIOS: Readonly<Record<string, (tr: string) => string>> = {
     lleno('M10 70 Q4 50 16 44 L44 40 L57 29 L63 4 L71 21 L84 8 L80 29 L93 33 L79 40 L74 47 L70 60 L74 92 L64 92 L60 68 L40 70 L36 92 L26 92 L26 70 Q18 74 10 70 Z', N) +
     lleno('M57 44 Q66 52 62 65 L55 58 Z', tr) +
     `<circle cx="72.4" cy="26" r="2.6" fill="${ORO}"/>` + lleno('M83 30 l3 5.4 l2.2 -5 Z', P_),
+
+  /* Cuarta vuelta: los ocho protagonistas que quedaban con el molde. De cada uno, primero lo que dice su letra o su
+     estampa; lo que es del dibujo se dice. */
+
+  // *"Quiero verte huir como un ladrón… hundido en tu gabán"*: corre en zancada, el cuello del gabán le tapa media cara
+  // y los faldones le vuelan atrás. Del dibujo: el forro en la tinta de los techos.
+  'el-negro-atila': (tr) =>
+    lleno('M30 58 L2 62 L8 74 L0 84 L30 78 Z', tr) +
+    raya('M52 62 L36 78 L20 80', N, 8) + raya('M62 62 L80 76 L92 72', N, 8) + lleno('M86 66 l10 2 l-2 10 l-10 -4 Z', N) + lleno('M22 74 l-10 4 l2 8 l10 -2 Z', N) +
+    `<circle cx="60" cy="16" r="11" fill="${P_}"/>` +
+    raya('M51 9 Q60 3 70 9', N, 3) +
+    `<circle cx="59" cy="14.6" r="2.3" fill="${N}"/><circle cx="67" cy="14.6" r="2.3" fill="${N}"/>` +
+    lleno('M40 30 L45 15 L56 24 L69 24 L77 13 L80 32 L76 52 L72 68 L44 70 L28 82 L6 66 L30 52 Z', N) +
+    raya('M74 32 L88 40 L92 28', N, 7) + raya('M46 34 L30 44 L22 36', N, 7) +
+    raya('M60 26 L57 66', tr, 1.8) + `<circle cx="62" cy="36" r="1.8" fill="${ORO}"/><circle cx="61" cy="46" r="1.8" fill="${ORO}"/><circle cx="60" cy="56" r="1.8" fill="${ORO}"/>`,
+
+  // *"Soy un gourmet que huele eternamente mal"*: en la cabecera, la servilleta atada al cuello y los cubiertos parados
+  // en los puños (eso es de su estampa), el plato vacío y el olor que le sube. Del dibujo: la sonrisa de dientes.
+  'el-canibal': (tr) =>
+    raya('M30 6 q-5 -6 0 -11 q5 -5 0 -10 M70 6 q5 -6 0 -11 q-5 -5 0 -10', N, 2.6) +
+    lleno('M24 70 Q24 40 50 38 Q76 40 76 70 Z', N) +
+    raya('M30 52 L15 62', N, 9) + raya('M70 52 L85 62', N, 9) +
+    raya('M15 64 L15 28 M9 28 L9 12 M15 28 L15 12 M21 28 L21 12 M9 28 L21 28', N, 3.4) +
+    raya('M85 64 L85 34', N, 3.4) + lleno('M81.6 36 L81.6 8 Q92 18 90 36 Z', N) +
+    `<circle cx="50" cy="25" r="16" fill="${P_}"/>` +
+    raya('M39 17 l8 2 M61 17 l-8 2', N, 2.4) + `<circle cx="43.6" cy="22" r="2.4" fill="${N}"/><circle cx="56.4" cy="22" r="2.4" fill="${N}"/>` +
+    lleno('M38 28 Q50 44 62 28 Z', N) + raya('M42 29.4 l0 3 M46 29.6 l0 5 M50 29.6 l0 5.6 M54 29.6 l0 5 M58 29.4 l0 3', P_, 1.5) +
+    lleno('M39 41 L61 41 L50 64 Z', P_) + lleno('M36 38 l7 3 l-6 5 Z M64 38 l-7 3 l6 5 Z', P_) +
+    lleno('M2 66 L98 66 L92 91 L8 91 Z', N) + raya('M4 70 L96 70', tr, 2.6) +
+    `<ellipse cx="50" cy="72" rx="17" ry="4.6" fill="${P_}"/><ellipse cx="50" cy="72" rx="10" ry="2.4" fill="none" stroke="${N}" stroke-width="1.2"/>`,
+
+  // *"Sentado, en bolas, watcheando la tele"*: de costado, sentado en el piso, desnudo, y lo dibuja la luz de la tele
+  // (el filo celeste de adelante). La capa sale del cómic que contó el Indio. La gorra es del dibujo.
+  'el-capitan-buscapina': () =>
+    lleno('M40 28 Q16 48 6 91 L52 91 Q44 60 52 30 Z', 'var(--bestia-buscapina-rojo)') +
+    raya('M30 44 Q20 62 16 86', 'var(--bestia-buscapina-violeta)', 2.4) +
+    `<ellipse cx="44" cy="79" rx="15" ry="12" fill="var(--bestia-buscapina-piel)"/>` +
+    lleno('M40 30 Q60 26 63 44 L61 74 Q50 82 40 76 Q35 50 40 30 Z', 'var(--bestia-buscapina-piel)') +
+    raya('M48 80 L76 58', 'var(--bestia-buscapina-piel)', 12) + raya('M76 58 L82 86', 'var(--bestia-buscapina-piel)', 9.6) + raya('M82 88 L93 88', 'var(--bestia-buscapina-piel)', 7) +
+    raya('M54 38 L66 56 L78 54', 'var(--bestia-buscapina-piel-honda)', 7) +
+    raya('M36 72 q5 8 2 17', 'var(--bestia-buscapina-piel-honda)', 2) +
+    `<circle cx="57" cy="17" r="11.6" fill="var(--bestia-buscapina-piel)"/>` +
+    lleno('M44 16 Q45 1 58 2 Q70 3 70 13 L84 15.6 L84 19.6 L44 19.6 Z', N) + `<circle cx="62" cy="10" r="2.4" fill="${ORO}"/>` +
+    `<circle cx="63.6" cy="23" r="1.9" fill="${N}"/>` +
+    raya('M64.6 40 L62.6 62 M81 60 L86.6 84', 'var(--entorno-cyber-lente)', 2.4),
+
+  // *"Rapiñaba montado a los containers"*: sentado en el canto del container, las piernas colgando, la strato roja a
+  // la espalda con el mango para arriba y el pucho (la guitarra y el pucho son de su estampa, que los saca de la letra).
+  'el-pibe-de-los-astilleros': () =>
+    raya('M56 44 L84 2', 'var(--bestia-pibe-strato)', 5) + lleno('M80 -1 L90 -8 L93 -2 L86 6 Z', N) +
+    `<ellipse cx="54" cy="47" rx="11" ry="15" transform="rotate(34 54 47)" fill="var(--bestia-pibe-strato)"/>` +
+    lleno('M34 58 L37 34 Q46 25 55 34 L58 58 Z', N) +
+    raya('M38 38 L27 56', N, 6.4) + raya('M55 38 L67 56', N, 6.4) +
+    `<circle cx="46" cy="21" r="10.6" fill="${P_}"/>` + lleno('M35 20 Q36 7 47 8 Q58 8 57 20 Q48 13 35 20 Z', N) +
+    `<circle cx="42.6" cy="22.6" r="1.9" fill="${N}"/><circle cx="50.4" cy="22.6" r="1.9" fill="${N}"/>` +
+    raya('M51 28.6 l9 1.6', P_, 2) + `<circle cx="61.6" cy="30.6" r="1.8" fill="var(--acento)"/>` +
+    lleno('M6 56 L94 56 L94 91 L6 91 Z', 'var(--entorno-astillero-azul)') + lleno('M4 54 L96 54 L96 61 L4 61 Z', N) + lleno('M4 87 L96 87 L96 92 L4 92 Z', N) +
+    raya('M16 64 l0 21 M26 64 l0 21 M66 64 l0 21 M76 64 l0 21 M86 64 l0 21', N, 2.4) +
+    raya('M40 58 L39 76', N, 7.6) + raya('M53 58 L55 76', N, 7.6) + lleno('M33 75 l11 0 l0 6 l-13 0 Z M50 75 l11 0 l2 6 l-13 0 Z', P_),
+
+  // *"Miren lo que este bicho logró"*: trepado al tronco, la cola larga enroscada, estirándose al fruto dulce y raro
+  // de su estampa. El bonete sale del nombre (y de los que cuelgan del árbol en su región). La tinta de la región es un
+  // beige que sobre el papel no se ve: el bonete va en el rojo de la tierra del árbol.
+  'el-bicho-del-gran-bonete': () =>
+    lleno('M46 -12 L60 -12 L62 92 L44 92 Z', 'var(--entorno-arbol-cobre-hondo)') + raya('M50 -6 L51 86 M56 4 L56 60', 'var(--entorno-arbol-cobre)', 1.4) +
+    raya('M60 40 Q78 36 88 22', 'var(--entorno-arbol-cobre-hondo)', 5.4) +
+    `<circle cx="88" cy="31" r="8.6" fill="${ORO}"/>` + lleno('M88 23 q6 -8 12 -4 q-5 6 -12 4 Z', 'var(--bestia-pierre-verde)') +
+    raya('M30 72 Q4 86 8 62 Q10 50 20 54', N, 5) +
+    `<ellipse cx="36" cy="54" rx="14" ry="21" transform="rotate(-8 36 54)" fill="${N}"/>` +
+    raya('M40 44 L64 40', N, 6.4) + raya('M38 70 L64 72', N, 7.4) + raya('M42 36 Q62 28 78 30', N, 5.4) +
+    `<circle cx="24" cy="22" r="6" fill="${N}"/><circle cx="44" cy="18" r="6" fill="${N}"/><circle cx="34" cy="28" r="12.6" fill="${N}"/>` +
+    lleno('M40 30 L52 31 L44 37 Z', N) +
+    `<circle cx="38.6" cy="26" r="3" fill="${ORO}"/><circle cx="39.6" cy="26" r="1.3" fill="${N}"/>` +
+    lleno('M22 18 L26 -14 L44 13 Z', 'var(--entorno-arbol-tierra-viva)') + raya('M24 9 L38 4 M25.4 -2 L31.6 -4', P_, 2.4) + `<circle cx="26" cy="-14" r="3" fill="${P_}"/>`,
+
+  // El cordero atado: la soga tirante de la estaca al cogote, las patas clavadas, la lana en copos. Todo de su estampa.
+  'el-cordero-atado': (tr) =>
+    lleno('M3 56 L13 56 L12 92 L4 92 Z', N) + raya('M8 62 L44 53', ORO, 3) +
+    raya('M50 70 L44 91 M60 72 L56 91 M76 72 L75 91 M85 68 L86 91', N, 6) +
+    [[50, 58, 11], [62, 51, 13], [75, 53, 12], [85, 60, 10], [66, 65, 12], [54, 67, 9], [78, 67, 10], [93, 55, 4.6], [43, 33, 5.4], [37, 32, 4.4]].map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r! + 2.6}" fill="${N}"/>`).join('') +
+    [[50, 58, 11], [62, 51, 13], [75, 53, 12], [85, 60, 10], [66, 65, 12], [54, 67, 9], [78, 67, 10], [93, 55, 4.6], [43, 33, 5.4], [37, 32, 4.4]].map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${P_}"/>`).join('') +
+    raya('M58 56 q4 -4 8 0 M70 62 q4 -4 8 0 M60 68 q3 -3 6 0', N, 1.4) +
+    lleno('M46 36 Q38 31 30 37 L21 44 Q17 50 23 54 L35 54 Q46 52 48 43 Z', N) +
+    lleno('M43 40 Q55 41 53 55 Q46 52 42 46 Z', N) +
+    `<circle cx="33" cy="42.6" r="2.4" fill="${P_}"/><circle cx="32.4" cy="42.8" r="1.1" fill="${N}"/>` + raya('M22 50 l4 0.6', P_, 1.4) +
+    raya('M43 47 L48 57', tr, 3.4),
+
+  // Patricio Rey: la silla vacía, de frente, con el tapizado rojo del galpón, y nadie. Del dibujo: los rayos (que ya
+  // traía la figura) y la corona colgada del respaldo, que sale del nombre. La cara no se le inventa.
+  'patricio-rey': () =>
+    raya('M50 -6 l0 -9 M88 2 l8 -7 M97 24 l10 -2 M3 24 l-10 -2', ORO, 3.4) +
+    raya('M28 6 L28 62 M72 6 L72 62', N, 8) + lleno('M28 6 Q50 -2 72 6 L72 20 L28 20 Z', N) +
+    lleno('M33 24 L67 24 L67 50 L33 50 Z', 'var(--entorno-galpon-rojo)') + lleno('M28 50 L72 50 L72 56 L28 56 Z', N) +
+    `<circle cx="42" cy="32" r="1.6" fill="${N}"/><circle cx="58" cy="32" r="1.6" fill="${N}"/><circle cx="42" cy="42" r="1.6" fill="${N}"/><circle cx="58" cy="42" r="1.6" fill="${N}"/>` +
+    lleno('M22 58 L78 58 L88 71 L12 71 Z', 'var(--entorno-galpon-rojo)') + lleno('M12 71 L88 71 L88 78 L12 78 Z', N) +
+    raya('M17 78 L17 91 M83 78 L83 91', N, 8) + raya('M33 78 L33 86 M67 78 L67 86', N, 5.4) +
+    `<g transform="rotate(-16 28 4)">` + lleno('M15 6 L12 -12 L21 -4 L28 -15 L35 -4 L44 -12 L41 6 Z', ORO) + raya('M16 3 L40 3', N, 1.6) + `</g>`,
+
+  // *"El zumba se colgó del Bondi a Finisterre"*: el colectivo de lomo redondo y, colgado del estribo de atrás con una
+  // mano, el zumba, con la otra mano y una pierna en el aire.
+  'el-zumba': (tr) =>
+    lleno('M24 34 Q24 20 38 20 L88 20 Q100 20 100 36 L100 76 L24 76 Z', N) +
+    lleno('M44 28 h13 v15 h-13 Z M61 28 h13 v15 h-13 Z M78 28 h15 q3 0 3 4 v11 h-18 Z', P_) +
+    lleno('M42 52 L100 52 L100 58 L42 58 Z', tr) + lleno('M28 28 h11 v44 h-11 Z', 'var(--portal-farol)') +
+    lleno('M66 11 h24 v9 h-24 Z', N) + raya('M70 15.6 l16 0', P_, 1.8) +
+    `<circle cx="44" cy="78" r="9.6" fill="${N}"/><circle cx="84" cy="78" r="9.6" fill="${N}"/><circle cx="44" cy="78" r="3.6" fill="${P_}"/><circle cx="84" cy="78" r="3.6" fill="${P_}"/>` +
+    lleno('M16 74 h14 v5 h-14 Z', N) +
+    raya('M14 44 L19 63', N, 8.4) + raya('M15 45 L30 37', N, 4.8) + raya('M13 45 L-2 34', N, 4.8) + raya('M20 62 L25 74', N, 5.4) + raya('M18 63 L3 78', N, 5.4) +
+    `<circle cx="10" cy="33" r="8.6" fill="${N}"/><circle cx="10" cy="33" r="6" fill="${P_}"/><circle cx="12.6" cy="32" r="1.5" fill="${N}"/>`,
 };
 
 function titere(b: TitereDelPlano, tr: string): string {
@@ -296,6 +425,8 @@ export const PIEZAS_DEL_PLANO: readonly Pieza[] = [
   // Es niebla: no tiene filo que cuidar. A 0,8 píxeles por unidad ocupa 2,4 MB decodificada.
   { nombre: 'plano-nubes', caja: [0, 0, 1000, 1000], dibujo: nubes(), densidad: 0.8, calidad: 60 },
   { nombre: 'plano-lechuza', caja: LECHUZA.caja, dibujo: lechuza(), densidad: 1.2 },
+  // El cielo cerrado se ve medio segundo y es todo niebla: a 0,45 píxeles por unidad ocupa 0,8 MB decodificado.
+  { nombre: 'plano-cierre', caja: [0, 0, 1000, 1000], dibujo: cierre(), densidad: 0.45, calidad: 55 },
   // Los hitos se imprimen finos: son para mirarlos con la lupa al máximo.
   ...HITOS.map((h): Pieza => ({ nombre: `plano-hito-${h.region}`, caja: cajaDelHito(h), dibujo: hito(h), densidad: 5 })),
 ];
