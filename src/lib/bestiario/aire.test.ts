@@ -40,7 +40,8 @@ import { EN_EL_RECINTO, ESCENA_DEL_RECINTO, conLoDelCamino } from './escenas-cam
 import { ARCO, BOQUETE, CAJA_DEL_POTRERO, MEDIANERA, SENDA, VECINO, VENTANAS } from './arte-potrero.ts';
 import { CAJA_DE_ADELANTE, CAJA_DEL_FONDO, ESCENARIO, FIGURA, FLOTAN, PASILLO, enElPasillo } from './arte-anegado.ts';
 import { FRENTE_DEL_RECINTO } from './aire.ts';
-import { CABEZUDOS, CAJA_DE_LA_NAVE, LENGUA, OJOS as OJOS_DEL_CABEZUDO, PUERTA_DEL_FONDO } from './arte-corso.ts';
+import { CABEZUDOS, CAJA_DE_LA_NAVE, CANTO_DE_LAS_COLUMNAS, LENGUA, OJOS as OJOS_DEL_CABEZUDO, PUERTA_DEL_FONDO, columnaDeAtras } from './arte-corso.ts';
+import { BANDERIN } from './arte-potrero.ts';
 import { BAJO, CHAPA, PIERRE, marcoDelRecinto } from './rig.ts';
 
 /**
@@ -1518,7 +1519,7 @@ test('D-91/t4: lo que aparece si te quedás quieto, y lo que flota', () => {
   const escena = bajo.indexOf('class="recinto-en-camino"');
   for (const fl of FLOTAN) {
     // (Segunda vuelta: además suben y bajan con el agua, `data-flota`.)
-    assert.ok(fl.sube >= 2 && fl.sube <= 4);
+    assert.ok(fl.sube >= 2 && fl.sube <= 6);
     const marca = `<g class="pendula" data-x="${alPiso('el-bajo', fl.x)}" data-y="${fl.y}" data-largo="460" data-flota="${fl.sube}" pointer-events="none">`;
     assert.ok(bajo.indexOf(marca) > bajo.lastIndexOf(rutaDePieza('bajo-frente')) && escena >= 0, `${fl.pieza}: no flota encima de todo`);
     assert.ok(fl.y > fl.caja[1] + fl.caja[3] && Math.abs(fl.x - (fl.caja[0] + fl.caja[2] / 2)) < 2, `${fl.pieza}: no se hamaca desde abajo`);
@@ -1560,18 +1561,16 @@ test('D-91/t4v2: el agua de adelante del bajo entra después de que la escena la
   assert.throws(() => conLoDelCamino('el-bajo', `<image href="${rutaDePieza('bajo-agua')}" x="-250" y="368" width="1450" height="272" preserveAspectRatio="none"/>`), /repinta/);
 });
 
-test('D-91/t4v2: la niebla baja de los techos y la del ras del agua son franjas, no capas de pantalla', () => {
+test('D-91/t4v2: la niebla baja de los techos es una franja, no una capa de pantalla; la del ras del agua se sacó', () => {
   const baldio = AIRE['los-techos']!.find((c) => c.pieza === 'aire-techos-rasante')!;
-  const ras = AIRE['el-bajo']!.find((c) => c.pieza === 'aire-bajo-ras')!;
-  for (const c of [baldio, ras]) {
-    assert.ok(c.plano === 'medio' && c.alto <= ALTO / 3 && c.abre >= 0.5 && c.deriva !== 0 && c.cae === 0, `${c.pieza}`);
-    assert.ok(existsSync(`public${rutaDePieza(c.pieza)}`), `falta imprimir ${c.pieza}`);
-    // Con su mano: crayón, sin un soplo.
-    assert.doesNotMatch(PIEZAS_AIRE.find((q) => q.nombre === c.pieza)!.dibujo, /soplo-|rociado/);
-  }
-  // La del baldío anda por la tierra, de la medianera para abajo; la del bajo, en la línea de Pierre.
-  assert.ok(baldio.y >= MEDIANERA.pie && ras.y < PIERRE.agua && ras.y + ras.alto > PIERRE.agua);
-  // Los techos siguen sin nada pegado a la cámara, y ninguna de las tres pasa de tres capas.
+  assert.ok(baldio.plano === 'medio' && baldio.alto <= ALTO / 3 && baldio.abre >= 0.5 && baldio.deriva !== 0 && baldio.cae === 0);
+  assert.ok(existsSync(`public${rutaDePieza(baldio.pieza)}`));
+  // Con su mano: crayón, sin un soplo. Y anda por la tierra, de la medianera para abajo.
+  assert.doesNotMatch(PIEZAS_AIRE.find((q) => q.nombre === baldio.pieza)!.dibujo, /soplo-|rociado/);
+  assert.ok(baldio.y >= MEDIANERA.pie);
+  // (Tercera vuelta, cambiado a propósito: la niebla del ras del bajo no se leía en las capturas y el bajo medía caro. Se fue.)
+  assert.ok(!AIRE['el-bajo']!.some((c) => c.pieza === 'aire-bajo-ras') && !existsSync('public/bestiario/aire-bajo-ras.webp'), 'quedó la niebla del ras');
+  assert.equal(AIRE['el-bajo']!.length, 2);
   for (const [region] of TANDA_4) assert.ok(AIRE[region]!.length <= 3);
 });
 
@@ -1586,6 +1585,8 @@ test('D-91/t4v2: con la lupa, lo de adelante de los tres recintos se corre', () 
   assert.match(isla, /frenteDelRecinto\.el\.style\.opacity = alfa\.toFixed\(3\);/);
   // Y lo que flota sube y baja además de hamacarse.
   assert.match(isla, /const sube = p\.flota \? `translate\(0 /);
+  // (Tercera vuelta: y se hamaca el doble que lo que cuelga; con el vaivén de un péndulo no se leía en la tira.)
+  assert.match(isla, /\* \(p\.flota \? 2\.2 : 1\);/);
 });
 
 test('D-91/t4v2: el boquete se agrandó, el templo tiene un cabezudo caído y dos premios de lupa en los techos', () => {
@@ -1598,4 +1599,35 @@ test('D-91/t4v2: el boquete se agrandó, el templo tiene un cabezudo caído y do
   assert.deepEqual(CABEZUDOS.map((c) => c[5]), [false, true, false]);
   // La nave se imprime a 1,5: es aerógrafo, y pesaba 895 kB.
   assert.ok(statSync(`public${rutaDePieza('camino-templo-nave')}`).size < 650_000);
+});
+
+test('D-91/t4v3: el foco del templo es un haz angosto que cae sobre Momo y les prende el canto a dos columnas de atrás', () => {
+  const foco = LUCES['el-templo']![0]!;
+  // Angosto: la mitad de lo que medía (340). Sigue siendo el foco del medio de la guirnalda, clavado donde estaba,
+  // a la izquierda del medallón (que cuelga en 750 del piso), titilando.
+  assert.ok(foco.caja[2] <= 200 && foco.x === 556 && foco.y === 218 && foco.pulso === 'titila' && foco.vaiven <= 4);
+  const haz = PIEZAS_DE_LUZ.find((q) => q.nombre === 'luz-templo-foco')!;
+  assert.deepEqual([...haz.caja], [...foco.caja]);
+  // El canto: una sola zona, con el piso, en la caja de la pieza corrida a las coordenadas del piso.
+  assert.equal(foco.cantos!.length, 1);
+  const zona = foco.cantos![0]!;
+  const [x, y, w, h] = CANTO_DE_LAS_COLUMNAS.caja;
+  assert.deepEqual([zona.pieza, zona.f, ...zona.caja], [CANTO_DE_LAS_COLUMNAS.pieza, 1, alPiso('el-templo', x), y, w, h]);
+  assert.ok(existsSync(`public${rutaDePieza(zona.pieza)}`), 'falta imprimir el canto de las columnas');
+  // Las dos columnas están adentro de la caja, y el haz les cae encima en todo su vaivén, con cualquier pantalla (van las dos con el piso).
+  for (const t of CANTO_DE_LAS_COLUMNAS.columnas) {
+    const c = columnaDeAtras(t, -1);
+    assert.ok(c.x - c.w / 2 > x && c.x + c.w / 2 < x + w, `la columna de ${t} se sale del canto`);
+  }
+  for (const giro of [-foco.vaiven, 0, foco.vaiven]) for (const cam of [0, 400, 1200]) assert.ok(tocaLaZona(dondeCaeElHaz(foco.x, foco.y, giro, foco.cantosEn!, zona.f, cam), zona.caja) > 0.6, `con ${giro}° el haz no les pega`);
+  // La más lejana se corta arriba de los ojos de la bailarina, que están en (270, 480) del recinto.
+  assert.match(readFileSync('src/lib/bestiario/arte-corso.ts', 'utf-8'), /const hasta = t > 0\.7 \? Math\.min\(c\.pie, 440\) : c\.pie - 2;/);
+});
+
+test('D-91/t4v3: la primera pantalla de los techos avisa del potrero: el banderín del córner', () => {
+  // Un teléfono parado ve de ~96 a ~416 al llegar. El banderín queda entre el cuadro del psicópata (hasta ~340) y él (desde 413).
+  assert.ok(BANDERIN.x > 340 + 20 && BANDERIN.x + 26 < 413 && BANDERIN.x < 96 + 320 - 30);
+  assert.ok(BANDERIN.pie > MEDIANERA.pie + 60 && BANDERIN.pie < ALTO - 100);
+  const potrero = readFileSync('src/lib/bestiario/arte-potrero.ts', 'utf-8');
+  assert.match(potrero, /cancha\(\) \+/);
 });
