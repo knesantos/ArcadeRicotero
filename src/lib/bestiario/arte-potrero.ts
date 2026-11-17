@@ -233,8 +233,12 @@ function arco(): string {
   );
 }
 
-/** El banderín del córner: en la primera pantalla, entre el cuadro del psicópata y él. De ahí sale la raya de cal de la cancha. */
-export const BANDERIN = { x: 374, pie: 480 } as const;
+/**
+ * El banderín del córner: en la primera pantalla, en el hueco entre el hocico del perro de la tapa (hasta 304) y el cuadro
+ * del psicópata (desde 345). De ahí sale la raya de cal de la cancha. (Primero se puso en 374 y quedó detrás del cuadro:
+ * se vio en la captura.) El trapo flamea para el lado del perro.
+ */
+export const BANDERIN = { x: 327, pie: 474 } as const;
 
 /**
  * La cancha (tercera vuelta): la primera pantalla de los techos no avisaba que más adelante hay un potrero. Un banderín
@@ -262,10 +266,10 @@ function cancha(): string {
     trazo(`M${x + 16} ${pie - 3} q-2 -9 -11 -11`, B.luz, 2, 0.4) +
     nube(x + 3, pie + 1, 9, 2.4, B.negro, 'xs', 0.8) +
     trazo(`M${x} ${pie} L${x - 2.4} ${pie - 62}`, B.negro, 3.6) +
-    trazo(`M${x - 1} ${pie - 2} L${x - 3.2} ${pie - 61}`, B.lila, 1.2, 0.8) +
-    forma(`M${x - 2.4} ${pie - 62} L${x + 24} ${pie - 55} L${x + 15} ${pie - 49} L${x + 22} ${pie - 43} L${x - 1.8} ${pie - 45} Z`, B.rosa) +
-    trazo(`M${x - 2.4} ${pie - 62} L${x + 24} ${pie - 55} L${x + 15} ${pie - 49}`, B.luz, 1.1, 0.75) +
-    trazo(`M${x + 2} ${pie - 56} l12 3 M${x + 1} ${pie - 50} l9 2`, B.noche, 1, 0.6)
+    trazo(`M${x + 0.4} ${pie - 2} L${x - 1.8} ${pie - 61}`, B.luz, 1.4, 0.85) +
+    forma(`M${x - 2.4} ${pie - 62} L${x - 25} ${pie - 56} L${x - 16} ${pie - 50} L${x - 23} ${pie - 44} L${x - 1.8} ${pie - 45} Z`, B.rosa) +
+    trazo(`M${x - 2.4} ${pie - 62} L${x - 25} ${pie - 56} L${x - 16} ${pie - 50}`, B.luz, 1.3, 0.85) +
+    trazo(`M${x - 6} ${pie - 56} l-11 2.6 M${x - 5} ${pie - 50} l-9 1.6`, B.noche, 1, 0.6)
   );
 }
 

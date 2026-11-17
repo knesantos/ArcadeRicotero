@@ -1625,8 +1625,9 @@ test('D-91/t4v3: el foco del templo es un haz angosto que cae sobre Momo y les p
 });
 
 test('D-91/t4v3: la primera pantalla de los techos avisa del potrero: el banderín del córner', () => {
-  // Un teléfono parado ve de ~96 a ~416 al llegar. El banderín queda entre el cuadro del psicópata (hasta ~340) y él (desde 413).
-  assert.ok(BANDERIN.x > 340 + 20 && BANDERIN.x + 26 < 413 && BANDERIN.x < 96 + 320 - 30);
+  // Un teléfono parado ve de ~96 a ~416 al llegar. El banderín queda en el hueco entre el hocico del perro de la tapa
+  // (medido en la página: hasta 304) y el cuadro del psicópata (desde 345); el trapo flamea para la izquierda.
+  assert.ok(BANDERIN.x > 304 + 20 && BANDERIN.x < 345 - 10 && BANDERIN.x > 96 + 30);
   assert.ok(BANDERIN.pie > MEDIANERA.pie + 60 && BANDERIN.pie < ALTO - 100);
   const potrero = readFileSync('src/lib/bestiario/arte-potrero.ts', 'utf-8');
   assert.match(potrero, /cancha\(\) \+/);
