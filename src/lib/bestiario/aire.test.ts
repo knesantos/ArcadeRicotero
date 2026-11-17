@@ -42,7 +42,8 @@ import { CAJA_DE_ADELANTE, CAJA_DEL_FONDO, ESCENARIO, FIGURA, FLOTAN, PASILLO, e
 import { FRENTE_DEL_RECINTO } from './aire.ts';
 import { CABEZUDOS, CAJA_DE_LA_NAVE, CANTO_DE_LAS_COLUMNAS, LENGUA, OJOS as OJOS_DEL_CABEZUDO, PUERTA_DEL_FONDO, columnaDeAtras } from './arte-corso.ts';
 import { BANDERIN } from './arte-potrero.ts';
-import { ARCO as ARCO_DE_LAS_CARCELES, CADENA, EL_QUE_SUBE, ESCALONES, PIEZAS_DE_LAS_CARCELES, PUERTA as PUERTA_DE_LA_ESCALERA } from './arte-carceles.ts';
+import { ARCO as ARCO_DE_LAS_CARCELES, CADENA, EL_DEL_PUENTE, EL_QUE_SUBE, ESCALONES, GALERIA, HAZ, PIEZAS_DE_LAS_CARCELES, PUERTA as PUERTA_DE_LA_ESCALERA } from './arte-carceles.ts';
+import { PRISION } from './rig.ts';
 import { BAJO, CHAPA, PIERRE, marcoDelRecinto } from './rig.ts';
 
 /**
@@ -1692,4 +1693,25 @@ test('D-91/t5: arrastre de la tanda 4: los ojos del bajo no se abren sobre la si
   assert.match(readFileSync('src/scripts/camino.ts', 'utf-8'), /\* \(z\.f > 1 \? despejeDeLupa\('cerca', false, lente\.z\) : 1\);/);
   // El canto del templo va con el piso; los del galpón, con la fila de adelante, que sí se corre.
   assert.ok(LUCES['el-templo']![0]!.cantos!.every((c) => c.f <= 1) && LUCES['el-galpon']![0]!.cantos!.every((c) => c.f > 1));
+});
+
+test('D-91/t5v2: las galerías altas fugan con el pasillo, el haz une la ventana con el piso, y el del puente sale después', () => {
+  const piso = pisoDelCamino(CAMINOS['la-prision']!, new Map());
+  const antesDeLosBichos = piso.slice(0, piso.search(/class="(titere|bestia)/));
+  for (const n of ['camino-prision-galeria-izq', 'camino-prision-galeria-der', 'camino-prision-haz', 'camino-prision-vigia']) assert.ok(antesDeLosBichos.includes(rutaDePieza(n)), `${n} no va detrás de todos`);
+  // Las galerías arrancan pasando el rincón del fondo y fugan al mismo punto que el pasillo: cuanto más cerca, más altas.
+  const [fx, fy] = PRISION.fuga;
+  const y = (x: number, yb: number): number => fy + ((yb - fy) * (x - fx)) / (PRISION.fondo.x1 - fx);
+  assert.ok(GALERIA.desde > PRISION.fondo.x1 && GALERIA.techo > PRISION.fondo.techo && GALERIA.piso < fy);
+  assert.ok(y(GALERIA.hasta, GALERIA.piso) < y(GALERIA.desde, GALERIA.piso) - 60 && y(GALERIA.desde, GALERIA.piso + 4) < 180);
+  // No bajan hasta el esclavo sensible (de 180 para abajo) ni llegan a la jaula de la fiera (de 318 para abajo): quedan arriba de todo.
+  const galeria = PIEZAS_DE_LAS_CARCELES.find((q) => q.nombre === 'camino-prision-galeria-der')!;
+  assert.ok(galeria.caja[1] + galeria.caja[3] <= 180);
+  // El haz va de abajo de la ventana al piso del pasillo, adentro de la pared del fondo.
+  const [hx, hy, hw, hh] = HAZ.caja;
+  assert.ok(hy >= PRISION.ventana.abajo - 6 && hy + hh <= PRISION.fondo.piso + 10 && hx >= PRISION.fondo.x0 - 8 && hx + hw <= PRISION.fondo.x1 + 8);
+  // El del puente está parado en el puente, adentro del arco, y espera más que el que sube; el que sube creció y sigue adentro de su puerta.
+  assert.ok(EL_DEL_PUENTE.caja[0] > ARCO_DE_LAS_CARCELES.x0 && EL_DEL_PUENTE.caja[0] + EL_DEL_PUENTE.caja[2] < ARCO_DE_LAS_CARCELES.x1);
+  assert.match(piso, /<g class="asoma" data-espera="9" opacity="0" pointer-events="none"><image href="\/bestiario\/camino-prision-vigia\.webp"/);
+  assert.ok(EL_QUE_SUBE.caja[2] >= 56);
 });

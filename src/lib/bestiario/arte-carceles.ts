@@ -106,16 +106,23 @@ function puertaDeLaEscalera(): string {
 
 /** El que sube: una cabeza rapada y una mano en la pared, a media escalera. Sale si te quedás quieto. */
 const SUBE = ESCALONES[2]!;
-export const EL_QUE_SUBE = { caja: [Math.round(SUBE[0] - 20), Math.round(SUBE[1] - 38), 40, 42] as const } as const;
+// Segunda vuelta: un 40 % más grande (medía 40 de ancho y en el teléfono se perdía), y con una mano agarrada de la jamba.
+const TALLA_DEL_QUE_SUBE = 1.4;
+export const EL_QUE_SUBE = { caja: [Math.round(SUBE[0] - 30), Math.round(SUBE[1] - 50), 60, 56] as const } as const;
 
 function elQueSube(): string {
   const [cx, y] = [SUBE[0], SUBE[1]];
   return hoja(
     EL_QUE_SUBE.caja,
-    // La cabeza y los hombros, en papel: lo que queda afuera del hueco de la escalera. Los ojos, dos tajos.
-    blanco(`M${f(cx - 16)} ${f(y + 3)} Q${f(cx - 15)} ${f(y - 9)} ${f(cx - 7)} ${f(y - 11)} Q${f(cx - 10)} ${f(y - 30)} ${f(cx + 1)} ${f(y - 31)} Q${f(cx + 11)} ${f(y - 30)} ${f(cx + 8)} ${f(y - 11)} Q${f(cx + 16)} ${f(y - 9)} ${f(cx + 17)} ${f(y + 3)} Z`) +
+    // La mano, en la jamba de la derecha, más arriba que él: cuatro dedos.
+    blanco(`M${f(cx + 22)} ${f(y - 34)} l6 -0.6 l0.4 8 l-6.4 0.6 Z`) +
+      `<path d="M${f(cx + 23.6)} ${f(y - 34)} l0.2 7.6 M${f(cx + 25.2)} ${f(y - 34.2)} l0.2 7.6 M${f(cx + 26.8)} ${f(y - 34.4)} l0.2 7.6" fill="none" stroke="${NEGRO}" stroke-width="0.7"/>` +
+      `<g transform="translate(${f(cx)} ${f(y + 3)}) scale(${TALLA_DEL_QUE_SUBE}) translate(${f(-cx)} ${f(-y - 3)})">` +
+      // La cabeza y los hombros, en papel: lo que queda afuera del hueco de la escalera. Los ojos, dos tajos.
+      blanco(`M${f(cx - 16)} ${f(y + 3)} Q${f(cx - 15)} ${f(y - 9)} ${f(cx - 7)} ${f(y - 11)} Q${f(cx - 10)} ${f(y - 30)} ${f(cx + 1)} ${f(y - 31)} Q${f(cx + 11)} ${f(y - 30)} ${f(cx + 8)} ${f(y - 11)} Q${f(cx + 16)} ${f(y - 9)} ${f(cx + 17)} ${f(y + 3)} Z`) +
       negro(`M${f(cx - 5.6)} ${f(y - 21)} l4.4 0.6 l-0.4 2.2 l-4 -0.4 Z M${f(cx + 2)} ${f(y - 20.4)} l4.4 -0.6 l0 2.4 l-4.2 0.4 Z`) +
-      `<path d="M${f(cx - 3)} ${f(y - 13.6)} l7 0 M${f(cx - 9)} ${f(y - 4)} l4 5 M${f(cx + 6)} ${f(y - 3)} l4 4 M${f(cx - 2)} ${f(y - 28)} l5 0.4" fill="none" stroke="${NEGRO}" stroke-width="1.1"/>`,
+      `<path d="M${f(cx - 3)} ${f(y - 13.6)} l7 0 M${f(cx - 9)} ${f(y - 4)} l4 5 M${f(cx + 6)} ${f(y - 3)} l4 4 M${f(cx - 2)} ${f(y - 28)} l5 0.4" fill="none" stroke="${NEGRO}" stroke-width="1.1"/>` +
+      `</g>`,
   );
 }
 
@@ -192,6 +199,92 @@ function cadena(): string {
   return hoja(CADENA.caja, corte(d, 1.3) + corte(`M${x} ${y + largo} l0 5 q0 8 -6 7 q-4 -1 -3 -5`, 2));
 }
 
+/* ------------------------------------------------------------------
+   Segunda vuelta: las galerías altas, el haz de la ventana y el del puente
+   ------------------------------------------------------------------ */
+
+/** La altura de un punto de la pared del pasillo que en el rincón del fondo (x = 650) está a `yb`: todo fuga a (450, 250). */
+const enLaPared = (x: number, yb: number): number => 250 + ((yb - 250) * (x - 450)) / 200;
+/** Las galerías: de dónde a dónde en la pared de la derecha (la de la izquierda es su espejo), y entre qué alturas en el rincón. */
+export const GALERIA = { desde: 660, hasta: 846, techo: 112, piso: 170, celdas: [660, 684, 716, 760, 820] } as const;
+
+/** Un segundo piso de celdas sobre la pared del pasillo, en fuga: la pasarela, la baranda, las rejas y, en la más cercana, dos manos. */
+function galeria(lado: 1 | -1): string {
+  const X = (x: number): number => (lado > 0 ? x : 900 - x);
+  const { desde, hasta, techo, piso, celdas } = GALERIA;
+  const raya = (yb: number, ancho: number): string => corte(`M${X(desde)} ${f(enLaPared(desde, yb))} L${X(hasta)} ${f(enLaPared(hasta, yb))}`, ancho);
+  let s = negro(`M${X(desde)} ${f(enLaPared(desde, techo))} L${X(hasta)} ${f(enLaPared(hasta, techo))} L${X(hasta)} ${f(enLaPared(hasta, piso + 4))} L${X(desde)} ${f(enLaPared(desde, piso + 4))} Z`);
+  for (let i = 0; i < celdas.length - 1; i++) {
+    const [a, b] = [celdas[i]! + 2 + i, celdas[i + 1]! - 2 - i];
+    // El vano de la celda, y sus barrotes: más gruesos y más separados cuanto más cerca.
+    s += corte(`M${X(a)} ${f(enLaPared(a, 160))} L${X(a)} ${f(enLaPared(a, 122))} L${X(b)} ${f(enLaPared(b, 122))} L${X(b)} ${f(enLaPared(b, 160))}`, 0.9 + i * 0.3);
+    const n = 3 + i;
+    for (let k = 1; k <= n; k++) {
+      const x = a + ((b - a) * k) / (n + 1);
+      s += corte(`M${X(x)} ${f(enLaPared(x, 124))} L${X(x)} ${f(enLaPared(x, 159))}`, 0.7 + i * 0.3);
+    }
+  }
+  // Las manos, agarradas de dos barrotes de la celda más cercana: es todo lo que se ve del que está adentro.
+  const [a, b] = [celdas[3]! + 5, celdas[4]! - 5];
+  for (const k of [2, 4]) {
+    const x = a + ((b - a) * k) / 7;
+    s += blanco(`M${f(X(x) - 3.4)} ${f(enLaPared(x, 139))} l6.8 0 l0 ${f(8.6)} l-6.8 0 Z`) + `<path d="M${f(X(x) - 3.2)} ${f(enLaPared(x, 139) + 2.8)} l6.4 0 M${f(X(x) - 3.2)} ${f(enLaPared(x, 139) + 5.6)} l6.4 0" fill="none" stroke="${NEGRO}" stroke-width="0.7"/>`;
+  }
+  // La pasarela con su canto, la baranda con sus parantes, y el dintel corrido.
+  let parantes = '';
+  for (let x = desde + 8; x < hasta; x += 10 + (x - desde) * 0.12) parantes += `M${X(x)} ${f(enLaPared(x, 168))} L${X(x)} ${f(enLaPared(x, 161))} `;
+  return s + raya(168, 2) + raya(172, 0.9) + raya(161, 0.9) + corte(parantes, 0.8) + raya(116, 1.1);
+}
+
+const CAJA_DE_LA_GALERIA = (lado: 1 | -1): readonly [number, number, number, number] => [lado > 0 ? GALERIA.desde - 4 : 900 - GALERIA.hasta - 4, 0, GALERIA.hasta - GALERIA.desde + 8, 178];
+
+/**
+ * El haz de la ventana: la luz que entra por la reja y baja al piso del pasillo, en rayos de gubia cortados, con el polvo
+ * que flota adentro. Va en la pared de abajo de la ventana, detrás de Drácula y de todos: no le cruza la cara a nadie.
+ * El enrejado de luz en el piso ya lo trae el recinto; esto es lo que lo une con la ventana.
+ */
+export const HAZ = { caja: [244, 330, 412, 78] as const } as const;
+
+function hazDeLaVentana(): string {
+  const rnd = azar(7301);
+  let rayos = '';
+  let polvo = '';
+  for (let i = 0; i <= 12; i++) {
+    const [x0, x1] = [330 + i * 20, 258 + i * 32];
+    // Cada rayo en dos o tres tramos, con huecos: la reja los corta.
+    let u = rnd() * 0.15;
+    while (u < 0.94) {
+      const largo = 0.16 + rnd() * 0.3;
+      const v = Math.min(1, u + largo);
+      rayos += `M${f(x0 + (x1 - x0) * u)} ${f(337 + 66 * u)} L${f(x0 + (x1 - x0) * v)} ${f(337 + 66 * v)} `;
+      u = v + 0.06 + rnd() * 0.1;
+    }
+  }
+  for (let i = 0; i < 46; i++) {
+    const u = rnd();
+    const x = 300 + rnd() * 300 + (rnd() - 0.5) * 120 * u;
+    polvo += `M${f(x)} ${f(340 + 60 * u)} l${f(0.6 + rnd() * 1.6)} ${f(-0.6 - rnd())} `;
+  }
+  return corte(rayos, 0.7) + corte(polvo, 1.1);
+}
+
+/** El del puente: una figura mínima con un farol, parada en el puente del arco. Sale si te quedás quieto un rato más que el que sube. */
+const VIGIA_X = ARCO.x0 + 46;
+const VIGIA_Y = PUENTE.y0 + ((PUENTE.y1 - PUENTE.y0) * 46) / (ARCO.x1 - ARCO.x0);
+export const EL_DEL_PUENTE = { caja: [VIGIA_X - 10, Math.round(VIGIA_Y) - 28, 22, 30] as const } as const;
+
+function elDelPuente(): string {
+  const [x, y] = [VIGIA_X, VIGIA_Y];
+  return hoja(
+    EL_DEL_PUENTE.caja,
+    blanco(`M${f(x - 3.4)} ${f(y - 1)} L${f(x - 3)} ${f(y - 15)} Q${f(x - 3.6)} ${f(y - 22)} ${x} ${f(y - 23)} Q${f(x + 3.6)} ${f(y - 22)} ${f(x + 3)} ${f(y - 15)} L${f(x + 3.6)} ${f(y - 1)} Z`) +
+      // El farol, en la punta del brazo, con sus cuatro rayos.
+      corte(`M${f(x + 3)} ${f(y - 14)} l5 -2`, 0.9) +
+      `<circle cx="${f(x + 8.6)}" cy="${f(y - 14)}" r="1.6" fill="${PAPEL}"/>` +
+      corte(`M${f(x + 8.6)} ${f(y - 18)} l0 -2.4 M${f(x + 11)} ${f(y - 16.4)} l1.6 -1.4 M${f(x + 6.4)} ${f(y - 17)} l-1 -1.6`, 0.5),
+  );
+}
+
 /** Lo que premia a la lupa: una rata en el umbral de la puerta de la escalera, y los palotes de alguien que contaba los días. */
 const RATA = [PUERTA.x0 + 2, PUERTA.umbral - 16, 56, 18] as const;
 
@@ -218,6 +311,10 @@ export const PIEZAS_DE_LAS_CARCELES: readonly Pieza[] = [
   { nombre: 'camino-prision-puerta', caja: CAJA_DE_LA_PUERTA, dibujo: hoja(CAJA_DE_LA_PUERTA, puertaDeLaEscalera()), densidad: 2.5 },
   { nombre: 'camino-prision-arco', caja: CAJA_DEL_ARCO, dibujo: hoja(CAJA_DEL_ARCO, arcoDeLasCarceles()), densidad: 2.5 },
   { nombre: 'camino-prision-sube', caja: EL_QUE_SUBE.caja, dibujo: elQueSube(), densidad: 3 },
+  { nombre: 'camino-prision-galeria-der', caja: CAJA_DE_LA_GALERIA(1), dibujo: hoja(CAJA_DE_LA_GALERIA(1), galeria(1)), densidad: 2.5 },
+  { nombre: 'camino-prision-galeria-izq', caja: CAJA_DE_LA_GALERIA(-1), dibujo: hoja(CAJA_DE_LA_GALERIA(-1), galeria(-1)), densidad: 2.5 },
+  { nombre: 'camino-prision-haz', caja: HAZ.caja, dibujo: hoja(HAZ.caja, hazDeLaVentana()), densidad: 2.5 },
+  { nombre: 'camino-prision-vigia', caja: EL_DEL_PUENTE.caja, dibujo: elDelPuente(), densidad: 4 },
   { nombre: CADENA.pieza, caja: CADENA.caja, dibujo: cadena(), densidad: 3 },
   { nombre: 'fino-prision-rata', caja: RATA, dibujo: rata(), densidad: 4 },
 ];

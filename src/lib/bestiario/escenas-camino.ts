@@ -257,9 +257,14 @@ export const EN_EL_RECINTO: Readonly<Record<string, { tras: string; bajo: () => 
     bajo: () => {
       const corre = -marcoDelRecinto('la-prision').x;
       return (
+        // Segunda vuelta: las galerías altas sobre las dos paredes del pasillo, el haz de la ventana, y el del puente (que tarda más en salir).
+        quieta('camino-prision-galeria-izq') +
+        quieta('camino-prision-galeria-der') +
+        quieta('camino-prision-haz') +
         quieta('camino-prision-puerta') +
         loQueAsoma('camino-prision-sube', 6) +
         quieta('camino-prision-arco') +
+        loQueAsoma('camino-prision-vigia', 9) +
         `<g transform="translate(${-corre} 0)"><g class="pendula" data-x="${CADENA.x + corre}" data-y="${CADENA.y}" data-largo="${CADENA.largo}" pointer-events="none"><g transform="translate(${corre} 0)">${quieta(CADENA.pieza)}</g></g></g>`
       );
     },
