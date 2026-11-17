@@ -387,8 +387,8 @@ const BOMBIN = { x: 338, y: 600 } as const;
 const CAJA_DE_LA_SILLA = [SILLA.x - 44, SILLA.y - 50, 88, 62] as const;
 const CAJA_DEL_BOMBIN = [BOMBIN.x - 28, BOMBIN.y - 12, 56, 28] as const;
 export const FLOTAN: readonly Flota[] = [
-  { pieza: 'camino-bajo-silla', caja: CAJA_DE_LA_SILLA, x: SILLA.x, y: SILLA.y + 40, sube: 2.6, dibujo: hoja(CAJA_DE_LA_SILLA, silla(SILLA.x, SILLA.y)) },
-  { pieza: 'camino-bajo-bombin', caja: CAJA_DEL_BOMBIN, x: BOMBIN.x, y: BOMBIN.y + 40, sube: 3.4, dibujo: hoja(CAJA_DEL_BOMBIN, bombin(BOMBIN.x, BOMBIN.y)) },
+  { pieza: 'camino-bajo-silla', caja: CAJA_DE_LA_SILLA, x: SILLA.x, y: SILLA.y + 40, sube: 4.2, dibujo: hoja(CAJA_DE_LA_SILLA, silla(SILLA.x, SILLA.y)) },
+  { pieza: 'camino-bajo-bombin', caja: CAJA_DEL_BOMBIN, x: BOMBIN.x, y: BOMBIN.y + 40, sube: 4.8, dibujo: hoja(CAJA_DEL_BOMBIN, bombin(BOMBIN.x, BOMBIN.y)) },
 ];
 
 /** La botella con el papel adentro: lo que premia a la lupa. */
@@ -412,7 +412,8 @@ function botella(): string {
 
 /** Las piezas sueltas del bajo: la mano del fondo, lo que asoma, lo que flota y lo que premia a la lupa. */
 export const PIEZAS_DEL_ANEGADO: readonly Pieza[] = [
-  { nombre: 'camino-bajo-fondo', caja: CAJA_DEL_FONDO, dibujo: anegadoFondo(), densidad: 2 },
+  // Tercera vuelta: de 2 a 1,5 píxeles por unidad, como el agua de adelante. El bajo medía caro, y es crayón: no pierde.
+  { nombre: 'camino-bajo-fondo', caja: CAJA_DEL_FONDO, dibujo: anegadoFondo(), densidad: 1.5 },
   { nombre: 'camino-bajo-cerca', caja: CAJA_DE_ADELANTE, dibujo: anegadoCerca(), densidad: 1.5 },
   { nombre: 'camino-bajo-figura', caja: FIGURA.caja, dibujo: figura(), densidad: 3 },
   ...FLOTAN.map((fl): Pieza => ({ nombre: fl.pieza, caja: fl.caja, dibujo: fl.dibujo, densidad: 2.5 })),

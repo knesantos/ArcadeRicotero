@@ -788,9 +788,10 @@ function moverLoSuelto(desde: number, hasta: number): void {
   if (alivio >= 2 || cuadros % 2) return;
   for (const p of pendulan) {
     if (p.x < desde - 90 || p.x > hasta + 90) continue;
-    const a = 3.4 * Math.sin(reloj * p.ritmo + p.fase) + 1.2 * Math.sin(reloj * p.ritmo * 0.37 + p.fase * 2);
-    // Lo que flota (el bajo), además, sube y baja con el agua, a otro compás que el vaivén.
-    const sube = p.flota ? `translate(0 ${(p.flota * Math.sin(reloj * p.ritmo * 0.71 + p.fase * 1.3)).toFixed(2)}) ` : '';
+    // Lo que flota (el bajo) se hamaca el doble que lo que cuelga y, además, sube y baja con el agua, a otro compás
+    // que el vaivén. (Tercera vuelta: con el vaivén de un péndulo no se leía en la tira de seis cuadros.)
+    const a = (3.4 * Math.sin(reloj * p.ritmo + p.fase) + 1.2 * Math.sin(reloj * p.ritmo * 0.37 + p.fase * 2)) * (p.flota ? 2.2 : 1);
+    const sube = p.flota ? `translate(0 ${(p.flota * Math.sin(reloj * p.ritmo * 1.7 + p.fase * 1.3)).toFixed(2)}) ` : '';
     p.el.setAttribute('transform', `${sube}rotate(${a.toFixed(2)} ${p.x} ${p.y})`);
   }
 }
