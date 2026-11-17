@@ -32,7 +32,6 @@ import { BESTIARIO } from '../../lib/bestiario/copy.ts';
 import { REDONDOPEDIA } from '../../lib/sitio/copy.ts';
 import {
   LADO,
-  cajaDeFigura,
   dibujarRecinto,
   dibujarSuelo,
   lugarDelRotulo,
@@ -49,6 +48,9 @@ import { enEspera, SIN_ISLA } from '../../lib/bestiario/carga.ts';
 import { PALO, marcoDelRecinto } from '../../lib/bestiario/rig.ts';
 import { CON_CAMINO, hrefDeRegion, recintoDe } from '../../lib/bestiario/camino.ts';
 import { EL_PLANO, VELOS, rutaDelVelo } from '../../lib/bestiario/velos.ts';
+import { HITOS, cajaDelHito, cajaEnElPlano } from '../../lib/bestiario/arte-plano.ts';
+import { LAS_DEL_PLANO, LUGAR_EN_EL_PLANO } from '../../lib/bestiario/plano-elenco.ts';
+import { AUMENTO } from '../../lib/bestiario/mapa.ts';
 import VeloDeLlegada from '../../components/bestiario/VeloDeLlegada.astro';
 import FichaBestia from '../../components/bestiario/FichaBestia.astro';
 import { loQueDice } from '../../lib/bestiario/fichas.ts';
@@ -167,8 +169,9 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
 
   <div class="portada-redondopedia bestiario-portada">
     <h1 class="titulo-seccion bestiario-titulo">{BESTIARIO.titulo}</h1>
+    {/* Tanda 6, segunda vuelta: acá iba una bajada de cuatro líneas que explicaba lo que ya dice la línea de abajo del plano.
+        Queda la que canta y el contador, y el disco entra en la primera pantalla del teléfono. */}
     <p class="donde-estas">{BESTIARIO.dondeEstas}</p>
-    <p class="bajada-portal">{BESTIARIO.bajada(bestias.length)}</p>
     <p class="bestiario-libreta" id="libreta" aria-live="polite">{BESTIARIO.libretaVacia(bestias.length)}</p>
   </div>
 
@@ -187,12 +190,15 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
         <g class="suelo" set:html={dibujarSuelo(datos)} />
         <g class="bestias">
           {
-            bestias.map((b) => {
-              const caja = cajaDeFigura(b);
-              const p = punto(b.pos);
+            // Tanda 6, segunda vuelta: dos por zona (`plano-elenco.ts`), impresas como títeres de cartón (`arte-plano.ts`).
+            // Las 122 siguen en el recorrido, en los chips y en el índice; los `<symbol>` de arriba los siguen usando las fichas.
+            bestias.filter((b) => LAS_DEL_PLANO.has(b.id)).map((b) => {
+              const lugar = LUGAR_EN_EL_PLANO[b.id];
+              const p = lugar ? polar(lugar[0], lugar[1]) : punto(b.pos);
+              const caja = cajaEnElPlano(b, p, AUMENTO);
               return (
                 <g class="bestia-plano" data-id={b.id} style={`--tr: ${tintaDe(regionDe.get(b.region)!.disco)}`}>
-                  <use href={`#fig-${b.id}`} x={caja.x} y={caja.y} width={caja.ancho} height={caja.alto} />
+                  <image href={`/bestiario/plano-titere-${b.id}.webp`} x={caja.x.toFixed(1)} y={caja.y.toFixed(1)} width={caja.ancho.toFixed(1)} height={caja.alto.toFixed(1)} />
                   <g class="marca-anotada" transform={`translate(${p.x + b.tam * 0.45} ${p.y - b.tam * 0.55})`}>
                     <circle r="7" class="b-pp b-borde" />
                     <path d="M-3.5 0 l2.5 3 l4.5 -6" class="b-tz" stroke-width="2.2" />
@@ -205,6 +211,11 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
       </svg>
       {/* El aire del plano (`D-91`, tanda 6, `arte-plano.ts`): las nubes que pasan por encima del disco y, muy cada tanto,
           la lechuza. Van arriba del dibujo y debajo de los carteles; no se tocan. Con la lupa se abren. */}
+      {/* Los hitos: lo que las tandas le sumaron a cinco regiones, en chiquito. Se leen con la lupa. */}
+      {HITOS.map((h) => {
+        const [x, y, lado] = cajaDelHito(h);
+        return <img class="plano-hito" src={`/bestiario/plano-hito-${h.region}.webp`} alt="" aria-hidden="true" width="220" height="220" decoding="async" loading="lazy" style={`left: ${x / 10}%; top: ${y / 10}%; width: ${lado / 10}%`} />;
+      })}
       <img class="plano-nubes" src="/bestiario/plano-nubes.webp" alt="" width="800" height="800" decoding="async" aria-hidden="true" />
       <div class="plano-aire" aria-hidden="true">
         <img class="plano-lechuza" src="/bestiario/plano-lechuza.webp" alt="" width="180" height="144" decoding="async" loading="lazy" />
@@ -313,6 +324,12 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
   <script type="application/json" id="datos-bestiario" set:html={JSON.stringify(paraLaIsla)} />
   <script>
     import '../../scripts/bestiario.ts';
+
+    // Bajar a una región (`D-91`, tanda 6): al tocar un cartel, las nubes del borde se cierran sobre el plano mientras
+    // llega la página de la región. No demora nada: el enlace sigue su camino. Al volver, se abren.
+    const marco = document.getElementById('marco');
+    for (const cartel of document.querySelectorAll('.rotulo-region')) cartel.addEventListener('click', () => marco?.classList.add('bestiario-marco--baja'));
+    window.addEventListener('pageshow', () => marco?.classList.remove('bestiario-marco--baja'));
   </script>
 </Base>
 
@@ -338,8 +355,21 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
     width: 100%;
     height: 100%;
     pointer-events: none;
-    opacity: 0.74;
-    transition: opacity 0.5s;
+    opacity: 0.8;
+    transition: opacity 0.5s, transform 0.4s;
+  }
+
+  /* Los hitos van con el dibujo: chicos, quietos, sin toque. */
+  .plano-hito {
+    position: absolute;
+    height: auto;
+    pointer-events: none;
+  }
+
+  /* Bajar a una región: las nubes del borde se cierran sobre el disco. */
+  :global(.bestiario-marco--baja) .plano-nubes {
+    opacity: 1;
+    transform: scale(0.34) rotate(40deg);
   }
 
   /* La lechuza cruza de abajo a la izquierda hacia arriba a la derecha en unos nueve segundos, una vez cada tres cuartos de minuto. */
@@ -377,8 +407,13 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
     }
   }
 
-  /* Con movimiento reducido la lechuza no pasa. */
+  /* Con movimiento reducido la lechuza no pasa y las nubes no se cierran. */
   @media (prefers-reduced-motion: reduce) {
+    :global(.bestiario-marco--baja) .plano-nubes {
+      opacity: 0.8;
+      transform: none;
+    }
+
     .plano-lechuza {
       display: none;
     }
