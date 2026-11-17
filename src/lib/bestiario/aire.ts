@@ -167,6 +167,9 @@ export const AIRE: Readonly<Record<string, readonly CapaDeAire[]>> = {
   // sobre el agua y juncos.
   'el-bajo': [
     capa({ pieza: 'aire-bajo-vaho', plano: 'medio', f: 1.1, y: 380, alto: 260, ancho: 1300, deriva: 7, alfa: 0.7, late: 0.16, ritmo: 0.3, abre: 0.4 }),
+    // Tanda 4 de `D-91`, segunda vuelta: la niebla al ras, en la línea donde el agua del fondo se junta con la de adelante.
+    // Es una franja de 80: jirones de crayón claros que van más despacio que el piso y se abren al caminar.
+    capa({ pieza: 'aire-bajo-ras', plano: 'medio', f: 0.92, y: 432, alto: 80, ancho: 1300, deriva: -6, alfa: 0.62, late: 0.16, ritmo: 0.23, abre: 0.5 }),
     capa({ pieza: 'aire-bajo-cerca', plano: 'cerca', f: 1.75, y: 440, alto: 200, ancho: 1600, mece: 4, ritmoMece: 0.7 }),
   ],
   // Los techos (rehechos en la cuarta ronda): el humo de las chimeneas, a rayas de pastel claras como
@@ -175,6 +178,9 @@ export const AIRE: Readonly<Record<string, readonly CapaDeAire[]>> = {
   'los-techos': [
     capa({ pieza: 'aire-techos-ropa', plano: 'medio', f: 0.72, y: 150, alto: 190, ancho: 1600, mece: 5, ritmoMece: 0.9, alfa: 0.9 }),
     capa({ pieza: 'aire-techos-humo', plano: 'medio', f: 0.85, y: 40, alto: 380, ancho: 1300, deriva: -11, alfa: 0.55, late: 0.14, ritmo: 0.33, mece: 6, ritmoMece: 0.5 }),
+    // Tanda 4 de `D-91`, segunda vuelta: la niebla baja del baldío, en tandas de rayas de pastel acostadas. Anda a ras
+    // de la tierra, más rápido que el piso, y se abre al caminar.
+    capa({ pieza: 'aire-techos-rasante', plano: 'medio', f: 1.12, y: 410, alto: 210, ancho: 1300, deriva: 9, alfa: 0.6, late: 0.14, ritmo: 0.29, abre: 0.55 }),
   ],
   // La prisión es madera tallada (*Oktubre*): el frío es un rayado de gubia a ras del piso, y lo
   // pegado a la cámara son los barrotes, de arriba abajo. Se mira desde otra celda.
@@ -677,6 +683,12 @@ export const ALIVIO_DE_LA_REGION: Readonly<Record<string, number>> = { cybersibe
  * estaban hasta que alguien las mire con la lupa.
  */
 export const FRENTE_QUE_SE_CORRE: readonly string[] = ['la-mesa', 'el-galpon', 'los-astilleros', 'cybersiberia', 'el-arbol'];
+
+/**
+ * Lo mismo en los recintos enteros de la tanda 4: su franja de adelante (los yuyos del baldío, lo que flota en la sala,
+ * lo negro del borde del templo) es una imagen de la escena. La isla la busca por su pieza y la corre con la lupa.
+ */
+export const FRENTE_DEL_RECINTO: Readonly<Record<string, string>> = { 'los-techos': 'baldio-frente', 'el-bajo': 'bajo-frente', 'el-templo': 'templo-frente' };
 
 /** A cuántos píxeles de los ojos un dedo o un mouse ya los está mirando. */
 export const MIRADA = 84;
