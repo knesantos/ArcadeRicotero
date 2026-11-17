@@ -110,6 +110,46 @@ function columnaLejana(x: number, t: number, semilla: number): string {
   );
 }
 
+/** Dónde está una columna de atrás: su medio, su ancho y dónde apoya. `lado`: −1, la fila de la izquierda. */
+export const columnaDeAtras = (t: number, lado: 1 | -1): { x: number; w: number; pie: number } => ({
+  x: PUERTA_DEL_FONDO.x + lado * (236 * (1 - t) + 14),
+  w: 70 * (1 - t) * 0.7,
+  pie: enElPiso(0, t)[1] - 34 * (1 - t),
+});
+
+/**
+ * El canto que el foco les prende a las dos columnas de la izquierda que tiene justo debajo (tercera vuelta): el filo
+ * que mira al foco y la panza del espiral, en la tinta del foco. Es una capa chica que la isla sube cuando el haz les
+ * cae encima (`Luz.cantos`), así titilan con él. La más lejana termina arriba de los ojos de la bailarina (270, 480).
+ */
+export const CANTO_DE_LAS_COLUMNAS = { pieza: 'canto-templo-columnas', caja: [216, 300, 80, 226] as const, columnas: [0.62, 0.78] as const } as const;
+
+function cantoDeLasColumnas(): string {
+  const [x0, y0, w, h] = CANTO_DE_LAS_COLUMNAS.caja;
+  let s = '';
+  for (const t of CANTO_DE_LAS_COLUMNAS.columnas) {
+    const c = columnaDeAtras(t, -1);
+    const k = 1 - t;
+    // La más lejana se corta antes: abajo de 440 están los ojos de la bailarina.
+    const hasta = t > 0.7 ? Math.min(c.pie, 440) : c.pie - 2;
+    // Los dos filos: el de la derecha, que mira al foco, más cargado.
+    s += trazo(`M${f(c.x + c.w / 2 - 0.6)} 322 L${f(c.x + c.w / 2 - 0.6)} ${f(hasta)}`, P.foco, 1.2 + k * 2.4, 0.95) + trazo(`M${f(c.x - c.w / 2 + 0.6)} 340 L${f(c.x - c.w / 2 + 0.6)} ${f(hasta - 8)}`, P.foco, 0.8 + k * 1.2, 0.5);
+    s += nube(c.x + c.w * 0.2, 380, c.w * 0.5, 60, P.foco, 's', 0.3);
+    // El espiral, repasado en claro.
+    for (let y = c.pie - 46 * k; y > 330; y -= 110 * k) {
+      if (y > hasta) continue;
+      let e = '';
+      const r = 24 * k * 0.7;
+      for (let q = 0; q <= 36; q++) {
+        const a = (q / 36) * Math.PI * 4.2 + (t > 0.7 ? 2 : 1);
+        e += `${q ? 'L' : 'M'}${f(c.x + Math.cos(a) * ((r * q) / 36))} ${f(y + Math.sin(a) * ((r * q) / 36))} `;
+      }
+      s += trazo(e, P.papel, 0.8 * k + 0.5, 0.85);
+    }
+  }
+  return `<g filter="url(#grano)"><rect x="${x0}" y="${y0}" width="${w}" height="${h}" fill="var(--fondo)" fill-opacity="0"/>${s}</g>`;
+}
+
 /** Un cabezudo guardado: la cabeza de cartón en la punta de su palo. `gesto`: cómo tiene la boca. */
 function cabezudo(x: number, pie: number, r: number, gesto: 'rie' | 'serio' | 'grita', sombrero = true, caido = false): string {
   const cy = pie - r * 2.6;
@@ -302,4 +342,5 @@ export const PIEZAS_DEL_CORSO: readonly Pieza[] = [
   { nombre: 'camino-templo-nave', caja: CAJA_DE_LA_NAVE, dibujo: corsoNave(), densidad: 1.5, calidad: 72 },
   { nombre: 'camino-templo-ojos', caja: OJOS.caja, dibujo: ojosPrendidos(), densidad: 3 },
   { nombre: 'fino-templo-careta', caja: CARETA, dibujo: careta(), densidad: 4 },
+  { nombre: CANTO_DE_LAS_COLUMNAS.pieza, caja: CANTO_DE_LAS_COLUMNAS.caja, dibujo: cantoDeLasColumnas(), densidad: 2 },
 ];
