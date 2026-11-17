@@ -51,7 +51,7 @@ import { contextoVivo, despertarSalida } from '../lib/audio/contexto.ts';
 import { Charla } from '../lib/bestiario/charla.ts';
 import { PRIMER_PASO, corridaDe, crearCamara, primerPaso, transformDe, type Encuadre } from '../lib/bestiario/camara.ts';
 import {
-  ACECHOS, AIRE, ALIVIO, LUCES, MIRADA, PASO_PLENO, VIDAS, alfaDeAire, alivioDeEntrada, alivioTras, corridaDeAire, dondeCaeElHaz, saltoDeAire, tocaLaZona, despejeDeLupa, estadoDeLuz, parpadeo, pasoDeVida, rutaDelFilo, tieneFiloPropio,
+  ACECHOS, AIRE, ALIVIO, FRENTE_DEL_RECINTO, LUCES, MIRADA, PASO_PLENO, VIDAS, alfaDeAire, alivioDeEntrada, alivioTras, corridaDeAire, dondeCaeElHaz, saltoDeAire, tocaLaZona, despejeDeLupa, estadoDeLuz, parpadeo, pasoDeVida, rutaDelFilo, tieneFiloPropio,
   tocaLaLuz,
 } from '../lib/bestiario/aire.ts';
 import { ENTERA, LUPA, acotar, camConLupa, centrar, conLupa, enElMundo, enfocar, entreLentes, type Lente } from '../lib/bestiario/lupa.ts';
@@ -101,10 +101,16 @@ const respiran = [...piso.querySelectorAll<SVGGElement>('.respira')].map((el) =>
  * Lo que cuelga (`D-91`, tanda 3, tercera vuelta): un grupo del piso que gira desde su nudo, como un péndulo:
  * más largo, más lento. Solo se mueve lo que está a la vista.
  */
-const pendulan = [...piso.querySelectorAll<SVGGElement>('.pendula')].map((el, i) => ({ el, x: Number(el.dataset.x), y: Number(el.dataset.y), ritmo: 2.4 / Math.sqrt(Math.max(40, Number(el.dataset.largo)) / 100), fase: i * 1.9 }));
+const pendulan = [...piso.querySelectorAll<SVGGElement>('.pendula')].map((el, i) => ({ el, x: Number(el.dataset.x), y: Number(el.dataset.y), ritmo: 2.4 / Math.sqrt(Math.max(40, Number(el.dataset.largo)) / 100), fase: i * 1.9, flota: Number(el.dataset.flota ?? 0) }));
 const asoman = [...camino.querySelectorAll<SVGGElement | HTMLElement>('.asoma')].map((el) => ({ el, espera: Number(el.dataset.espera), quietud: 0, alfa: 0, pintado: 0 }));
 /** Lo de adelante que se corre con la lupa (`FRENTE_QUE_SE_CORRE`), y el alfa que tiene pintada. */
 const frenteQueSeCorre = { el: camino.querySelector<HTMLElement>('.capa--frente[data-se-corre]'), alfa: 1 };
+/**
+ * Lo mismo en un recinto entero (`FRENTE_DEL_RECINTO`, `D-91`, tanda 4): su franja de adelante no es una capa, es una
+ * imagen adentro de la escena. Se la busca por su pieza y se le baja el alfa al grupo que la envuelve.
+ */
+const piezaDeAdelante = FRENTE_DEL_RECINTO[datos.region];
+const frenteDelRecinto = { el: piezaDeAdelante ? (piso.querySelector<SVGImageElement>(`image[href$="/${piezaDeAdelante}.webp"]`)?.parentElement ?? null) : null, alfa: 1 };
 /** Lo que se va si lo mirás de cerca (`HUIDIZOS`): está siempre, y se apaga con la lupa puesta. */
 const huyen = [...camino.querySelectorAll<HTMLElement>('.huye')].map((el) => ({ el, alfa: 1, pintado: 1 }));
 /** El aire (`D-90`, `lib/bestiario/aire.ts`): cada capa con su receta, y el alfa que tiene pintada. */
@@ -783,7 +789,9 @@ function moverLoSuelto(desde: number, hasta: number): void {
   for (const p of pendulan) {
     if (p.x < desde - 90 || p.x > hasta + 90) continue;
     const a = 3.4 * Math.sin(reloj * p.ritmo + p.fase) + 1.2 * Math.sin(reloj * p.ritmo * 0.37 + p.fase * 2);
-    p.el.setAttribute('transform', `rotate(${a.toFixed(2)} ${p.x} ${p.y})`);
+    // Lo que flota (el bajo), además, sube y baja con el agua, a otro compás que el vaivén.
+    const sube = p.flota ? `translate(0 ${(p.flota * Math.sin(reloj * p.ritmo * 0.71 + p.fase * 1.3)).toFixed(2)}) ` : '';
+    p.el.setAttribute('transform', `${sube}rotate(${a.toFixed(2)} ${p.x} ${p.y})`);
   }
 }
 
@@ -852,6 +860,13 @@ function pintarCapas(): void {
     if (Math.abs(alfa - frenteQueSeCorre.alfa) > 0.012) {
       frenteQueSeCorre.alfa = alfa;
       frenteQueSeCorre.el.style.opacity = alfa.toFixed(3);
+    }
+  }
+  if (frenteDelRecinto.el) {
+    const alfa = despejeDeLupa('cerca', false, z);
+    if (Math.abs(alfa - frenteDelRecinto.alfa) > 0.012) {
+      frenteDelRecinto.alfa = alfa;
+      frenteDelRecinto.el.style.opacity = alfa.toFixed(3);
     }
   }
   // El aire: cada capa a su velocidad, con su viento, y el alfa que respira y se abre al paso.
