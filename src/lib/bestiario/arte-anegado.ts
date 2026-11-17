@@ -252,6 +252,57 @@ export function anegadoFondo(): string {
 }
 
 /* ------------------------------------------------------------------
+   El agua de adelante (segunda vuelta)
+   ------------------------------------------------------------------
+   De la línea de Pierre para abajo la escena repinta el agua (`bajo-agua`, recortada) y tapaba todo lo
+   del fondo: el agua de adelante seguía siendo el paño parejo. Esta mano entra **después de ese repintado**
+   y antes de los que están parados en el agua, así que les queda debajo a todos menos a Pierre, al que le
+   tapa la panza como el agua. Sigue el escorzo del fondo: las rayas son cada vez más largas y gruesas.
+*/
+
+/** La caja del agua de adelante: de la línea de Pierre al borde de abajo. */
+export const CAJA_DE_ADELANTE = [S0, PIERRE.agua - 4, SALA.ancho, 640 - PIERRE.agua + 4] as const;
+
+export function anegadoCerca(): string {
+  const [x0, y0, w, h] = CAJA_DE_ADELANTE;
+  const desde = PIERRE.agua;
+  let ondas = '';
+  // Cinco franjas, cada una con sus lomos claros y, debajo de cada lomo, lo negro del valle.
+  for (let b = 0; b < 5; b++) {
+    const k = b / 4;
+    const ya = desde + 4 + (640 - desde) * k ** 1.3 * 0.86;
+    const yb = desde + 4 + (640 - desde) * ((b + 1) / 4) ** 1.3 * 0.86;
+    const cuantos = Math.round(40 - k * 22);
+    ondas +=
+      rayado([S0, ya + 3, S1, Math.min(640, yb) + 3], cuantos, [B.negro, B.noche], 5700 + b, { largo: [50 + k * 60, 110 + k * 150], grueso: [2 + k * 2, 3.4 + k * 3.4], opacidad: [0.3, 0.6], temblor: 0.02 }) +
+      rayado([S0, ya, S1, Math.min(640, yb)], cuantos, [B.celeste, B.celeste, B.lila, B.luzFria], 5710 + b, { largo: [40 + k * 50, 90 + k * 130], grueso: [1.4 + k * 1.2, 2.4 + k * 2], opacidad: [0.32, 0.62 + k * 0.14], temblor: 0.02 });
+  }
+  // Lo que se junta donde el agua no corre: corchos, papeles y hojas, en un montón.
+  const rnd = azar(5731);
+  let resaca = nube(668, 584, 46, 9, B.negro, 'm', 0.5);
+  for (let i = 0; i < 26; i++) {
+    const [x, y] = [668 + (rnd() - 0.5) * 96 * (0.4 + rnd()), 584 + (rnd() - 0.5) * 22];
+    const t = 2.2 + rnd() * 3.4;
+    resaca += `<rect x="${f(x)}" y="${f(y)}" width="${f(t)}" height="${f(t * 0.5)}" fill="${[B.crema, B.rosa, B.lila, B.crema][i % 4]}" opacity="${f(0.5 + rnd() * 0.4)}" transform="rotate(${Math.round(rnd() * 60 - 30)} ${f(x)} ${f(y)})"/>`;
+  }
+  return (
+    `<g filter="url(#rociado)">` +
+    `<rect x="${x0}" y="${y0}" width="${w}" height="${h}" fill="var(--fondo)" fill-opacity="0"/>` +
+    // El agua tiene planos: contra la línea de Pierre, clara donde le da la lamparita; adelante, se hunde.
+    nube(430, desde + 44, 330, 30, B.celeste, 'xl', 0.2) +
+    nube(1010, desde + 50, 220, 30, B.celeste, 'xl', 0.16) +
+    nube(-110, desde + 40, 130, 26, B.celeste, 'xl', 0.14) +
+    nube(480, 650, 800, 40, B.negro, 'xl', 0.5) +
+    ondas +
+    // La lamparita del pasillo y la de la sala llegan hasta acá, en rayas cada vez más sueltas.
+    rayado([PASILLO.x0 + 16, desde + 2, PASILLO.x1 - 10, desde + 80], 16, [B.llama, B.llamaClara], 5741, { largo: [16, 50], grueso: [1.4, 2.8], opacidad: [0.25, 0.6] }) +
+    rayado([1022, desde + 2, 1082, desde + 120], 22, [B.llamaClara, B.llama, B.llamaClara], 5743, { largo: [14, 46], grueso: [1.4, 3], opacidad: [0.25, 0.65] }) +
+    resaca +
+    `</g>`
+  );
+}
+
+/* ------------------------------------------------------------------
    El que está en el pasillo
    ------------------------------------------------------------------ */
 
@@ -286,6 +337,8 @@ export interface Flota {
   /** De dónde se hamaca: un punto abajo de la línea donde flota, como la quilla. */
   x: number;
   y: number;
+  /** Cuánto sube y baja con el agua, en unidades. */
+  sube: number;
   dibujo: string;
 }
 
@@ -295,20 +348,20 @@ const hoja = ([x0, y0, w, h]: readonly [number, number, number, number], adentro
 /** Una silla de bar, patas arriba: el asiento a flor de agua y las cuatro patas para el techo, con su travesaño. */
 function silla(x: number, y: number): string {
   // Las patas: las dos de atrás, más cortas y finas; las de adelante, abiertas y torcidas por el agua.
-  const pata = (x0: number, x1: number, alto: number, w: number): string => forma(`M${f(x + x0 - w / 2)} ${f(y - 2)} L${f(x + x1 - w * 0.4)} ${f(y - alto)} L${f(x + x1 + w * 0.4)} ${f(y - alto)} L${f(x + x0 + w / 2)} ${f(y - 2)} Z`, B.negro);
+  const pata = (x0: number, x1: number, alto: number, w: number): string => forma(`M${f(x + x0 - w / 2)} ${f(y - 2)} L${f(x + x1 - w * 0.4)} ${f(y - alto)} L${f(x + x1 + w * 0.4)} ${f(y - alto)} L${f(x + x0 + w / 2)} ${f(y - 2)} Z`, B.rosa) + trazo(`M${f(x + x0 - w / 2)} ${f(y - 2)} L${f(x + x1 - w * 0.4)} ${f(y - alto)}`, B.crema, 1.1, 0.8);
   return (
     pata(-12, -15, 34, 4) +
     pata(15, 19, 36, 4) +
     // El asiento, redondo, de esterilla: se le ve el canto.
     forma(`M${x - 30} ${y} Q${x - 28} ${y - 8} ${x} ${y - 9} Q${x + 30} ${y - 8} ${x + 31} ${y + 1} Q${x + 18} ${y + 6} ${x} ${y + 6} Q${x - 20} ${y + 6} ${x - 30} ${y} Z`, B.noche) +
-    forma(`M${x - 25} ${y - 2} Q${x - 18} ${y - 7} ${x} ${y - 7.4} Q${x + 22} ${y - 7} ${x + 26} ${y - 1} Q${x + 12} ${y + 1.6} ${x} ${y + 1.6} Q${x - 14} ${y + 1.6} ${x - 25} ${y - 2} Z`, B.rosa, 0.75) +
+    forma(`M${x - 25} ${y - 2} Q${x - 18} ${y - 7} ${x} ${y - 7.4} Q${x + 22} ${y - 7} ${x + 26} ${y - 1} Q${x + 12} ${y + 1.6} ${x} ${y + 1.6} Q${x - 14} ${y + 1.6} ${x - 25} ${y - 2} Z`, B.crema, 0.8) +
     rayado([x - 20, y - 6, x + 14, y], 12, [B.noche], 5503, { angulo: 20, largo: [4, 9], grueso: [0.7, 1.1], opacidad: [0.6, 0.9] }) +
     fibra([[x - 30, y], [x - 20, y - 7.6], [x, y - 9], [x + 22, y - 7.6], [x + 31, y + 1]], 1.4, 5501, B.lila, 0.8) +
     pata(-24, -31, 44, 5.4) +
     pata(25, 33, 46, 5.4) +
     // El travesaño, y el canto de las patas que agarra la lamparita.
-    trazo(`M${x - 28} ${y - 24} L${x + 30} ${y - 26}`, B.negro, 3) +
-    trazo(`M${x - 22.6} ${y - 6} L${x - 29.6} ${y - 43} M${x + 26.4} ${y - 6} L${x + 34.4} ${y - 45}`, B.lila, 1, 0.65) +
+    trazo(`M${x - 28} ${y - 24} L${x + 30} ${y - 26}`, B.rosa, 3) +
+    trazo(`M${x - 28} ${y - 25.4} L${x + 30} ${y - 27.4}`, B.crema, 0.9, 0.8) +
     // La raya del agua contra el asiento.
     trazo(`M${x - 38} ${y + 5} q10 3 22 2 M${x + 10} ${y + 8} q16 1 30 -4`, B.luzFria, 1.3, 0.6)
   );
@@ -320,21 +373,22 @@ function bombin(x: number, y: number): string {
     forma(`M${x - 19} ${y - 2} Q${x} ${y - 7} ${x + 19} ${y - 2} Q${x + 12} ${y + 3} ${x} ${y + 3} Q${x - 12} ${y + 3} ${x - 19} ${y - 2} Z`, B.negro) +
     forma(`M${x - 11} ${y - 1} Q${x - 11} ${y + 11} ${x} ${y + 11} Q${x + 11} ${y + 11} ${x + 11} ${y - 1} Z`, B.negro) +
     `<ellipse cx="${x}" cy="${y - 2.4}" rx="10" ry="2.6" fill="${B.violeta}"/>` +
-    trazo(`M${x - 19} ${y - 2} Q${x} ${y - 7} ${x + 19} ${y - 2}`, B.lila, 1.1, 0.75) +
-    trazo(`M${x - 11} ${y + 3} Q${x} ${y + 6.4} ${x + 11} ${y + 3}`, B.rosa, 1.6, 0.8) +
+    trazo(`M${x - 19} ${y - 2} Q${x} ${y - 7} ${x + 19} ${y - 2} Q${x + 12} ${y + 3} ${x} ${y + 3} Q${x - 12} ${y + 3} ${x - 19} ${y - 2}`, B.luzFria, 1.2, 0.8) +
+    trazo(`M${x - 11} ${y + 3} Q${x} ${y + 6.4} ${x + 11} ${y + 3}`, B.llama, 2, 0.9) +
+    trazo(`M${x + 9.6} ${y + 1} Q${x + 10.6} ${y + 9} ${x + 3} ${y + 10.6}`, B.lila, 1, 0.7) +
     trazo(`M${x - 24} ${y + 5} q8 2 16 1 M${x + 10} ${y + 7} q8 0 15 -3`, B.luzFria, 1.1, 0.55)
   );
 }
 
 const SILLA = { x: 762, y: 606 } as const;
-const BOMBIN = { x: 338, y: 611 } as const;
+const BOMBIN = { x: 338, y: 600 } as const;
 
 /** Lo que flota adelante, en los huecos: debajo de los nenes de oro (que terminan en 576) y entre el bote y la botella de la sala. */
 const CAJA_DE_LA_SILLA = [SILLA.x - 44, SILLA.y - 50, 88, 62] as const;
 const CAJA_DEL_BOMBIN = [BOMBIN.x - 28, BOMBIN.y - 12, 56, 28] as const;
 export const FLOTAN: readonly Flota[] = [
-  { pieza: 'camino-bajo-silla', caja: CAJA_DE_LA_SILLA, x: SILLA.x, y: SILLA.y + 40, dibujo: hoja(CAJA_DE_LA_SILLA, silla(SILLA.x, SILLA.y)) },
-  { pieza: 'camino-bajo-bombin', caja: CAJA_DEL_BOMBIN, x: BOMBIN.x, y: BOMBIN.y + 40, dibujo: hoja(CAJA_DEL_BOMBIN, bombin(BOMBIN.x, BOMBIN.y)) },
+  { pieza: 'camino-bajo-silla', caja: CAJA_DE_LA_SILLA, x: SILLA.x, y: SILLA.y + 40, sube: 2.6, dibujo: hoja(CAJA_DE_LA_SILLA, silla(SILLA.x, SILLA.y)) },
+  { pieza: 'camino-bajo-bombin', caja: CAJA_DEL_BOMBIN, x: BOMBIN.x, y: BOMBIN.y + 40, sube: 3.4, dibujo: hoja(CAJA_DEL_BOMBIN, bombin(BOMBIN.x, BOMBIN.y)) },
 ];
 
 /** La botella con el papel adentro: lo que premia a la lupa. */
@@ -359,6 +413,7 @@ function botella(): string {
 /** Las piezas sueltas del bajo: la mano del fondo, lo que asoma, lo que flota y lo que premia a la lupa. */
 export const PIEZAS_DEL_ANEGADO: readonly Pieza[] = [
   { nombre: 'camino-bajo-fondo', caja: CAJA_DEL_FONDO, dibujo: anegadoFondo(), densidad: 2 },
+  { nombre: 'camino-bajo-cerca', caja: CAJA_DE_ADELANTE, dibujo: anegadoCerca(), densidad: 1.5 },
   { nombre: 'camino-bajo-figura', caja: FIGURA.caja, dibujo: figura(), densidad: 3 },
   ...FLOTAN.map((fl): Pieza => ({ nombre: fl.pieza, caja: fl.caja, dibujo: fl.dibujo, densidad: 2.5 })),
   { nombre: 'fino-bajo-botella', caja: BOTELLA, dibujo: botella(), densidad: 4 },
