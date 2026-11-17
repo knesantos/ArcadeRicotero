@@ -205,8 +205,8 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
       </svg>
       {/* El aire del plano (`D-91`, tanda 6, `arte-plano.ts`): las nubes que pasan por encima del disco y, muy cada tanto,
           la lechuza. Van arriba del dibujo y debajo de los carteles; no se tocan. Con la lupa se abren. */}
+      <img class="plano-nubes" src="/bestiario/plano-nubes.webp" alt="" width="800" height="800" decoding="async" aria-hidden="true" />
       <div class="plano-aire" aria-hidden="true">
-        <img class="plano-nubes" src="/bestiario/plano-nubes.webp" alt="" width="800" height="800" decoding="async" />
         <img class="plano-lechuza" src="/bestiario/plano-lechuza.webp" alt="" width="180" height="144" decoding="async" loading="lazy" />
       </div>
       <img class="portal-luz" src="/bestiario/portal-luz.webp" alt="" width="460" height="460" decoding="async" />
@@ -328,15 +328,18 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
     transition: opacity 0.5s;
   }
 
-  /* Las nubes dan la vuelta con el disco: una vuelta cada cinco minutos y pico. */
+  /* Las nubes están quietas. En la primera versión daban la vuelta con el disco, una cada cinco minutos: no se llegaba a
+     ver que giraban y, medido contra main en ocho tandas, el plano costaba entre un 6 % y un 95 % más por cuadro, con el
+     recorte redondo y sin él. Una capa que se mueve siempre obliga a componer el plano entero en cada cuadro. Quietas no
+     cuestan; lo único que les pasa es que se abren con la lupa. */
   .plano-nubes {
     position: absolute;
-    left: -1.44%;
-    top: -1.44%;
-    width: 102.88%;
-    height: 102.88%;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
     opacity: 0.74;
-    animation: plano-gira 320s linear infinite;
+    transition: opacity 0.5s;
   }
 
   /* La lechuza cruza de abajo a la izquierda hacia arriba a la derecha en unos nueve segundos, una vez cada tres cuartos de minuto. */
@@ -351,14 +354,9 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
   }
 
   /* Con la lupa puesta, acercarse es meterse abajo de las nubes: se abren del todo. */
+  :global(.bestiario-marco--lupa) .plano-nubes,
   :global(.bestiario-marco--lupa) .plano-aire {
     opacity: 0;
-  }
-
-  @keyframes plano-gira {
-    to {
-      transform: rotate(360deg);
-    }
   }
 
   @keyframes plano-cruza {
@@ -379,13 +377,8 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
     }
   }
 
-  /* Con movimiento reducido las nubes quedan quietas y más flojas, y la lechuza no pasa. */
+  /* Con movimiento reducido la lechuza no pasa. */
   @media (prefers-reduced-motion: reduce) {
-    .plano-nubes {
-      animation: none;
-      opacity: 0.4;
-    }
-
     .plano-lechuza {
       display: none;
     }

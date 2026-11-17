@@ -5,15 +5,15 @@
  * distancia del ojo. Lo que le faltaba para ser un lugar es lo mismo que les faltaba a los caminos antes
  * de `D-90`: **algo en el medio**. Acá el medio es el cielo de la noche, mirado desde arriba:
  *
- * - **Las nubes** (`plano-nubes`): bancos de niebla en jirones que pasan despacio por encima del disco,
- *   dando la vuelta con él como da la vuelta un disco. No tapan: tienen huecos, y en el medio (el galpón)
- *   casi no hay. Con la lupa se abren del todo: acercarse es meterse abajo de ellas.
+ * - **Las nubes** (`plano-nubes`): bancos de niebla en jirones por encima del disco, acostados a lo largo
+ *   de su vuelta. No tapan: tienen huecos, y en el medio (el galpón) casi no hay. Están quietas (girando
+ *   costaban cuadros y no se notaba). Con la lupa se abren del todo: acercarse es meterse abajo de ellas.
  * - **La lechuza** (`plano-lechuza`): muy cada tanto cruza el plano un pájaro grande, visto desde arriba,
  *   con su mancha en el piso corrida para un lado. Es lo que cruza lejos, raro, de a uno.
  *
  * Es aerógrafo con grano, impreso, en las tintas de la entrada (`arte-portal.ts`): la niebla y la luna.
  * La página las pone arriba del dibujo y debajo de los carteles, que son lo que se toca; solo se mueven
- * con `transform` y `opacity`, y con movimiento reducido quedan quietas.
+ * con `transform` y `opacity`, y con movimiento reducido la lechuza no pasa.
  */
 
 import { forma, nube, type Pieza } from './aerografo.ts';

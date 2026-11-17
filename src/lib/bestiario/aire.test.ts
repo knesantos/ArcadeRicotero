@@ -1722,19 +1722,25 @@ test('D-91/t5v2: las galerías altas fugan con el pasillo, el haz une la ventana
    `D-91`, tanda 6: el plano del bestiario
    ------------------------------------------------------------------ */
 
-test('D-91/t6: el plano tiene aire: nubes en bancos con huecos que dan la vuelta con el disco, y la lechuza que cruza cada tanto', async () => {
+test('D-91/t6: el plano tiene aire: nubes quietas en bancos con huecos, y la lechuza que cruza cada tanto', async () => {
   const pagina = readFileSync('src/pages/redondopedia/bestiario.astro', 'utf-8');
   // Van arriba del dibujo y debajo de la luz y de los carteles, que son lo que se toca; y no se tocan.
-  const [mapa, aire, luz, rotulos] = ['</svg>\n      {/* El aire del plano', 'class="plano-aire" aria-hidden="true"', 'class="portal-luz"', 'class="bestiario-rotulos"'].map((x) => pagina.indexOf(x));
+  const [mapa, aire, luz, rotulos] = ['</svg>\n      {/* El aire del plano', 'class="plano-nubes"', 'class="portal-luz"', 'class="bestiario-rotulos"'].map((x) => pagina.indexOf(x));
   assert.ok(mapa > 0 && aire > mapa && luz > aire && rotulos > luz, 'el aire del plano no está entre el dibujo y los carteles');
   assert.match(pagina, /\.plano-aire \{[^}]*pointer-events: none;/);
+  assert.match(pagina, /\.plano-nubes \{[^}]*pointer-events: none;/);
+  // Las nubes van fuera del recorte redondo de la lechuza: girar adentro de un recorte se paga en cada cuadro.
+  assert.ok(pagina.indexOf('class="plano-nubes"') < pagina.indexOf('<div class="plano-aire"'));
   // Solo `transform` y `opacity`, sobre imágenes sueltas: nada animado adentro del SVG del plano.
   const estilo = pagina.slice(pagina.indexOf('<style>'));
   for (const cuadros of estilo.matchAll(/@keyframes [a-z-]+ \{([\s\S]*?)\n  \}/g)) assert.doesNotMatch(cuadros[1]!.replace(/transform:|opacity:/g, ''), /[a-z-]+:/, 'una animación del plano mueve otra cosa que transform y opacity');
   assert.doesNotMatch(estilo, /shadow|gradient|blur|#[0-9a-f]{3,6}\b/i);
   // Con la lupa se abren del todo; con movimiento reducido quedan quietas y la lechuza no pasa.
-  assert.match(estilo, /:global\(\.bestiario-marco--lupa\) \.plano-aire \{\s*opacity: 0;/);
-  assert.match(estilo, /prefers-reduced-motion: reduce\) \{\s*\.plano-nubes \{\s*animation: none;[\s\S]*\.plano-lechuza \{\s*display: none;/);
+  assert.match(estilo, /:global\(\.bestiario-marco--lupa\) \.plano-nubes,\s*:global\(\.bestiario-marco--lupa\) \.plano-aire \{\s*opacity: 0;/);
+  assert.match(estilo, /prefers-reduced-motion: reduce\) \{\s*\.plano-lechuza \{\s*display: none;/);
+  // Las nubes no se mueven: girando no se notaba y costaba cuadros (medido contra main). Lo único animado es la lechuza.
+  assert.doesNotMatch(/\.plano-nubes \{[^}]*\}/.exec(estilo)![0], /animation|will-change/);
+  assert.equal((estilo.match(/@keyframes/g) ?? []).length, 1);
   // Lo que cruza es raro: una vez cada medio minuto o más, y visible menos de un cuarto de ese tiempo.
   const ciclo = Number(/animation: plano-cruza (\d+)s/.exec(estilo)![1]);
   assert.ok(ciclo >= 30 && /20\.5%,\s*100% \{/.test(estilo));
