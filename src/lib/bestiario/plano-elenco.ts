@@ -64,11 +64,14 @@ export const LUGAR_EN_EL_PLANO: Readonly<Record<string, readonly [number, number
   // Los techos y el monte son porciones cortas (de 250 a 425): una más adentro y otra más afuera, a los lados del cartel.
   'mi-perro-dinamita': [286, 298],
   'el-negro-atila': [263, 384],
-  'el-rey-de-esta-jungla': [298, 314],
-  'el-lobo-suelto': [332, 380],
+  // Tercera vuelta: el cartel del monte está en la punta de la derecha (333, 391). El lobo va a la otra punta, y la cruz, adentro.
+  'el-rey-de-esta-jungla': [338, 298],
+  'el-lobo-suelto': [301, 388],
   // La pastura es un claro redondo adentro del monte, con su cartel en el medio: una arriba y otra abajo.
-  'el-cordero-atado': [311, 290],
-  'aquella-solitaria-vaca-cubana': [323, 370],
+  'el-cordero-atado': [317, 274],
+  'aquella-solitaria-vaca-cubana': [317, 388],
+  // La Pontiac estaba en 140, detrás del molinete del portal: pasa al otro lado del cartel de la ruta.
+  'la-mariposa-pontiac': [206, 454],
   'el-canibal': [271, 198],
   'la-mosca': [324, 198],
 };

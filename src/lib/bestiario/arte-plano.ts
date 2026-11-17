@@ -196,20 +196,85 @@ export interface TitereDelPlano {
   tam: number;
 }
 
+/* Tercera vuelta: el gesto. Cinco protagonistas se redibujan acá, cada uno en su pose, en vez de salir del molde de
+   `figuras.ts` (que sigue igual para las fichas): el gordo Pierre brindando con el agua a la cintura, Barbazul con la
+   barba hasta la panza y la llave, Luzbelito con la llama en la cabeza, Momo como el medallón que cuelga, y el lobo
+   aullando. Los otros veintiuno salen del molde. Todos, propios o de molde, pasan por el mismo aerógrafo. */
+
+const N = 'var(--fondo)';
+const P_ = 'var(--papel)';
+const ORO = 'var(--acento-2)';
+const raya = (d: string, color: string, ancho: number): string => `<path d="${d}" fill="none" stroke="${color}" stroke-width="${ancho}" stroke-linecap="round" stroke-linejoin="round"/>`;
+const lleno = (d: string, color: string): string => `<path d="${d}" fill="${color}"/>`;
+
+/** Los que tienen dibujo propio: en la caja de 100 × 100 de las figuras, con el piso en 92. */
+export const PROPIOS: Readonly<Record<string, (tr: string) => string>> = {
+  // *"El gordo Pierre"*: una panza enorme con el agua a la cintura, la cabeza chica echada para atrás, y la botella en alto.
+  'el-gordo-pierre': () =>
+    `<ellipse cx="50" cy="64" rx="37" ry="29" fill="${N}"/>` +
+    lleno('M22 54 Q4 40 12 16 L22 19 Q20 36 34 46 Z', N) +
+    lleno('M9 0 l9 1 l-1 19 l-10 -1 Z', 'var(--bestia-pierre-verde)') + lleno('M9.6 8 l8 1 l-0.4 6 l-8 -1 Z', P_) +
+    `<circle cx="52" cy="27" r="17.5" fill="${P_}"/>` +
+    raya('M40 21 q5 -4 9 0 M56 21 q5 -4 9 0', N, 2.6) +
+    lleno('M41 32 Q52 46 65 31 Q52 37 41 32 Z', N) +
+    `<ellipse cx="53" cy="28.4" rx="4.4" ry="3.2" fill="var(--disco-gulp-tinta)"/>` +
+    lleno('M49 44.6 l7 0 l4 25 l-7.4 7 l-6.6 -7 Z', 'var(--disco-gulp-tinta)') +
+    `<path d="M10 82 q40 13 80 0" fill="none" stroke="${P_}" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="8 5"/>`,
+  // Barbazul: alto, el pelo hasta los hombros, la barba azul hasta la panza, y la llave del cuarto colgando de la mano.
+  barbazul: () =>
+    lleno('M28 92 L33 40 Q50 30 67 40 L73 92 Z', N) +
+    lleno('M32 12 Q50 -4 68 12 L72 54 L62 30 L38 30 L28 54 Z', N) +
+    lleno('M38 13 Q50 7 62 13 L62 30 L38 30 Z', P_) +
+    `<circle cx="45" cy="20.6" r="2.4" fill="${N}"/><circle cx="56" cy="20.6" r="2.4" fill="${N}"/>` + raya('M41 15.6 l7 2 M60 15.6 l-7 2', N, 1.8) +
+    lleno('M36 26 Q50 21 64 26 Q68 54 50 76 Q32 54 36 26 Z', 'var(--disco-un-baion-para-el-ojo-idiota-apoyo)') +
+    raya('M43 34 q2 16 6 32 M57 34 q-2 15 -5 30 M50 30 l0 20', N, 1.5) +
+    raya('M69 46 L80 58', N, 6.4) +
+    `<circle cx="82" cy="63" r="4.4" fill="none" stroke="${ORO}" stroke-width="2.6"/>` + raya('M82 67.4 l0 15 l4.4 0 M82 77 l4 0', ORO, 2.4),
+  // Luzbelito: el busto, los cuernitos, la cara de nene serio y la llama prendida arriba de la cabeza.
+  luzbelito: () =>
+    lleno('M20 92 Q23 62 50 57 Q77 62 80 92 Z', N) +
+    lleno('M36 34 L29 15 L43 29 Z M64 34 L71 15 L57 29 Z', N) +
+    `<circle cx="50" cy="43" r="17.6" fill="${P_}"/>` +
+    raya('M41 39 l7 2.4 M59 39 l-7 2.4', N, 2.4) + `<circle cx="44.6" cy="44.6" r="2.2" fill="${N}"/><circle cx="55.4" cy="44.6" r="2.2" fill="${N}"/>` + raya('M44 53 q6 -3 12 0', N, 2) +
+    lleno('M50 27 Q38 14 50 -8 Q54 5 61 10 Q63 21 50 27 Z', 'var(--entorno-infierno-fuego)') + lleno('M50 25 Q45 16 50 5 Q56 14 50 25 Z', ORO),
+  // Momo: el medallón de la tapa, colgado de su cordón, con el ceño y la boca para abajo.
+  momo: () =>
+    raya('M50 -14 L50 14', N, 2.6) + `<circle cx="50" cy="12" r="4" fill="none" stroke="${N}" stroke-width="2.4"/>` +
+    `<circle cx="50" cy="53" r="38" fill="var(--disco-momo-sampler-tinta)"/><circle cx="50" cy="53" r="38" fill="none" stroke="${N}" stroke-width="3.2"/>` +
+    raya('M30 30 q20 -10 40 0 M35 24 q15 -6 30 0', 'var(--disco-momo-sampler-apoyo)', 1.8) +
+    raya('M25 41 Q36 30 46 43 M54 43 Q64 30 75 41', N, 3.6) +
+    `<ellipse cx="37" cy="49.4" rx="6.4" ry="4.2" fill="${N}"/><ellipse cx="63" cy="49.4" rx="6.4" ry="4.2" fill="${N}"/>` +
+    lleno('M50 45 L43.6 63 L56.4 63 Z', 'var(--disco-momo-sampler-apoyo)') +
+    lleno('M31 78 Q50 62 69 78 Q50 71 31 78 Z', N),
+  // El lobo suelto: parado en las cuatro patas, el hocico para el cielo, aullando. El ojo, de oro.
+  'el-lobo-suelto': (tr) =>
+    lleno('M12 54 Q-7 57 2 82 Q8 67 19 63 Z', N) +
+    lleno('M10 70 Q4 50 16 44 L44 40 L57 29 L63 4 L71 21 L84 8 L80 29 L93 33 L79 40 L74 47 L70 60 L74 92 L64 92 L60 68 L40 70 L36 92 L26 92 L26 70 Q18 74 10 70 Z', N) +
+    lleno('M57 44 Q66 52 62 65 L55 58 Z', tr) +
+    `<circle cx="72.4" cy="26" r="2.6" fill="${ORO}"/>` + lleno('M83 30 l3 5.4 l2.2 -5 Z', P_),
+};
+
 function titere(b: TitereDelPlano, tr: string): string {
   const [x, y, w, h] = CAJA_DEL_TITERE;
   const id = `rc-${b.id}`;
+  const figura = PROPIOS[b.id]?.(tr) ?? conTinta(dibujarGrupo(b.dibujo, b.cantidad ?? 1), tr);
   return (
-    // El recorte: la silueta engordada dos veces. Afuera, el canto en la tinta de la región; adentro, el papel.
-    `<filter id="${id}" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">` +
+    // El aerógrafo y el recorte, en un solo filtro. **La luz**: lo que la silueta tiene y su copia soplada y corrida no,
+    // que es el canto de arriba a la izquierda; se sopla y se tiñe con la tinta de la región, así lo negro deja de ser
+    // un plano y tiene bulto. **El recorte**: la silueta engordada dos veces, el canto en esa tinta y adentro el papel.
+    `<filter id="${id}" x="-25%" y="-25%" width="150%" height="150%" color-interpolation-filters="sRGB">` +
+    `<feGaussianBlur in="SourceAlpha" stdDeviation="3" result="soplada"/><feOffset in="soplada" dx="3.4" dy="4" result="corrida"/>` +
+    `<feComposite in="SourceAlpha" in2="corrida" operator="out" result="filo"/><feGaussianBlur in="filo" stdDeviation="1.8" result="filoSoplado"/>` +
+    `<feFlood flood-color="${tr}" flood-opacity="0.72"/><feComposite in2="filoSoplado" operator="in" result="tinta"/><feComposite in="tinta" in2="SourceAlpha" operator="in" result="luz"/>` +
     `<feMorphology in="SourceAlpha" operator="dilate" radius="5.4" result="gordo"/><feFlood flood-color="${tr}"/><feComposite in2="gordo" operator="in" result="canto"/>` +
     `<feMorphology in="SourceAlpha" operator="dilate" radius="3.2" result="medio"/><feFlood flood-color="var(--papel)"/><feComposite in2="medio" operator="in" result="papel"/>` +
-    `<feMerge><feMergeNode in="canto"/><feMergeNode in="papel"/><feMergeNode in="SourceGraphic"/></feMerge></filter>` +
-    `<g filter="url(#grano)"><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${T.negro}" fill-opacity="0"/>` +
+    `<feMerge><feMergeNode in="canto"/><feMergeNode in="papel"/><feMergeNode in="SourceGraphic"/><feMergeNode in="luz"/></feMerge></filter>` +
+    // El grano es el grueso, el del rociado: es cartulina pintada a soplete, no un ícono.
+    `<g filter="url(#rociado)"><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${T.negro}" fill-opacity="0"/>` +
     // El palito, de madera, que asoma por abajo.
     `<path d="M50 84 L51 ${y + h - 3}" fill="none" stroke="var(--portal-madera)" stroke-width="5" stroke-linecap="round"/>` +
     `<path d="M48.6 96 L49.4 ${y + h - 5}" fill="none" stroke="var(--portal-madera-honda)" stroke-width="1.4"/>` +
-    `<g filter="url(#${id})">${conTinta(dibujarGrupo(b.dibujo, b.cantidad ?? 1), tr)}</g>` +
+    `<g filter="url(#${id})">${figura}</g>` +
     `</g>`
   );
 }
