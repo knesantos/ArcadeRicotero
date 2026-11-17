@@ -20,7 +20,7 @@
  * Los cabezudos son invento: ninguna letra los nombra. Son de corso, que es de lo que es el templo.
  */
 
-import { forma, nube, soplo, trazo, type Pieza } from './aerografo.ts';
+import { forma, nube, trazo, type Pieza } from './aerografo.ts';
 import { azar } from './pincel.ts';
 import { cinta, fuga } from './escorzo.ts';
 import { marcoDelRecinto } from './rig.ts';
@@ -68,14 +68,15 @@ function damero(): string {
       const medio = (a[0] + b[0] + c[0] + d[0]) / 4;
       if (medio < D0 - 80 || medio > D1 + 80) continue;
       // Más clara cerca de la lengua de luz y cerca del que mira.
-      const luz = Math.max(0.16, 1 - Math.abs(medio - (LENGUA.desde[0] + PUERTA_DEL_FONDO.x) / 2) / 620);
-      s += forma(`M${f(a[0])} ${f(a[1])} L${f(b[0])} ${f(b[1])} L${f(c[0])} ${f(c[1])} L${f(d[0])} ${f(d[1])} Z`, P.peltre, (0.1 + 0.2 * (1 - t0)) * luz);
+      // Segunda vuelta: en las alas el damero no se veía (bajaba a 0,16 de su fuerza). Ahora no baja de la mitad, y es más claro en todos lados.
+      const luz = Math.max(0.5, 1 - Math.abs(medio - (LENGUA.desde[0] + PUERTA_DEL_FONDO.x) / 2) / 900);
+      s += forma(`M${f(a[0])} ${f(a[1])} L${f(b[0])} ${f(b[1])} L${f(c[0])} ${f(c[1])} L${f(d[0])} ${f(d[1])} Z`, P.peltre, (0.2 + 0.34 * (1 - t0)) * luz);
     }
   }
   // Las juntas que fugan: unas pocas, finas, que se pierden antes de llegar.
   for (let i = -14; i <= 14; i++) {
     const [a, b] = [enElPiso(PUERTA_DEL_FONDO.x + i * PASO, 0), enElPiso(PUERTA_DEL_FONDO.x + i * PASO, 0.9)];
-    s += trazo(`M${f(a[0])} ${f(a[1])} L${f(b[0])} ${f(b[1])}`, P.peltre, 0.8, 0.22);
+    s += trazo(`M${f(a[0])} ${f(a[1])} L${f(b[0])} ${f(b[1])}`, P.plata, 0.8, 0.2);
   }
   return s;
 }
@@ -110,7 +111,7 @@ function columnaLejana(x: number, t: number, semilla: number): string {
 }
 
 /** Un cabezudo guardado: la cabeza de cartón en la punta de su palo. `gesto`: cómo tiene la boca. */
-function cabezudo(x: number, pie: number, r: number, gesto: 'rie' | 'serio' | 'grita', sombrero = true): string {
+function cabezudo(x: number, pie: number, r: number, gesto: 'rie' | 'serio' | 'grita', sombrero = true, caido = false): string {
   const cy = pie - r * 2.6;
   const cabeza = `M${f(x - r)} ${f(cy)} C${f(x - r)} ${f(cy - r * 1.3)} ${f(x + r)} ${f(cy - r * 1.3)} ${f(x + r)} ${f(cy)} C${f(x + r)} ${f(cy + r * 0.9)} ${f(x + r * 0.5)} ${f(cy + r * 1.25)} ${f(x)} ${f(cy + r * 1.25)} C${f(x - r * 0.5)} ${f(cy + r * 1.25)} ${f(x - r)} ${f(cy + r * 0.9)} ${f(x - r)} ${f(cy)} Z`;
   const boca =
@@ -123,6 +124,10 @@ function cabezudo(x: number, pie: number, r: number, gesto: 'rie' | 'serio' | 'g
         : trazo(`M${f(x - r * 0.4)} ${f(cy + r * 0.74)} Q${f(x)} ${f(cy + r * 0.62)} ${f(x + r * 0.42)} ${f(cy + r * 0.78)}`, P.negro, r * 0.09);
   const adentro =
     forma(cabeza, P.peltre) +
+    // La frente y el cachete que mira a la guirnalda, soplados: es cartón pintado, con bulto.
+    nube(x - r * 0.24, cy - r * 0.36, r * 0.66, r * 0.7, P.plata, 'm', 0.26) +
+    nube(x - r * 0.56, cy + r * 0.34, r * 0.3, r * 0.24, P.foco, 's', 0.26) +
+    nube(x + r * 0.5, cy + r * 0.36, r * 0.3, r * 0.26, P.negro, 's', 0.5) +
     // El volumen: oscuro de abajo y del lado de lo negro; arriba, el foco tibio de la guirnalda.
     nube(x + r * 0.3, cy + r * 0.7, r * 1.1, r * 0.9, P.negro, 'm', 0.85) +
     nube(x + r * 0.9, cy, r * 0.5, r * 1.2, P.negro, 's', 0.8) +
@@ -133,7 +138,11 @@ function cabezudo(x: number, pie: number, r: number, gesto: 'rie' | 'serio' | 'g
     nube(x + r * 0.02, cy + r * 0.26, r * 0.22, r * 0.2, P.plata, 'xs', 0.34) +
     nube(x + r * 0.1, cy + r * 0.4, r * 0.22, r * 0.1, P.negro, 'xs', 0.8) +
     trazo(`M${f(x - r * 0.68)} ${f(cy - r * 0.44)} Q${f(x - r * 0.4)} ${f(cy - r * 0.6)} ${f(x - r * 0.14)} ${f(cy - r * 0.4)} M${f(x + r * 0.16)} ${f(cy - r * 0.4)} Q${f(x + r * 0.44)} ${f(cy - r * 0.62)} ${f(x + r * 0.7)} ${f(cy - r * 0.42)}`, P.negro, r * 0.08) +
-    boca;
+    boca +
+    // El cartón rajado: un tajo que baja de la coronilla al ojo, un pedazo que saltó y la pintura descascarada.
+    trazo(`M${f(x + r * 0.2)} ${f(cy - r * 1.06)} l${f(-r * 0.12)} ${f(r * 0.26)} l${f(r * 0.14)} ${f(r * 0.16)} l${f(-r * 0.1)} ${f(r * 0.3)} l${f(r * 0.1)} ${f(r * 0.1)}`, P.negro, r * 0.045) +
+    forma(`M${f(x + r * 0.7)} ${f(cy + r * 0.6)} l${f(r * 0.3)} ${f(-r * 0.3)} l${f(r * 0.1)} ${f(r * 0.5)} Z`, P.negro) +
+    [[-0.7, 0.5, 0.16], [0.3, -0.7, 0.12], [-0.1, 1, 0.1]].map(([dx, dy, t]) => nube(x + r * dx!, cy + r * dy!, r * t!, r * t! * 0.7, P.papel, 'xs', 0.3)).join('');
   // El sombrero: una galerita abollada, o el bonete.
   const galera = sombrero
     ? forma(`M${f(x - r * 0.9)} ${f(cy - r * 0.86)} L${f(x + r * 0.84)} ${f(cy - r * 1)} L${f(x + r * 0.5)} ${f(cy - r * 1.04)} L${f(x + r * 0.42)} ${f(cy - r * 1.66)} L${f(x - r * 0.5)} ${f(cy - r * 1.56)} L${f(x - r * 0.5)} ${f(cy - r * 0.94)} Z`, P.negro) +
@@ -141,6 +150,9 @@ function cabezudo(x: number, pie: number, r: number, gesto: 'rie' | 'serio' | 'g
       trazo(`M${f(x - r * 0.5)} ${f(cy - r * 1.04)} L${f(x + r * 0.5)} ${f(cy - r * 1.14)}`, P.plata, r * 0.07, 0.5)
     : forma(`M${f(x - r * 0.6)} ${f(cy - r * 0.92)} L${f(x + r * 0.1)} ${f(cy - r * 2.2)} L${f(x + r * 0.62)} ${f(cy - r * 0.96)} Z`, P.negro) + trazo(`M${f(x - r * 0.44)} ${f(cy - r * 1.14)} L${f(x + r * 0.1)} ${f(cy - r * 2.2)}`, P.foco, 1.2, 0.5) + nube(x + r * 0.1, cy - r * 2.2, r * 0.12, r * 0.12, P.plata, 'xs', 0.7);
   const tunica = `M${f(x - r * 1.04)} ${f(cy + r * 1.3)} L${f(x + r * 1.04)} ${f(cy + r * 1.26)} L${f(x + r * 0.84)} ${f(pie - 7)} L${f(x + r * 0.4)} ${f(pie - 3)} L${f(x)} ${f(pie - 9)} L${f(x - r * 0.44)} ${f(pie - 4)} L${f(x - r * 0.9)} ${f(pie - 8)} Z`;
+  const cara = recortado(cabeza, adentro) + galera;
+  // El que se cayó: quedó la cabeza sola en el piso, de costado, mirando para acá.
+  if (caido) return nube(x + r * 0.2, pie + 1, r * 1.3, 4, P.negro, 's', 0.95) + `<g transform="translate(0 ${f(pie - r * 0.86 - cy)}) rotate(72 ${f(x)} ${f(cy)})">${cara}</g>`;
   return (
     // El palo, el travesaño de los hombros y la túnica colgando; al pie, la mancha.
     nube(x + 4, pie, r * 0.6, 3, P.negro, 's', 0.9) +
@@ -155,16 +167,16 @@ function cabezudo(x: number, pie: number, r: number, gesto: 'rie' | 'serio' | 'g
         [1.64, 2.04, 2.44].map((d) => `<circle cx="${f(x + r * 0.04)}" cy="${f(cy + r * d)}" r="${f(r * 0.1)}" fill="${P.plata}" opacity="0.4"/>`).join(''),
     ) +
     trazo(`M${f(x - r * 1.04)} ${f(cy + r * 1.32)} L${f(x + r * 1.04)} ${f(cy + r * 1.26)}`, P.peltre, 1.4, 0.7) +
-    recortado(cabeza, adentro) +
-    galera
+    cara
   );
 }
 
 /** Los cabezudos: `[x, pie, radio, gesto, con galera]`. El primero es el de la entrada, al que se le prenden los ojos. */
-export const CABEZUDOS: readonly (readonly [number, number, number, 'rie' | 'serio' | 'grita', boolean])[] = [
-  [-4, 562, 30, 'rie', true],
-  [760, 556, 33, 'serio', false],
-  [1092, 478, 27, 'grita', true],
+export const CABEZUDOS: readonly (readonly [number, number, number, 'rie' | 'serio' | 'grita', boolean, boolean])[] = [
+  [-4, 562, 30, 'rie', true, false],
+  // El del medio se cayó del palo (segunda vuelta): la cabeza sola, en el piso, entre el Morta y el doctor Saturno.
+  [760, 574, 31, 'serio', false, true],
+  [1092, 478, 27, 'grita', true, false],
 ];
 
 /** La mano de abajo del templo: entra después del telón (`templo-lejos`) y antes de todos los demás. */
@@ -177,7 +189,9 @@ export function corsoNave(): string {
   let columnas = '';
   [0.4, 0.62, 0.78].forEach((t, i) => {
     const abre = 236 * (1 - t) + 14;
-    columnas = columnaLejana(px - abre, t, i) + columnaLejana(px + abre, t, i + 3) + columnas;
+    // Entre un par y el que tiene adelante, la bruma del incienso: lo de atrás queda más claro y más borrado.
+    const bruma = i ? nube(px, enElPiso(0, t)[1] - 70 * (1 - t), 250 * (1 - t) + 70, 46 * (1 - t) + 16, P.peltre, 'l', 0.24) : '';
+    columnas = columnaLejana(px - abre, t, i) + columnaLejana(px + abre, t, i + 3) + bruma + columnas;
   });
   // Serpentina pisada: aplastada contra el piso, más grande cuanto más cerca.
   let serpentinas = '';
@@ -212,9 +226,13 @@ export function corsoNave(): string {
     nube(px + 420, py - 22, 300, 26, P.peltre, 'xl', 0.12) +
     damero() +
     // El piso devuelve la guirnalda en tres charcos de luz, y se apaga hacia los costados.
-    nube(450, 560, 330, 40, P.peltre, 'xl', 0.22) +
-    nube(D0 + 150, 580, 160, 30, P.peltre, 'xl', 0.14) +
-    nube(D1 - 190, 580, 180, 30, P.peltre, 'xl', 0.14) +
+    nube(450, 556, 360, 48, P.peltre, 'xl', 0.34) +
+    nube(D0 + 150, 566, 200, 44, P.peltre, 'xl', 0.3) +
+    nube(D1 - 220, 566, 240, 44, P.peltre, 'xl', 0.3) +
+    nube(880, 520, 200, 30, P.peltre, 'xl', 0.2) +
+    // La bruma del incienso, baja, en dos bancos a media nave.
+    nube(110, 474, 170, 16, P.plata, 'l', 0.1) +
+    nube(900, 480, 220, 18, P.plata, 'l', 0.1) +
     // La puerta del fondo: el resplandor, el vano prendido y los telones recogidos.
     nube(px, py - ph * 0.5, pw * 3.4, ph * 1.3, P.foco, 'l', 0.3) +
     forma(`M${px - pw / 2} ${py} L${px - pw / 2 + 1} ${py - ph + 5} Q${px} ${py - ph - 6} ${px + pw / 2 - 1} ${py - ph + 5} L${px + pw / 2} ${py} Z`, P.foco, 0.92) +
@@ -228,9 +246,7 @@ export function corsoNave(): string {
     columnas +
     serpentinas +
     picado +
-    CABEZUDOS.map(([x, pie, r, gesto, galera]) => cabezudo(x, pie, r, gesto, galera)).join('') +
-    // Adelante de todo se apaga: abajo, el borde de la vista.
-    soplo(`M${x0 - 10} 610 L${x0 + w + 10} 610 L${x0 + w + 10} ${ALTO + 20} L${x0 - 10} ${ALTO + 20} Z`, P.negro, 'l', 0.5) +
+    CABEZUDOS.map(([x, pie, r, gesto, galera, caido]) => cabezudo(x, pie, r, gesto, galera, caido)).join('') +
     `</g>`
   );
 }
@@ -282,7 +298,8 @@ function careta(): string {
 /** Las piezas sueltas del templo: la nave, lo que asoma y lo que premia a la lupa. */
 export const PIEZAS_DEL_CORSO: readonly Pieza[] = [
   // El grano del rociado sobre el damero pesa: se comprime un poco más, que acá no hay filo que cuidar.
-  { nombre: 'camino-templo-nave', caja: CAJA_DE_LA_NAVE, dibujo: corsoNave(), densidad: 2, calidad: 66 },
+  // Segunda vuelta: de 2 a 1,5 píxeles por unidad. Es aerógrafo: no tiene filo que cuidar, y así pesa la mitad y ocupa 3,5 MB menos decodificada.
+  { nombre: 'camino-templo-nave', caja: CAJA_DE_LA_NAVE, dibujo: corsoNave(), densidad: 1.5, calidad: 72 },
   { nombre: 'camino-templo-ojos', caja: OJOS.caja, dibujo: ojosPrendidos(), densidad: 3 },
   { nombre: 'fino-templo-careta', caja: CARETA, dibujo: careta(), densidad: 4 },
 ];
