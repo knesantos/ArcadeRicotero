@@ -36,6 +36,11 @@ import { FAROL, OJO } from './arte-bonete.ts';
 import { ARBOL, ASTILLERO, CYBER, OJOS_DE_LA_MESA } from './rig-entornos.ts';
 import { VISTA_MIN, corrimiento } from './camino.ts';
 import { LUPA } from './lupa.ts';
+import { EN_EL_RECINTO, ESCENA_DEL_RECINTO, conLoDelCamino } from './escenas-camino.ts';
+import { ARCO, BOQUETE, CAJA_DEL_POTRERO, MEDIANERA, SENDA, VECINO, VENTANAS } from './arte-potrero.ts';
+import { CAJA_DEL_FONDO, ESCENARIO, FIGURA, FLOTAN, PASILLO, enElPasillo } from './arte-anegado.ts';
+import { CABEZUDOS, CAJA_DE_LA_NAVE, LENGUA, OJOS as OJOS_DEL_CABEZUDO, PUERTA_DEL_FONDO } from './arte-corso.ts';
+import { BAJO, CHAPA, PIERRE, marcoDelRecinto } from './rig.ts';
 
 /**
  * El aire del camino (`D-90`): la bruma, la niebla rasante y lo pegado a la cámara. Lo que se
@@ -888,7 +893,8 @@ test('D-91/4: con la lupa el paralaje se ancla: lo que se apunta en una capa de 
 test('D-91/4: lo que premia a la lupa va otra vez, fino, encima del piso y en su mismo lugar', () => {
   // La mesa se sumó en la tanda 2 (la cueva del ratón, debajo del mantel).
   // Y en la tanda 3, las tres de esa tanda: la rayuela del muelle, el hielo con el casete y la jaula del árbol.
-  assert.deepEqual(Object.keys(FINAS_DE).sort(), ['cybersiberia', 'el-arbol', 'el-monte', 'la-mesa', 'la-pastura', 'la-ruta', 'los-astilleros']);
+  // Y en la tanda 4, tres recintos enteros: la pelota del potrero, la botella con el papel y la careta pisada.
+  assert.deepEqual(Object.keys(FINAS_DE).sort(), ['cybersiberia', 'el-arbol', 'el-bajo', 'el-monte', 'el-templo', 'la-mesa', 'la-pastura', 'la-ruta', 'los-astilleros', 'los-techos']);
   let peso = 0;
   for (const [region, nombres] of Object.entries(FINAS_DE)) {
     const piso = pisoDelCamino(CAMINOS[region]!, new Map());
@@ -898,7 +904,8 @@ test('D-91/4: lo que premia a la lupa va otra vez, fino, encima del piso y en su
       assert.ok(existsSync(`public${rutaDePieza(n)}`), `${n}: falta imprimirla`);
       peso += statSync(`public${rutaDePieza(n)}`).size;
       // Va en el piso, después del piso impreso (encima), en la caja que dice la pieza.
-      const dePiso = piso.indexOf(rutaDePieza(CAMINOS[region]!.piezas.piso!));
+      // Un recinto entero no tiene piso impreso aparte: ahí va encima del telón de su escena.
+      const dePiso = piso.indexOf(rutaDePieza(CAMINOS[region]!.piezas.piso ?? EN_EL_RECINTO[region]!.tras));
       const deFina = piso.indexOf(rutaDePieza(n));
       assert.ok(dePiso >= 0 && deFina > dePiso, `${n}: no está encima del piso`);
       assert.match(piso, new RegExp(`href="${rutaDePieza(n).replace(/[.]/g, '\\.')}" x="${p.caja[0]}" y="${p.caja[1]}"`));
@@ -1393,4 +1400,142 @@ test('D-91/t3v4: Cybersiberia tiene una segunda luz grande, la aurora, y la neva
   assert.match(fuente, /const nevadaTenida = tenidos\(rnd, CYBER\.tele\.x/);
   // La imagen mide lo mismo: el color no cuesta memoria.
   assert.deepEqual([...PIEZAS_CAMINO.find((q) => q.nombre === 'camino-cyber-lejos')!.caja], [0, 0, CAMINOS.cybersiberia!.escena, ALTO]);
+});
+
+/* ------------------------------------------------------------------
+   `D-91`, tanda 4: los techos, el bajo y el templo
+   ------------------------------------------------------------------ */
+
+const TANDA_4 = [['los-techos', 'arte-potrero.ts', 'camino-techos-bajo'], ['el-bajo', 'arte-anegado.ts', 'camino-bajo-fondo'], ['el-templo', 'arte-corso.ts', 'camino-templo-nave']] as const;
+/** Un recinto corre su escena para arrancar en cero: de coordenadas del recinto a las del piso. */
+const alPiso = (region: string, x: number): number => x - marcoDelRecinto(region).x;
+
+test('D-91/t4: el camino le suma a un recinto entero sin editarlo: su mano entra justo después del telón', () => {
+  for (const [region, archivo, mano] of TANDA_4) {
+    assert.equal(CAMINOS[region]!.forma, 'recinto');
+    const escena = ESCENA_DEL_RECINTO[region]!(new Map());
+    const sumada = conLoDelCamino(region, escena);
+    const loDelCamino = EN_EL_RECINTO[region]!.bajo();
+    // La escena del recinto queda entera, partida en dos: si se saca lo del camino, es la misma tira.
+    assert.equal(sumada.replace(loDelCamino, ''), escena, `${region}: la escena del recinto no quedó entera`);
+    // Entra pegada al telón, antes del primer bicho: nada de lo del camino le pasa por encima a nadie.
+    const telon = `href="${rutaDePieza(EN_EL_RECINTO[region]!.tras)}"`;
+    const corte = sumada.indexOf(loDelCamino);
+    const antes = sumada.slice(0, corte);
+    assert.ok(antes.includes(telon) && !/class="(titere|bestia)/.test(antes), `${region}: lo del camino no va entre el telón y los bichos`);
+    assert.ok(loDelCamino.includes(rutaDePieza(mano)) && loDelCamino.includes('pointer-events="none"'));
+    // Y es lo que se ve en el camino.
+    assert.ok(pisoDelCamino(CAMINOS[region]!, new Map()).includes(loDelCamino));
+    // El archivo nuevo no toca lo que está editando la otra sesión (`T-529`).
+    const fuente = readFileSync(`src/lib/bestiario/${archivo}`, 'utf-8');
+    assert.doesNotMatch(fuente, /from '\.\/(arte|arte-entornos|arte-bajo|arte-baldio|rig-entornos|elenco|escenas|recintos)\.ts'/, `${archivo} importa lo que no debe`);
+  }
+  // Los recintos que el camino no tocó quedan como estaban.
+  for (const region of ['la-prision', 'el-infierno']) assert.equal(conLoDelCamino(region, 'x'), 'x');
+  // Si el telón cambia de nombre, avisa en vez de pintar en cualquier lado.
+  assert.throws(() => conLoDelCamino('el-templo', '<g/>'), /templo-lejos/);
+});
+
+test('D-91/t4: un punto de fuga por región', () => {
+  // Los techos: la senda cruza el baldío y se mete por el boquete de la medianera, que está abajo de la chapa.
+  assert.deepEqual([...SENDA.hasta], [BOQUETE.x, MEDIANERA.pie + 2]);
+  assert.ok(SENDA.desde[1] > ALTO && SENDA.cerca > SENDA.lejos * 8);
+  assert.ok(MEDIANERA.arriba > CHAPA.abajo && MEDIANERA.pie - BOQUETE.alto > MEDIANERA.arriba);
+  assert.match(readFileSync('src/lib/bestiario/arte-potrero.ts', 'utf-8'), /hacia: fugaEn/);
+  // El bajo: el pasillo fuga adentro de su vano, por arriba del agua, y la lamparita del fondo queda adentro.
+  assert.ok(PASILLO.fuga[0] > PASILLO.x0 && PASILLO.fuga[0] < PASILLO.x1 && PASILLO.fuga[1] > PASILLO.arriba && PASILLO.fuga[1] < BAJO.fondo);
+  // La mano del fondo vive de la línea de Pierre para arriba: de ahí para abajo la escena repinta el agua.
+  assert.ok(CAJA_DEL_FONDO[1] + CAJA_DEL_FONDO[3] <= PIERRE.agua + 4 && CAJA_DEL_FONDO[1] < PASILLO.arriba);
+  // El templo: la lengua de luz sale de la puerta del fondo, que está en el horizonte del piso, entre la bailarina (270) y Mister Ed (403).
+  assert.deepEqual([...LENGUA.hasta], [PUERTA_DEL_FONDO.x, PUERTA_DEL_FONDO.y]);
+  assert.ok(PUERTA_DEL_FONDO.x > 270 + 40 && PUERTA_DEL_FONDO.x < 403 - 40 && PUERTA_DEL_FONDO.y > CAJA_DE_LA_NAVE[1] + 100);
+  for (const a of ['arte-potrero.ts', 'arte-corso.ts']) assert.match(readFileSync(`src/lib/bestiario/${a}`, 'utf-8'), /from '\.\/escorzo\.ts'/, `${a}: sin punto de fuga`);
+});
+
+test('D-91/t4: quedan libres los lugares de los cuatro títeres que vienen (`T-529`)', () => {
+  // Los números son los de `rig-manso.ts`, `rig-silbido.ts`, `rig-nenes.ts` y `rig-sheriff.ts` de la rama
+  // `claude/bestiario-rocambole-3238c6`, en coordenadas de cada recinto: x, y, ancho, alto.
+  const dentro = (x: number, y: number, [cx, cy, w, h]: readonly number[]): boolean => x > cx && x < cx + w && y > cy && y < cy + h;
+  // El perro manso come en la tierra, a la derecha: (1370, 606) a 1,25, con la olla a su izquierda y el palo a su derecha.
+  const MANSO = [1236, 470, 214, 170] as const;
+  assert.ok(ARCO.x1 + 12 < MANSO[0], 'el arco le cae encima al manso');
+  const potrero = readFileSync('src/lib/bestiario/arte-potrero.ts', 'utf-8');
+  // El charco grande (1150 ± 66) y la chapa caída (hasta 1244, pero de 480 a 506 de alto, arriba de su olla) no lo pisan.
+  const charco = /charco\((\d+), (\d+), (\d+), /.exec(potrero)!.slice(1).map(Number);
+  assert.ok(charco[0]! + charco[2]! * 1.2 < MANSO[0] && charco[1]! < MANSO[1]);
+  for (const [, mx, my] of potrero.matchAll(/\[(\d{3,4}), (\d{3}), [\d.]+\]/g)) assert.ok(!dentro(Number(mx), Number(my), MANSO), `una mata en (${mx}, ${my}) cae donde come el manso`);
+  // El gato de los silbidos se sienta en su señal, en la chapa: (832, 290) a 1,3, con el palo hasta arriba y el tren que pasa lejos.
+  const SILBIDO = [716, 16, 230, 280] as const;
+  for (const [x, y, w] of VENTANAS) assert.ok(x + w < SILBIDO[0] || x > SILBIDO[0] + SILBIDO[2], `la ventana de (${x}, ${y}) queda detrás del gato de los silbidos`);
+  // El boquete está en la medianera, abajo de la chapa donde él se sienta: no llega a su altura.
+  assert.ok(MEDIANERA.pie - BOQUETE.alto * 1.2 - 6 > SILBIDO[1] + SILBIDO[3]);
+  // Las ventanas van en lo negro seguro de los techos y arriba de la chapa.
+  for (const [, y, , h] of VENTANAS) assert.ok(y >= 246 && y + h < CHAPA.arriba);
+  // Los nenes de oro: el podio en (880, 512) a 0,92; se clavan a 105 para cada lado y el suero sube 196.
+  const NENES = [720, 300, 320, 250] as const;
+  for (const fl of FLOTAN) {
+    const [x, y, w, h] = fl.caja;
+    assert.ok(x + w < NENES[0] || x > NENES[0] + NENES[2] || y > NENES[1] + NENES[3], `${fl.pieza} flota donde se clavan los nenes`);
+    // Y flota adelante de la línea de Pierre, donde el agua de la sala ya está repintada: por eso va encima de todo.
+    assert.ok(y + h * 0.6 > PIERRE.agua);
+  }
+  // Lo que moja la pared no pasa por delante del escenario, y el pasillo queda a la entrada, lejos de ellos.
+  assert.ok(ESCENARIO < 990 && PASILLO.x1 < 0);
+  // El sheriff atiende contra la primera columna: (-232, 588) a 0,8, con la tabla de los blancos hasta 340.
+  const SHERIFF = [-300, 330, 136, 262] as const;
+  for (const [x, , r] of CABEZUDOS) assert.ok(x - r * 1.1 > SHERIFF[0] + SHERIFF[2] + 40, `el cabezudo de ${x} se le encima al sheriff`);
+  assert.ok(OJOS_DEL_CABEZUDO.caja[0] > SHERIFF[0] + SHERIFF[2]);
+  // Las columnas de atrás se abren 236 como mucho desde la puerta: no llegan a su ala.
+  assert.ok(PUERTA_DEL_FONDO.x - 236 > SHERIFF[0] + SHERIFF[2] + 100);
+});
+
+test('D-91/t4: lo que aparece si te quedás quieto, y lo que flota', () => {
+  const visitas = { 'los-techos': ['camino-techos-vecino', VECINO.caja], 'el-bajo': ['camino-bajo-figura', FIGURA.caja], 'el-templo': ['camino-templo-ojos', OJOS_DEL_CABEZUDO.caja] } as const;
+  for (const [region] of TANDA_4) {
+    const [pieza, caja] = visitas[region];
+    const piso = pisoDelCamino(CAMINOS[region]!, new Map());
+    // Va adentro de la escena, apagada, y la isla la trae: seis segundos de quietud.
+    assert.match(piso, new RegExp(`<g class="asoma" data-espera="6" opacity="0" pointer-events="none"><image href="${rutaDePieza(pieza).replace(/[.]/g, '\\.')}" x="${caja[0]}" y="${caja[1]}"`));
+    assert.ok(existsSync(`public${rutaDePieza(pieza)}`), `falta imprimir ${pieza}`);
+    // En el bajo y en el templo está en la primera pantalla: un teléfono parado ve de ~96 a ~416; a 1280 se ven 1024.
+    // En los techos no: la primera pantalla es toda del perro de la tapa y del gato matón. El que espía está en el boquete.
+    if (region === 'los-techos') continue;
+    const x = alPiso(region, caja[0]);
+    assert.ok(x > 96 + 8 && x + caja[2] < 96 + 320 - 8, `${region}: lo que asoma cae en ${x}, fuera de la primera pantalla`);
+  }
+  // El que espía, adentro del boquete; el del pasillo, parado en el agua del pasillo, adentro del vano; los ojos, en la cabeza del cabezudo de la entrada.
+  assert.ok(VECINO.caja[0] >= BOQUETE.x - BOQUETE.ancho / 2 - 2 && VECINO.caja[1] + VECINO.caja[3] <= MEDIANERA.pie + 2);
+  const parado = enElPasillo(0.46);
+  assert.ok(FIGURA.caja[0] > PASILLO.x0 && FIGURA.caja[0] + FIGURA.caja[2] < PASILLO.x1 && parado.agua < BAJO.fondo && FIGURA.caja[1] > PASILLO.arriba);
+  const [cx, pie, r] = CABEZUDOS[0]!;
+  assert.ok(Math.abs(OJOS_DEL_CABEZUDO.caja[0] + r - cx) < 2 && OJOS_DEL_CABEZUDO.caja[1] + OJOS_DEL_CABEZUDO.caja[3] < pie - r);
+  // Lo que flota en el bajo se hamaca desde abajo de la línea donde flota, encima de todo y en coordenadas del piso.
+  const bajo = pisoDelCamino(CAMINOS['el-bajo']!, new Map());
+  const escena = bajo.indexOf('class="recinto-en-camino"');
+  for (const fl of FLOTAN) {
+    const marca = `<g class="pendula" data-x="${alPiso('el-bajo', fl.x)}" data-y="${fl.y}" data-largo="460" pointer-events="none">`;
+    assert.ok(bajo.indexOf(marca) > bajo.lastIndexOf(rutaDePieza('bajo-frente')) && escena >= 0, `${fl.pieza}: no flota encima de todo`);
+    assert.ok(fl.y > fl.caja[1] + fl.caja[3] && Math.abs(fl.x - (fl.caja[0] + fl.caja[2] / 2)) < 2, `${fl.pieza}: no se hamaca desde abajo`);
+    assert.ok(existsSync(`public${rutaDePieza(fl.pieza)}`), `falta imprimir ${fl.pieza}`);
+  }
+  // La isla no mueve lo que no se ve, y un cuadro sí y uno no, como lo que cuelga del árbol.
+  assert.match(readFileSync('src/scripts/camino.ts', 'utf-8'), /if \(alivio >= 2 \|\| cuadros % 2\) return;/);
+});
+
+test('D-91/t4: la memoria: lo que se suma a cada recinto entra en el techo del +20 %', async () => {
+  // Medido en el navegador contra main (imágenes decodificadas): los techos 65,8 MB, el bajo 69,1 MB y el templo 58,2 MB.
+  // Lo decodificado depende de las dimensiones de la pieza impresa, no de su peso: acá se suma eso.
+  const base = { 'los-techos': 65.8, 'el-bajo': 69.1, 'el-templo': 58.2 } as const;
+  const sufijo = { 'los-techos': 'techos', 'el-bajo': 'bajo', 'el-templo': 'templo' } as const;
+  for (const [region] of TANDA_4) {
+    const piezas = PIEZAS_CAMINO.filter((q) => q.nombre.startsWith(`camino-${sufijo[region]}-`) || q.nombre.startsWith(`fino-${sufijo[region]}-`));
+    assert.ok(piezas.length >= 3, `${region}: ${piezas.length} piezas`);
+    let mb = 0;
+    for (const q of piezas) {
+      const m = await sharp(`public${rutaDePieza(q.nombre)}`).metadata();
+      mb += (m.width! * m.height! * 4) / 1048576;
+    }
+    assert.ok(mb < base[region] * 0.2, `${region}: suma ${mb.toFixed(1)} MB sobre ${base[region]}`);
+  }
+  assert.deepEqual([...CAJA_DEL_POTRERO], [0, 240, 1500, 400]);
 });
