@@ -44,7 +44,7 @@ import { CABEZUDOS, CAJA_DE_LA_NAVE, CANTO_DE_LAS_COLUMNAS, LENGUA, OJOS as OJOS
 import { BANDERIN } from './arte-potrero.ts';
 import { ARCO as ARCO_DE_LAS_CARCELES, CADENA, EL_DEL_PUENTE, EL_QUE_SUBE, ESCALONES, GALERIA, HAZ, PIEZAS_DE_LAS_CARCELES, PUERTA as PUERTA_DE_LA_ESCALERA } from './arte-carceles.ts';
 import { PRISION } from './rig.ts';
-import { BANCOS, CAJA_DEL_TITERE, DISCO, HITOS, LECHUZA, PIEZAS_DEL_PLANO, PROPIOS, cajaDelHito, conTinta } from './arte-plano.ts';
+import { BANCOS, BANCOS_DEL_CIERRE, CAJA_DEL_TITERE, DISCO, HITOS, LECHUZA, PIEZAS_DEL_PLANO, PROPIOS, cajaDelHito, conTinta } from './arte-plano.ts';
 import { EN_EL_PLANO, LAS_DEL_PLANO, LUGAR_EN_EL_PLANO, MAXIMO_POR_ZONA } from './plano-elenco.ts';
 import { dibujar } from './figuras.ts';
 import { BAJO, CHAPA, PIERRE, marcoDelRecinto } from './rig.ts';
@@ -1753,7 +1753,7 @@ test('D-91/t6: el plano tiene aire: nubes quietas en bancos con huecos, y la lec
   const angulos = BANCOS.map((b) => b[0]).sort((x, y) => x - y);
   const huecos = angulos.map((x, i) => (i ? x - angulos[i - 1]! : x + 360 - angulos[angulos.length - 1]!));
   assert.ok(Math.max(...huecos) >= 60, 'las nubes no dejan ningún hueco grande');
-  // Impresas, con grano; livianas: menos de 4 MB decodificadas entre las nubes, la lechuza y los cinco hitos (eran 3 sin los hitos).
+  // Impresas, con grano; livianas: menos de 4 MB decodificadas entre las nubes, la lechuza, los hitos (tres desde la cuarta vuelta) y el cielo cerrado.
   let mb = 0;
   // (Segunda vuelta: la lista suma los cinco hitos, que son tinta plana con grano fino; el rociado es de las nubes y la lechuza.)
   for (const q of PIEZAS_DEL_PLANO) {
@@ -1839,7 +1839,8 @@ test('D-91/t6v2: cada títere del plano está impreso como cartón recortado, pa
   for (const pieza of ['feMorphology in="SourceAlpha" operator="dilate"', 'flood-color="var(--papel)"', 'flood-color="${tr}"', 'var(--portal-madera)', 'url(#rociado)']) assert.ok(fuente.includes(pieza), `el títere no lleva ${pieza}`);
   assert.ok(CAJA_DEL_TITERE[0] < -10 && CAJA_DEL_TITERE[1] + CAJA_DEL_TITERE[3] > 115, 'la caja no deja lugar para el recorte y el palito');
   // Los hitos: uno por región que cambió en las tandas, adentro de su porción, impresos finos.
-  assert.deepEqual(HITOS.map((h) => h.region).sort(), ['el-bajo', 'el-templo', 'la-prision', 'los-astilleros', 'los-techos']);
+  // (Cuarta vuelta: eran cinco. La puerta del templo y el arco del potrero no se leían ni con la lupa al máximo, y se fueron.)
+  assert.deepEqual(HITOS.map((h) => h.region).sort(), ['el-bajo', 'la-prision', 'los-astilleros']);
   for (const h of HITOS) {
     const f = regiones.find((r) => r.id === h.region)!.forma;
     assert.ok(h.ang > f.desde! && h.ang < f.hasta! && h.r < f.afuera! && h.r > f.adentro!, `el hito de ${h.region} se sale de su porción`);
@@ -1866,8 +1867,9 @@ test('D-91/t6v2: las nubes no pisan ninguna porción, la llegada es una línea y
 });
 
 test('D-91/t6v3: los títeres del plano tienen gesto y aerógrafo, y van sueltos arriba del dibujo, quietos', () => {
-  // Cinco protagonistas con dibujo propio, todos del plano; los demás salen del molde de `figuras.ts`, que no se toca.
-  assert.deepEqual(Object.keys(PROPIOS).sort(), ['barbazul', 'el-gordo-pierre', 'el-lobo-suelto', 'luzbelito', 'momo']);
+  // Protagonistas con dibujo propio, todos del plano; los demás salen del molde de `figuras.ts`, que no se toca.
+  // (Cuarta vuelta: eran cinco y son los trece; la lista entera la mira el test de la cuarta vuelta.)
+  for (const id of ['barbazul', 'el-gordo-pierre', 'el-lobo-suelto', 'luzbelito', 'momo']) assert.ok(id in PROPIOS, `${id} perdió su dibujo`);
   for (const id of Object.keys(PROPIOS)) {
     assert.ok(LAS_DEL_PLANO.has(id) && Object.values(EN_EL_PLANO).some((dos) => dos[0] === id), `${id} no es protagonista de su zona`);
     const dibujo = PROPIOS[id]!('var(--disco-oktubre-tinta)');
@@ -1890,4 +1892,76 @@ test('D-91/t6v3: los títeres del plano tienen gesto y aerógrafo, y van sueltos
   assert.equal(LUGAR_EN_EL_PLANO['el-cordero-atado']![0], LUGAR_EN_EL_PLANO['aquella-solitaria-vaca-cubana']![0]);
   assert.ok(LUGAR_EN_EL_PLANO['aquella-solitaria-vaca-cubana']![1] - LUGAR_EN_EL_PLANO['el-cordero-atado']![1] > 100);
   assert.ok(LUGAR_EN_EL_PLANO['la-mariposa-pontiac']![0] > 190 && LUGAR_EN_EL_PLANO['la-mariposa-pontiac']![0] < 250);
+});
+
+/* ------------------------------------------------------------------
+   `D-91`, tanda 6, cuarta vuelta: los trece protagonistas con dibujo propio, tres hitos y el cierre de las nubes
+   ------------------------------------------------------------------ */
+
+test('D-91/t6v4: los trece protagonistas del plano tienen dibujo propio, y las segundas siguen saliendo del molde', async () => {
+  const protagonistas = Object.values(EN_EL_PLANO).map((dos) => dos[0]);
+  assert.deepEqual(Object.keys(PROPIOS).sort(), [...protagonistas].sort());
+  const cuerpos = new Set<string>();
+  for (const id of protagonistas) {
+    const dibujo = PROPIOS[id]!('var(--disco-oktubre-tinta)');
+    assert.doesNotMatch(dibujo, /class="|#[0-9a-f]{3,6}\b|filter=|gradient/i, `${id}: una clase, un hex, un filtro o un degradé`);
+    // Cada uno es su dibujo, no una copia de otro con otra tinta; y tiene con qué leerse: varias piezas, no una mancha.
+    cuerpos.add(dibujo.replace(/var\(--[a-z0-9-]+\)/g, ''));
+    assert.ok((dibujo.match(/<(path|circle|ellipse)/g) ?? []).length >= 5, `${id} es una mancha`);
+    // Entra en la caja del títere: ningún círculo escrito se sale del recorte.
+    const [x0, y0, w, h] = CAJA_DEL_TITERE;
+    for (const m of dibujo.matchAll(/c[xy]="(-?[\d.]+)"/g)) assert.ok(Number(m[1]) > Math.min(x0, y0) && Number(m[1]) < Math.max(x0 + w, y0 + h), `${id}: un círculo fuera de la caja`);
+    // Impreso al tamaño de todos.
+    const meta = await sharp(`public/bestiario/plano-titere-${id}.webp`).metadata();
+    assert.deepEqual([meta.width, meta.height], [326, 350]);
+  }
+  assert.equal(cuerpos.size, protagonistas.length);
+  // Las segundas de cada zona siguen saliendo de `figuras.ts`, con el mismo aerógrafo.
+  for (const dos of Object.values(EN_EL_PLANO)) assert.ok(!(dos[1] in PROPIOS), `${dos[1]} es segunda y tiene dibujo propio`);
+  // Lo que es de la letra queda dicho arriba de cada dibujo nuevo, y lo que es del dibujo, también.
+  const fuente = readFileSync('src/lib/bestiario/arte-plano.ts', 'utf-8');
+  for (const verso of ['hundido en tu gabán', 'huele eternamente mal', 'Sentado, en bolas, watcheando la tele', 'montado a los containers', 'Miren lo que este bicho logró', 'se colgó del Bondi a Finisterre']) assert.ok(fuente.includes(verso), `falta el verso «${verso}»`);
+  assert.ok((fuente.match(/Del dibujo|es del dibujo|sale del nombre/g) ?? []).length >= 5);
+});
+
+test('D-91/t6v4: quedan tres hitos, y al bajar a una región el cielo se cierra sobre el disco con una imagen impresa', async () => {
+  // Los dos hitos que no se leían no quedan impresos ni pedidos.
+  for (const region of ['el-templo', 'los-techos']) assert.ok(!existsSync(`public/bestiario/plano-hito-${region}.webp`), `quedó impreso el hito de ${region}`);
+  assert.equal(HITOS.length, 3);
+  // El cielo cerrado: muchos bancos gordos, desparejos, repartidos del galpón al borde y adentro del disco.
+  assert.ok(BANCOS_DEL_CIERRE.length >= 24);
+  const distancias = BANCOS_DEL_CIERRE.map((b) => b[1]);
+  assert.ok(Math.min(...distancias) < 150 && Math.max(...distancias) > 380 && Math.max(...distancias) < DISCO.radio);
+  assert.ok(new Set(distancias).size > BANCOS_DEL_CIERRE.length * 0.8, 'los bancos del cierre van en vueltas prolijas: se leen como sogas');
+  for (const [, , , alto] of BANCOS_DEL_CIERRE) assert.ok(alto >= 2 * Math.max(...BANCOS.map((b) => b[3])), 'un banco del cierre es tan fino como los del borde');
+  // Impreso chico (es niebla y se ve medio segundo): menos de 1 MB decodificado, y tapa de verdad: más de la mitad del disco.
+  const { data, info } = await sharp('public/bestiario/plano-cierre.webp').ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  assert.ok((info.width * info.height * 4) / 1048576 < 1);
+  let [tapados, delDisco] = [0, 0];
+  for (let y = 0; y < info.height; y++)
+    for (let x = 0; x < info.width; x++) {
+      if (Math.hypot(x - info.width / 2, y - info.height / 2) > (info.width / 2) * 0.9) continue;
+      delDisco++;
+      if (data[(y * info.width + x) * 4 + 3]! > 128) tapados++;
+    }
+  assert.ok(tapados / delDisco > 0.55, `el cielo cerrado tapa el ${Math.round((100 * tapados) / delDisco)} % del disco`);
+  const pagina = readFileSync('src/pages/redondopedia/bestiario.astro', 'utf-8');
+  // Va con las nubes: arriba del dibujo y de las nubes, debajo de la luz y de los carteles, y no se toca.
+  const [nubes, cierre, luz] = ['class="plano-nubes"', 'class="plano-cierre"', 'class="portal-luz"'].map((x) => pagina.indexOf(x));
+  assert.ok(nubes > 0 && cierre > nubes && luz > cierre);
+  const estilo = pagina.slice(pagina.indexOf('<style>'));
+  // Apagado y girado mientras nadie baja; al bajar, calza. Solo opacity y transform, y rápido: el enlace no espera.
+  const reposo = /\n  \.plano-cierre \{([^}]*)\}/.exec(estilo)![1]!;
+  assert.match(reposo, /pointer-events: none;[\s\S]*opacity: 0;\s*transform: scale\(1\.\d+\) rotate\(-?\d+deg\);\s*transition: opacity [\d.]+s, transform ([\d.]+)s;/);
+  assert.ok(Number(/transform ([\d.]+)s;/.exec(reposo)![1]) <= 0.4);
+  assert.doesNotMatch(reposo, /animation|will-change/);
+  assert.match(estilo, /:global\(\.bestiario-marco--baja\) \.plano-cierre \{\s*opacity: 1;\s*transform: none;\s*\}/);
+  // Las del borde ya no se achican hasta el medio: se espesan donde están.
+  assert.ok(Number(/:global\(\.bestiario-marco--baja\) \.plano-nubes \{\s*opacity: 1;\s*transform: scale\(([\d.]+)\)/.exec(estilo)![1]) > 0.9);
+  // Espera más grande que el disco: va adentro del recorte redondo del aire, que además es lo que la lupa apaga. Suelto, le
+  // daba a la página un ancho que no tiene (en el teléfono el plano se corría 220 píxeles). Las del borde no giran, por lo mismo.
+  assert.match(pagina, /<div class="plano-aire" aria-hidden="true">\s*\{\/\*[\s\S]*?\*\/\}\s*<img class="plano-cierre"/);
+  assert.doesNotMatch(/:global\(\.bestiario-marco--baja\) \.plano-nubes \{[^}]*\}/.exec(estilo)![0], /rotate|scale\(1\./);
+  // Con movimiento reducido no existe.
+  assert.match(estilo, /prefers-reduced-motion: reduce\) \{[\s\S]*?\n    \.plano-cierre \{\s*display: none;/);
 });
