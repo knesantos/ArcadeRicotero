@@ -233,6 +233,42 @@ function arco(): string {
   );
 }
 
+/** El banderín del córner: en la primera pantalla, entre el cuadro del psicópata y él. De ahí sale la raya de cal de la cancha. */
+export const BANDERIN = { x: 374, pie: 480 } as const;
+
+/**
+ * La cancha (tercera vuelta): la primera pantalla de los techos no avisaba que más adelante hay un potrero. Un banderín
+ * de córner hecho con un palo y un trapo, y la raya de cal, gastada, que sale de él para el lado del arco y para la
+ * medianera. Pasa por detrás de todos: es tierra pintada.
+ */
+function cancha(): string {
+  const { x, pie } = BANDERIN;
+  const rnd = azar(4501);
+  let cal = '';
+  // La raya del fondo, hacia el arco: tramos de cal con huecos donde se pisó, cada vez más finos.
+  for (let u = 0.02; u < 1; u += 0.03 + rnd() * 0.05) {
+    const largo = 0.016 + rnd() * 0.03;
+    const [ax, ay] = [x + (ARCO.x0 - 150 - x) * u, pie - 2 + (MEDIANERA.pie + 44 - pie) * u];
+    const [bx, by] = [x + (ARCO.x0 - 150 - x) * (u + largo), pie - 2 + (MEDIANERA.pie + 44 - pie) * (u + largo)];
+    cal += trazo(`M${f(ax)} ${f(ay + (rnd() - 0.5) * 1.6)} L${f(bx)} ${f(by + (rnd() - 0.5) * 1.6)}`, B.luz, 3.4 - u * 2, 0.5 - u * 0.24);
+  }
+  // La del costado, que se va a la medianera en escorzo.
+  for (let u = 0.04; u < 1; u += 0.08 + rnd() * 0.1) {
+    cal += trazo(`M${f(x + 14 * u)} ${f(pie - 2 - (pie - MEDIANERA.pie - 4) * u)} l${f(1.2)} ${f(-5 - rnd() * 5)}`, B.luz, 3 - u * 1.8, 0.5 - u * 0.2);
+  }
+  return (
+    cal +
+    // El cuarto de círculo del córner, y el palo con su trapo.
+    trazo(`M${x + 16} ${pie - 3} q-2 -9 -11 -11`, B.luz, 2, 0.4) +
+    nube(x + 3, pie + 1, 9, 2.4, B.negro, 'xs', 0.8) +
+    trazo(`M${x} ${pie} L${x - 2.4} ${pie - 62}`, B.negro, 3.6) +
+    trazo(`M${x - 1} ${pie - 2} L${x - 3.2} ${pie - 61}`, B.lila, 1.2, 0.8) +
+    forma(`M${x - 2.4} ${pie - 62} L${x + 24} ${pie - 55} L${x + 15} ${pie - 49} L${x + 22} ${pie - 43} L${x - 1.8} ${pie - 45} Z`, B.rosa) +
+    trazo(`M${x - 2.4} ${pie - 62} L${x + 24} ${pie - 55} L${x + 15} ${pie - 49}`, B.luz, 1.1, 0.75) +
+    trazo(`M${x + 2} ${pie - 56} l12 3 M${x + 1} ${pie - 50} l9 2`, B.noche, 1, 0.6)
+  );
+}
+
 /** La mano de abajo de los techos: entra después del telón (`baldio-lejos`) y antes de todos los demás. */
 export function potreroBajo(): string {
   const [x0, y0, w, h] = CAJA_DEL_POTRERO;
@@ -285,6 +321,7 @@ export function potreroBajo(): string {
     trazo(linea(ps, -0.24), B.noche, 2.4, 0.5) +
     trazo(linea(ps, 0.22), B.noche, 2.4, 0.5) +
     rayones([880, pie + 6, 1160, 640], 110, [B.lila, B.rosa, B.violeta], 4031, { hacia: fugaEn, largo: [7, 18], grueso: [1.4, 2.8], fuerza: 0.5, donde: enLaSenda }) +
+    cancha() +
     charco(1150, 466, 66, 10, 4041, 'pt-charco-a') +
     charco(612, 416, 40, 6.5, 4043, 'pt-charco-b') +
     chapa +
