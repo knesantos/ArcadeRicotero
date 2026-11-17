@@ -216,13 +216,16 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
         const caja = cajaEnElPlano(b, lugar ? polar(lugar[0], lugar[1]) : punto(b.pos), AUMENTO);
         return <img class="plano-titere" data-titere={b.id} src={`/bestiario/plano-titere-${b.id}.webp`} alt="" aria-hidden="true" width="326" height="350" decoding="async" style={`left: ${(caja.x / 10).toFixed(2)}%; top: ${(caja.y / 10).toFixed(2)}%; width: ${(caja.ancho / 10).toFixed(2)}%; --fase: ${((i * 0.53) % 3.4).toFixed(2)}s`} />;
       })}
-      {/* Los hitos: lo que las tandas le sumaron a cinco regiones, en chiquito. Se leen con la lupa. */}
+      {/* Los hitos: lo que las tandas le sumaron a tres regiones, en chiquito. Se leen con la lupa. */}
       {HITOS.map((h) => {
         const [x, y, lado] = cajaDelHito(h);
         return <img class="plano-hito" src={`/bestiario/plano-hito-${h.region}.webp`} alt="" aria-hidden="true" width="220" height="220" decoding="async" loading="lazy" style={`left: ${x / 10}%; top: ${y / 10}%; width: ${lado / 10}%`} />;
       })}
       <img class="plano-nubes" src="/bestiario/plano-nubes.webp" alt="" width="800" height="800" decoding="async" aria-hidden="true" />
       <div class="plano-aire" aria-hidden="true">
+        {/* El cierre (cuarta vuelta): el cielo cerrado, apagado. Al bajar a una región entra girando y tapa el disco. Va
+            adentro del recorte redondo: espera más grande que el disco, y suelto le daba a la página un ancho que no tiene. */}
+        <img class="plano-cierre" src="/bestiario/plano-cierre.webp" alt="" width="450" height="450" decoding="async" loading="lazy" />
         <img class="plano-lechuza" src="/bestiario/plano-lechuza.webp" alt="" width="180" height="144" decoding="async" loading="lazy" />
       </div>
       <img class="portal-luz" src="/bestiario/portal-luz.webp" alt="" width="460" height="460" decoding="async" />
@@ -382,10 +385,29 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
     pointer-events: none;
   }
 
-  /* Bajar a una región: las nubes del borde se cierran sobre el disco. */
+  /* El cielo cerrado espera apagado, más grande que el disco y girado. Apagado no se compone. */
+  .plano-cierre {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0;
+    transform: scale(1.5) rotate(-38deg);
+    transition: opacity 0.2s, transform 0.36s;
+  }
+
+  /* Bajar a una región: el cielo se cierra sobre el disco. Las nubes del borde se espesan donde están, y el cielo cerrado
+     entra de afuera girando hasta calzar. Hasta la tercera vuelta eran las del borde achicándose: un anillo fino de
+     jirones no tapa nada, y no se veía. */
   :global(.bestiario-marco--baja) .plano-nubes {
     opacity: 1;
-    transform: scale(0.34) rotate(40deg);
+    transform: scale(0.97);
+  }
+
+  :global(.bestiario-marco--baja) .plano-cierre {
+    opacity: 1;
+    transform: none;
   }
 
   /* La lechuza cruza de abajo a la izquierda hacia arriba a la derecha en unos nueve segundos, una vez cada tres cuartos de minuto. */
@@ -428,6 +450,10 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
     :global(.bestiario-marco--baja) .plano-nubes {
       opacity: 0.8;
       transform: none;
+    }
+
+    .plano-cierre {
+      display: none;
     }
 
     .plano-lechuza {
