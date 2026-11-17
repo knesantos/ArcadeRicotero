@@ -44,6 +44,7 @@ import { CABEZUDOS, CAJA_DE_LA_NAVE, CANTO_DE_LAS_COLUMNAS, LENGUA, OJOS as OJOS
 import { BANDERIN } from './arte-potrero.ts';
 import { ARCO as ARCO_DE_LAS_CARCELES, CADENA, EL_DEL_PUENTE, EL_QUE_SUBE, ESCALONES, GALERIA, HAZ, PIEZAS_DE_LAS_CARCELES, PUERTA as PUERTA_DE_LA_ESCALERA } from './arte-carceles.ts';
 import { PRISION } from './rig.ts';
+import { BANCOS, DISCO, LECHUZA, PIEZAS_DEL_PLANO } from './arte-plano.ts';
 import { BAJO, CHAPA, PIERRE, marcoDelRecinto } from './rig.ts';
 
 /**
@@ -1715,4 +1716,40 @@ test('D-91/t5v2: las galerías altas fugan con el pasillo, el haz une la ventana
   assert.ok(EL_DEL_PUENTE.caja[0] > ARCO_DE_LAS_CARCELES.x0 && EL_DEL_PUENTE.caja[0] + EL_DEL_PUENTE.caja[2] < ARCO_DE_LAS_CARCELES.x1);
   assert.match(piso, /<g class="asoma" data-espera="9" opacity="0" pointer-events="none"><image href="\/bestiario\/camino-prision-vigia\.webp"/);
   assert.ok(EL_QUE_SUBE.caja[2] >= 56);
+});
+
+/* ------------------------------------------------------------------
+   `D-91`, tanda 6: el plano del bestiario
+   ------------------------------------------------------------------ */
+
+test('D-91/t6: el plano tiene aire: nubes en bancos con huecos que dan la vuelta con el disco, y la lechuza que cruza cada tanto', async () => {
+  const pagina = readFileSync('src/pages/redondopedia/bestiario.astro', 'utf-8');
+  // Van arriba del dibujo y debajo de la luz y de los carteles, que son lo que se toca; y no se tocan.
+  const [mapa, aire, luz, rotulos] = ['</svg>\n      {/* El aire del plano', 'class="plano-aire" aria-hidden="true"', 'class="portal-luz"', 'class="bestiario-rotulos"'].map((x) => pagina.indexOf(x));
+  assert.ok(mapa > 0 && aire > mapa && luz > aire && rotulos > luz, 'el aire del plano no está entre el dibujo y los carteles');
+  assert.match(pagina, /\.plano-aire \{[^}]*pointer-events: none;/);
+  // Solo `transform` y `opacity`, sobre imágenes sueltas: nada animado adentro del SVG del plano.
+  const estilo = pagina.slice(pagina.indexOf('<style>'));
+  for (const cuadros of estilo.matchAll(/@keyframes [a-z-]+ \{([\s\S]*?)\n  \}/g)) assert.doesNotMatch(cuadros[1]!.replace(/transform:|opacity:/g, ''), /[a-z-]+:/, 'una animación del plano mueve otra cosa que transform y opacity');
+  assert.doesNotMatch(estilo, /shadow|gradient|blur|#[0-9a-f]{3,6}\b/i);
+  // Con la lupa se abren del todo; con movimiento reducido quedan quietas y la lechuza no pasa.
+  assert.match(estilo, /:global\(\.bestiario-marco--lupa\) \.plano-aire \{\s*opacity: 0;/);
+  assert.match(estilo, /prefers-reduced-motion: reduce\) \{\s*\.plano-nubes \{\s*animation: none;[\s\S]*\.plano-lechuza \{\s*display: none;/);
+  // Lo que cruza es raro: una vez cada medio minuto o más, y visible menos de un cuarto de ese tiempo.
+  const ciclo = Number(/animation: plano-cruza (\d+)s/.exec(estilo)![1]);
+  assert.ok(ciclo >= 30 && /20\.5%,\s*100% \{/.test(estilo));
+  // Las nubes: pocos bancos, ninguno sobre el galpón del medio, ninguno hasta el borde, y con huecos entre ellos.
+  assert.ok(BANCOS.length >= 5 && BANCOS.length <= 8);
+  for (const [, dist, largo, alto] of BANCOS) assert.ok(dist - alto > DISCO.claro && dist + alto < DISCO.radio && largo < 280, 'un banco tapa el galpón o se sale del disco');
+  const angulos = BANCOS.map((b) => b[0]).sort((x, y) => x - y);
+  const huecos = angulos.map((x, i) => (i ? x - angulos[i - 1]! : x + 360 - angulos[angulos.length - 1]!));
+  assert.ok(Math.max(...huecos) >= 60, 'las nubes no dejan ningún hueco grande');
+  // Impresas, con grano y sin filo; livianas: menos de 3 MB decodificadas entre las dos.
+  let mb = 0;
+  for (const q of PIEZAS_DEL_PLANO) {
+    assert.match(q.dibujo, /url\(#rociado\)/);
+    const m = await sharp(`public${rutaDePieza(q.nombre)}`).metadata();
+    mb += (m.width! * m.height! * 4) / 1048576;
+  }
+  assert.ok(mb < 3 && LECHUZA.caja[2] < 200, `el aire del plano ocupa ${mb.toFixed(1)} MB`);
 });
