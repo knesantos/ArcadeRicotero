@@ -42,6 +42,7 @@ import { CAJA_DE_ADELANTE, CAJA_DEL_FONDO, ESCENARIO, FIGURA, FLOTAN, PASILLO, e
 import { FRENTE_DEL_RECINTO } from './aire.ts';
 import { CABEZUDOS, CAJA_DE_LA_NAVE, CANTO_DE_LAS_COLUMNAS, LENGUA, OJOS as OJOS_DEL_CABEZUDO, PUERTA_DEL_FONDO, columnaDeAtras } from './arte-corso.ts';
 import { BANDERIN } from './arte-potrero.ts';
+import { ARCO as ARCO_DE_LAS_CARCELES, CADENA, EL_QUE_SUBE, ESCALONES, PIEZAS_DE_LAS_CARCELES, PUERTA as PUERTA_DE_LA_ESCALERA } from './arte-carceles.ts';
 import { BAJO, CHAPA, PIERRE, marcoDelRecinto } from './rig.ts';
 
 /**
@@ -896,7 +897,7 @@ test('D-91/4: lo que premia a la lupa va otra vez, fino, encima del piso y en su
   // La mesa se sumó en la tanda 2 (la cueva del ratón, debajo del mantel).
   // Y en la tanda 3, las tres de esa tanda: la rayuela del muelle, el hielo con el casete y la jaula del árbol.
   // Y en la tanda 4, tres recintos enteros: la pelota del potrero, la botella con el papel y la careta pisada.
-  assert.deepEqual(Object.keys(FINAS_DE).sort(), ['cybersiberia', 'el-arbol', 'el-bajo', 'el-monte', 'el-templo', 'la-mesa', 'la-pastura', 'la-ruta', 'los-astilleros', 'los-techos']);
+  assert.deepEqual(Object.keys(FINAS_DE).sort(), ['cybersiberia', 'el-arbol', 'el-bajo', 'el-monte', 'el-templo', 'la-mesa', 'la-pastura', 'la-prision', 'la-ruta', 'los-astilleros', 'los-techos']);
   let peso = 0;
   for (const [region, nombres] of Object.entries(FINAS_DE)) {
     const piso = pisoDelCamino(CAMINOS[region]!, new Map());
@@ -1436,7 +1437,8 @@ test('D-91/t4: el camino le suma a un recinto entero sin editarlo: su mano entra
     assert.doesNotMatch(fuente, /from '\.\/(arte|arte-entornos|arte-bajo|arte-baldio|rig-entornos|elenco|escenas|recintos)\.ts'/, `${archivo} importa lo que no debe`);
   }
   // Los recintos que el camino no tocó quedan como estaban.
-  for (const region of ['la-prision', 'el-infierno']) assert.equal(conLoDelCamino(region, 'x'), 'x');
+  // (Tanda 5: la prisión dejó de estar en esta lista; ahora también lleva su mano.)
+  for (const region of ['el-infierno']) assert.equal(conLoDelCamino(region, 'x'), 'x');
   // Si el telón cambia de nombre, avisa en vez de pintar en cualquier lado.
   assert.throws(() => conLoDelCamino('el-templo', '<g/>'), /templo-lejos/);
 });
@@ -1631,4 +1633,63 @@ test('D-91/t4v3: la primera pantalla de los techos avisa del potrero: el bander�
   assert.ok(BANDERIN.pie > MEDIANERA.pie + 60 && BANDERIN.pie < ALTO - 100);
   const potrero = readFileSync('src/lib/bestiario/arte-potrero.ts', 'utf-8');
   assert.match(potrero, /cancha\(\) \+/);
+});
+
+/* ------------------------------------------------------------------
+   `D-91`, tanda 5: la prisión de Barbazul
+   ------------------------------------------------------------------ */
+
+test('D-91/t5: la prisión se hunde por dos vanos que entran después del telón, en gubia y sin un gris', () => {
+  const escena = ESCENA_DEL_RECINTO['la-prision']!(new Map());
+  const sumada = conLoDelCamino('la-prision', escena);
+  const mano = EN_EL_RECINTO['la-prision']!.bajo();
+  assert.equal(sumada.replace(mano, ''), escena, 'la escena de la prisión no quedó entera');
+  const antes = sumada.slice(0, sumada.indexOf(mano));
+  assert.ok(antes.includes(`href="${rutaDePieza('prision-lejos')}"`) && !/class="(titere|bestia)/.test(antes));
+  // No depende de las dos imágenes que la otra rama borra, ni importa lo que está editando (`T-529`).
+  const fuente = readFileSync('src/lib/bestiario/arte-carceles.ts', 'utf-8');
+  // (Ojo: `camino-prision-puerta` es una pieza de acá, la puerta de la escalera; la que esa rama borra es `prision-puerta`, la de la jaula.)
+  assert.doesNotMatch(mano, /\/prision-jaula\.|\/prision-puerta\./);
+  assert.doesNotMatch(fuente, /imagen\(|rutaDePieza/, 'arte-carceles.ts no usa imágenes de nadie');
+  assert.doesNotMatch(fuente, /from '\.\/(arte|arte-prision|arte-entornos|rig-entornos|elenco|escenas|recintos)\.ts'/);
+  // La mano de *Oktubre*: gubia, papel y negro. Ni un soplo, ni grano de aerógrafo, ni una opacidad (el filtro la volvería todo o nada).
+  for (const q of PIEZAS_DE_LAS_CARCELES) {
+    assert.match(q.dibujo, /filter="url\(#gubia\)"/, `${q.nombre}: sin gubia`);
+    assert.doesNotMatch(q.dibujo, /soplo-|rociado|url\(#grano\)| opacity="/, `${q.nombre}: no es grabado`);
+    assert.ok([...q.dibujo.matchAll(/(?:fill|stroke)="(var\([^"]+\))"/g)].every((m) => m[1] === 'var(--bestia-dracula-papel)' || m[1] === 'var(--fondo)'), `${q.nombre}: un color nuevo`);
+    assert.ok(existsSync(`public${rutaDePieza(q.nombre)}`), `falta imprimir ${q.nombre}`);
+  }
+});
+
+test('D-91/t5: la escalera baja y se pierde, el arco no tapa la reja del ala, y quedan libres la fiera y el pajarito', () => {
+  // Los escalones: cada uno más abajo, más angosto y más junto. Es el punto de fuga de la entrada.
+  for (let i = 1; i < ESCALONES.length; i++) {
+    assert.ok(ESCALONES[i]![1] > ESCALONES[i - 1]![1] && ESCALONES[i]![2] < ESCALONES[i - 1]![2]);
+    if (i > 1) assert.ok(ESCALONES[i]![1] - ESCALONES[i - 1]![1] < ESCALONES[i - 1]![1] - ESCALONES[i - 2]![1]);
+  }
+  assert.ok(ESCALONES[ESCALONES.length - 1]![1] < PUERTA_DE_LA_ESCALERA.umbral);
+  // La puerta está en la primera pantalla (un teléfono ve de ~96 a ~416 del piso; a 1280, de 0 a 1024), y el que sube, adentro de ella.
+  const x = alPiso('la-prision', PUERTA_DE_LA_ESCALERA.x0);
+  assert.ok(x > 96 + 20 && alPiso('la-prision', PUERTA_DE_LA_ESCALERA.x1) < 96 + 320 - 20);
+  assert.ok(EL_QUE_SUBE.caja[0] > PUERTA_DE_LA_ESCALERA.x0 && EL_QUE_SUBE.caja[0] + EL_QUE_SUBE.caja[2] < PUERTA_DE_LA_ESCALERA.x1 && EL_QUE_SUBE.caja[1] > PUERTA_DE_LA_ESCALERA.arriba);
+  const piso = pisoDelCamino(CAMINOS['la-prision']!, new Map());
+  assert.match(piso, new RegExp(`<g class="asoma" data-espera="6" opacity="0" pointer-events="none"><image href="${rutaDePieza('camino-prision-sube').replace(/[.]/g, '\\.')}" x="${EL_QUE_SUBE.caja[0]}"`));
+  // El pajarito cuelga en (-130, 76) a 1,2, con la jaulita de ~90 de ancho: la puerta empieza después.
+  assert.ok(PUERTA_DE_LA_ESCALERA.x0 - 10 > -130 + 45);
+  // La fiera tiene su jaula en 796 ± 84, de 318 a 628: el arco empieza después y termina más arriba.
+  assert.ok(ARCO_DE_LAS_CARCELES.x0 - 14 > 796 + 84 && ARCO_DE_LAS_CARCELES.abajo < 318);
+  // El arco termina arriba de la reja grande del ala (que es del recinto y arranca en 270) y antes de la noche del cruce (los últimos 70).
+  assert.ok(ARCO_DE_LAS_CARCELES.abajo < 270 && ARCO_DE_LAS_CARCELES.x1 + 14 < marcoDelRecinto('la-prision').x + marcoDelRecinto('la-prision').ancho - 60);
+  // La cadena cuelga del puente, adentro del arco, y es un péndulo en coordenadas del piso (la isla mide ahí lo que se ve).
+  assert.ok(CADENA.x > ARCO_DE_LAS_CARCELES.x0 && CADENA.x < ARCO_DE_LAS_CARCELES.x1 && CADENA.y + CADENA.largo + 14 < ARCO_DE_LAS_CARCELES.abajo);
+  assert.ok(piso.includes(`<g class="pendula" data-x="${alPiso('la-prision', CADENA.x)}" data-y="${CADENA.y}" data-largo="${CADENA.largo}" pointer-events="none">`));
+  assert.ok(piso.indexOf('class="pendula"') < piso.indexOf('class="titere'), 'la cadena no va detrás de los bichos');
+});
+
+test('D-91/t5: arrastre de la tanda 4: los ojos del bajo no se abren sobre la silla, y el canto de las columnas no se va con la lupa', () => {
+  // La silla flota entre 556 y 618; ningún lugar de los ojos sin dueño cae en esa franja al medio de la vista.
+  for (const [fx, y] of ACECHOS['el-bajo']!.lugares) assert.ok(Math.abs(fx - 0.5) > 0.2 || y < 550, `unos ojos en (${fx}, ${y}) se abren sobre la silla`);
+  assert.match(readFileSync('src/scripts/camino.ts', 'utf-8'), /\* \(z\.f > 1 \? despejeDeLupa\('cerca', false, lente\.z\) : 1\);/);
+  // El canto del templo va con el piso; los del galpón, con la fila de adelante, que sí se corre.
+  assert.ok(LUCES['el-templo']![0]!.cantos!.every((c) => c.f <= 1) && LUCES['el-galpon']![0]!.cantos!.every((c) => c.f > 1));
 });
