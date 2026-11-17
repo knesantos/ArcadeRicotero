@@ -647,6 +647,20 @@ function bajoVaho(c: CapaDeAire): string {
   );
 }
 
+/** La niebla al ras del agua: tandas largas de rayas claras, acostadas, en una franja angosta. */
+function bajoRas(c: CapaDeAire): string {
+  return crayon(c, rayado(c, 921, 11, 452, 496, [[J.luz, 0.36], [J.celeste, 0.42], [J.luz, 0.28]], { largo: [44, 120], grosor: [2, 4.2], giro: 0, porTanda: [6, 12], abre: [96, 8] }));
+}
+
+/** La niebla baja del baldío: lo mismo en el lila de *Un baión*, más ancha y más rala. */
+function techosRasante(c: CapaDeAire): string {
+  return crayon(
+    c,
+    rayado(c, 1031, 12, 452, 596, [[B.lila, 0.4], [B.luz, 0.24], [B.lila, 0.3]], { largo: [30, 96], grosor: [1.8, 3.8], giro: 0, porTanda: [5, 11], abre: [90, 11] }) +
+      rayado(c, 1033, 6, 440, 520, [[B.luz, 0.2], [B.lila, 0.26]], { largo: [14, 40], grosor: [1.4, 2.4], giro: 0, porTanda: [3, 6], abre: [50, 8] }),
+  );
+}
+
 /** Los juncos de la orilla: cañas finas con su penacho, de espaldas a la luz. */
 function bajoCerca(c: CapaDeAire): string {
   const rnd = azar(919);
@@ -1213,6 +1227,8 @@ const PINTA: Readonly<Record<string, (c: CapaDeAire) => string>> = {
   'aire-ruta-cerca': rutaCerca,
   'aire-bajo-vaho': bajoVaho,
   'aire-bajo-cerca': bajoCerca,
+  'aire-bajo-ras': bajoRas,
+  'aire-techos-rasante': techosRasante,
   'aire-techos-humo': techosHumo,
   'aire-techos-ropa': techosRopa,
   'aire-prision-frio': prisionFrio,
