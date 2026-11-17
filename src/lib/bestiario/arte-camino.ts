@@ -35,6 +35,7 @@ import { PIEZAS_DEL_BONETE, boneteBajo, boneteFrente, boneteLejos, boneteSobre }
 import { PIEZAS_DEL_POTRERO } from './arte-potrero.ts';
 import { PIEZAS_DEL_ANEGADO } from './arte-anegado.ts';
 import { PIEZAS_DEL_CORSO } from './arte-corso.ts';
+import { PIEZAS_DE_LAS_CARCELES } from './arte-carceles.ts';
 
 const ANCHO = CAMINOS['el-monte']!.ancho;
 /**
@@ -676,7 +677,8 @@ const SUELTAS_DE_LA_TANDA_3: readonly Pieza[] = [...PIEZAS_DEL_PUERTO, ...PIEZAS
  * Las de la tanda 4 (los techos, el bajo y el templo). Son recintos enteros, sin capas: lo del camino entra
  * adentro de la escena, después del telón (`EN_EL_RECINTO`, en `escenas-camino.ts`), y las finas van encima de todo.
  */
-const SUELTAS_DE_LA_TANDA_4: readonly Pieza[] = [...PIEZAS_DEL_POTRERO, ...PIEZAS_DEL_ANEGADO, ...PIEZAS_DEL_CORSO];
+// Y la de la tanda 5, la prisión, que es otro recinto entero y entra igual.
+const SUELTAS_DE_LA_TANDA_4: readonly Pieza[] = [...PIEZAS_DEL_POTRERO, ...PIEZAS_DEL_ANEGADO, ...PIEZAS_DEL_CORSO, ...PIEZAS_DE_LAS_CARCELES];
 
 const fina = (nombre: string, caja: readonly [number, number, number, number], dibujo: string, mano = 'rociado'): Pieza => ({
   nombre,
@@ -709,6 +711,7 @@ export const FINAS_DE: Readonly<Record<string, readonly string[]>> = {
   'los-techos': ['fino-techos-pelota', 'fino-techos-palotes'],
   'el-bajo': ['fino-bajo-botella'],
   'el-templo': ['fino-templo-careta'],
+  'la-prision': ['fino-prision-rata'],
 };
 
 export const PIEZAS_CAMINO: readonly Pieza[] = [

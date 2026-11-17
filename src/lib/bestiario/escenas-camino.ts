@@ -20,6 +20,7 @@ import { LENGUAS } from './arte-salon.ts';
 import { VAPOR } from './arte-sobremesa.ts';
 import { COLGANTES } from './arte-bonete.ts';
 import { FLOTAN } from './arte-anegado.ts';
+import { CADENA } from './arte-carceles.ts';
 import { K_ENTORNO, RECINTO, type Tramo } from './camino.ts';
 import { escenaBajo, escenaBaldio, escenaInfierno, escenaPrision, escenaTemplo, ojos, type Tinta } from './escenas.ts';
 import { cosa, VELOCIDAD_DE_CARRIL } from './escenas-entornos.ts';
@@ -247,6 +248,21 @@ export const EN_EL_RECINTO: Readonly<Record<string, { tras: string; bajo: () => 
     luego: { tras: (agua) => `<g clip-path="url(#bajo-adelante)" pointer-events="none">${agua}</g>`, mano: () => quieta('camino-bajo-cerca') },
     sobre: (corre) =>
       FLOTAN.map((fl) => `<g class="pendula" data-x="${fl.x + corre}" data-y="${fl.y}" data-largo="460" data-flota="${fl.sube}" pointer-events="none"><g transform="translate(${corre} 0)">${quieta(fl.pieza)}</g></g>`).join(''),
+  },
+  // La prisión (tanda 5): la puerta de la escalera que baja, con el que sube si te quedás quieto, y el arco de las cárceles,
+  // con la cadena que cuelga del puente. La cadena es un péndulo como los del árbol: la isla lo gira en coordenadas del piso,
+  // y el recinto está corrido, así que va envuelta en un grupo que deshace ese corrimiento y otro que lo vuelve a hacer.
+  'la-prision': {
+    tras: 'prision-lejos',
+    bajo: () => {
+      const corre = -marcoDelRecinto('la-prision').x;
+      return (
+        quieta('camino-prision-puerta') +
+        loQueAsoma('camino-prision-sube', 6) +
+        quieta('camino-prision-arco') +
+        `<g transform="translate(${-corre} 0)"><g class="pendula" data-x="${CADENA.x + corre}" data-y="${CADENA.y}" data-largo="${CADENA.largo}" pointer-events="none"><g transform="translate(${corre} 0)">${quieta(CADENA.pieza)}</g></g></g>`
+      );
+    },
   },
   // El templo: la nave (el damero que fuga, las columnas de atrás, los cabezudos) y los ojos que se le prenden al de la entrada.
   'el-templo': { tras: 'templo-lejos', bajo: () => quieta('camino-templo-nave') + loQueAsoma('camino-templo-ojos', 6) },
