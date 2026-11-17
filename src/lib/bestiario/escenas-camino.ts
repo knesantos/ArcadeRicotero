@@ -250,12 +250,10 @@ export const EN_EL_RECINTO: Readonly<Record<string, { tras: string; bajo: () => 
       FLOTAN.map((fl) => `<g class="pendula" data-x="${fl.x + corre}" data-y="${fl.y}" data-largo="460" data-flota="${fl.sube}" pointer-events="none"><g transform="translate(${corre} 0)">${quieta(fl.pieza)}</g></g>`).join(''),
   },
   // La prisión (tanda 5): la puerta de la escalera que baja, con el que sube si te quedás quieto, y el arco de las cárceles,
-  // con la cadena que cuelga del puente. La cadena es un péndulo como los del árbol: la isla lo gira en coordenadas del piso,
-  // y el recinto está corrido, así que va envuelta en un grupo que deshace ese corrimiento y otro que lo vuelve a hacer.
+  // con la cadena que cuelga del puente.
   'la-prision': {
     tras: 'prision-lejos',
     bajo: () => {
-      const corre = -marcoDelRecinto('la-prision').x;
       return (
         // Segunda vuelta: las galerías altas sobre las dos paredes del pasillo, el haz de la ventana, y el del puente (que tarda más en salir).
         quieta('camino-prision-galeria-izq') +
@@ -265,7 +263,9 @@ export const EN_EL_RECINTO: Readonly<Record<string, { tras: string; bajo: () => 
         loQueAsoma('camino-prision-sube', 6) +
         quieta('camino-prision-arco') +
         loQueAsoma('camino-prision-vigia', 9) +
-        `<g transform="translate(${-corre} 0)"><g class="pendula" data-x="${CADENA.x + corre}" data-y="${CADENA.y}" data-largo="${CADENA.largo}" pointer-events="none"><g transform="translate(${corre} 0)">${quieta(CADENA.pieza)}</g></g></g>`
+        // La cadena del puente se hamacó como péndulo en la primera vuelta. En la tira de seis cuadros no se leía (mide 66 y
+        // se mueve cuatro unidades), así que en la segunda quedó quieta: cuelga, y la isla no la toca.
+        quieta(CADENA.pieza)
       );
     },
   },

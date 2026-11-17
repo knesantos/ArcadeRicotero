@@ -1683,8 +1683,9 @@ test('D-91/t5: la escalera baja y se pierde, el arco no tapa la reja del ala, y 
   assert.ok(ARCO_DE_LAS_CARCELES.abajo < 270 && ARCO_DE_LAS_CARCELES.x1 + 14 < marcoDelRecinto('la-prision').x + marcoDelRecinto('la-prision').ancho - 60);
   // La cadena cuelga del puente, adentro del arco, y es un péndulo en coordenadas del piso (la isla mide ahí lo que se ve).
   assert.ok(CADENA.x > ARCO_DE_LAS_CARCELES.x0 && CADENA.x < ARCO_DE_LAS_CARCELES.x1 && CADENA.y + CADENA.largo + 14 < ARCO_DE_LAS_CARCELES.abajo);
-  assert.ok(piso.includes(`<g class="pendula" data-x="${alPiso('la-prision', CADENA.x)}" data-y="${CADENA.y}" data-largo="${CADENA.largo}" pointer-events="none">`));
-  assert.ok(piso.indexOf('class="pendula"') < piso.indexOf('class="titere'), 'la cadena no va detrás de los bichos');
+  // (Segunda vuelta, cambiado a propósito: era un péndulo y en la tira de seis cuadros no se leía. Ahora cuelga quieta.)
+  assert.ok(!piso.includes('class="pendula"'), 'la cadena de la prisión volvió a hamacarse');
+  assert.ok(piso.indexOf(rutaDePieza(CADENA.pieza)) > 0 && piso.indexOf(rutaDePieza(CADENA.pieza)) < piso.indexOf('class="titere'), 'la cadena no va detrás de los bichos');
 });
 
 test('D-91/t5: arrastre de la tanda 4: los ojos del bajo no se abren sobre la silla, y el canto de las columnas no se va con la lupa', () => {
