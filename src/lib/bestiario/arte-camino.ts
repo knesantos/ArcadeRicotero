@@ -32,6 +32,9 @@ import { PALO } from './rig.ts';
 import { PIEZAS_DEL_PUERTO, puertoBajo, puertoLejos, puertoSobre } from './arte-puerto.ts';
 import { PIEZAS_DE_LA_TUNDRA, tundraBajo, tundraLejos } from './arte-tundra.ts';
 import { PIEZAS_DEL_BONETE, boneteBajo, boneteFrente, boneteLejos, boneteSobre } from './arte-bonete.ts';
+import { PIEZAS_DEL_POTRERO } from './arte-potrero.ts';
+import { PIEZAS_DEL_ANEGADO } from './arte-anegado.ts';
+import { PIEZAS_DEL_CORSO } from './arte-corso.ts';
 
 const ANCHO = CAMINOS['el-monte']!.ancho;
 /**
@@ -669,6 +672,11 @@ function piezasDeEntorno(tramo: Tramo): Pieza[] {
 
 /** Las piezas sueltas de los tres caminos de la tanda 3: lo que asoma y lo que premia a la lupa. */
 const SUELTAS_DE_LA_TANDA_3: readonly Pieza[] = [...PIEZAS_DEL_PUERTO, ...PIEZAS_DE_LA_TUNDRA, ...PIEZAS_DEL_BONETE];
+/**
+ * Las de la tanda 4 (los techos, el bajo y el templo). Son recintos enteros, sin capas: lo del camino entra
+ * adentro de la escena, después del telón (`EN_EL_RECINTO`, en `escenas-camino.ts`), y las finas van encima de todo.
+ */
+const SUELTAS_DE_LA_TANDA_4: readonly Pieza[] = [...PIEZAS_DEL_POTRERO, ...PIEZAS_DEL_ANEGADO, ...PIEZAS_DEL_CORSO];
 
 const fina = (nombre: string, caja: readonly [number, number, number, number], dibujo: string, mano = 'rociado'): Pieza => ({
   nombre,
@@ -685,6 +693,8 @@ export const PIEZAS_FINAS: readonly Pieza[] = [
   fina('fino-mesa-cueva', [CUEVA.x - 30, CUEVA.y - 34, 64, 50], cuevaDelRaton(CUEVA.x, CUEVA.y), 'grano'),
   // Tanda 3: la rayuela del muelle, el charco de hielo con el casete y la jaula con su pajarito. Las pinta cada región.
   ...SUELTAS_DE_LA_TANDA_3.filter((p) => p.nombre.startsWith('fino-')),
+  // Tanda 4: la pelota del potrero, la botella con el papel y la careta pisada.
+  ...SUELTAS_DE_LA_TANDA_4.filter((p) => p.nombre.startsWith('fino-')),
 ];
 
 /** Las piezas finas de cada región, en el orden en que van sobre el piso. */
@@ -696,6 +706,9 @@ export const FINAS_DE: Readonly<Record<string, readonly string[]>> = {
   'los-astilleros': ['fino-astillero-rayuela', 'fino-astillero-cordero'],
   cybersiberia: ['fino-cyber-hielo', 'fino-cyber-muneco'],
   'el-arbol': ['fino-arbol-jaula', 'fino-arbol-bonete'],
+  'los-techos': ['fino-techos-pelota'],
+  'el-bajo': ['fino-bajo-botella'],
+  'el-templo': ['fino-templo-careta'],
 };
 
 export const PIEZAS_CAMINO: readonly Pieza[] = [
@@ -715,6 +728,7 @@ export const PIEZAS_CAMINO: readonly Pieza[] = [
   ...(LUCES['el-galpon']![0]!.cantos ?? []).map((c): Pieza => ({ nombre: c.pieza, caja: c.caja, dibujo: galponFrenteLargo(anchoDeCapa(VELOCIDAD.frente, CAMINOS['el-galpon']!.ancho), ALTO, 'canto', [c.caja[0], c.caja[0] + c.caja[2]]), densidad: 1.25, calidad: 70 })),
   ...PIEZAS_DE_LA_SOBREMESA,
   ...SUELTAS_DE_LA_TANDA_3.filter((p) => !p.nombre.startsWith('fino-')),
+  ...SUELTAS_DE_LA_TANDA_4.filter((p) => !p.nombre.startsWith('fino-')),
 ];
 
 /* ------------------------------------------------------------------
