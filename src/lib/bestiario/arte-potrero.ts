@@ -42,9 +42,10 @@ const f = (v: number): string => (Math.round(v * 10) / 10).toString();
 /** Lo que se ve de la medianera: de abajo de la chapa al piso del baldío. */
 export const MEDIANERA = { arriba: CHAPA.abajo + 12, pie: 386 } as const;
 /** El boquete: el hueco en la medianera por donde se va la senda. `x` es su medio. */
-export const BOQUETE = { x: 968, ancho: 62, alto: 50 } as const;
+// Segunda vuelta: de 62 a 100 de ancho. Con 62 el que espía medía veinte píxeles en un teléfono.
+export const BOQUETE = { x: 968, ancho: 100, alto: 50 } as const;
 /** La senda: de acá (ancha, abajo de la pantalla) al pie del boquete. */
-export const SENDA = { desde: [1064, 664], hasta: [968, 388], cerca: 176, lejos: 16 } as const;
+export const SENDA = { desde: [1064, 664], hasta: [968, 388], cerca: 176, lejos: 24 } as const;
 /** El arco pintado en la medianera, y su pelota. */
 export const ARCO = { x0: 1066, x1: 1180, pelota: [1104, 404] } as const;
 /** La caja de la mano de abajo: de las ventanas para abajo. */
@@ -172,18 +173,23 @@ function boquete(): string {
     const a = (i / 5) * Math.PI * 2 + rnd();
     chispas += trazo(`M${f(otro[0] + Math.cos(a) * 3)} ${f(otro[1] + Math.sin(a) * 3)} l${f(Math.cos(a) * (2 + rnd() * 2.4))} ${f(Math.sin(a) * (2 + rnd() * 2.4))}`, B.luz, 0.9, 0.6);
   }
+  // Segunda vuelta: con el hueco del color de la pared se leía como un bulto apoyado en ella. Ahora es una vista:
+  // arriba la noche, abajo la calle alumbrada, y en el medio una casa con la ventana prendida.
   const adentro =
-    forma(hueco, B.violeta) +
-    // La otra cuadra está más alumbrada que el baldío: el hueco es claro, no una caja negra.
-    nube(x, pie - 8, ancho * 0.7, 20, B.lila, 'm', 0.8) +
-    nube(otro[0], otro[1], 14, 12, B.luz, 's', 0.4) +
+    forma(hueco, B.noche) +
+    nube(x, pie - 4, ancho * 0.7, 13, B.lila, 's', 0.95) +
+    nube(x + 6, pie - 2, ancho * 0.3, 5, B.luz, 's', 0.5) +
+    nube(otro[0], otro[1], 13, 11, B.lila, 's', 0.55) +
     chispas +
     nube(otro[0], otro[1], 2.4, 2.4, B.luz, 'xs') +
-    // Un techo lejano y su antena, del otro lado.
-    forma(`M${x - ancho / 2} ${pie - 16} l14 -9 l12 8 l8 -5 l10 6 l${ancho} 2 l0 8 l${-ancho - 44} 0 Z`, B.negro, 0.85) +
-    trazo(`M${x - 12} ${pie - 22} l0 -11 m-4 3 l8 0`, B.negro, 1.1) +
-    // La senda, que sigue.
-    forma(`M${x - 10} ${pie + 2} L${x - 2} ${pie - 9} L${x + 4} ${pie - 9} L${x + 12} ${pie + 2} Z`, B.rosa, 0.5);
+    // La casa de enfrente: el techo a dos aguas, la antena y una ventana.
+    forma(`M${x - ancho * 0.44} ${pie - 9} l0 -13 l15 -10 l15 10 l0 13 Z`, B.violeta) +
+    trazo(`M${x - ancho * 0.44} ${pie - 22} l15 -10 l15 10`, B.lila, 1.2, 0.8) +
+    trazo(`M${x - ancho * 0.44 + 22} ${pie - 28} l0 -10 m-4 3 l8 0`, B.violeta, 1.1) +
+    forma(`M${x - ancho * 0.44 + 9} ${pie - 19} l8 -0.4 l0.4 7 l-8.4 0.4 Z`, B.llamaClara, 0.95) +
+    trazo(`M${x - ancho * 0.44 + 13} ${pie - 19.2} l0.2 7`, B.noche, 0.8) +
+    // La senda, que sigue del otro lado.
+    forma(`M${x - 12} ${pie + 2} L${x - 2} ${pie - 9} L${x + 5} ${pie - 9} L${x + 14} ${pie + 2} Z`, B.rosa, 0.6);
   let ladrillos = '';
   for (let i = 1; i < pts.length - 1; i++) {
     const [px, py] = pts[i]!;
@@ -197,7 +203,7 @@ function boquete(): string {
     const w = 4 + rnd() * 6;
     cascotes += nube(cx + 1, cy + 2, w * 0.9, 1.6, B.negro, 'xs', 0.7) + forma(`M${f(cx - w / 2)} ${f(cy)} l${f(w * 0.2)} ${f(-w * 0.5)} l${f(w * 0.7)} ${f(-0.6)} l${f(w * 0.1)} ${f(w * 0.56)} Z`, i % 3 ? B.rosa : B.violeta, 0.9);
   }
-  return `<clipPath id="pt-boquete"><path d="${hueco}"/></clipPath><g clip-path="url(#pt-boquete)">${adentro}</g>` + trazo(hueco, B.negro, 2.2, 0.9) + ladrillos + cascotes;
+  return `<clipPath id="pt-boquete"><path d="${hueco}"/></clipPath><g clip-path="url(#pt-boquete)">${adentro}</g>` + trazo(hueco, B.rosa, 2.6, 0.7) + ladrillos + cascotes;
 }
 
 /** El arco, pintado con cal a brocha gorda: dos palos, el travesaño torcido y la cal que chorreó. */
@@ -293,7 +299,9 @@ export function potreroBajo(): string {
    ------------------------------------------------------------------ */
 
 /** La caja del vecino que se asoma: adentro del boquete. */
-export const VECINO = { caja: [BOQUETE.x - 26, MEDIANERA.pie - 46, 52, 48] as const } as const;
+export const VECINO = { caja: [BOQUETE.x - 38, MEDIANERA.pie - 62, 78, 64] as const } as const;
+/** Cuánto se agrandó el que espía en la segunda vuelta, desde el pie del boquete. */
+const TALLA_DEL_VECINO = 1.55;
 
 function vecino(): string {
   const [x0, y0, w, h] = VECINO.caja;
@@ -301,13 +309,14 @@ function vecino(): string {
   const pie = MEDIANERA.pie;
   return (
     `<g filter="url(#grano)"><rect x="${x0}" y="${y0}" width="${w}" height="${h}" fill="var(--fondo)" fill-opacity="0"/>` +
+    `<g transform="translate(${cx} ${pie}) scale(${TALLA_DEL_VECINO}) translate(${-cx} ${-pie})">` +
     // Una sombra: la gorra, la cabeza ladeada, un hombro y la mano agarrada del canto.
     forma(`M${cx - 15} ${pie + 2} L${cx - 14} ${pie - 16} Q${cx - 13} ${pie - 22} ${cx - 8} ${pie - 23} Q${cx - 12} ${pie - 36} ${cx} ${pie - 38} Q${cx + 11} ${pie - 38} ${cx + 9} ${pie - 27} L${cx + 15} ${pie - 28} L${cx + 15} ${pie - 25} L${cx + 8} ${pie - 23} Q${cx + 16} ${pie - 18} ${cx + 17} ${pie + 2} Z`, B.negro) +
     forma(`M${cx + 19} ${pie - 20} q4 -2 6 1 l0 9 l-6 0 Z`, B.negro) +
     // Dos ojos, que es todo lo que se le ve.
     `<ellipse cx="${cx - 3.4}" cy="${pie - 30}" rx="2.1" ry="1.5" fill="${B.llamaClara}"/><ellipse cx="${cx + 4}" cy="${pie - 30.4}" rx="2.1" ry="1.5" fill="${B.llamaClara}"/>` +
     `<circle cx="${cx - 3}" cy="${pie - 30}" r="0.8" fill="${B.negro}"/><circle cx="${cx + 4.4}" cy="${pie - 30.4}" r="0.8" fill="${B.negro}"/>` +
-    `</g>`
+    `</g></g>`
   );
 }
 
@@ -340,9 +349,36 @@ function pelotaFina(): string {
   );
 }
 
+/** Los palotes: la cuenta de los partidos, rayada con un cascote en la medianera, al lado del arco. Segundo premio de la lupa. */
+const FINO_PALOTES = [ARCO.x1 + 14, MEDIANERA.arriba + 6, 50, 34] as const;
+
+function palotes(): string {
+  const [x0, y0, w, h] = FINO_PALOTES;
+  // Dos equipos: uno lleva nueve y el otro cuatro. Cada cinco, uno cruzado. Abajo, lo que se juega: una botella.
+  const fila = (x: number, y: number, cuantos: number): string => {
+    let s = '';
+    for (let i = 0; i < cuantos; i++) {
+      const g = Math.floor(i / 5);
+      const px = x + g * 21 + (i % 5) * 3.6;
+      s += i % 5 === 4 ? trazo(`M${f(x + g * 21 - 2)} ${f(y + 8)} L${f(x + g * 21 + 13.6)} ${f(y + 1)}`, B.luz, 0.9, 0.85) : trazo(`M${f(px)} ${f(y + (i % 2) * 0.6)} l${f(0.5 - (i % 3) * 0.4)} ${f(9 - (i % 2))}`, B.luz, 0.9, 0.85);
+    }
+    return s;
+  };
+  return (
+    `<g filter="url(#grano)"><rect x="${x0}" y="${y0}" width="${w}" height="${h}" fill="var(--fondo)" fill-opacity="0"/>` +
+    fila(x0 + 5, y0 + 4, 9) +
+    trazo(`M${x0 + 3} ${y0 + 16} l42 -1`, B.lila, 0.6, 0.7) +
+    fila(x0 + 5, y0 + 19, 4) +
+    // La botella que se juega, dibujada al lado.
+    trazo(`M${x0 + 36} ${y0 + 30} l0 -7 q0 -2 1.4 -2.6 l0 -2.4 l2 0 l0 2.4 q1.4 0.6 1.4 2.6 l0 7 Z`, B.luz, 0.7, 0.8) +
+    `</g>`
+  );
+}
+
 /** Las piezas sueltas de los techos: lo que asoma y lo que premia a la lupa. La mano de abajo va en `arte-camino.ts`. */
 export const PIEZAS_DEL_POTRERO: readonly Pieza[] = [
   { nombre: 'camino-techos-bajo', caja: CAJA_DEL_POTRERO, dibujo: potreroBajo(), densidad: 1.5 },
   { nombre: 'camino-techos-vecino', caja: VECINO.caja, dibujo: vecino(), densidad: 3 },
   { nombre: 'fino-techos-pelota', caja: FINO_PELOTA, dibujo: pelotaFina(), densidad: 4 },
+  { nombre: 'fino-techos-palotes', caja: FINO_PALOTES, dibujo: palotes(), densidad: 4 },
 ];
