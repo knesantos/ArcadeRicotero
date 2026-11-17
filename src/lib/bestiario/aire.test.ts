@@ -44,7 +44,7 @@ import { CABEZUDOS, CAJA_DE_LA_NAVE, CANTO_DE_LAS_COLUMNAS, LENGUA, OJOS as OJOS
 import { BANDERIN } from './arte-potrero.ts';
 import { ARCO as ARCO_DE_LAS_CARCELES, CADENA, EL_DEL_PUENTE, EL_QUE_SUBE, ESCALONES, GALERIA, HAZ, PIEZAS_DE_LAS_CARCELES, PUERTA as PUERTA_DE_LA_ESCALERA } from './arte-carceles.ts';
 import { PRISION } from './rig.ts';
-import { BANCOS, CAJA_DEL_TITERE, DISCO, HITOS, LECHUZA, PIEZAS_DEL_PLANO, cajaDelHito, conTinta } from './arte-plano.ts';
+import { BANCOS, CAJA_DEL_TITERE, DISCO, HITOS, LECHUZA, PIEZAS_DEL_PLANO, PROPIOS, cajaDelHito, conTinta } from './arte-plano.ts';
 import { EN_EL_PLANO, LAS_DEL_PLANO, LUGAR_EN_EL_PLANO, MAXIMO_POR_ZONA } from './plano-elenco.ts';
 import { dibujar } from './figuras.ts';
 import { BAJO, CHAPA, PIERRE, marcoDelRecinto } from './rig.ts';
@@ -1742,6 +1742,7 @@ test('D-91/t6: el plano tiene aire: nubes quietas en bancos con huecos, y la lec
   assert.match(estilo, /prefers-reduced-motion: reduce\) \{[\s\S]*\.plano-lechuza \{\s*display: none;/);
   // Las nubes no se mueven: girando no se notaba y costaba cuadros (medido contra main). Lo único animado es la lechuza.
   assert.doesNotMatch(/\.plano-nubes \{[^}]*\}/.exec(estilo)![0], /animation|will-change/);
+  // (Tercera vuelta: se probó un segundo, el vaivén de los títeres con la lupa, y se sacó: costaba y no se leía.)
   assert.equal((estilo.match(/@keyframes/g) ?? []).length, 1);
   // Lo que cruza es raro: una vez cada medio minuto o más, y visible menos de un cuarto de ese tiempo.
   const ciclo = Number(/animation: plano-cruza (\d+)s/.exec(estilo)![1]);
@@ -1834,7 +1835,8 @@ test('D-91/t6v2: cada títere del plano está impreso como cartón recortado, pa
   assert.match(pintada, /style="fill:var\(--fondo\)"/);
   assert.throws(() => conTinta('<path class="b-inventada"/>', tinta), /b-inventada/);
   const fuente = readFileSync('src/lib/bestiario/arte-plano.ts', 'utf-8');
-  for (const pieza of ['feMorphology in="SourceAlpha" operator="dilate"', 'flood-color="var(--papel)"', 'flood-color="${tr}"', 'var(--portal-madera)', 'url(#grano)']) assert.ok(fuente.includes(pieza), `el títere no lleva ${pieza}`);
+  // (Tercera vuelta: el grano pasó del fino al del rociado, que es el del aerógrafo.)
+  for (const pieza of ['feMorphology in="SourceAlpha" operator="dilate"', 'flood-color="var(--papel)"', 'flood-color="${tr}"', 'var(--portal-madera)', 'url(#rociado)']) assert.ok(fuente.includes(pieza), `el títere no lleva ${pieza}`);
   assert.ok(CAJA_DEL_TITERE[0] < -10 && CAJA_DEL_TITERE[1] + CAJA_DEL_TITERE[3] > 115, 'la caja no deja lugar para el recorte y el palito');
   // Los hitos: uno por región que cambió en las tandas, adentro de su porción, impresos finos.
   assert.deepEqual(HITOS.map((h) => h.region).sort(), ['el-bajo', 'el-templo', 'la-prision', 'los-astilleros', 'los-techos']);
@@ -1860,5 +1862,32 @@ test('D-91/t6v2: las nubes no pisan ninguna porción, la llegada es una línea y
   assert.match(pagina, /cartel\.addEventListener\('click', \(\) => marco\?\.classList\.add\('bestiario-marco--baja'\)\);/);
   assert.doesNotMatch(pagina, /preventDefault/);
   assert.match(pagina, /:global\(\.bestiario-marco--baja\) \.plano-nubes \{\s*opacity: 1;\s*transform: scale\(/);
-  assert.match(pagina, /prefers-reduced-motion: reduce\) \{\s*:global\(\.bestiario-marco--baja\) \.plano-nubes \{\s*opacity: [\d.]+;\s*transform: none;/);
+  assert.match(pagina, /prefers-reduced-motion: reduce\) \{[\s\S]*?:global\(\.bestiario-marco--baja\) \.plano-nubes \{\s*opacity: [\d.]+;\s*transform: none;/);
+});
+
+test('D-91/t6v3: los títeres del plano tienen gesto y aerógrafo, y van sueltos arriba del dibujo, quietos', () => {
+  // Cinco protagonistas con dibujo propio, todos del plano; los demás salen del molde de `figuras.ts`, que no se toca.
+  assert.deepEqual(Object.keys(PROPIOS).sort(), ['barbazul', 'el-gordo-pierre', 'el-lobo-suelto', 'luzbelito', 'momo']);
+  for (const id of Object.keys(PROPIOS)) {
+    assert.ok(LAS_DEL_PLANO.has(id) && Object.values(EN_EL_PLANO).some((dos) => dos[0] === id), `${id} no es protagonista de su zona`);
+    const dibujo = PROPIOS[id]!('var(--disco-oktubre-tinta)');
+    assert.doesNotMatch(dibujo, /class="|#[0-9a-f]{6}\b/i, `${id}: una clase o un hex`);
+  }
+  const fuente = readFileSync('src/lib/bestiario/arte-plano.ts', 'utf-8');
+  // El aerógrafo: la luz soplada y teñida adentro de la silueta, en el mismo filtro que el recorte.
+  for (const paso of ['feOffset in="soplada"', 'operator="out" result="filo"', 'result="luz"', '<feMergeNode in="luz"/>']) assert.ok(fuente.includes(paso), `falta ${paso}`);
+  assert.doesNotMatch(readFileSync('src/lib/bestiario/figuras.ts', 'utf-8'), /plano/i);
+  // En la página: imágenes sueltas en la lente, después del SVG; adentro del SVG queda solo la marca de anotada.
+  const pagina = readFileSync('src/pages/redondopedia/bestiario.astro', 'utf-8');
+  assert.ok(pagina.indexOf('class="plano-titere"') > pagina.indexOf('</svg>') && pagina.indexOf('class="plano-titere"') < pagina.indexOf('class="plano-nubes"'));
+  assert.doesNotMatch(pagina.slice(pagina.indexOf('<g class="bestias">'), pagina.indexOf('</svg>')), /<image |<use /);
+  // El eje queda en el palito, pero no se hamacan: con la lupa puesta el vaivén costaba de un 7 a un 28 % por cuadro
+  // (medido a ×4 contra el mismo plano quieto) y en la tira de seis cuadros no se leía.
+  assert.match(pagina, /\.plano-titere \{[^}]*transform-origin: 50% 96%;/);
+  assert.doesNotMatch(pagina, /plano-mece|\.plano-titere \{[^}]*animation/);
+  // Los tres que quedaban justos: el lobo lejos del cartel del monte (que está en 333), la pastura arriba y abajo de su cartel, la Pontiac lejos del molinete.
+  assert.ok(Math.abs(LUGAR_EN_EL_PLANO['el-lobo-suelto']![0] - 333) > 25);
+  assert.equal(LUGAR_EN_EL_PLANO['el-cordero-atado']![0], LUGAR_EN_EL_PLANO['aquella-solitaria-vaca-cubana']![0]);
+  assert.ok(LUGAR_EN_EL_PLANO['aquella-solitaria-vaca-cubana']![1] - LUGAR_EN_EL_PLANO['el-cordero-atado']![1] > 100);
+  assert.ok(LUGAR_EN_EL_PLANO['la-mariposa-pontiac']![0] > 190 && LUGAR_EN_EL_PLANO['la-mariposa-pontiac']![0] < 250);
 });

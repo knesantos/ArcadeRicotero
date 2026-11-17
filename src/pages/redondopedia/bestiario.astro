@@ -195,10 +195,8 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
             bestias.filter((b) => LAS_DEL_PLANO.has(b.id)).map((b) => {
               const lugar = LUGAR_EN_EL_PLANO[b.id];
               const p = lugar ? polar(lugar[0], lugar[1]) : punto(b.pos);
-              const caja = cajaEnElPlano(b, p, AUMENTO);
               return (
                 <g class="bestia-plano" data-id={b.id} style={`--tr: ${tintaDe(regionDe.get(b.region)!.disco)}`}>
-                  <image href={`/bestiario/plano-titere-${b.id}.webp`} x={caja.x.toFixed(1)} y={caja.y.toFixed(1)} width={caja.ancho.toFixed(1)} height={caja.alto.toFixed(1)} />
                   <g class="marca-anotada" transform={`translate(${p.x + b.tam * 0.45} ${p.y - b.tam * 0.55})`}>
                     <circle r="7" class="b-pp b-borde" />
                     <path d="M-3.5 0 l2.5 3 l4.5 -6" class="b-tz" stroke-width="2.2" />
@@ -211,6 +209,13 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
       </svg>
       {/* El aire del plano (`D-91`, tanda 6, `arte-plano.ts`): las nubes que pasan por encima del disco y, muy cada tanto,
           la lechuza. Van arriba del dibujo y debajo de los carteles; no se tocan. Con la lupa se abren. */}
+      {/* Los títeres (tercera vuelta): imágenes sueltas arriba del dibujo, no adentro del SVG, así se pueden hamacar desde
+          el palito sin repintar el plano. Hoy están quietos (se midió el vaivén y no se leía: ver el estilo, abajo). */}
+      {bestias.filter((b) => LAS_DEL_PLANO.has(b.id)).map((b, i) => {
+        const lugar = LUGAR_EN_EL_PLANO[b.id];
+        const caja = cajaEnElPlano(b, lugar ? polar(lugar[0], lugar[1]) : punto(b.pos), AUMENTO);
+        return <img class="plano-titere" data-titere={b.id} src={`/bestiario/plano-titere-${b.id}.webp`} alt="" aria-hidden="true" width="326" height="350" decoding="async" style={`left: ${(caja.x / 10).toFixed(2)}%; top: ${(caja.y / 10).toFixed(2)}%; width: ${(caja.ancho / 10).toFixed(2)}%; --fase: ${((i * 0.53) % 3.4).toFixed(2)}s`} />;
+      })}
       {/* Los hitos: lo que las tandas le sumaron a cinco regiones, en chiquito. Se leen con la lupa. */}
       {HITOS.map((h) => {
         const [x, y, lado] = cajaDelHito(h);
@@ -357,6 +362,17 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
     pointer-events: none;
     opacity: 0.8;
     transition: opacity 0.5s, transform 0.4s;
+  }
+
+  /* Los títeres: sueltos, sin toque, y con el eje en el palito. Están quietos. En la tercera vuelta se hamacaron con la
+     lupa puesta (2,8° para cada lado, cada uno a su tiempo): medido a ×4 contra el mismo plano quieto, costaba de un 7 a
+     un 28 % por cuadro, y en la tira de seis cuadros no se leía. Lo que se mueve y no se lee vuelve a quieto. Quedan
+     sueltos y con el eje puesto: si algún día se hamacan, es una regla acá y nada más. */
+  .plano-titere {
+    position: absolute;
+    height: auto;
+    pointer-events: none;
+    transform-origin: 50% 96%;
   }
 
   /* Los hitos van con el dibujo: chicos, quietos, sin toque. */
