@@ -36,6 +36,7 @@ import { PIEZAS_DEL_POTRERO } from './arte-potrero.ts';
 import { PIEZAS_DEL_ANEGADO } from './arte-anegado.ts';
 import { PIEZAS_DEL_CORSO } from './arte-corso.ts';
 import { PIEZAS_DE_LAS_CARCELES } from './arte-carceles.ts';
+import { PIEZAS_DEL_PLANO } from './arte-plano.ts';
 
 const ANCHO = CAMINOS['el-monte']!.ancho;
 /**
@@ -732,6 +733,8 @@ export const PIEZAS_CAMINO: readonly Pieza[] = [
   ...PIEZAS_DE_LA_SOBREMESA,
   ...SUELTAS_DE_LA_TANDA_3.filter((p) => !p.nombre.startsWith('fino-')),
   ...SUELTAS_DE_LA_TANDA_4.filter((p) => !p.nombre.startsWith('fino-')),
+  // Tanda 6: el aire del plano redondo (las nubes y la lechuza). No son del camino, pero se imprimen con él.
+  ...PIEZAS_DEL_PLANO,
 ];
 
 /* ------------------------------------------------------------------

@@ -203,6 +203,12 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
           }
         </g>
       </svg>
+      {/* El aire del plano (`D-91`, tanda 6, `arte-plano.ts`): las nubes que pasan por encima del disco y, muy cada tanto,
+          la lechuza. Van arriba del dibujo y debajo de los carteles; no se tocan. Con la lupa se abren. */}
+      <div class="plano-aire" aria-hidden="true">
+        <img class="plano-nubes" src="/bestiario/plano-nubes.webp" alt="" width="800" height="800" decoding="async" />
+        <img class="plano-lechuza" src="/bestiario/plano-lechuza.webp" alt="" width="180" height="144" decoding="async" loading="lazy" />
+      </div>
       <img class="portal-luz" src="/bestiario/portal-luz.webp" alt="" width="460" height="460" decoding="async" />
 
       <nav class="bestiario-rotulos" aria-label={BESTIARIO.regiones}>
@@ -309,3 +315,79 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
     import '../../scripts/bestiario.ts';
   </script>
 </Base>
+
+<style>
+  /* El aire del plano (`D-91`, tanda 6). Va acá y no en `sitio.css` porque es solo de esta página, y esa hoja la está
+     tocando otra rama (`T-529`). Solo `transform` y `opacity`, sobre dos imágenes sueltas: el dibujo del plano no se repinta. */
+  .plano-aire {
+    position: absolute;
+    inset: 1.4%;
+    border-radius: 50%;
+    overflow: hidden;
+    pointer-events: none;
+    transition: opacity 0.5s;
+  }
+
+  /* Las nubes dan la vuelta con el disco: una vuelta cada cinco minutos y pico. */
+  .plano-nubes {
+    position: absolute;
+    left: -1.44%;
+    top: -1.44%;
+    width: 102.88%;
+    height: 102.88%;
+    opacity: 0.74;
+    animation: plano-gira 320s linear infinite;
+  }
+
+  /* La lechuza cruza de abajo a la izquierda hacia arriba a la derecha en unos nueve segundos, una vez cada tres cuartos de minuto. */
+  .plano-lechuza {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 15%;
+    height: auto;
+    opacity: 0;
+    animation: plano-cruza 46s linear 9s infinite;
+  }
+
+  /* Con la lupa puesta, acercarse es meterse abajo de las nubes: se abren del todo. */
+  :global(.bestiario-marco--lupa) .plano-aire {
+    opacity: 0;
+  }
+
+  @keyframes plano-gira {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes plano-cruza {
+    0% {
+      transform: translate(-120%, 540%) rotate(-25deg);
+      opacity: 0;
+    }
+    1.5% {
+      opacity: 0.94;
+    }
+    19% {
+      opacity: 0.94;
+    }
+    20.5%,
+    100% {
+      transform: translate(720%, 130%) rotate(-25deg);
+      opacity: 0;
+    }
+  }
+
+  /* Con movimiento reducido las nubes quedan quietas y más flojas, y la lechuza no pasa. */
+  @media (prefers-reduced-motion: reduce) {
+    .plano-nubes {
+      animation: none;
+      opacity: 0.4;
+    }
+
+    .plano-lechuza {
+      display: none;
+    }
+  }
+</style>
