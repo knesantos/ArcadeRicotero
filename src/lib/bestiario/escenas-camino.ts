@@ -19,6 +19,7 @@ import { FINAS_DE, PIEZAS_CAMINO, cajaDelCruce } from './arte-camino.ts';
 import { LENGUAS } from './arte-salon.ts';
 import { VAPOR } from './arte-sobremesa.ts';
 import { COLGANTES } from './arte-bonete.ts';
+import { FLOTAN } from './arte-anegado.ts';
 import { K_ENTORNO, RECINTO, type Tramo } from './camino.ts';
 import { escenaBajo, escenaBaldio, escenaInfierno, escenaPrision, escenaTemplo, ojos, type Tinta } from './escenas.ts';
 import { cosa, VELOCIDAD_DE_CARRIL } from './escenas-entornos.ts';
@@ -217,6 +218,46 @@ function salonEnElCamino(): { entre: string; cerca: string } {
   };
 }
 
+/* ------------------------------------------------------------------
+   Lo que el camino le suma a un recinto entero, sin editarlo (`D-91`, tanda 4)
+   ------------------------------------------------------------------
+   Los techos, el bajo y el templo no tienen capas: su escena es una sola tira (`escenas.ts`), con el telón
+   primero y los bichos después, y esas funciones las está tocando otra sesión (`T-529`). Acá no se editan:
+   el camino toma la escena ya armada y **mete su mano justo después del telón** (`tras`), así queda arriba
+   del fondo y debajo de todos. Si el telón cambia de nombre, esto avisa en vez de pintar en cualquier lado.
+   `sobre` va encima de todo, en coordenadas del piso (recibe cuánto se corrió el recinto): lo que flota.
+*/
+
+const quieta = (n: string): string => imagenDePieza(piezaDelCamino(n), true);
+/** Lo que no se ve hasta que quien mira se queda quieto `espera` segundos (la isla lo trae, como al que asoma en el infierno). */
+const loQueAsoma = (n: string, espera: number): string => `<g class="asoma" data-espera="${espera}" opacity="0" pointer-events="none">${quieta(n)}</g>`;
+
+export const EN_EL_RECINTO: Readonly<Record<string, { tras: string; bajo: () => string; sobre?: (corre: number) => string }>> = {
+  // Los techos: el potrero (la senda al boquete, el arco, los charcos, las ventanas) y el que espía por el boquete.
+  'los-techos': { tras: 'baldio-lejos', bajo: () => quieta('camino-techos-bajo') + loQueAsoma('camino-techos-vecino', 6) },
+  // El bajo: va después del agua de atrás. El pasillo, la marca de la crecida y la línea de flote; y encima de todo, lo que flota,
+  // que la isla hamaca desde abajo de la línea del agua (`.pendula`, como lo que cuelga del árbol, pero al revés).
+  'el-bajo': {
+    tras: 'bajo-agua',
+    bajo: () => quieta('camino-bajo-fondo') + loQueAsoma('camino-bajo-figura', 6),
+    sobre: (corre) =>
+      FLOTAN.map((fl) => `<g class="pendula" data-x="${fl.x + corre}" data-y="${fl.y}" data-largo="460" pointer-events="none"><g transform="translate(${corre} 0)">${quieta(fl.pieza)}</g></g>`).join(''),
+  },
+  // El templo: la nave (el damero que fuga, las columnas de atrás, los cabezudos) y los ojos que se le prenden al de la entrada.
+  'el-templo': { tras: 'templo-lejos', bajo: () => quieta('camino-templo-nave') + loQueAsoma('camino-templo-ojos', 6) },
+};
+
+/** La escena de un recinto con la mano del camino adentro, después de su telón. La escena original queda entera, partida en dos. */
+export function conLoDelCamino(region: string, escena: string): string {
+  const suma = EN_EL_RECINTO[region];
+  if (!suma) return escena;
+  const telon = imagen(suma.tras);
+  const en = escena.indexOf(telon);
+  if (en < 0) throw new Error(`${region}: la escena ya no arranca con "${suma.tras}" (escenas-camino.ts)`);
+  const corte = en + telon.length;
+  return escena.slice(0, corte) + suma.bajo() + escena.slice(corte);
+}
+
 export const ESCENA_DEL_RECINTO: Readonly<Record<string, (n: Nombres) => string>> = {
   'los-techos': escenaBaldio,
   'el-infierno': (n) => escenaInfierno(n, salonEnElCamino()),
@@ -233,7 +274,8 @@ export const ESCENA_DEL_RECINTO: Readonly<Record<string, (n: Nombres) => string>
 function pisoDeRecinto(t: Tramo, nombres: Nombres): string {
   const { x } = marcoDelRecinto(t.region);
   const corre = x ? ` transform="translate(${-x} 0)"` : '';
-  return `<g class="recinto-en-camino" data-recinto="${t.region}"${corre}>${ESCENA_DEL_RECINTO[t.region]!(nombres)}</g>` + cruce(t);
+  const escena = conLoDelCamino(t.region, ESCENA_DEL_RECINTO[t.region]!(nombres));
+  return `<g class="recinto-en-camino" data-recinto="${t.region}"${corre}>${escena}${finasDe(t)}</g>` + (EN_EL_RECINTO[t.region]?.sobre?.(-x) ?? '') + cruce(t);
 }
 
 /** El piso de un tramo, con todos los que viven en él. */
