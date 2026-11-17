@@ -232,7 +232,11 @@ const quieta = (n: string): string => imagenDePieza(piezaDelCamino(n), true);
 /** Lo que no se ve hasta que quien mira se queda quieto `espera` segundos (la isla lo trae, como al que asoma en el infierno). */
 const loQueAsoma = (n: string, espera: number): string => `<g class="asoma" data-espera="${espera}" opacity="0" pointer-events="none">${quieta(n)}</g>`;
 
-export const EN_EL_RECINTO: Readonly<Record<string, { tras: string; bajo: () => string; sobre?: (corre: number) => string }>> = {
+/**
+ * `luego`: una segunda mano, más adelante en la escena. En el bajo la escena repinta el agua de la línea de Pierre para
+ * abajo (el mismo `bajo-agua`, recortado): lo que el camino pinta en el agua de adelante entra después de ese repintado.
+ */
+export const EN_EL_RECINTO: Readonly<Record<string, { tras: string; bajo: () => string; luego?: { tras: (telon: string) => string; mano: () => string }; sobre?: (corre: number) => string }>> = {
   // Los techos: el potrero (la senda al boquete, el arco, los charcos, las ventanas) y el que espía por el boquete.
   'los-techos': { tras: 'baldio-lejos', bajo: () => quieta('camino-techos-bajo') + loQueAsoma('camino-techos-vecino', 6) },
   // El bajo: va después del agua de atrás. El pasillo, la marca de la crecida y la línea de flote; y encima de todo, lo que flota,
@@ -240,8 +244,9 @@ export const EN_EL_RECINTO: Readonly<Record<string, { tras: string; bajo: () => 
   'el-bajo': {
     tras: 'bajo-agua',
     bajo: () => quieta('camino-bajo-fondo') + loQueAsoma('camino-bajo-figura', 6),
+    luego: { tras: (agua) => `<g clip-path="url(#bajo-adelante)" pointer-events="none">${agua}</g>`, mano: () => quieta('camino-bajo-cerca') },
     sobre: (corre) =>
-      FLOTAN.map((fl) => `<g class="pendula" data-x="${fl.x + corre}" data-y="${fl.y}" data-largo="460" pointer-events="none"><g transform="translate(${corre} 0)">${quieta(fl.pieza)}</g></g>`).join(''),
+      FLOTAN.map((fl) => `<g class="pendula" data-x="${fl.x + corre}" data-y="${fl.y}" data-largo="460" data-flota="${fl.sube}" pointer-events="none"><g transform="translate(${corre} 0)">${quieta(fl.pieza)}</g></g>`).join(''),
   },
   // El templo: la nave (el damero que fuga, las columnas de atrás, los cabezudos) y los ojos que se le prenden al de la entrada.
   'el-templo': { tras: 'templo-lejos', bajo: () => quieta('camino-templo-nave') + loQueAsoma('camino-templo-ojos', 6) },
@@ -255,7 +260,12 @@ export function conLoDelCamino(region: string, escena: string): string {
   const en = escena.indexOf(telon);
   if (en < 0) throw new Error(`${region}: la escena ya no arranca con "${suma.tras}" (escenas-camino.ts)`);
   const corte = en + telon.length;
-  return escena.slice(0, corte) + suma.bajo() + escena.slice(corte);
+  const sumada = escena.slice(0, corte) + suma.bajo() + escena.slice(corte);
+  if (!suma.luego) return sumada;
+  const marca = suma.luego.tras(telon);
+  const donde = sumada.indexOf(marca);
+  if (donde < 0) throw new Error(`${region}: la escena ya no repinta "${suma.tras}" donde se esperaba (escenas-camino.ts)`);
+  return sumada.slice(0, donde + marca.length) + suma.luego.mano() + sumada.slice(donde + marca.length);
 }
 
 export const ESCENA_DEL_RECINTO: Readonly<Record<string, (n: Nombres) => string>> = {

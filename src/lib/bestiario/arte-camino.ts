@@ -706,7 +706,7 @@ export const FINAS_DE: Readonly<Record<string, readonly string[]>> = {
   'los-astilleros': ['fino-astillero-rayuela', 'fino-astillero-cordero'],
   cybersiberia: ['fino-cyber-hielo', 'fino-cyber-muneco'],
   'el-arbol': ['fino-arbol-jaula', 'fino-arbol-bonete'],
-  'los-techos': ['fino-techos-pelota'],
+  'los-techos': ['fino-techos-pelota', 'fino-techos-palotes'],
   'el-bajo': ['fino-bajo-botella'],
   'el-templo': ['fino-templo-careta'],
 };
