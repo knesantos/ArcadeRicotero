@@ -647,12 +647,7 @@ function bajoVaho(c: CapaDeAire): string {
   );
 }
 
-/** La niebla al ras del agua: tandas largas de rayas claras, acostadas, en una franja angosta. */
-function bajoRas(c: CapaDeAire): string {
-  return crayon(c, rayado(c, 921, 11, 452, 496, [[J.luz, 0.36], [J.celeste, 0.42], [J.luz, 0.28]], { largo: [44, 120], grosor: [2, 4.2], giro: 0, porTanda: [6, 12], abre: [96, 8] }));
-}
-
-/** La niebla baja del baldío: lo mismo en el lila de *Un baión*, más ancha y más rala. */
+/** La niebla baja del baldío: tandas de rayas acostadas en el lila de *Un baión*. */
 function techosRasante(c: CapaDeAire): string {
   return crayon(
     c,
@@ -1043,7 +1038,8 @@ const QUIEN_ALUMBRA: Readonly<Record<string, () => string>> = {
   'luz-ruta-faros': () => haz('lz-r', 260, 190, RU.faro, RU.papel) + polillas(260, 190),
   'luz-pastura-rueda': ruedaDelMolino,
   'luz-techos-farol': () => haz('lz-t', 380, 320, B.lila, B.luz),
-  'luz-templo-foco': () => haz('lz-m', 360, 300, TE.foco, TE.papel),
+  // Tercera vuelta de la tanda 4: de 300 a 150 de ancho. Con 300 era un triángulo que, quieto, se leía como una carpa.
+  'luz-templo-foco': () => haz('lz-m', 384, 150, TE.foco, TE.papel),
   'luz-galpon-seguidor': () => haz('lz-g', 420, 340, GA.luz, GA.luz),
   // La lámpara de la mesa: tinta plana, de papel (`arte-sobremesa.ts`).
   'luz-mesa-lampara': lamparaDeLaMesa,
@@ -1227,7 +1223,6 @@ const PINTA: Readonly<Record<string, (c: CapaDeAire) => string>> = {
   'aire-ruta-cerca': rutaCerca,
   'aire-bajo-vaho': bajoVaho,
   'aire-bajo-cerca': bajoCerca,
-  'aire-bajo-ras': bajoRas,
   'aire-techos-rasante': techosRasante,
   'aire-techos-humo': techosHumo,
   'aire-techos-ropa': techosRopa,

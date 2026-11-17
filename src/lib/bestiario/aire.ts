@@ -167,9 +167,8 @@ export const AIRE: Readonly<Record<string, readonly CapaDeAire[]>> = {
   // sobre el agua y juncos.
   'el-bajo': [
     capa({ pieza: 'aire-bajo-vaho', plano: 'medio', f: 1.1, y: 380, alto: 260, ancho: 1300, deriva: 7, alfa: 0.7, late: 0.16, ritmo: 0.3, abre: 0.4 }),
-    // Tanda 4 de `D-91`, segunda vuelta: la niebla al ras, en la línea donde el agua del fondo se junta con la de adelante.
-    // Es una franja de 80: jirones de crayón claros que van más despacio que el piso y se abren al caminar.
-    capa({ pieza: 'aire-bajo-ras', plano: 'medio', f: 0.92, y: 432, alto: 80, ancho: 1300, deriva: -6, alfa: 0.62, late: 0.16, ritmo: 0.23, abre: 0.5 }),
+    // La niebla al ras (una franja de rayas claras en la línea de Pierre) entró en la segunda vuelta de la tanda 4 de `D-91`
+    // y se fue en la tercera: en las capturas casi no se leía, y el bajo venía midiendo más caro que en main.
     capa({ pieza: 'aire-bajo-cerca', plano: 'cerca', f: 1.75, y: 440, alto: 200, ancho: 1600, mece: 4, ritmoMece: 0.7 }),
   ],
   // Los techos (rehechos en la cuarta ronda): el humo de las chimeneas, a rayas de pastel claras como
@@ -396,7 +395,10 @@ export const LUCES: Readonly<Record<string, readonly Luz[]>> = {
   'la-prision': [{ pieza: 'luz-prision-reflector', f: 1, x: 1010, y: -6, caja: [-220, -14, 440, 660], vaiven: 26, ritmo: 0.44, alfa: 0.32, late: 0.05, pulso: 'barre', crece: 0, filo: { pieza: 'filo-papel', cuantos: 4, abre: 18 } }],
   // El templo (quinta ronda): un foco de la guirnalda, el del medio, que cae sobre el medallón de Momo y
   // titila. La guirnalda está en (450, 240) de su recinto, que arranca en -300.
-  'el-templo': [{ pieza: 'luz-templo-foco', f: 1, x: 556, y: 218, caja: [-170, -14, 340, 400], vaiven: 3, ritmo: 0.6, alfa: 0.42, late: 0.14, pulso: 'titila', crece: 0, suena: 'zumbido' }],
+  // Tanda 4 de `D-91`, tercera vuelta: el cono medía 340 de ancho y, clavado, se leía como una carpa. Ahora es un haz
+  // angosto (180), y a las dos columnas de atrás que tiene justo debajo les prende el canto (`cantos`, como el seguidor
+  // del galpón): titilan con él. La caja del canto es la de `CANTO_DE_LAS_COLUMNAS` (`arte-corso.ts`), corrida al piso.
+  'el-templo': [{ pieza: 'luz-templo-foco', f: 1, x: 556, y: 218, caja: [-90, -14, 180, 410], vaiven: 3, ritmo: 0.6, alfa: 0.46, late: 0.14, pulso: 'titila', crece: 0, suena: 'zumbido', cantos: [{ pieza: 'canto-templo-columnas', f: 1, caja: [516, 300, 80, 226] }], cantosEn: 420 }],
   // El galpón: el seguidor de atrás, arriba a la derecha (`GALPON.luz`, a lo largo), que barre el
   // escenario y le pega al polvo.
   'el-galpon': [{ pieza: 'luz-galpon-seguidor', f: 1, x: 2027, y: 64, caja: [-200, -14, 400, 460], vaiven: 22, ritmo: 0.36, alfa: 0.4, late: 0.06, pulso: 'barre', crece: 0, rumbo: 18, cantos: CANTOS_DEL_GALPON, cantosEn: 530 }],
