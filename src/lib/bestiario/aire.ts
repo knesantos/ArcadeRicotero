@@ -548,7 +548,8 @@ export const ACECHOS: Readonly<Record<string, Acecho>> = {
   // La ruta: algo en la banquina, o lejos, al borde del asfalto.
   'la-ruta': { pieza: 'acecho-monte', ancho: 46, alto: 20, lugares: [[0.16, 600, 1], [0.82, 606, 1.1], [0.3, 404, 0.5], [0.7, 396, 0.45]], espera: [5, 6.5], dura: [6, 9] },
   // El bajo: lo que mira desde el agua, con su reflejo.
-  'el-bajo': { pieza: 'acecho-astillero', ancho: 46, alto: 30, lugares: [[0.2, 560, 0.9], [0.78, 590, 1.1], [0.5, 610, 1]], espera: [5, 6.5], dura: [6, 9] },
+  // (Tanda 5: el del medio subió de 610 a 536. En 610 se abría pegado a la silla que flota, que anda entre 556 y 618.)
+  'el-bajo': { pieza: 'acecho-astillero', ancho: 46, alto: 30, lugares: [[0.2, 560, 0.9], [0.78, 590, 1.1], [0.5, 536, 0.9]], espera: [5, 6.5], dura: [6, 9] },
   // Los techos: los gatos, en lo negro de las medianeras.
   'los-techos': { pieza: 'acecho-monte', ancho: 46, alto: 20, lugares: [[0.2, 300, 0.6], [0.7, 330, 0.65], [0.45, 340, 0.55], [0.84, 612, 1]], espera: [5, 6.5], dura: [6, 9] },
   // La prisión: desde la celda de enfrente, en lo negro de arriba.

@@ -578,7 +578,9 @@ function pintarLuces(): void {
       l.cantos.forEach((c, i) => {
         const z = l.r.cantos![i]!;
         const xf = dondeCaeElHaz(ancla, l.r.y, apunta, l.r.cantosEn ?? ALTO, z.f, camDe(z.f) / escala);
-        const k = alivio >= 2 ? 0 : 0.9 * tocaLaZona(xf, z.caja) * Math.min(1, e.alfa / l.r.alfa) * despejeDeLupa('cerca', false, lente.z);
+        // Con la lupa se va el canto de lo que está pegado a la cámara (la fila grande del galpón, a 1,3); el de lo que va con el piso
+        // o más atrás (las columnas del templo) se queda: es justo lo que se fue a mirar.
+        const k = alivio >= 2 ? 0 : 0.9 * tocaLaZona(xf, z.caja) * Math.min(1, e.alfa / l.r.alfa) * (z.f > 1 ? despejeDeLupa('cerca', false, lente.z) : 1);
         if (Math.abs(k - c.alfa) > 0.02) {
           c.alfa = k;
           c.el.style.opacity = k.toFixed(2);
