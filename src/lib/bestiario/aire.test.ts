@@ -44,7 +44,9 @@ import { CABEZUDOS, CAJA_DE_LA_NAVE, CANTO_DE_LAS_COLUMNAS, LENGUA, OJOS as OJOS
 import { BANDERIN } from './arte-potrero.ts';
 import { ARCO as ARCO_DE_LAS_CARCELES, CADENA, EL_DEL_PUENTE, EL_QUE_SUBE, ESCALONES, GALERIA, HAZ, PIEZAS_DE_LAS_CARCELES, PUERTA as PUERTA_DE_LA_ESCALERA } from './arte-carceles.ts';
 import { PRISION } from './rig.ts';
-import { BANCOS, DISCO, LECHUZA, PIEZAS_DEL_PLANO } from './arte-plano.ts';
+import { BANCOS, CAJA_DEL_TITERE, DISCO, HITOS, LECHUZA, PIEZAS_DEL_PLANO, cajaDelHito, conTinta } from './arte-plano.ts';
+import { EN_EL_PLANO, LAS_DEL_PLANO, LUGAR_EN_EL_PLANO, MAXIMO_POR_ZONA } from './plano-elenco.ts';
+import { dibujar } from './figuras.ts';
 import { BAJO, CHAPA, PIERRE, marcoDelRecinto } from './rig.ts';
 
 /**
@@ -1737,7 +1739,7 @@ test('D-91/t6: el plano tiene aire: nubes quietas en bancos con huecos, y la lec
   assert.doesNotMatch(estilo, /shadow|gradient|blur|#[0-9a-f]{3,6}\b/i);
   // Con la lupa se abren del todo; con movimiento reducido quedan quietas y la lechuza no pasa.
   assert.match(estilo, /:global\(\.bestiario-marco--lupa\) \.plano-nubes,\s*:global\(\.bestiario-marco--lupa\) \.plano-aire \{\s*opacity: 0;/);
-  assert.match(estilo, /prefers-reduced-motion: reduce\) \{\s*\.plano-lechuza \{\s*display: none;/);
+  assert.match(estilo, /prefers-reduced-motion: reduce\) \{[\s\S]*\.plano-lechuza \{\s*display: none;/);
   // Las nubes no se mueven: girando no se notaba y costaba cuadros (medido contra main). Lo único animado es la lechuza.
   assert.doesNotMatch(/\.plano-nubes \{[^}]*\}/.exec(estilo)![0], /animation|will-change/);
   assert.equal((estilo.match(/@keyframes/g) ?? []).length, 1);
@@ -1750,12 +1752,113 @@ test('D-91/t6: el plano tiene aire: nubes quietas en bancos con huecos, y la lec
   const angulos = BANCOS.map((b) => b[0]).sort((x, y) => x - y);
   const huecos = angulos.map((x, i) => (i ? x - angulos[i - 1]! : x + 360 - angulos[angulos.length - 1]!));
   assert.ok(Math.max(...huecos) >= 60, 'las nubes no dejan ningún hueco grande');
-  // Impresas, con grano y sin filo; livianas: menos de 3 MB decodificadas entre las dos.
+  // Impresas, con grano; livianas: menos de 4 MB decodificadas entre las nubes, la lechuza y los cinco hitos (eran 3 sin los hitos).
   let mb = 0;
+  // (Segunda vuelta: la lista suma los cinco hitos, que son tinta plana con grano fino; el rociado es de las nubes y la lechuza.)
   for (const q of PIEZAS_DEL_PLANO) {
-    assert.match(q.dibujo, /url\(#rociado\)/);
+    assert.match(q.dibujo, q.nombre.startsWith('plano-hito-') ? /url\(#grano\)/ : /url\(#rociado\)/);
     const m = await sharp(`public${rutaDePieza(q.nombre)}`).metadata();
     mb += (m.width! * m.height! * 4) / 1048576;
   }
-  assert.ok(mb < 3 && LECHUZA.caja[2] < 200, `el aire del plano ocupa ${mb.toFixed(1)} MB`);
+  assert.ok(mb < 4 && LECHUZA.caja[2] < 200, `el aire del plano ocupa ${mb.toFixed(1)} MB`);
+});
+
+/* ------------------------------------------------------------------
+   `D-91`, tanda 6, segunda vuelta: dos títeres por zona, los hitos y la llegada
+   ------------------------------------------------------------------ */
+
+const JSON_DEL_BESTIARIO = JSON.parse(readFileSync('src/data/bestiario.json', 'utf-8')) as {
+  regiones: { id: string; forma: { tipo: string; desde?: number; hasta?: number; adentro?: number; afuera?: number; radio?: number; angulo?: number; distancia?: number } }[];
+  bestias: { id: string; region: string; dibujo: Parameters<typeof dibujar>[0] }[];
+};
+
+test('D-91/t6v2: en el plano hay como mucho dos figuras por zona, y ninguna bestia queda afuera del bestiario', () => {
+  const { regiones, bestias } = JSON_DEL_BESTIARIO;
+  // Todas las zonas, el galpón del medio y la ruta incluidos, y ninguna con más de dos.
+  assert.equal(MAXIMO_POR_ZONA, 2);
+  assert.deepEqual(Object.keys(EN_EL_PLANO).sort(), regiones.map((r) => r.id).sort());
+  for (const [region, ids] of Object.entries(EN_EL_PLANO)) {
+    assert.ok(ids.length <= MAXIMO_POR_ZONA && new Set(ids).size === ids.length, `${region}: ${ids.length} figuras`);
+    for (const id of ids) assert.equal(bestias.find((b) => b.id === id)?.region, region, `${id} no vive en ${region}`);
+    // La segunda contrasta con la primera: no son dos del mismo molde con la misma pose.
+    const [a, b] = ids.map((id) => JSON.stringify(bestias.find((x) => x.id === id)!.dibujo));
+    assert.notEqual(a, b, `${region}: las dos figuras son el mismo dibujo`);
+  }
+  assert.equal(LAS_DEL_PLANO.size, regiones.length * 2);
+  // La página dibuja en el plano solo esas, impresas; los `<symbol>` siguen siendo de las 122, que es lo que usan las fichas.
+  const pagina = readFileSync('src/pages/redondopedia/bestiario.astro', 'utf-8');
+  assert.match(pagina, /bestias\.filter\(\(b\) => LAS_DEL_PLANO\.has\(b\.id\)\)\.map\(\(b\) => \{/);
+  assert.match(pagina, /<defs set:html=\{simbolos\(bestias\)\} \/>/);
+  assert.doesNotMatch(pagina.slice(pagina.indexOf('<g class="bestias">'), pagina.indexOf('class="plano-nubes"')), /<use /);
+  // Las 122 se siguen pudiendo abrir sin pasar por el plano: en los chips de su recinto (con la isla) y en el índice (sin ella).
+  assert.match(pagina, /\{rc\.bestias\.map\(\(b\) => \(\s*<li>\s*<button type="button" class="bestiario-chip" data-ir=\{b\.id\}>/);
+  assert.match(pagina, /\.filter\(\(b\) => b\.region === r\.id\)\s*\.map\(\(b\) => \(\s*<FichaBestia /);
+  // El contador sigue contando las 122.
+  assert.match(pagina, /BESTIARIO\.libretaVacia\(bestias\.length\)/);
+  assert.match(pagina, /total: bestias\.length,/);
+});
+
+test('D-91/t6v2: cada títere del plano está impreso como cartón recortado, parado en su zona y lejos de su hito', () => {
+  const { regiones, bestias } = JSON_DEL_BESTIARIO;
+  const polar = (ang: number, r: number): [number, number] => [500 + r * Math.sin((ang * Math.PI) / 180), 500 - r * Math.cos((ang * Math.PI) / 180)];
+  for (const [region, ids] of Object.entries(EN_EL_PLANO)) {
+    const forma = regiones.find((r) => r.id === region)!.forma;
+    for (const id of ids) {
+      assert.ok(existsSync(`public/bestiario/plano-titere-${id}.webp`), `falta imprimir el títere de ${id}`);
+      const lugar = LUGAR_EN_EL_PLANO[id];
+      // Las de la ruta quedan donde las pone el JSON, sobre el asfalto.
+      if (!lugar) { assert.equal(region, 'la-ruta', `${id} no tiene lugar en el plano`); continue; }
+      const [ang, r] = lugar;
+      if (forma.tipo === 'sector') {
+        const a = ang < forma.desde! ? ang + 360 : ang;
+        assert.ok(a >= forma.desde! && a <= forma.hasta! && r >= forma.adentro! && r <= forma.afuera!, `${id} se para fuera de ${region}`);
+      } else if (forma.tipo === 'centro') assert.ok(r < forma.radio!, `${id} se sale del galpón`);
+      else if (forma.tipo === 'claro') {
+        const [x, y] = polar(ang, r);
+        const [cx, cy] = polar(forma.angulo!, forma.distancia!);
+        assert.ok(Math.hypot(x - cx, y - cy) < forma.radio!, `${id} se sale del claro`);
+      }
+      // Y no se le encima al hito de su región.
+      const hito = HITOS.find((h) => h.region === region);
+      if (hito) {
+        const [x, y] = polar(ang, r);
+        const [hx, hy] = polar(hito.ang, hito.r);
+        assert.ok(Math.hypot(x - hx, y - hy) > 60, `${id} tapa el hito de ${region}`);
+      }
+    }
+  }
+  // El cartón: el recorte de papel, el canto en la tinta de la región, el palito y el grano; y ninguna clase sin pintar.
+  const tinta = 'var(--disco-oktubre-tinta)';
+  const pintada = conTinta(dibujar(bestias.find((b) => b.id === 'barbazul')!.dibujo), tinta);
+  assert.doesNotMatch(pintada, /class="/);
+  assert.match(pintada, /style="fill:var\(--fondo\)"/);
+  assert.throws(() => conTinta('<path class="b-inventada"/>', tinta), /b-inventada/);
+  const fuente = readFileSync('src/lib/bestiario/arte-plano.ts', 'utf-8');
+  for (const pieza of ['feMorphology in="SourceAlpha" operator="dilate"', 'flood-color="var(--papel)"', 'flood-color="${tr}"', 'var(--portal-madera)', 'url(#grano)']) assert.ok(fuente.includes(pieza), `el títere no lleva ${pieza}`);
+  assert.ok(CAJA_DEL_TITERE[0] < -10 && CAJA_DEL_TITERE[1] + CAJA_DEL_TITERE[3] > 115, 'la caja no deja lugar para el recorte y el palito');
+  // Los hitos: uno por región que cambió en las tandas, adentro de su porción, impresos finos.
+  assert.deepEqual(HITOS.map((h) => h.region).sort(), ['el-bajo', 'el-templo', 'la-prision', 'los-astilleros', 'los-techos']);
+  for (const h of HITOS) {
+    const f = regiones.find((r) => r.id === h.region)!.forma;
+    assert.ok(h.ang > f.desde! && h.ang < f.hasta! && h.r < f.afuera! && h.r > f.adentro!, `el hito de ${h.region} se sale de su porción`);
+    assert.ok(cajaDelHito(h)[2] <= 48 && existsSync(`public/bestiario/plano-hito-${h.region}.webp`));
+  }
+});
+
+test('D-91/t6v2: las nubes no pisan ninguna porción, la llegada es una línea y el contador, y bajar a una región las cierra', () => {
+  // Las porciones llegan hasta 425; las nubes arrancan después de 400 y andan sobre la ruta.
+  for (const [, dist, , alto] of BANCOS) assert.ok(dist - alto > 400, 'un banco de nubes se mete en las porciones');
+  assert.ok(DISCO.claro >= 360);
+  const pagina = readFileSync('src/pages/redondopedia/bestiario.astro', 'utf-8');
+  const portada = pagina.slice(pagina.indexOf('<div class="portada-redondopedia bestiario-portada">'), pagina.indexOf('<section class="bestiario" id="plano"'));
+  // La que canta y el contador; la bajada de cuatro líneas que explicaba se fue (lo dice la línea de abajo del plano).
+  assert.match(portada, /class="donde-estas">\{BESTIARIO\.dondeEstas\}/);
+  assert.match(portada, /id="libreta"/);
+  assert.doesNotMatch(portada, /bajada-portal/);
+  assert.match(pagina, /class="bestiario-pie-plano">\{BESTIARIO\.alPlano\}/);
+  // Bajar: al tocar un cartel, sin demorar el enlace; solo opacity y transform; con movimiento reducido no pasa.
+  assert.match(pagina, /cartel\.addEventListener\('click', \(\) => marco\?\.classList\.add\('bestiario-marco--baja'\)\);/);
+  assert.doesNotMatch(pagina, /preventDefault/);
+  assert.match(pagina, /:global\(\.bestiario-marco--baja\) \.plano-nubes \{\s*opacity: 1;\s*transform: scale\(/);
+  assert.match(pagina, /prefers-reduced-motion: reduce\) \{\s*:global\(\.bestiario-marco--baja\) \.plano-nubes \{\s*opacity: [\d.]+;\s*transform: none;/);
 });
