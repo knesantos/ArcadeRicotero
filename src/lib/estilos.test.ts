@@ -712,6 +712,20 @@ const ESTADOS_EJES = [
   // la fila no dice nada.
   '.ejes-noche-hoja--pasada',
   '.ejes-noche-hoja--actual',
+  // La ronda de pulida del 2026-11-18. La mitad ya contestada de una casilla de la noche:
+  // sin regla, la marca que vuela no deja nada donde llega.
+  '.ejes-noche-media--hecha',
+  // El pase de hoja: la que se va queda dibujada encima y se corre; la que vuelve, la tapa.
+  // Sin `--fantasma` la hoja vieja empuja a la nueva para abajo en vez de irse.
+  '.ejes-hoja--fantasma',
+  '.ejes-hoja--se-va',
+  '.ejes-hoja--vuelve',
+  // El sello grande del momento sobre el cielo, y la tapa que se abre al empezar.
+  '.ejes-lugar-sello--cae',
+  '.ejes-tapa--abre',
+  // El plano que espera a que lo vean y se arma: sin regla, el recuadro de la tuya no cae.
+  '.ejes-plano--espera',
+  '.ejes-plano--armado',
 ];
 
 /**

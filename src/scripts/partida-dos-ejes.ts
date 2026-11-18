@@ -27,6 +27,21 @@
  * apretado. La región viva es **una sola y está en el HTML de la página** (`#ejes-anuncio`),
  * afuera de lo que esta isla vacía: una región que nace junto con su texto no se anuncia de
  * forma fiable.
+ *
+ * ## La noche se ve (ronda de pulida de los juegos, 2026-11-18)
+ *
+ * Arriba de la hoja hay **un lugar**: una tira dibujada —el barrio, la ruta, el paredón, el
+ * escenario, el barrio de vuelta— por la que la mirada camina un tramo con cada hoja
+ * (`lib/dos-ejes/noche.ts`), con la luna cruzando el cielo. Cada momento tiene algo vivo que
+ * dura lo que dura el momento: el fuego de la previa, los postes que pasan en la ida, la gente
+ * que salta cuando suena. La vuelta va quieta.
+ *
+ * Elegir tiene respuesta: la casilla de la opción se llena, y la marca vuela a su casilla en
+ * la fila de la noche. La hoja contestada se va de costado, como una página que se pasa, y la
+ * que sigue ya estaba abajo.
+ *
+ * **Nada de eso mide** (`BR-17`): el lugar, la luna y las casillas avanzan igual con cualquier
+ * respuesta. Son el folio, dibujado. La isla sigue sin contar polos.
  */
 
 import {
@@ -54,7 +69,11 @@ import {
 } from '../lib/dos-ejes/copy.ts';
 import { rutaDeTarjeta, rutaDePieza, slugDe } from '../lib/dos-ejes/arte.ts';
 import { leerDesafio } from '../lib/desafio.ts';
+import { TIRA, lunaDe, paradaDe } from '../lib/dos-ejes/noche.ts';
+import { despertarSalida } from '../lib/audio/contexto.ts';
+import { sonarEfecto } from '../lib/audio/efectos.ts';
 import { botonCompartir } from './compartir.ts';
+import { armarInterruptorDeRuidos, duracionDe, estampar, volar } from './jugo.ts';
 
 /** El nombre con el que este juego firma sus desafíos (`ADR-02`). */
 const JUEGO = 'dos-ejes';
@@ -81,6 +100,15 @@ let bloqueado = false;
 let tarjeta: File | null = null;
 /** El momento de la hoja de antes: el sello entra solo cuando cambia (`UX-36` §4.5). */
 let momentoAnterior: string | undefined;
+/** El lugar de la noche: se arma una vez por partida y cada hoja lo corre un tramo. */
+let lugar: HTMLElement | null = null;
+/** Donde se apilan las hojas: la que se va queda un instante encima de la que llega. */
+let pila: HTMLElement | null = null;
+/** El pie de la partida (volver, teclas, ruidos), que se rehace con cada hoja. */
+let pie: HTMLElement | null = null;
+
+/** Cómo llega una hoja: abre la noche, sigue a la anterior, o se vuelve a ella. */
+type Pase = 'abre' | 'sigue' | 'vuelve';
 
 /**
  * El cuadrante de quien mandó el enlace, si vino uno válido. La postal lo trae puesto en
@@ -110,24 +138,131 @@ function enfocar(destino: HTMLElement): void {
 }
 
 /** La pausa de la elección, en milisegundos, leída del token (`tokens.css`). */
-function pausa(): number {
-  const crudo = getComputedStyle(document.documentElement).getPropertyValue('--pausa-eleccion').trim();
-  const n = parseFloat(crudo);
-  if (!Number.isFinite(n)) return 0;
-  return crudo.endsWith('ms') ? n : n * 1000;
-}
+const pausa = (): number => duracionDe('--pausa-eleccion');
 
 const momentoDe = (id: string) => banco.momentos.find((m) => m.id === id)!;
+
+/* ------------------------------------------------------------------
+   El lugar de la noche.
+   ------------------------------------------------------------------ */
+
+/**
+ * Arma el lugar: el cielo, la luna, lo de lejos, la tira del camino y lo que vive en cada
+ * momento. Todo es para el ojo —va sin voz para el lector de pantalla— menos la línea que
+ * canta, que es texto de la partida.
+ *
+ * Las piezas son cajas vacías: el dibujo llega como máscara desde `juego.css` y la tinta
+ * desde `tokens.css`. Lo que se mueve es `transform` y `opacity`, en animaciones y
+ * transiciones de CSS; acá solo se escriben la parada, la luna y el momento.
+ */
+function armarLugar(): HTMLElement {
+  const caja = el('div', 'ejes-lugar');
+  const arte = el('div', 'ejes-lugar-arte');
+  arte.setAttribute('aria-hidden', 'true');
+
+  const luna = el('span', 'ejes-lugar-luna-viaje');
+  luna.append(el('span', 'ejes-lugar-luna'));
+
+  const tira = el('span', 'ejes-lugar-tira');
+  const haces = el('span', 'ejes-lugar-haces');
+  haces.append(el('i', 'ejes-lugar-haz'), el('i', 'ejes-lugar-haz'), el('i', 'ejes-lugar-haz'));
+  const cola = el('span', 'ejes-lugar-cola');
+  cola.append(el('i', 'ejes-lugar-cola-gente'), el('i', 'ejes-lugar-cola-banderas'));
+  tira.append(haces, el('span', 'ejes-lugar-cerca'), el('span', 'ejes-lugar-luz'), el('span', 'ejes-lugar-fuego'), cola);
+
+  const micro = el('span', 'ejes-lugar-micro');
+  micro.append(el('span', 'ejes-lugar-micro-caja'));
+
+  const gente = el('span', 'ejes-lugar-gente');
+  const salta = el('span', 'ejes-lugar-gente-salta');
+  salta.append(el('i', 'ejes-lugar-gente-silueta'), el('i', 'ejes-lugar-gente-clara'), el('i', 'ejes-lugar-gente-banderas'));
+  gente.append(salta);
+
+  arte.append(
+    el('span', 'ejes-lugar-tarde'),
+    el('span', 'ejes-lugar-estrellas'),
+    luna,
+    el('span', 'ejes-lugar-lejos'),
+    tira,
+    el('span', 'ejes-lugar-postes'),
+    micro,
+    gente,
+    el('span', 'ejes-lugar-sello'),
+  );
+  caja.append(arte, el('p', 'ejes-lugar-canta'));
+  return caja;
+}
+
+/**
+ * Lleva el lugar a la hoja `paso`: corre la tira, mueve la luna y, si cambió el momento,
+ * cambia lo que vive y deja caer el sello grande con su nombre.
+ */
+function ponerLugar(momento: { id: string; nombre: string; canta: string }, cambio: boolean, pase: Pase): void {
+  if (!lugar) return;
+  const hojas = ronda.length;
+  const porMomento = Math.max(1, Math.round(hojas / banco.momentos.length));
+  lugar.style.setProperty('--parada', String(paradaDe(paso, porMomento) / TIRA.alto));
+  const luna = lunaDe(paso, hojas);
+  lugar.style.setProperty('--luna-x', String(luna.x));
+  lugar.style.setProperty('--luna-y', String(luna.y));
+  if (!cambio) return;
+
+  for (const m of banco.momentos) lugar.classList.toggle(`ejes-lugar--${m.id}`, m.id === momento.id);
+  lugar.querySelector('.ejes-lugar-canta')!.textContent = momento.canta;
+  // El sello grande cae cuando se llega a un momento, no cuando se vuelve a él: volver es
+  // corregir una respuesta, no llegar de nuevo.
+  const sello = lugar.querySelector<HTMLElement>('.ejes-lugar-sello')!;
+  sello.classList.remove('ejes-lugar-sello--cae');
+  if (pase === 'vuelve') return;
+  sello.textContent = momento.nombre;
+  void sello.offsetWidth;
+  sello.classList.add('ejes-lugar-sello--cae');
+  sonarEfecto('sello');
+}
 
 /* ------------------------------------------------------------------
    La hoja de la pregunta.
    ------------------------------------------------------------------ */
 
-function pintarPregunta(antes?: Polo): void {
+/**
+ * La hoja de antes se va de costado, como una página que se pasa, y la nueva ya estaba abajo.
+ * Al volver es al revés: la anterior vuelve desde ese costado y tapa a la que estaba.
+ *
+ * Con movimiento reducido no hay pase: la hoja vieja se saca y listo.
+ */
+function pasarHoja(nueva: HTMLElement, pase: Pase): void {
+  if (!pila) return;
+  const vieja = pila.querySelector<HTMLElement>('.ejes-hoja:not(.ejes-hoja--fantasma)');
+  // Un pase que no terminó (dos toques seguidos al volver) no deja hojas colgadas.
+  for (const resto of pila.querySelectorAll('.ejes-hoja--fantasma')) resto.remove();
+  if (!vieja || pase === 'abre' || duracionDe('--duracion-umbral') <= 0) {
+    vieja?.remove();
+    pila.append(nueva);
+    return;
+  }
+  // La que se va queda dibujada pero ya no existe para nadie: ni foco, ni lector, ni toque.
+  vieja.classList.add('ejes-hoja--fantasma');
+  vieja.setAttribute('aria-hidden', 'true');
+  vieja.inert = true;
+  vieja.querySelector('#ejes-enunciado')?.removeAttribute('id');
+  pila.append(nueva);
+  const quien = pase === 'vuelve' ? nueva : vieja;
+  quien.classList.add(pase === 'vuelve' ? 'ejes-hoja--vuelve' : 'ejes-hoja--se-va');
+  quien.addEventListener(
+    'animationend',
+    (e) => {
+      if (e.target !== quien) return;
+      vieja.remove();
+      nueva.classList.remove('ejes-hoja--vuelve');
+    },
+    { once: false },
+  );
+}
+
+function pintarPregunta(pase: Pase, antes?: Polo): void {
   const item = ronda[paso]!;
   const momento = momentoDe(item.momento);
   bloqueado = false;
-  zonaPregunta.replaceChildren();
 
   const hoja = el('article', 'ejes-hoja');
 
@@ -135,23 +270,38 @@ function pintarPregunta(antes?: Polo): void {
   const sello = el('p', 'ejes-momento', momento.nombre);
   // Cinco veces por noche, no diez: en la segunda hoja del mismo momento el sello ya está
   // puesto, y re-estamparlo sería ruido.
-  if (item.momento !== momentoAnterior) sello.classList.add('ejes-momento--entra');
+  const cambio = item.momento !== momentoAnterior;
+  if (cambio) sello.classList.add('ejes-momento--entra');
   momentoAnterior = item.momento;
   cabeza.append(sello);
   // Las hojas de la noche (2026-11-04): una casilla por momento, pasada, actual o por venir.
-  // Solo para el ojo: el folio y el anuncio ya dicen dónde estás.
+  // Desde la ronda de pulida cada casilla son dos mitades, una por hoja: la que ya se contestó
+  // está llena, y la marca de la opción elegida vuela hasta la suya. Solo para el ojo: el
+  // folio y el anuncio ya dicen dónde estás.
   const noche = el('ol', 'ejes-noche');
   noche.setAttribute('aria-hidden', 'true');
   const actual = banco.momentos.findIndex((m) => m.id === item.momento);
-  banco.momentos.forEach((_, k) => {
+  let hojaDeLaNoche = 0;
+  banco.momentos.forEach((m, k) => {
     const casilla = el('li', 'ejes-noche-hoja');
     if (k < actual) casilla.classList.add('ejes-noche-hoja--pasada');
     if (k === actual) casilla.classList.add('ejes-noche-hoja--actual');
+    for (const i of ronda) {
+      if (i.momento !== m.id) continue;
+      const media = el('i', 'ejes-noche-media');
+      if (hojaDeLaNoche < paso) media.classList.add('ejes-noche-media--hecha');
+      // La de esta hoja se marca para encontrarla: ahí llega la marca que vuela al elegir.
+      if (hojaDeLaNoche === paso) media.dataset['esta'] = '';
+      hojaDeLaNoche++;
+      casilla.append(media);
+    }
     noche.append(casilla);
   });
   cabeza.append(noche);
   cabeza.append(el('p', 'ejes-folio', PARTIDA.folio(paso + 1, ronda.length)));
   hoja.append(cabeza);
+  // La línea que canta vive en el lugar, arriba. Acá queda su copia para cuando el lugar no
+  // está (la ventana petisa y el modo incrustado): `juego.css` muestra una sola de las dos.
   hoja.append(el('p', 'ejes-canta', momento.canta));
 
   const enunciado = el('h2', 'ejes-enunciado', item.enunciado);
@@ -165,7 +315,10 @@ function pintarPregunta(antes?: Polo): void {
     const boton = el('button', 'ejes-opcion') as HTMLButtonElement;
     boton.type = 'button';
     boton.dataset['tecla'] = String(k + 1);
-    boton.append(el('span', 'ejes-opcion-tecla', String(k + 1)), el('span', 'ejes-opcion-texto', o.texto));
+    // La casilla: vacía en las dos, igual de pesada en las dos. Se llena en la que se elige.
+    const marca = el('span', 'ejes-opcion-marca');
+    marca.setAttribute('aria-hidden', 'true');
+    boton.append(el('span', 'ejes-opcion-tecla', String(k + 1)), el('span', 'ejes-opcion-texto', o.texto), marca);
     if (antes === o.polo) {
       // Se volvió a esta hoja: la que se había elegido se ve marcada, y se puede cambiar.
       boton.classList.add('ejes-opcion--antes');
@@ -175,18 +328,22 @@ function pintarPregunta(antes?: Polo): void {
     opciones.append(boton);
   });
   hoja.append(opciones);
-  zonaPregunta.append(hoja);
 
-  const pie = el('div', 'ejes-pie-partida');
+  ponerLugar(momento, cambio, pase);
+  pasarHoja(hoja, pase);
+
+  pie?.replaceChildren();
   if (paso > 0) {
     // La cinta de regreso del sitio, en chico: no es una salida (`D-54`), vuelve una hoja.
     const anterior = el('button', 'volver ejes-anterior', PARTIDA.anterior) as HTMLButtonElement;
     anterior.type = 'button';
     anterior.addEventListener('click', volverAnterior);
-    pie.append(anterior);
+    pie?.append(anterior);
   }
-  pie.append(el('p', 'ejes-teclas', PARTIDA.teclas));
-  zonaPregunta.append(pie);
+  pie?.append(
+    el('p', 'ejes-teclas', PARTIDA.teclas),
+    armarInterruptorDeRuidos({ apagar: PARTIDA.ruidosApagar, prender: PARTIDA.ruidosPrender }),
+  );
 
   // El momento y el folio, una vez por hoja; el enunciado no, que ya lo lee el foco.
   anuncio.textContent = PARTIDA.anuncio(momento.nombre, paso + 1, ronda.length);
@@ -204,10 +361,28 @@ function elegir(boton: HTMLButtonElement, polo: Polo): void {
   }
   boton.classList.add('ejes-opcion--elegida');
   boton.setAttribute('aria-pressed', 'true');
+
+  // La respuesta al toque: la casilla de la opción se llena de un sellazo, y un instante
+  // después la marca vuela a su mitad en la fila de la noche. Es la misma marca para
+  // cualquiera de las dos: dice que contestaste, no qué.
+  const marca = boton.querySelector('.ejes-opcion-marca');
+  const media = pila?.querySelector('.ejes-hoja:not(.ejes-hoja--fantasma) .ejes-noche-media[data-esta]');
+  estampar(marca);
+  sonarEfecto('tecla');
+  if (marca && media) {
+    window.setTimeout(() => {
+      if (!marca.isConnected || !media.isConnected) return;
+      volar('', 'ejes-marca-vuela', marca, media, () => {
+        media.classList.add('ejes-noche-media--hecha');
+        estampar(media);
+      });
+    }, duracionDe('--duracion-toque'));
+  }
+
   window.setTimeout(() => {
     elegidos.push(polo);
     paso++;
-    if (paso < ronda.length) pintarPregunta();
+    if (paso < ronda.length) pintarPregunta('sigue');
     else pintarResultado();
   }, pausa());
 }
@@ -216,7 +391,7 @@ function volverAnterior(): void {
   if (bloqueado || paso === 0) return;
   paso--;
   const antes = elegidos.pop();
-  pintarPregunta(antes);
+  pintarPregunta('vuelve', antes);
 }
 
 /* ------------------------------------------------------------------
@@ -240,6 +415,31 @@ function manera(c: Cuadrante, tuya: boolean, delAmigo: boolean): HTMLElement {
 }
 
 type Disposicion = ReturnType<typeof disposicion>;
+
+/**
+ * El plano se arma cuando se lo llega a ver: los dos ejes se trazan desde el cruce y el
+ * recuadro de tu manera cae en su lugar como un sello. Es la marca llegando, no una medida:
+ * cae en el medio de su cuadrante, igual para todos los que comparten manera (`BR-17`).
+ *
+ * Mientras no se vio, espera con el recuadro escondido. Sin observador, o con movimiento
+ * reducido, no espera nada: el plano está entero desde el principio.
+ */
+function armarAlVerlo(dibujo: HTMLElement): void {
+  if (typeof IntersectionObserver !== 'function' || duracionDe('--duracion-umbral') <= 0) return;
+  dibujo.classList.add('ejes-plano--espera');
+  const mirada = new IntersectionObserver(
+    (entradas) => {
+      if (!entradas.some((e) => e.isIntersecting)) return;
+      mirada.disconnect();
+      dibujo.classList.remove('ejes-plano--espera');
+      dibujo.classList.add('ejes-plano--armado');
+      // El ruido del sello, cuando el sello cae: después de los dos ejes.
+      window.setTimeout(() => sonarEfecto('sello'), duracionDe('--duracion-umbral') * 2);
+    },
+    { threshold: 0.6 },
+  );
+  mirada.observe(dibujo);
+}
 
 /** Un extremo de un eje: el polo en la rotulada y, debajo, sus palabras. */
 function polo(p: Polo, lugar: 'arriba' | 'abajo' | 'izquierda' | 'derecha'): HTMLElement {
@@ -354,6 +554,7 @@ function pintarResultado(): void {
 
   zonaPregunta.hidden = true;
   zonaPregunta.replaceChildren();
+  lugar = pila = pie = null;
   zonaResultado.hidden = false;
   zonaResultado.replaceChildren();
   // Al resultado, la región calla: el foco en el nombre ya lo dice.
@@ -368,7 +569,9 @@ function pintarResultado(): void {
     })
     .catch(() => undefined);
 
-  const hoja = el('article', 'ejes-hoja ejes-hoja--final');
+  // La última hoja se apoya, y sobre ella cae el nombre: es el único sellazo grande de la
+  // noche. Con movimiento reducido está todo en su lugar desde el primer cuadro.
+  const hoja = el('article', 'ejes-hoja ejes-hoja--final jugo-pega');
   // La marca en dos renglones: el sitio en la calcada y el juego debajo (`UX-36` §5.1).
   const marca = el('p', 'ejes-marca');
   marca.append(el('span', 'ejes-marca-sitio', RESULTADO.marca), el('span', 'ejes-marca-juego', PANTALLA_0.titulo));
@@ -381,14 +584,16 @@ function pintarResultado(): void {
   esquinero.height = 128;
   hoja.append(esquinero);
   hoja.append(el('p', 'ejes-rotulo', RESULTADO.rotulo));
-  const nombre = el('h2', 'ejes-nombre', r.nombre);
+  const nombre = el('h2', 'ejes-nombre ejes-nombre--cae', r.nombre);
   hoja.append(nombre);
+  window.setTimeout(() => sonarEfecto('sello'), duracionDe('--duracion-umbral'));
   hoja.append(el('p', 'ejes-polos', selloDePolos(c.luzOscuridad, c.ordenCaos)));
   hoja.append(el('p', 'ejes-nombra', lineaQueNombra(c.luzOscuridad, c.ordenCaos)));
   hoja.append(el('p', 'ejes-bajada', r.bajada));
   zonaResultado.append(hoja);
 
-  const acciones = el('div', 'ejes-acciones');
+  const acciones = el('div', 'ejes-acciones jugo-entra');
+  acciones.style.setProperty('--orden', '5');
   // Compartir: viaja **la identidad** —la postal de este cuadrante y su tarjeta— y ningún
   // número (`BR-17`). Es el primario de la pantalla.
   const { boton: compartir, salida } = botonCompartir(RESULTADO, () => ({
@@ -396,7 +601,17 @@ function pintarResultado(): void {
     url: `${location.origin}/juegos/${JUEGO}/${slugDe(r.id)}/`,
     archivo: tarjeta,
   }));
-  acciones.append(compartir, salida);
+  // La tarjeta asoma arriba del botón: lo que vas a mandar, a la vista antes de tocar. Tocarla
+  // comparte; el que tiene nombre para el lector de pantalla es el botón.
+  const asoma = el('div', 'tarjeta-asoma');
+  asoma.setAttribute('aria-hidden', 'true');
+  const foto = el('img', 'jugo-pega') as HTMLImageElement;
+  foto.alt = '';
+  foto.src = rutaDeTarjeta(r.id);
+  foto.addEventListener('error', () => asoma.remove());
+  asoma.append(foto);
+  asoma.addEventListener('click', () => compartir.click());
+  acciones.append(asoma, compartir, salida);
 
   const denuevo = el('button', 'secundario', RESULTADO.denuevo) as HTMLButtonElement;
   denuevo.type = 'button';
@@ -405,6 +620,8 @@ function pintarResultado(): void {
   zonaResultado.append(acciones);
 
   zonaResultado.append(grilla(r.id, disposicion(banco, r.id)));
+  const dibujo = zonaResultado.querySelector<HTMLElement>('.ejes-plano');
+  if (dibujo) armarAlVerlo(dibujo);
 
   const bajar = el('a', 'ejes-bajar', RESULTADO.bajar) as HTMLAnchorElement;
   bajar.href = rutaDeTarjeta(r.id);
@@ -444,12 +661,61 @@ function empezar(): void {
   paso = 0;
   elegidos.length = 0;
   momentoAnterior = undefined;
+  // Este toque es el gesto que los celulares piden para dejar sonar algo: se despierta la
+  // salida acá, y los ruidos de la noche (la tecla, el sello) ya pueden salir.
+  void despertarSalida().then(() => sonarEfecto('clac'));
+  const tapa = zonaInicio.hidden ? null : zonaInicio.querySelector<HTMLElement>('.ejes-tapa');
+  const desde = tapa?.getBoundingClientRect();
   zonaInicio.hidden = true;
   zonaResultado.hidden = true;
   zonaResultado.replaceChildren();
   zonaPregunta.hidden = false;
+  lugar = armarLugar();
+  pila = el('div', 'ejes-pila');
+  pie = el('div', 'ejes-pie-partida');
+  zonaPregunta.replaceChildren(lugar, pila, pie);
   window.scrollTo({ top: 0 });
-  pintarPregunta();
+  pintarPregunta('abre');
+  if (tapa && desde) abrirElLibro(tapa, desde);
+}
+
+/**
+ * El libro se abre: la tapa de la portada viaja hasta donde está la primera hoja y gira sobre
+ * su lomo hasta ponerse de canto. Es una copia suelta, dibujada donde estaba la tapa; la hoja
+ * de verdad ya está abajo desde el primer cuadro, así que nada espera a que termine.
+ *
+ * Solo `transform`. Con movimiento reducido el sub-paso vale cero y no hay viaje.
+ */
+function abrirElLibro(tapa: HTMLElement, desde: DOMRect): void {
+  const ms = duracionDe('--duracion-umbral');
+  const hoja = pila?.querySelector<HTMLElement>('.ejes-hoja');
+  if (!hoja || desde.width === 0 || ms <= 0 || typeof tapa.animate !== 'function') return;
+  const hasta = hoja.getBoundingClientRect();
+  const copia = tapa.cloneNode(true) as HTMLElement;
+  copia.classList.remove('jugo-pega', 'jugo-entra');
+  copia.classList.add('ejes-tapa--abre');
+  copia.setAttribute('aria-hidden', 'true');
+  copia.style.left = `${desde.left}px`;
+  copia.style.top = `${desde.top}px`;
+  copia.style.width = `${desde.width}px`;
+  copia.style.height = `${desde.height}px`;
+  document.body.append(copia);
+  const dx = hasta.left - desde.left;
+  const dy = hasta.top - desde.top;
+  const sx = hasta.width / desde.width;
+  const sy = hasta.height / desde.height;
+  const curva = getComputedStyle(document.documentElement).getPropertyValue('--curva-cinta').trim() || 'linear';
+  const viaje = copia.animate(
+    [
+      { transform: 'translate(0, 0) scale(1, 1)' },
+      { transform: `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`, offset: 0.5 },
+      { transform: `translate(${dx}px, ${dy}px) scale(0.02, ${sy})` },
+    ],
+    { duration: ms * 2, easing: curva, fill: 'forwards' },
+  );
+  const sacar = (): void => copia.remove();
+  viaje.addEventListener('finish', sacar, { once: true });
+  viaje.addEventListener('cancel', sacar, { once: true });
 }
 
 /**
@@ -460,7 +726,11 @@ function empezar(): void {
 document.addEventListener('keydown', (e) => {
   if (zonaPregunta.hidden || e.repeat || e.ctrlKey || e.metaKey || e.altKey) return;
   if (e.key === '1' || e.key === '2') {
-    const boton = zonaPregunta.querySelectorAll<HTMLButtonElement>('.ejes-opcion')[Number(e.key) - 1];
+    // La hoja que se está yendo sigue dibujada un instante, con sus dos opciones: el teclado
+    // elige en la que está, nunca en esa.
+    const boton = zonaPregunta.querySelectorAll<HTMLButtonElement>('.ejes-hoja:not(.ejes-hoja--fantasma) .ejes-opcion')[
+      Number(e.key) - 1
+    ];
     if (boton && !bloqueado) {
       e.preventDefault();
       boton.click();

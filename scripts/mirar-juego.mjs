@@ -10,6 +10,9 @@
  *   --sin-quieto          Saltea la pasada con movimiento reducido.
  *   --solo-quieto         Hace solo esa.
  *   --perfil <carpeta>    El perfil del navegador. Por defecto, `edge-perfil` al lado de la salida.
+ *   --sin-dedo            En las ventanas angostas el navegador se presenta como un teléfono
+ *                         (pantalla táctil, sin mouse): así no sale lo que el sitio muestra solo
+ *                         con puntero fino. Con esto, se presenta como una compu angosta.
  *   --entero              Hace de cuenta que todos los temas tienen el archivo entero (`D-22`),
  *                         para mirar cómo queda la revelación con el reproductor del tema.
  *
@@ -71,7 +74,11 @@ const espera = (ms) => new Promise((r) => setTimeout(r, ms));
 /** Lo que cada recorrido recibe: la página y las dos maneras de mirar. */
 async function abrir(nav, ancho, alto, quieto) {
   const pagina = await nav.newPage();
-  await pagina.setViewport({ width: ancho, height: alto, deviceScaleFactor: 1 });
+  // Un teléfono no tiene mouse. Sin esto, a 430 px el navegador decía `pointer: fine` y salía
+  // en la foto lo que el sitio guarda para la compu (la leyenda de las teclas de «¿Qué tipo de
+  // ricotero sos?» se vio así en la auditoría de base, y en el teléfono no está).
+  const dedo = ancho < 768 && !bandera('--sin-dedo');
+  await pagina.setViewport({ width: ancho, height: alto, deviceScaleFactor: 1, hasTouch: dedo, isMobile: dedo });
   await pagina.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: quieto ? 'reduce' : 'no-preference' }]);
   const cdp = await pagina.createCDPSession();
   await cdp.send('Animation.enable');
@@ -363,6 +370,113 @@ async function adivinarElTema(ctx) {
   await foto('resultado-entero', { entera: true });
 }
 
+/**
+ * «¿Qué tipo de ricotero sos?»: la noche entera. La portada, el libro que se abre, cada uno de
+ * los cinco momentos, elegir, volver a la anterior, el pase de una hoja a la otra y de un
+ * momento al otro, y el resultado con su plano, su grilla y su tarjeta.
+ *
+ * Elegir tiene una pausa que lleva un reloj de JavaScript (`--pausa-eleccion`), así que sus
+ * tiras van a velocidad real.
+ */
+async function dosEjes(ctx) {
+  const { pagina, foto, tira, quieto } = ctx;
+  await pagina.goto(`${base}/juegos/dos-ejes/`, { waitUntil: 'networkidle0' });
+  await tira('portada-entra', () => pagina.reload({ waitUntil: 'domcontentloaded' }), { ms: 900 });
+  await foto('portada');
+  await foto('portada-entera', { entera: true });
+
+  // Toques de verdad, no `click()` desde un script: con un clic de script el navegador cree que
+  // se llegó por teclado y le dibuja el foco punteado al enunciado, que en el teléfono no se ve.
+  const tocar = (sel) => pagina.click(sel);
+  const opcion = async (k) => (await pagina.$$('.ejes-hoja:not(.ejes-hoja--fantasma) .ejes-opcion'))[k].click();
+  const hojaLista = async (n) => {
+    // La hoja n (de 1 a 10) ya está y se puede tocar.
+    await pagina.waitForFunction(
+      (m) => {
+        const f = document.querySelector('.ejes-hoja:not(.ejes-hoja--fantasma) .ejes-folio');
+        const o = document.querySelector('.ejes-hoja:not(.ejes-hoja--fantasma) .ejes-opcion');
+        return f && f.textContent.trim().startsWith(`${m} de`) && o && o.getAttribute('aria-disabled') !== 'true';
+      },
+      { timeout: 8000 },
+      n,
+    );
+    await ctx.espera(quieto ? 120 : 1100);
+  };
+
+  // El libro se abre.
+  await tira('empieza', () => tocar('#empezar'), { ms: 760, lento: 0.2 });
+  await hojaLista(1);
+  await foto('momento-1-la-previa');
+  await foto('momento-1-entera', { entera: true });
+
+  // Elegir, de cerca: lo que pasa en la pausa, antes de que cambie la hoja.
+  await tira('elige', () => opcion(0), { ms: 520, lento: 1 });
+  await hojaLista(2);
+  await foto('hoja-2-mismo-momento');
+
+  // El pase al momento siguiente: elegir, la hoja que se va, el lugar que cambia y el sello.
+  await tira('pasa-de-momento', () => opcion(1), { ms: 1900, lento: 1 });
+  await hojaLista(3);
+  await foto('momento-2-la-ida');
+
+  // Volver a la anterior: la que se había elegido queda marcada.
+  if (await pagina.$('.ejes-anterior')) {
+    await tira('vuelve', () => tocar('.ejes-anterior'), { ms: 900, lento: 1 });
+    await ctx.espera(500);
+    await foto('volvio-a-la-anterior');
+    await opcion(0);
+    await hojaLista(3);
+  }
+
+  const NOMBRES = { 5: 'momento-3-la-vereda', 7: 'momento-4-cuando-suena', 9: 'momento-5-la-vuelta' };
+  for (let n = 3; n <= 9; n++) {
+    if (n === 6) {
+      // El pase que entra a «Cuando suena».
+      await tira('pasa-a-cuando-suena', () => opcion(0), { ms: 1900, lento: 1 });
+    } else {
+      await opcion(n % 2);
+    }
+    await hojaLista(n + 1);
+    if (NOMBRES[n + 1]) await foto(NOMBRES[n + 1]);
+  }
+
+  // La última: de la hoja al resultado.
+  await tira('resultado-entra', () => opcion(0), { ms: 2200, lento: 1 });
+  await ctx.espera(quieto ? 300 : 1600);
+  await foto('resultado');
+  await foto('resultado-entero', { entera: true });
+
+  // El plano: se baja hasta él y se mira cómo se arma.
+  if (await pagina.$('.ejes-plano')) {
+    await tira(
+      'plano',
+      () => pagina.$eval('.ejes-plano', (n) => n.scrollIntoView({ block: 'center', behavior: 'instant' })),
+      { ms: 1300, lento: 1 },
+    );
+    await ctx.espera(600);
+    await foto('plano');
+  }
+  if (await pagina.$('.ejes-manera summary')) {
+    await pagina.$eval('.ejes-manera summary', (n) => {
+      n.scrollIntoView({ block: 'center', behavior: 'instant' });
+      n.click();
+    });
+    await ctx.espera(300);
+    await foto('manera-abierta');
+  }
+
+  // Otra noche, desde el resultado.
+  await pagina.evaluate(() => window.scrollTo(0, 0));
+  await pagina.click('#resultado .secundario');
+  await ctx.espera(quieto ? 200 : 1300);
+  await foto('otra-noche');
+
+  // La postal de quien mandó el enlace.
+  await pagina.goto(`${base}/juegos/dos-ejes/cu-2/`, { waitUntil: 'networkidle0' });
+  await ctx.espera(quieto ? 200 : 900);
+  await foto('postal');
+}
+
 /** Cualquier otra ruta: la portada, y lo que aparece al tocar el botón de empezar. */
 async function generico(ctx, ruta) {
   const { pagina, foto, tira } = ctx;
@@ -399,6 +513,7 @@ async function generico(ctx, ruta) {
 
 const RECORRIDOS = {
   'adivinar-el-tema': adivinarElTema,
+  'dos-ejes': dosEjes,
 };
 
 // ---------------------------------------------------------------- correr

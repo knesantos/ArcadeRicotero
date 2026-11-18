@@ -2485,12 +2485,15 @@ html.incrustado .juego-tema #partida .cabina {
    pulgar (`D-09`). La pantalla de la pregunta es ahora una columna de una ventana con la hoja
    centrada: la mirada va al medio y las opciones bajan a la zona de la mano. Con una pregunta
    larga la columna crece y la hoja sube sola. Solo en el teléfono y la tableta: en la mesa
-   (`D-54`, desde 52 rem) hay mouse, no pulgar, y la hoja apoyada arriba deja el pie a la vista. */
+   (`D-54`, desde 52 rem) hay mouse, no pulgar, y la hoja apoyada arriba deja el pie a la vista.
+
+   **Y lo de arriba ya no es nada** (ronda de pulida, 2026-11-18): la columna es el lugar de la
+   noche, que se estira, y la hoja abajo. La hoja dejó el medio y bajó del todo: las dos
+   opciones quedan siempre a la misma altura, contra el pulgar, mida lo que mida la pregunta. */
 @media (max-width: 51.99rem) {
   .juego--luzbelito #pregunta:not([hidden]) {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     min-height: calc(100svh - 2 * var(--espacio-2));
   }
 }
@@ -2650,7 +2653,7 @@ html.incrustado .juego-tema #partida .cabina {
   align-items: center;
   justify-content: space-between;
   gap: var(--espacio-1);
-  margin-top: var(--espacio-3);
+  margin-top: var(--espacio-1);
 }
 
 /* "Volve a la anterior": la cinta `.volver` del sitio, en chico (`UX-36` §4.6), debajo de la
@@ -3270,6 +3273,765 @@ html.incrustado .juego-tema #partida .cabina {
   .ejes-esquinero {
     width: 5rem;
   }
+}
+
+/* ==========================================================================
+   La noche se ve (ronda de pulida de los juegos, 2026-11-18)
+
+   Hasta aca la hoja de "¿Que tipo de ricotero sos?" flotaba en negro: el juego decia "una
+   noche de recital en cinco momentos" y la noche no estaba. Ahora arriba de la hoja hay UN
+   LUGAR: el cielo con la luna, y una tira dibujada —el barrio, la ruta, el paredon, el
+   escenario, el barrio de vuelta— por la que la mirada camina un tramo con cada hoja.
+
+   Todo es tinta plana y recorte: las formas llegan como mascara (las dibuja
+   `scripts/generar-noche-dos-ejes.mjs`) y la tinta sale de `tokens.css` —el papel y el cuero
+   de *Luzbelito*, rebajados contra el fondo—. Ni un degradado, ni una sombra, ni un
+   desenfoque. La gente es la multitud de *Oktubre* que ya tenia el portal.
+
+   LO QUE SE MUEVE ESTA ATADO A UN ESTADO. La tira y la luna se corren cuando se pasa de
+   hoja. En cada momento vive una cosa, y dura lo que dura el momento: el fuego de la
+   previa, los postes de la ida, la gente que salta y los haces cuando suena. La vuelta va
+   quieta, a proposito. Solo `transform` y `opacity`; con movimiento reducido los tiempos
+   valen cero y los bucles se apagan (mas abajo, en el corte), y cada cosa queda en su lugar.
+
+   NADA DE ESTO MIDE (`BR-17`): el lugar, la luna y las casillas avanzan igual con
+   cualquier respuesta. Son el folio, dibujado.
+   ========================================================================== */
+
+.ejes-lugar {
+  /* El alto del suelo es la vara de todo el dibujo: 240 unidades de la tira (`noche.ts`). */
+  --alto-suelo: clamp(7rem, 29svh, 15.5rem);
+  --u: calc(var(--alto-suelo) / 240);
+  --tinta-noche-lejos: color-mix(in srgb, var(--papel) var(--peso-noche-lejos), var(--fondo));
+  --tinta-noche-cerca: color-mix(in srgb, var(--papel) var(--peso-noche-cerca), var(--fondo));
+  --tinta-noche-gente: color-mix(in srgb, var(--papel) var(--peso-noche-gente), var(--fondo));
+  --tinta-noche-luz: color-mix(in srgb, var(--tinta-disco, var(--papel)) var(--peso-noche-luz), var(--fondo));
+  position: relative;
+  height: calc(var(--alto-suelo) + 7rem);
+  overflow: hidden;
+  overflow: clip;
+  border: var(--linea) solid var(--apoyo-disco, var(--borde));
+  border-radius: 3px;
+}
+
+.ejes-lugar-arte {
+  position: absolute;
+  inset: 0;
+}
+
+.ejes-lugar-arte > *,
+.ejes-lugar-tira > *,
+.ejes-lugar-gente i,
+.ejes-lugar-cola i {
+  position: absolute;
+  display: block;
+  pointer-events: none;
+}
+
+/* La tarde: una franja de la tinta del disco, de canto roto, detras del barrio. Esta en la
+   previa, queda a medias en la ida y despues es de noche. */
+.ejes-lugar-tarde {
+  inset: auto 0 0;
+  height: calc(var(--alto-suelo) * 1.04);
+  background: color-mix(in srgb, var(--tinta-disco, var(--papel)) var(--peso-noche-tarde), var(--fondo));
+  clip-path: polygon(0 16%, 8% 11%, 19% 15%, 31% 6%, 44% 10%, 57% 2%, 69% 8%, 82% 4%, 93% 9%, 100% 5%, 100% 100%, 0 100%);
+  opacity: 0;
+  transition: opacity var(--duracion-inercia) linear;
+}
+
+.ejes-lugar--previa .ejes-lugar-tarde {
+  opacity: 1;
+}
+
+.ejes-lugar--ida .ejes-lugar-tarde {
+  opacity: 0.4;
+}
+
+/* Las estrellas: cuadrados, que son los pixeles del fichin. Salen de a poco. */
+.ejes-lugar-estrellas {
+  inset: 0 0 calc(var(--alto-suelo) * 0.45);
+  background: color-mix(in srgb, var(--papel) 62%, var(--fondo));
+  -webkit-mask: url('/arte/dos-ejes/noche-estrellas.svg') 0 0 / 320px 220px repeat;
+  mask: url('/arte/dos-ejes/noche-estrellas.svg') 0 0 / 320px 220px repeat;
+  opacity: 0.25;
+  transition: opacity var(--duracion-inercia) linear;
+}
+
+.ejes-lugar--ida .ejes-lugar-estrellas {
+  opacity: 0.6;
+}
+
+.ejes-lugar--vereda .ejes-lugar-estrellas,
+.ejes-lugar--vuelta .ejes-lugar-estrellas {
+  opacity: 1;
+}
+
+.ejes-lugar--adentro .ejes-lugar-estrellas {
+  opacity: 0.45;
+}
+
+/* La luna cruza el cielo en las diez hojas. La que viaja es una caja del tamaño del cielo
+   menos la luna: se corre en porcentajes de si misma, asi no hay que medir nada. */
+.ejes-lugar-luna-viaje {
+  inset: 3.6rem calc(8% + 2.3rem) calc(var(--alto-suelo) * 0.62 + 2.3rem) 8%;
+  translate: calc(var(--luna-x, 0) * 1%) calc(var(--luna-y, 60) * 1%);
+  transition: translate var(--duracion-inercia) var(--curva-cinta);
+}
+
+/* Recortada a tijera: catorce cortes, ninguno parejo. */
+.ejes-lugar-luna {
+  display: block;
+  width: 2.3rem;
+  height: 2.3rem;
+  background: color-mix(in srgb, var(--papel) var(--peso-noche-luna), var(--fondo));
+  clip-path: polygon(50% 0, 71% 4%, 88% 15%, 97% 33%, 100% 52%, 94% 72%, 82% 88%, 64% 98%, 44% 100%, 25% 93%, 10% 79%, 2% 60%, 1% 39%, 9% 20%, 26% 6%);
+  rotate: 12deg;
+}
+
+/* Lo de lejos: una baldosa de lomas y casas que se repite y camina a la mitad del paso. */
+.ejes-lugar-lejos {
+  bottom: 0;
+  left: 0;
+  width: calc(100% + var(--alto-suelo) * 7);
+  height: var(--alto-suelo);
+  background: var(--tinta-noche-lejos);
+  -webkit-mask: url('/arte/dos-ejes/noche-lejos.svg') 0 100% / calc(var(--alto-suelo) * 5) 100% repeat-x;
+  mask: url('/arte/dos-ejes/noche-lejos.svg') 0 100% / calc(var(--alto-suelo) * 5) 100% repeat-x;
+  translate: calc(var(--alto-suelo) * -0.45 * var(--parada, 2.9)) 0;
+  transition: translate var(--duracion-inercia) var(--curva-cinta);
+}
+
+/* La tira del camino. Su punto de la parada queda en el medio de la ventana. */
+.ejes-lugar-tira {
+  bottom: 0;
+  left: 50%;
+  width: calc(var(--u) * 3800);
+  height: var(--alto-suelo);
+  translate: calc(var(--alto-suelo) * -1 * var(--parada, 2.9)) 0;
+  transition: translate var(--duracion-inercia) var(--curva-cinta);
+}
+
+.ejes-lugar-cerca,
+.ejes-lugar-luz {
+  inset: 0;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+.ejes-lugar-cerca {
+  background: var(--tinta-noche-cerca);
+  -webkit-mask-image: url('/arte/dos-ejes/noche-cerca.svg');
+  mask-image: url('/arte/dos-ejes/noche-cerca.svg');
+}
+
+/* Lo prendido: las ventanas, los faroles, los tachos del escenario. */
+.ejes-lugar-luz {
+  background: var(--tinta-noche-luz);
+  -webkit-mask-image: url('/arte/dos-ejes/noche-luz.svg');
+  mask-image: url('/arte/dos-ejes/noche-luz.svg');
+}
+
+/* ---- La previa: el fuego de la ronda ---- */
+
+.ejes-lugar-fuego {
+  bottom: calc(var(--u) * 23);
+  left: calc(var(--u) * 703);
+  width: calc(var(--u) * 36);
+  aspect-ratio: 60 / 58;
+  background: var(--tinta-noche-luz);
+  -webkit-mask: url('/arte/dos-ejes/noche-fuego.svg') 0 0 / 100% 100% no-repeat;
+  mask: url('/arte/dos-ejes/noche-fuego.svg') 0 0 / 100% 100% no-repeat;
+  transform-origin: 50% 100%;
+}
+
+/* Tres cuadros y vuelta: la llama no ondula, salta. */
+.ejes-lugar--previa .ejes-lugar-fuego {
+  animation: llama var(--duracion-llama) linear infinite;
+}
+
+@keyframes llama {
+  0%,
+  32% {
+    scale: 1 1;
+  }
+
+  33%,
+  65% {
+    scale: 0.9 1.14;
+  }
+
+  66%,
+  100% {
+    scale: 1.08 0.9;
+  }
+}
+
+/* ---- La ida: los postes que pasan y el micro ---- */
+
+.ejes-lugar-postes {
+  bottom: 0;
+  left: 0;
+  width: calc(100% + var(--alto-suelo) * 1.5);
+  height: var(--alto-suelo);
+  background: var(--tinta-noche-cerca);
+  -webkit-mask: url('/arte/dos-ejes/noche-postes.svg') 0 100% / calc(var(--alto-suelo) * 1.5) 100% repeat-x;
+  mask: url('/arte/dos-ejes/noche-postes.svg') 0 100% / calc(var(--alto-suelo) * 1.5) 100% repeat-x;
+  opacity: 0;
+  transition: opacity var(--duracion-umbral) linear;
+}
+
+.ejes-lugar--ida .ejes-lugar-postes {
+  opacity: 1;
+  animation: ruta-pasa var(--duracion-ruta) linear infinite;
+}
+
+@keyframes ruta-pasa {
+  to {
+    translate: calc(var(--alto-suelo) * -1.5) 0;
+  }
+}
+
+/* El micro entra por la izquierda cuando empieza la ida y se va por la derecha cuando termina. */
+.ejes-lugar-micro {
+  bottom: calc(var(--u) * 17);
+  left: calc(50% - var(--u) * 105);
+  width: calc(var(--u) * 210);
+  aspect-ratio: 220 / 90;
+  translate: -110vw 0;
+  transition: translate var(--duracion-inercia) var(--curva-cinta);
+}
+
+.ejes-lugar--ida .ejes-lugar-micro {
+  translate: 0 0;
+}
+
+.ejes-lugar--vereda .ejes-lugar-micro,
+.ejes-lugar--adentro .ejes-lugar-micro,
+.ejes-lugar--vuelta .ejes-lugar-micro {
+  translate: 110vw 0;
+}
+
+.ejes-lugar-micro-caja {
+  position: absolute;
+  inset: 0;
+  background: var(--tinta-noche-gente);
+  -webkit-mask: url('/arte/dos-ejes/noche-micro.svg') 0 0 / 100% 100% no-repeat;
+  mask: url('/arte/dos-ejes/noche-micro.svg') 0 0 / 100% 100% no-repeat;
+}
+
+/* El traqueteo: un pixel y medio para arriba, de golpe. */
+.ejes-lugar--ida .ejes-lugar-micro-caja {
+  animation: traqueteo var(--duracion-pogo) linear infinite;
+}
+
+@keyframes traqueteo {
+  0%,
+  59% {
+    translate: 0 0;
+  }
+
+  60%,
+  100% {
+    translate: 0 -1.5px;
+  }
+}
+
+/* ---- La vereda: la gente esperando contra el paredon ---- */
+
+.ejes-lugar-cola {
+  bottom: calc(var(--u) * 22);
+  left: calc(var(--u) * 1700);
+  width: calc(var(--u) * 560);
+  height: calc(var(--u) * 62);
+}
+
+.ejes-lugar-cola i,
+.ejes-lugar-gente i {
+  inset: 0;
+  -webkit-mask-size: auto 100%;
+  mask-size: auto 100%;
+  -webkit-mask-repeat: repeat-x;
+  mask-repeat: repeat-x;
+  -webkit-mask-position: 30% 100%;
+  mask-position: 30% 100%;
+}
+
+.ejes-lugar-cola-gente,
+.ejes-lugar-gente-clara {
+  background: var(--tinta-noche-gente);
+  -webkit-mask-image: url('/arte/multitud-lejos-clara.png');
+  mask-image: url('/arte/multitud-lejos-clara.png');
+}
+
+.ejes-lugar-cola-banderas,
+.ejes-lugar-gente-banderas {
+  background: var(--tinta-noche-luz);
+  -webkit-mask-image: url('/arte/multitud-lejos-roja.png');
+  mask-image: url('/arte/multitud-lejos-roja.png');
+}
+
+/* ---- Cuando suena: la gente adelante y los haces ---- */
+
+/* La gente sube desde abajo de la ventana cuando se entra, y baja cuando se sale. */
+.ejes-lugar-gente {
+  inset: auto 0 0;
+  height: calc(var(--alto-suelo) * 0.52);
+  translate: 0 108%;
+  transition: translate var(--duracion-inercia) var(--curva-cinta);
+}
+
+.ejes-lugar--adentro .ejes-lugar-gente {
+  translate: 0 0;
+}
+
+.ejes-lugar-gente-salta {
+  position: absolute;
+  inset: 0 0 -6px;
+}
+
+.ejes-lugar-gente-silueta {
+  background: var(--fondo);
+  -webkit-mask-image: url('/arte/multitud-lejos-silueta.png');
+  mask-image: url('/arte/multitud-lejos-silueta.png');
+}
+
+/* El pogo: arriba y abajo, de golpe, sin curva. */
+.ejes-lugar--adentro .ejes-lugar-gente-salta {
+  animation: pogo var(--duracion-pogo) linear infinite;
+}
+
+@keyframes pogo {
+  0%,
+  44% {
+    translate: 0 0;
+  }
+
+  45%,
+  100% {
+    translate: 0 -5px;
+  }
+}
+
+/* Los haces: tres cuñas de tinta plana que bajan de los tachos a las tablas. */
+.ejes-lugar-haces {
+  top: calc(var(--u) * 44);
+  left: calc(var(--u) * 2340);
+  width: calc(var(--u) * 320);
+  height: calc(var(--u) * 92);
+  opacity: 0;
+  transition: opacity var(--duracion-umbral) linear;
+}
+
+.ejes-lugar--adentro .ejes-lugar-haces {
+  opacity: 1;
+}
+
+.ejes-lugar-haz {
+  position: absolute;
+  top: 0;
+  left: 4%;
+  width: 26%;
+  height: 100%;
+  background: color-mix(in srgb, var(--tinta-disco, var(--papel)) var(--peso-noche-haz), var(--fondo));
+  clip-path: polygon(45% 0, 55% 0, 100% 100%, 0 100%);
+  transform-origin: 50% 0;
+  rotate: -9deg;
+}
+
+.ejes-lugar-haz:nth-child(2) {
+  left: 37%;
+  rotate: 4deg;
+}
+
+.ejes-lugar-haz:nth-child(3) {
+  left: 70%;
+  rotate: 11deg;
+}
+
+/* Barren en cuatro posiciones, a los saltos, cada uno a su tiempo. */
+.ejes-lugar--adentro .ejes-lugar-haz {
+  animation: haz-barre var(--duracion-haz) linear infinite;
+}
+
+.ejes-lugar--adentro .ejes-lugar-haz:nth-child(2) {
+  animation-delay: calc(var(--duracion-haz) * -0.3);
+}
+
+.ejes-lugar--adentro .ejes-lugar-haz:nth-child(3) {
+  animation-delay: calc(var(--duracion-haz) * -0.65);
+}
+
+@keyframes haz-barre {
+  0%,
+  24% {
+    rotate: -14deg;
+  }
+
+  25%,
+  49% {
+    rotate: -4deg;
+  }
+
+  50%,
+  74% {
+    rotate: 9deg;
+  }
+
+  75%,
+  100% {
+    rotate: -4deg;
+  }
+}
+
+/* ---- Lo escrito en el lugar ---- */
+
+/* La linea que canta del momento, arriba, sobre el cielo liso (el par `--texto` sobre
+   `--fondo`). Es la de la hoja, mudada: pone el cuerpo en la escena, y la escena ahora esta. */
+.ejes-lugar-canta {
+  position: absolute;
+  inset: var(--espacio-2) var(--espacio-2) auto;
+  max-width: 24rem;
+  margin: 0;
+  font-style: italic;
+  font-size: 1.05rem;
+  line-height: 1.35;
+  color: var(--texto);
+  text-wrap: balance;
+}
+
+/* El sello grande del momento: cae sobre el cielo cuando se llega, se queda un rato y se va
+   de golpe. Lo que queda es el sello chico de la hoja. Con movimiento reducido no aparece:
+   el momento lo dicen el sello de la hoja y el anuncio. */
+.ejes-lugar-sello {
+  top: calc((100% - var(--alto-suelo)) * 0.62);
+  left: 50%;
+  padding: 0.15rem 0.9rem 0.25rem;
+  background: var(--fondo);
+  color: var(--texto);
+  border: var(--linea) solid currentColor;
+  border-radius: 3px;
+  font-family: var(--fuente-disco, var(--fuente-rotulada));
+  font-size: clamp(1.6rem, 8vw, 2.3rem);
+  line-height: 1.1;
+  text-transform: uppercase;
+  white-space: nowrap;
+  translate: -50% -50%;
+  rotate: -4deg;
+  opacity: 0;
+}
+
+.ejes-lugar-sello--cae {
+  animation: lugar-sello calc(var(--duracion-inercia) * 1.8) linear both;
+}
+
+@keyframes lugar-sello {
+  0% {
+    opacity: 0;
+    scale: 1.7;
+    rotate: -12deg;
+  }
+
+  1% {
+    opacity: 1;
+    scale: 1.7;
+    rotate: -12deg;
+  }
+
+  11%,
+  86% {
+    opacity: 1;
+    scale: 1;
+    rotate: -4deg;
+  }
+
+  87%,
+  100% {
+    opacity: 0;
+    scale: 1;
+    rotate: -4deg;
+  }
+}
+
+/* ---- La pila de hojas y el pase ---- */
+
+/* La hoja apoya sobre el piso del lugar: le pisa unos pixeles, como papel dejado encima. */
+.ejes-pila {
+  position: relative;
+  z-index: 1;
+  margin: -10px 0 var(--espacio-2);
+}
+
+.ejes-pila > .ejes-hoja {
+  margin: 0;
+}
+
+/* La linea que canta de la hoja: solo cuando el lugar no esta (ver abajo). */
+.ejes-pila .ejes-canta {
+  display: none;
+}
+
+/* La hoja que se va: queda dibujada encima de la nueva y se corre de costado, torciendose,
+   como una pagina que se pasa. No existe para el foco, ni para el lector, ni para el dedo. */
+.ejes-hoja--fantasma {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.ejes-hoja--se-va {
+  transform-origin: 0 100%;
+  animation: hoja-se-va var(--duracion-umbral) var(--curva-cinta) both;
+}
+
+@keyframes hoja-se-va {
+  to {
+    translate: -120% 0;
+    rotate: -8deg;
+  }
+}
+
+/* Al volver, la anterior entra desde ese mismo costado y tapa a la que estaba. */
+.ejes-hoja--vuelve {
+  z-index: 3;
+  transform-origin: 0 100%;
+  animation: hoja-vuelve var(--duracion-umbral) var(--curva-cinta) both;
+}
+
+@keyframes hoja-vuelve {
+  from {
+    translate: -120% 0;
+    rotate: -8deg;
+  }
+}
+
+/* ---- Elegir ---- */
+
+/* La casilla de cada opcion: vacia en las dos, del mismo peso. La elegida se llena de un
+   sellazo (`estampar`, en `jugo.ts`). Forma ademas de tinta, y nunca ✔: aca no hay acierto. */
+.ejes-opcion-texto {
+  flex: 1 1 auto;
+}
+
+.ejes-opcion-marca {
+  flex: none;
+  width: 1.15rem;
+  height: 1.15rem;
+  border: 2px solid var(--fondo);
+  border-radius: 2px;
+  rotate: 4deg;
+}
+
+.ejes-opcion--elegida .ejes-opcion-marca,
+.ejes-opcion--antes .ejes-opcion-marca {
+  background: var(--fondo);
+}
+
+/* La marca que vuela de la casilla de la opcion a su mitad en la fila de la noche (`volar`). */
+.ejes-marca-vuela {
+  position: fixed;
+  z-index: 30;
+  width: 1.15rem;
+  height: 1.15rem;
+  background: var(--fondo);
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+/* La fila de la noche: una casilla por momento, que se llena de a mitades, una por hoja. La
+   casilla es la caja; las mitades son solo el relleno. (Con borde propio en cada mitad se
+   leian como ceros, "00 00 00", y este juego no muestra numeros: `BR-17`.) */
+.ejes-noche-hoja {
+  box-sizing: border-box;
+  display: flex;
+  width: 15px;
+  height: 13px;
+  padding: 1px;
+  background: none;
+}
+
+.ejes-noche-hoja--pasada,
+.ejes-noche-hoja--actual {
+  background: none;
+}
+
+.ejes-noche-media {
+  display: block;
+  flex: 1 1 0;
+}
+
+.ejes-noche-media--hecha {
+  background: var(--fondo);
+}
+
+.ejes-noche-hoja--pasada .ejes-noche-media {
+  background: var(--papel-tenue);
+}
+
+/* ---- El lugar en el telefono: a sangre y de piso a techo ---- */
+
+@media (max-width: 51.99rem) {
+  .juego--luzbelito #pregunta:not([hidden]) .ejes-lugar {
+    flex: 1 1 auto;
+    height: auto;
+    min-height: calc(var(--alto-suelo) + 6.5rem);
+    margin: calc(-1 * var(--sangria-lugar, var(--espacio-2))) calc(-1 * var(--sangria-lugar, var(--espacio-2))) 0;
+    border: 0;
+    border-radius: 0;
+  }
+}
+
+/* En una ventana petisa no hay cielo para la letra ni para el sello: el lugar queda de
+   franja, y la linea que canta vuelve a la hoja. */
+@media (max-height: 43.74rem) {
+  .ejes-lugar {
+    /* Mas bajo tambien el suelo: a 320 x 568 la segunda opcion caia bajo el pliegue. */
+    --alto-suelo: clamp(5rem, 18svh, 8rem);
+    height: calc(var(--alto-suelo) + 1.5rem);
+  }
+
+  .juego--luzbelito #pregunta:not([hidden]) .ejes-lugar {
+    min-height: calc(var(--alto-suelo) + 1.5rem);
+  }
+
+  .ejes-lugar-canta,
+  .ejes-lugar-sello {
+    display: none;
+  }
+
+  .ejes-pila .ejes-canta {
+    display: block;
+  }
+}
+
+/* ---- La portada: el libro, mas libro ---- */
+
+/* La casilla de cada momento en el indice: las mismas que despues se llenan en la partida. */
+.ejes-indice-casilla {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin-right: 0.35em;
+  border: 2px solid var(--papel-tenue);
+  border-radius: 2px;
+  rotate: -4deg;
+}
+
+.ejes-indice li:nth-child(even) .ejes-indice-casilla {
+  rotate: 3deg;
+}
+
+/* Con alto de sobra, el indice va en columna, como el de un libro, y la tapa crece. */
+@media (min-height: 47.5rem) and (min-width: 22rem) {
+  .ejes-indice {
+    flex-direction: column;
+  }
+
+  .ejes-indice li:not(:last-child)::after {
+    content: none;
+  }
+
+  .ejes-tapa:not(:has(.ejes-tapa-etiqueta--amigo)) {
+    padding-block: 34px 30px;
+  }
+}
+
+/* "Empeza la noche": la tecla lleva la letra del juego y un filete de papel, como el rotulo
+   de la tapa. El relleno sigue siendo el cuero del disco (`D-19`); lo que la vuelve la
+   primera cosa de la pantalla es la forma. */
+.ejes-empezar {
+  border: var(--linea) solid var(--papel);
+  font-family: var(--fuente-disco, var(--fuente-rotulada));
+  font-size: 1.6rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 21.99rem), (max-height: 43.74rem) {
+  /* En el telefono angosto o petiso la portada no crece: sin casillas en el indice y con la tecla
+     del alto de siempre. A 320 x 568 el boton no puede caer bajo el pliegue (`REV-19`,
+     `FIND-131` de `REV-20`). */
+  .ejes-indice-casilla {
+    display: none;
+  }
+
+  .ejes-empezar {
+    border-width: 2px;
+    padding-block: calc(var(--espacio-2) - 2px);
+    font-size: 1.25rem;
+  }
+}
+
+/* La copia de la tapa que se abre al empezar (`abrirElLibro`): suelta, encima de todo. */
+.ejes-tapa--abre {
+  position: fixed;
+  z-index: 25;
+  box-sizing: border-box;
+  margin: 0;
+  transform-origin: 0 0;
+  pointer-events: none;
+}
+
+/* ---- El resultado ---- */
+
+/* El nombre cae sobre la ultima hoja cuando la hoja termino de apoyar: el sellazo de la
+   noche. Antes de caer no esta; con movimiento reducido esta desde el primer cuadro. */
+.ejes-nombre--cae {
+  transform-origin: 30% 50%;
+  animation: ejes-sello-cae var(--duracion-pasada) var(--curva-cinta) var(--duracion-umbral) backwards;
+}
+
+@keyframes ejes-sello-cae {
+  0% {
+    opacity: 0;
+    scale: 1.3;
+    rotate: -6deg;
+  }
+
+  1% {
+    opacity: 1;
+    scale: 1.3;
+    rotate: -6deg;
+  }
+}
+
+/* El plano se arma cuando se lo llega a ver: los ejes se trazan desde el cruce y el recuadro
+   de tu manera cae en su lugar. Mientras espera, el recuadro y los ejes no estan. */
+.ejes-plano--espera .ejes-plano-eje,
+.ejes-plano--espera .ejes-plano-cuadrante--tuya {
+  opacity: 0;
+}
+
+.ejes-plano--armado .ejes-plano-eje--vertical {
+  animation: eje-vertical var(--duracion-umbral) var(--curva-cinta) backwards;
+}
+
+.ejes-plano--armado .ejes-plano-eje--horizontal {
+  animation: eje-horizontal var(--duracion-umbral) var(--curva-cinta) var(--duracion-paso) backwards;
+}
+
+.ejes-plano--armado .ejes-plano-cuadrante--tuya {
+  animation: ejes-sello-cae var(--duracion-pasada) var(--curva-cinta) calc(var(--duracion-umbral) * 2) backwards;
+}
+
+@keyframes eje-vertical {
+  from {
+    scale: 1 0;
+  }
+}
+
+@keyframes eje-horizontal {
+  from {
+    scale: 0 1;
+  }
+}
+
+/* La tarjeta que asoma, adentro de la columna de acciones: sin el margen de arriba que trae
+   para "Adivina el tema" (la columna ya separa). */
+.ejes-acciones .tarjeta-asoma {
+  margin-top: 0;
 }
 
 /* ==========================================================================
@@ -5690,6 +6452,33 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
 
   .reproductor--sonando .barra-aguja-fiel {
     animation: none;
+  }
+
+  /* La noche de "¿Que tipo de ricotero sos?": lo que vive en cada momento queda quieto. El
+     fuego prendido, los postes plantados, el micro parado, la gente de pie. */
+  .ejes-lugar--previa .ejes-lugar-fuego {
+    animation: none;
+  }
+
+  .ejes-lugar--ida .ejes-lugar-postes {
+    animation: none;
+  }
+
+  .ejes-lugar--ida .ejes-lugar-micro-caja {
+    animation: none;
+  }
+
+  .ejes-lugar--adentro .ejes-lugar-gente-salta {
+    animation: none;
+  }
+
+  /* Un haz clavado es un paño: quietos van a media fuerza. */
+  .ejes-lugar--adentro .ejes-lugar-haz {
+    animation: none;
+  }
+
+  .ejes-lugar--adentro .ejes-lugar-haces {
+    opacity: 0.5;
   }
 }
 
@@ -8475,7 +9264,22 @@ html.incrustado .ejes-hoja:not(.ejes-hoja--final) {
   padding: var(--espacio-1) var(--espacio-2) var(--espacio-2);
 }
 
+/* Adentro de un posteo no entra el lugar de la noche: la pila ocupa el alto, como antes lo
+   hacia la hoja, y la linea que canta vuelve a la hoja. La tarjeta que asoma tampoco. */
+html.incrustado :is(.ejes-lugar, .ejes-acciones .tarjeta-asoma) {
+  display: none;
+}
+
+html.incrustado .ejes-pila {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
 html.incrustado .ejes-canta {
+  display: block;
   margin: var(--espacio-1) 0 0;
 }
 

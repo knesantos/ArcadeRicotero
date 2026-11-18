@@ -33,7 +33,7 @@ const { momentos, amigo } = Astro.props;
 const { marmol, lomo, esquinero } = PIEZAS;
 ---
 
-<figure class="ejes-tapa">
+<figure class="ejes-tapa jugo-pega" style="--orden:2">
   <img class="ejes-tapa-marmol" src={rutaDePieza('marmol')} alt="" width={marmol.ancho} height={marmol.alto} />
   <img class="ejes-tapa-lomo" src={rutaDePieza('lomo')} alt="" width={lomo.ancho} height={lomo.alto} />
   <img class="ejes-tapa-esquinero" src={rutaDePieza('esquinero')} alt="" width={esquinero.ancho} height={esquinero.alto} />
@@ -50,7 +50,10 @@ const { marmol, lomo, esquinero } = PIEZAS;
         <span class="ejes-tapa-rotulo">{PANTALLA_0.indiceRotulo}</span>
         <ol class="ejes-indice">
           {momentos.map((m) => (
-            <li>{m.nombre}</li>
+            <li>
+              <span class="ejes-indice-casilla" aria-hidden="true" />
+              {m.nombre}
+            </li>
           ))}
         </ol>
       </figcaption>

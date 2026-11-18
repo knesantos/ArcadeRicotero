@@ -112,6 +112,12 @@ export const PARTIDA = {
   teclas: 'Teclas 1 y 2 para elegir. Retroceso vuelve.',
   /** Para el lector de pantalla: el sello del momento y el folio, en una frase. */
   anuncio: (momento: string, n: number, total: number) => `${momento}. Pregunta ${n} de ${total}.`,
+  /**
+   * El interruptor de los ruidos de interfaz (la tecla al elegir, el sello de cada momento).
+   * Las mismas dos cadenas de «Adiviná el tema»: el botón dice lo que va a hacer el toque.
+   */
+  ruidosApagar: 'Apagá los ruidos',
+  ruidosPrender: 'Prendé los ruidos',
 } as const;
 
 export const RESULTADO = {

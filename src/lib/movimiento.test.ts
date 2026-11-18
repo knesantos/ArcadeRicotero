@@ -213,8 +213,26 @@ const ANIMACIONES = [
   { nombre: 'sello-error', apaga: 'token', valor: '--duracion-golpe', hoja: 'src/styles/juego.css' },
   { nombre: 'marco-error', apaga: 'token', valor: '--duracion-golpe', hoja: 'src/styles/juego.css' },
   // El sello del momento de "¿Qué tipo de ricotero sos?" (`UX-36` §4.5): se apoya en la hoja
-  // cuando cambia el momento, cinco veces por noche. Es el único movimiento de ese juego.
+  // cuando cambia el momento, cinco veces por noche. Hasta la ronda de pulida del 2026-11-18
+  // era el único movimiento de ese juego.
   { nombre: 'momento-entra', apaga: 'token', valor: '--duracion-paso', hoja: 'src/styles/juego.css' },
+  // La noche que se ve (ronda de pulida, 2026-11-18). Lo que pasa una vez: la hoja que se va
+  // y la que vuelve, el sello grande del momento sobre el cielo, el nombre que cae en el
+  // resultado y los dos ejes del plano que se trazan.
+  { nombre: 'hoja-se-va', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  { nombre: 'hoja-vuelve', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  { nombre: 'lugar-sello', apaga: 'token', valor: '--duracion-inercia', hoja: 'src/styles/juego.css' },
+  { nombre: 'ejes-sello-cae', apaga: 'token', valor: '--duracion-pasada', hoja: 'src/styles/juego.css' },
+  { nombre: 'eje-vertical', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  { nombre: 'eje-horizontal', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  // Y lo que vive en cada momento, mientras dura el momento: el fuego de la previa, los postes
+  // y el traqueteo del micro en la ida, el pogo y los haces cuando suena. Son bucles, atados a
+  // la clase del momento: como el carrete, se apagan con `animation: none`.
+  { nombre: 'llama', apaga: 'regla', valor: '.ejes-lugar--previa .ejes-lugar-fuego', hoja: 'src/styles/juego.css' },
+  { nombre: 'ruta-pasa', apaga: 'regla', valor: '.ejes-lugar--ida .ejes-lugar-postes', hoja: 'src/styles/juego.css' },
+  { nombre: 'traqueteo', apaga: 'regla', valor: '.ejes-lugar--ida .ejes-lugar-micro-caja', hoja: 'src/styles/juego.css' },
+  { nombre: 'pogo', apaga: 'regla', valor: '.ejes-lugar--adentro .ejes-lugar-gente-salta', hoja: 'src/styles/juego.css' },
+  { nombre: 'haz-barre', apaga: 'regla', valor: '.ejes-lugar--adentro .ejes-lugar-haz', hoja: 'src/styles/juego.css' },
   // Los sellos del bestiario que se asientan (`D-83`): el bocadillo, el «Anotado» y la libreta
   // terminan de apoyar; la hoja de la ficha baja los últimos píxeles. Un solo token los apaga.
   { nombre: 'sello-apoya', apaga: 'token', valor: '--duracion-sello', hoja: 'src/styles/sitio.css' },

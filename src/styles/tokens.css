@@ -1922,6 +1922,12 @@
   --pausa-error: 380ms;
   /* Lo que tarda el piloto de la casetera en dar un parpadeo entero mientras la cinta corre. */
   --duracion-piloto: 1.2s;
+  /* Los bucles de la noche de «¿Qué tipo de ricotero sos?»: lo que vive en cada momento y
+     dura lo que dura el momento. Como el carrete, se apagan con `animation: none`. */
+  --duracion-llama: 720ms; /* el fuego de la previa, en tres cuadros */
+  --duracion-ruta: 2.4s; /* lo que tarda un poste en cruzar la ventanilla, en la ida */
+  --duracion-pogo: 560ms; /* un salto de la gente, cuando suena */
+  --duracion-haz: 2.2s; /* la ida y vuelta de un haz del escenario */
 
   /* El registro imperfecto: cuanto se corren las pasadas de la estampa una respecto de la
      otra (`UX-22` §2.3), como una imprenta a mano que no calzo el segundo color. NO es
@@ -1975,6 +1981,17 @@
      encima, y `contraste.test.ts` mezcla cada peso con su tinta y falla si `--texto-tenue`
      baja de 4,5:1 o la marca —letra grande en `--marca-rojo`— baja de 3:1. El par más justo
      hoy es la marca contra las banderas de cerca: 3,25:1. */
+  /* La noche de «¿Qué tipo de ricotero sos?» (ronda de pulida, 2026-11-18): cuánto papel lleva
+     cada plano del lugar sobre el fondo, y cuánta tinta del disco lo que está prendido. No son
+     colores nuevos: son el papel y el cuero de *Luzbelito*, rebajados. Nada de esto lleva
+     texto encima, así que no arma ningún par de contraste. */
+  --peso-noche-lejos: 8%;
+  --peso-noche-cerca: 21%;
+  --peso-noche-luz: 82%;
+  --peso-noche-tarde: 20%;
+  --peso-noche-haz: 34%;
+  --peso-noche-luna: 86%;
+  --peso-noche-gente: 36%;
   --peso-multitud-lejos: 12%;
   --peso-bandera-lejos: 28%;
   --peso-multitud-cerca: 16%;
