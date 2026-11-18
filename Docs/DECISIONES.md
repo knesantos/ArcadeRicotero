@@ -8014,3 +8014,66 @@ Dos cosas se aprendieron por el camino y valen para lo que venga: **lo que más 
 de esta decisión** (era una animación de CSS adentro de un dibujo, previa), y **cada vez que algo
 pegado a la cámara subió más que un quinto de la pantalla hubo que bajarlo**; por eso ahora lo mide
 un test en la imagen.
+
+## D-91 — El bestiario, región por región: pulir de a tres hasta cerrar, y el plano con sus títeres
+
+- **Fecha:** 2026-11-15 a 2026-11-17
+- **Estado:** activa. Pedido del usuario, textual: *"Hacé una auditoría sobre el bestiario ricotero
+  [...] Quiero mejorar la inmersión [...] una mejora total manteniendo la esencia y el alma y el
+  diseño rocambolesco ante todo [...] hacer las vueltas en 3 ambientes máximo [...] pulirlos al
+  máximo y luego pasar a otros tres"*; después *"pasa a otro entorno [...] hasta que hayan sido
+  auditados todos al menos 1 vez"*, y sobre el plano *"que mejore los titeres en mapa"* y *"que no
+  esten todos los titeres en cada zona, maximo 2"*. La escribe el hilo principal en la rama
+  `worktree-bestiario-tres-ambientes`, sobre `main` en `57bdae8`; construyó Fable, auditó el hilo
+  principal mirando capturas. La tarea es `T-530`. Antes de numerar se miraron las ramas remotas:
+  `D-91` y `T-530` estaban libres (`T-529` es la rama `claude/bestiario-rocambole-3238c6`).
+- **Consume:** `D-90` (el aire, la lupa, la luz, el velo), `D-73` (el aerógrafo con grano y el
+  movimiento de los bichos), `bestiario-inmersion.md`, `diseno-marca.md`.
+- **Encargos:** `Docs/SUGERENCIAS/encargo-T-530-tres-ambientes.md`, `-tanda-2.md` a `-tanda-5.md` y
+  `-plano.md`. Cada uno trae lo que dejó la tanda anterior y sus lecciones.
+
+### La idea
+
+`D-90` mejoró las trece regiones a la vez en ocho rondas. Esta decisión hace lo contrario:
+**profundidad antes que amplitud**. Tres regiones por tanda, varias vueltas, cada vuelta auditada con
+capturas antes y después, hasta que la región queda cerrada; recién ahí se pasa a otras tres.
+
+### Las tandas
+
+| Tanda | Regiones | Vueltas | Lo central |
+|---|---|---|---|
+| 1 | el monte, la pastura, la ruta | 4 | el velo que de verdad es carga; troncos de papel, sendero en escorzo, alambrado y molino, el tren; la lupa congela el paralaje |
+| 2 | el galpón, el infierno, la mesa | 5 | la gente figura por figura con el seguidor que les prende el canto; la mesa con candelabro, vapor y reloj; lo de adelante se corre con la lupa (`FRENTE_QUE_SE_CORRE`) |
+| 3 | los astilleros, Cybersiberia, el árbol | 4 | el carguero en su capa (`PLANOS`), grúas y río; escarcha, torres y aurora; ramas, péndulos (`.pendula`), la luna con ojo y el gran bonete caído |
+| 4 | los techos, el bajo, el templo | 3 | el baldío con su fuga, el agua de verdad del bajo, el piso y las columnas del templo; lo del camino entra en el recinto después del telón (`EN_EL_RECINTO`) |
+| 5 | la prisión | 2 | hundir sin llenar: la escalera que baja, el arco de las cárceles, el haz de la ventana en gubia, manos en los barrotes; el grabado sigue blanco y negro |
+| 6 | el plano | 4 | dos títeres por zona (26 de 122), redibujados en cartón recortado con pose propia los trece protagonistas; nubes solo por el borde; la llegada en una línea; el cielo que se cierra al bajar a una región |
+
+### Lo que no se tocó
+
+La rama `T-529` (sin integrar) convirtió en títeres a figuras de ocho recintos y editó sus funciones
+en `arte-entornos.ts`. Esta decisión **no edita esos recintos** ni `escenas.ts`, `rig-*.ts`,
+`recintos.ts`, `elenco.ts`, `vivos.ts`, `figuras.ts` o `sitio.css`: lo nuevo entra por el camino, el
+aire, `PLANOS`, piezas propias y manos por debajo y por encima del piso (`SOBRE_EL_RECINTO`). Tests
+afirman que los lugares de esos títeres siguen libres. **Cuando `T-529` se integre** hay que
+reimprimir sus pisos y mirar los títeres contra las piezas nuevas.
+
+### Medido
+
+- **Memoria de imágenes decodificadas** (techo propio: +20 % sobre `main` por región): astilleros
+  +3,9 %, Cybersiberia +1,0 %, árbol +4,2 %, mesa +1,8 %, techos +10,2 %, bajo +9,7 %, templo +7,9 %,
+  prisión +4,6 %, plano +13,1 %.
+- **Cuadros:** la PC estuvo cargada casi todas las tandas y el control rara vez cayó en 27–35 ms. No
+  hay medición limpia de varias corridas; lo que se movía y costaba sin leerse se apagó (las nubes que
+  giraban, el balanceo de los títeres del plano, la cadena de la prisión).
+
+### Lo que quedó abierto
+
+- Las trece segundas figuras del plano siguen con el molde de `figuras.ts`.
+- El cierre de nubes del plano se vio quieto, no en movimiento con un toque real.
+- La corona colgada de la silla de Patricio Rey sale del nombre, no de una letra.
+- El vigía del puente de la prisión casi no se ve; el canto de las columnas del templo, con lupa,
+  queda en barras naranjas fuertes.
+- Una medición de cuadros con la PC tranquila.
+
+**Verde:** `npm test` 2523, `astro check` 0 errores, `astro build` 200 páginas.

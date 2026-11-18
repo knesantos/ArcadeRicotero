@@ -5,7 +5,25 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-11-16
+**Última actualización:** 2026-11-17
+
+> ## 🔦 EL BESTIARIO, REGIÓN POR REGIÓN, Y EL PLANO CON SUS TÍTERES (2026-11-17) — `D-91`, `T-530`
+>
+> **Sin integrar**: rama `worktree-bestiario-tres-ambientes`, sobre `main` en `57bdae8` (con `main` fusionado en `bea8712`). Pedido
+> del usuario: *"hacer las vueltas en 3 ambientes máximo [...] pulirlos al máximo y luego pasar a otros tres"* y *"pasa a otro
+> entorno [...] hasta que hayan sido auditados todos al menos 1 vez"*. Construyó Fable; el hilo principal auditó cada vuelta con
+> capturas antes y después.
+>
+> - **Las trece regiones pasaron al menos una vuelta**, de a tres: monte, pastura y ruta (4 vueltas); galpón, infierno y mesa (5);
+>   astilleros, Cybersiberia y árbol (4); techos, bajo y templo (3); la prisión (2). El velo de llegada ahora sí es carga.
+> - **El plano** (4 vueltas): dos títeres por zona (*"maximo 2"*, pedido del usuario), los trece protagonistas redibujados en cartón
+>   recortado con pose propia, nubes solo por el borde, la llegada en una línea y el contador, y el cielo que se cierra al tocar una región.
+> - **No toca lo de `T-529`** (rama `claude/bestiario-rocambole-3238c6`): ni los recintos que esa rama reescribió ni `figuras.ts`.
+>   Tests afirman que los lugares de sus títeres siguen libres. Cuando se integre, reimprimir sus pisos y mirar los títeres contra lo nuevo.
+> - **Memoria** de imágenes, contra `main`: entre +1,0 % (Cybersiberia) y +13,1 % (el plano); techo propio +20 %.
+> - **Verde:** `npm test` 2523, `astro check` 0 errores, `astro build` 200 páginas.
+> - **Visto en capturas, no en un teléfono real.** Falta: las trece segundas figuras del plano, el cierre de nubes visto con un toque
+>   real, una medición de cuadros con la PC tranquila (el control casi nunca cayó en banda).
 
 > ## 🧨 DOS REELS DE TÍTERES QUE JUEGAN (2026-11-16) — `D-81`
 >

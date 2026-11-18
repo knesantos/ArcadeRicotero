@@ -178,7 +178,40 @@ piezas, su rig, su gesto al tocarlo y su ficha. Hasta que se escriba, mandan `D-
 lo que ya dicen las secciones 4, 6 y 7 de esta regla. Lo que se aprenda al diseñar la próxima tanda
 de bestias entra en esta sección, con el caso que lo enseñó.
 
+## 14. Lo que dejó pulir región por región (`D-91`)
+
+Seis tandas de a tres regiones, y el plano. Cada lección salió de un caso que se vio mal:
+
+- **El fondo en planos, no en fila.** Lo lejano en dos planos separados por valor y bruma; lo que
+  está entre lo lejano y el piso y no se repite va como capa suelta con su velocidad (`PLANOS`), no
+  pintado en lo lejano.
+- **Un punto de fuga por región.** Algo que cruce el piso y se vaya al horizonte hizo más por la
+  profundidad que cualquier niebla.
+- **Al piso de un recinto ajeno se le suma sin editarlo:** una mano por debajo y otra por encima
+  (`SOBRE_EL_RECINTO`), y un test que exija el dibujo original entero. En un recinto, lo nuevo entra
+  después del telón y antes del primer bicho (`EN_EL_RECINTO`), con un error si el telón cambia de nombre.
+- **Una multitud se pinta figura por figura**, y la luz que prende el canto va en un solo trazo por
+  figura, en el lugar del canto.
+- **Lo que cuelga gira desde su nudo**, pieza por pieza.
+- **Lo que se mueve y no se lee en la tira de seis cuadros vuelve a quieto**, no se agranda. Pasó con
+  la cadena de la prisión, las nubes del plano que giraban y el balanceo de sus títeres: costaban
+  cuadros y nadie los veía.
+- **Una capa que se mueve siempre obliga a componer todo lo que tapa en cada cuadro.** Si no hace
+  falta que se mueva, quieta.
+- **El color sobre gris necesita croma, no solo luz,** y va delante de la niebla. Y una niebla sobre
+  el dibujo que de lejos lava el color es peor que no tenerla: se compara al mismo tamaño que `main`.
+- **Una luz que no se puede mover se angosta.**
+- **Una luz clavada en una capa y un bicho en otra se van a cruzar en alguna pantalla:** mirarlo a
+  1280 y con la lupa.
+- **La primera pantalla del teléfono va de ~96 a ~416**: la cámara ya dio su primer paso.
+- **Medir:** primero la memoria de imágenes decodificadas (depende de las dimensiones, no del webp),
+  después los cuadros con control en banda, alternando el orden rama/main. Lo que no se lee y cuesta,
+  se saca antes de medir.
+- **Un títere chico se reconoce por su pose, no por el borde.** En el plano, el cartón recortado
+  ayudó, pero el salto fue redibujar cada protagonista con su gesto. Y con menos figuras por zona
+  (dos), cada una puede ser más grande y mejor.
+
 ---
 
 Si algo de esta regla te queda chico, propuesta en `Docs/SUGERENCIAS/`, como siempre. El detalle y
-los números de cada ronda están en `D-90` y sus enmiendas.
+los números de cada ronda están en `D-90` y sus enmiendas, y en `D-91`.
