@@ -98,6 +98,11 @@ export const PARTIDA = {
   /** El renglón de un intento fallado. El título es el que eligió el jugador. */
   fallado: (titulo: string) => titulo,
   ultimoIntento: 'Último intento',
+  /**
+   * Lo que dice la cabecera con el tema ya revelado, en el lugar de los intentos que quedan:
+   * cuánto sumaste en la vuelta hasta acá. Registro 3. Al acertar, el número sube hasta ahí.
+   */
+  llevas: (n: number) => (n === 1 ? 'Llevás 1 punto' : `Llevás ${n} puntos`),
   intentosRestantes: (n: number) => (n === 1 ? 'Te queda 1 intento' : `Te quedan ${n} intentos`),
   sinSonido:
     'Ojo: si no escuchás nada, fijate el volumen o poné auriculares. El juego es de oído ' +
@@ -172,6 +177,11 @@ export const REVELACION = {
   eraEl: 'Era',
   /** Disco y año, para que el que no la sacó se lleve el dato. */
   ficha: (disco: string, anio: number, pista: number) => `${disco} (${anio}), pista ${pista}`,
+  /**
+   * La ficha sin el disco, para cuando la estampa ya lo nombra en su pie: año y pista.
+   * Decirlo dos veces, una arriba de la otra, era ruido.
+   */
+  fichaCorta: (anio: number, pista: number) => `${anio} · pista ${pista}`,
   puntos: (n: number) => (n === 1 ? '1 punto' : `${n} puntos`),
   /**
    * El segundo sello del acierto: lo que sumaste, grande. Va aparte de `puntos` porque

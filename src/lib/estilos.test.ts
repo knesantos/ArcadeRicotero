@@ -383,14 +383,24 @@ const JS_TEMA = leer('src/scripts/partida-tema.ts');
 
 /** Las clases de estado que crea la isla del tema y que tienen que verse distinto. */
 const ESTADOS_TEMA = [
-  '.intento--libre',
+  // La lista ya no dibuja renglones vacios (ronda de pulida, 2026-11-17): la escalera la
+  // dibuja la regla, una sola vez, y aca queda solo lo gastado. Por eso salieron
+  // `.intento--libre` y `.intento--actual`, que eran el renglon sin escribir y el que tocaba.
   '.intento--fallado',
   '.intento--pasado',
-  // El renglon que toca (su numero de escalon se enciende) y el ultimo que gastaste, que es
-  // el unico que queda a la vista con el teclado abierto.
-  '.intento--actual',
+  // El ultimo que gastaste: el que se escribe, y el unico a la vista con el teclado abierto.
   '.intento--ultimo',
   '.barra-tramo--abierto',
+  // Lo que hiciste con cada escalon, marcado en su tramo de la regla: cruz o punto.
+  '.barra-tramo--fallo',
+  '.barra-tramo--pasado',
+  '.barra-tramo--acierto',
+  // La pantalla con el tema ya revelado: el reproductor en un renglon y la cabecera con lo
+  // que llevas, en vez de los datos de una partida que ya termino.
+  '.partida--revelada',
+  '.restantes--llevas',
+  // La cinta que se rebobina al empezar un tema nuevo.
+  '.reproductor--rebobina',
   // La regla graduada de abajo de la barra: el numero del escalon que ya tenes cambia de
   // tinta igual que su tramo. Sin regla que lo pinte, la regla queda toda del mismo gris
   // y deja de decir donde estas.
@@ -748,6 +758,10 @@ const ISLAS: Readonly<Record<string, Tablero | SinTablero>> = {
   },
   // `US-09`: el area es un canvas y no tiene clases; lo unico que la isla pinta en el DOM es
   // la tecla que sigue apretada, que `:active` no alcanza a mostrar con cuatro dedos.
+  'jugo.ts': {
+    sinTablero:
+      'los gestos compartidos de la ronda de pulida (golpear, estampar, contar); sus clases no llevan modificador y viven en el bloque "El jugo" de juego.css',
+  },
   'partida-skayboy.ts': {
     juego: 'US-09, skayboy y poligirl',
     fuente: leer('src/scripts/partida-skayboy.ts'),

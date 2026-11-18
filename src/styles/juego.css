@@ -329,13 +329,19 @@
      le puede subir el contraste —oscurecerlo armaba un par que nadie mide—. */
   transition:
     translate var(--duracion-toque) var(--curva-cinta),
-    filter var(--duracion-toque) var(--curva-cinta);
+    filter var(--duracion-toque) var(--curva-cinta),
+    box-shadow var(--duracion-toque) var(--curva-cinta);
   touch-action: manipulation;
 }
 
+/* Apretada, la tecla deja la marca del sello: un filete de la tinta del fondo, por adentro
+   (un anillo pegado, no una sombra). Entra de una —`transition: none`— y se va en
+   `--duracion-toque`, asi un toque corto del pulgar tambien se alcanza a ver. */
 .primario:active:not(:disabled) {
   translate: 0 2px;
   filter: brightness(1.1);
+  box-shadow: inset 0 0 0 var(--linea) var(--fondo);
+  transition: none;
 }
 
 .primario:disabled {
@@ -786,20 +792,29 @@ a.secundario {
   );
 }
 
-/* ---- Los seis renglones de intento ----
+/* ---- Los renglones de lo que ya gastaste ----
    Papel con renglones, que es idioma del sitio: cada intento es una linea que se
-   escribe. Los seis se dibujan desde el arranque — la altura de la escalera tiene que
-   verse antes de empezar a gastarla.
+   escribe. Cada renglon lleva a la derecha el audio con el que se jugo, que es lo que lo
+   ata a su tramo de la regla de arriba. */
 
-   **Y cada renglon lleva a la derecha el audio con el que se juega.** Es lo que ata los
-   renglones a la regla de abajo y cuenta la mecanica sin explicarla: errar no te saca
-   nada, te da el renglon siguiente, que trae mas cinta. */
-
+/*
+ * LA ESCALERA ESTA UNA SOLA VEZ (ronda de pulida, 2026-11-17).
+ *
+ * Hasta aca la pantalla la dibujaba dos veces, una arriba de la otra: seis renglones con
+ * `0,1 s · 0,5 s · 2 s…` a la derecha, y la regla de la cinta con las mismas seis marcas. La
+ * regla es el objeto del juego, asi que se queda con la escala; **esta lista ya no dibuja
+ * renglones vacios: es solo lo que ya escribiste.** Nace vacia, y cada intento gastado le
+ * agrega un renglon, que se escribe de izquierda a derecha. Cuantos quedan lo dice la
+ * cabecera con palabras, y donde cayo cada uno lo marca la regla en su tramo.
+ */
 .intentos {
   margin: 0 0 var(--espacio-2);
   padding: 0;
   list-style: none;
-  counter-reset: intento;
+}
+
+.intentos[hidden] {
+  display: none;
 }
 
 .intento {
@@ -810,44 +825,12 @@ a.secundario {
   padding: 0.1rem 0.25rem;
   border-bottom: 2px solid var(--borde);
   font-size: 0.95rem;
-  counter-increment: intento;
 }
 
-/* El renglon vacio lleva su numero donde el escrito lleva la marca: la columna de la
-   izquierda nunca queda hueca, y se lee como un formulario a completar. */
-.intento--libre::before {
-  content: counter(intento);
-  flex: none;
-  width: 1.25rem;
-  text-align: center;
-  font-family: var(--fuente-rotulada);
-  font-size: 0.62rem;
-  color: var(--texto-tenue);
-}
-
-.intento--actual::before {
-  color: var(--cat-mitologia);
-}
-
-/*
- * Un renglon todavia sin escribir es una RAYA con su numero, no una fila.
- *
- * Vacio no es apagado: el renglon se ve, y por eso se sabe cuantos quedan. Pero medido a
- * 375x812, seis a alto completo se llevaban la cuarta parte de la pantalla para no decir
- * nada. A este alto entra el numero del escalon y nada mas, que es lo unico que un
- * renglon vacio tiene para decir.
- */
-.intento--libre {
-  min-height: 1.35rem;
-  padding-block: 0;
-  border-bottom-style: dashed;
-}
-
-/* El que toca: el borde se afirma en la tinta de la pantalla y su numero se enciende. Es
-   el audio con el que vas a arriesgar ahora. */
-.intento--actual {
-  border-bottom-style: solid;
-  border-bottom-color: var(--cat-mitologia);
+/* El renglon que acabas de gastar se escribe: un barrido de izquierda a derecha, el mismo
+   de las pasadas de la estampa. Los anteriores ya estan escritos y no se mueven. */
+.intento--ultimo {
+  animation: pasada var(--duracion-pasada) var(--curva-cinta) both;
 }
 
 /* Ningun estado se comunica solo con color: la marca es un simbolo (UX-01). */
@@ -883,9 +866,6 @@ a.secundario {
   color: var(--texto-tenue);
 }
 
-.intento--actual .intento-paso {
-  color: var(--cat-mitologia);
-}
 
 /* ==================================================================
    El reproductor: la cinta, su regla y la tecla de escuchar
@@ -960,7 +940,9 @@ a.secundario {
   position: relative;
   display: flex;
   width: 100%;
-  height: 2.5rem;
+  /* La regla es el protagonista de la pantalla desde que la escalera esta una sola vez:
+     crece hasta el alto del casete que tiene al lado. */
+  height: 4rem;
   background: var(--papel);
   border: 2px solid var(--papel-borde);
   border-radius: 2px;
@@ -986,7 +968,18 @@ a.secundario {
   flex-basis: 0;
   flex-shrink: 1;
   min-width: 1.5rem;
+}
+
+/* El tramado es una capa propia, encima del papel: asi, cuando el tramo se abre, **se
+   levanta de un barrido** (la racleta, de izquierda a derecha) en vez de desaparecer. Y
+   cuando empieza un tema nuevo vuelve por el mismo camino: es la cinta que se rebobina. */
+.barra-tramo::before {
+  content: '';
+  position: absolute;
+  inset: 0;
   background: var(--rayado);
+  clip-path: inset(0);
+  transition: clip-path var(--duracion-pasada) var(--curva-cinta);
 }
 
 /* El corte entre escalones: una linea de tinta, como las divisiones grandes de una regla. */
@@ -996,39 +989,86 @@ a.secundario {
 
 /* Las rayitas de la regla, una cada medio segundo (`data-marcas` las cuenta la isla). */
 .barra-tramo[data-marcas] {
-  background:
-    linear-gradient(to right, var(--papel-tenue) 1.5px, transparent 1.5px) 0 100% / calc(100% / var(--marcas)) 34%
-      repeat-x,
-    var(--rayado);
-}
-
-/* Abierto: se va el tramado y queda el papel limpio, con sus rayitas. */
-.barra-tramo--abierto {
-  background: none;
-}
-
-.barra-tramo--abierto[data-marcas] {
   background: linear-gradient(to right, var(--papel-tenue) 1.5px, transparent 1.5px) 0 100% /
     calc(100% / var(--marcas)) 34% repeat-x;
 }
 
-/* La tinta: plana, y apoyada en el papel como tinta de verdad. */
-.barra-relleno {
-  position: absolute;
-  inset: 0;
-  width: 0;
-  background: var(--cat-mitologia);
-  mix-blend-mode: multiply;
+/* Abierto: se va el tramado y queda el papel limpio, con sus rayitas. */
+.barra-tramo--abierto::before {
+  clip-path: inset(0 0 0 100%);
 }
 
 /*
- * La aguja. Vive adentro del tramo donde esta y la ubica un porcentaje de su ancho, asi que
- * nunca se desacomoda cuando la pantalla cambia de ancho. Asoma arriba y abajo del papel
- * como el fiel de un dial, con su cabeza en tiza para que se lea sobre el fondo oscuro.
+ * Lo que hiciste con cada escalon, marcado EN la regla (ronda de pulida, 2026-11-17).
+ *
+ * Antes lo decia la lista de seis renglones de arriba, que repetia la escala entera. Ahora
+ * cada tramo lleva su marca: una cruz donde erraste, un punto donde pasaste. Es forma y no
+ * color (`UX-01`): tinta del fondo sobre el papel —o sobre el naranja, si ya lo escuchaste—,
+ * que son los dos pares testeados de esta regla. La marca cae como un sello.
+ */
+.barra-tramo--fallo::after,
+.barra-tramo--pasado::after,
+.barra-tramo--acierto::after {
+  position: absolute;
+  z-index: 1;
+  top: 1px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.8rem;
+  line-height: 1.3;
+  color: var(--fondo);
+  animation: sello-golpe var(--duracion-pasada) var(--curva-cinta) both;
+}
+
+.barra-tramo--fallo::after {
+  content: '✕︎';
+}
+
+.barra-tramo--pasado::after {
+  content: '–';
+}
+
+/* Y el tramo donde la sacaste lleva su tilde: se ve de un vistazo con cuanto audio fue. */
+.barra-tramo--acierto::after {
+  content: '✔︎';
+}
+
+/* La tinta: plana, y apoyada en el papel como tinta de verdad. Crece con `transform` y no
+   con el ancho: mientras suena se mueve en cada cuadro, y asi no le pide al telefono que
+   vuelva a medir nada. */
+.barra-relleno {
+  position: absolute;
+  inset: 0;
+  background: var(--cat-mitologia);
+  mix-blend-mode: multiply;
+  transform-origin: 0 50%;
+  transform: scaleX(var(--lleno, 0));
+}
+
+/* Tema nuevo: la tinta no desaparece, se recoge hacia el principio en el tiempo de un
+   sub-paso. Fuera de ese momento la tinta sigue al audio cuadro a cuadro, sin transicion. */
+.reproductor--rebobina .barra-relleno {
+  transition: transform var(--duracion-umbral) var(--curva-cinta);
+}
+
+/*
+ * La aguja. Es una caja del ancho del tramo donde esta, y lo que la mueve es un
+ * `translate` en porcentaje de ese ancho: nunca se desacomoda cuando la pantalla cambia de
+ * ancho, y moverla no obliga a medir nada. El fiel (`.barra-aguja-fiel`) asoma arriba y
+ * abajo del papel como el de un dial, con su cabeza en tiza para que se lea sobre el fondo.
  */
 .barra-aguja {
   position: absolute;
   z-index: 2;
+  inset: 0;
+  translate: calc(var(--donde, 0) * 100%) 0;
+  pointer-events: none;
+}
+
+.barra-aguja-fiel {
+  position: absolute;
   top: -7px;
   bottom: -7px;
   left: 0;
@@ -1039,10 +1079,9 @@ a.secundario {
      sale del papel y pisa el negro. */
   box-shadow: 0 0 0 1px var(--papel);
   border-radius: 1px;
-  pointer-events: none;
 }
 
-.barra-aguja::before {
+.barra-aguja-fiel::before {
   content: '';
   position: absolute;
   top: -7px;
@@ -1052,6 +1091,61 @@ a.secundario {
   translate: -50% 0;
   background: var(--texto);
   clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+
+/* Mientras la cinta corre, la aguja tiembla: un pixel para cada lado, en saltos duros. Es
+   el fiel de un vumetro, no un adorno: esta atado a que suene y se queda quieto al parar. */
+.reproductor--sonando .barra-aguja-fiel {
+  animation: aguja-tiembla var(--duracion-golpe) linear infinite;
+}
+
+@keyframes aguja-tiembla {
+  0%,
+  24% {
+    rotate: 0deg;
+  }
+
+  25%,
+  49% {
+    rotate: 1.6deg;
+  }
+
+  50%,
+  74% {
+    rotate: 0deg;
+  }
+
+  75%,
+  100% {
+    rotate: -1.6deg;
+  }
+}
+
+/* ---- El contador de la casetera ----
+   Tres cifras debajo del casete, como el contador de vueltas de un grabador: dice por donde
+   va la aguja. Mientras suena avanza con el audio; quieto, marca hasta donde llegaste. Va
+   escondido del lector de pantalla: el renglon de arriba dice el dato con palabras. */
+.cinta-contador {
+  position: absolute;
+  left: 0;
+  top: calc(4rem + 7px);
+  width: 6.2rem;
+  padding: 0 0.3rem;
+  border: 2px solid var(--borde);
+  border-radius: 3px;
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: var(--fuente-rotulada);
+  font-size: 0.68rem;
+  line-height: 1.5;
+  letter-spacing: 0.12em;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.reproductor--sonando .cinta-contador {
+  border-color: var(--cat-mitologia);
+  color: var(--cat-mitologia);
 }
 
 /* ---- Los numeros de la regla ----
@@ -1620,7 +1714,7 @@ a.secundario {
 .premios {
   position: relative;
   width: 100%;
-  margin: var(--espacio-3) 0 var(--espacio-2);
+  margin: var(--espacio-3) 0 var(--espacio-3);
   border-collapse: collapse;
   table-layout: fixed;
   background: var(--papel);
@@ -1644,9 +1738,31 @@ a.secundario {
   border-radius: 2px;
 }
 
+/* El titulo de la chapa, impreso en ella: una franja de tinta con la letra en papel, como el
+   encabezado de una planilla. Antes solo lo leia el lector de pantalla, y la tabla quedaba
+   sin decir que era. */
+.premios caption {
+  padding: 0.3rem 0.5rem;
+  background: var(--fondo);
+  color: var(--papel);
+  border: 2px solid var(--papel-borde);
+  border-bottom: 0;
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: left;
+}
+
 .premios th,
 .premios td {
-  padding: 0.4rem 0;
+  padding: 0.55rem 0;
+}
+
+/* El primer escalon es el premio grande: la decima vale cien. Va invertido —papel sobre
+   tinta—, que es forma ademas de color. */
+.premios tr + tr td:first-of-type {
+  background: var(--fondo);
+  color: var(--papel);
 }
 
 .premios th {
@@ -1661,7 +1777,7 @@ a.secundario {
 }
 
 .premios td {
-  font-size: 0.74rem;
+  font-size: 0.78rem;
   white-space: nowrap;
 }
 
@@ -1676,7 +1792,7 @@ a.secundario {
 
 /* Lo que vale va mas grande que el audio: es el incentivo, y se lee de lejos. */
 .premios tr + tr td {
-  font-size: 0.95rem;
+  font-size: 1.2rem;
 }
 
 /* ---- La revelacion ----
@@ -1698,12 +1814,44 @@ a.secundario {
  * salio con `D-64`.
  */
 .revelacion {
-  margin-top: var(--espacio-3);
+  margin-top: var(--espacio-2);
   background: var(--fondo);
+  /* La ficha se apoya: llega un poco corrida y torcida y termina de asentar, como una hoja
+     que se deja sobre la mesa. Sin fundido. Con movimiento reducido llega ya apoyada. */
+  animation: hoja-cae var(--duracion-paso) var(--curva-cinta) both;
+  /* Desde donde arranca el barrido de lo escrito: al acertar espera a que la tapa termine
+     de imprimirse (cuatro compases); si se te escapo, la tapa es una tinta sola y va antes. */
+  --compas: 1;
+}
+
+.revelacion.ok {
+  --compas: 4;
 }
 
 .revelacion[hidden] {
   display: none;
+}
+
+@keyframes hoja-cae {
+  from {
+    translate: 0 -8px;
+    rotate: -0.8deg;
+  }
+}
+
+/* Lo escrito de la ficha —el titulo, el dato del disco, lo que costo— se imprime despues de
+   la tapa, un renglon atras del otro, con el mismo barrido de las pasadas. Los botones no:
+   lo que se toca esta entero desde el primer cuadro. */
+.revelacion-titulo,
+.revelacion-ficha,
+.revelacion-costo {
+  --racleta-desde: inset(0 100% 0 0);
+  animation: pasada var(--duracion-pasada) var(--curva-cinta) calc(var(--escalon-pasada) * var(--compas)) both;
+}
+
+.revelacion-ficha,
+.revelacion-costo {
+  animation-delay: calc(var(--escalon-pasada) * (var(--compas) + 1));
 }
 
 /* ---- El grito, estampado (`D-33`) ----
@@ -1808,16 +1956,45 @@ a.secundario {
   width: 100%;
 }
 
+/* El tema entero (`D-22`): una caja punteada con su rotulo, para que se entienda que eso
+   que aparece es el tema completo y donde se toca. */
+.revelacion-entero {
+  margin-top: var(--espacio-2);
+  padding: var(--espacio-1) var(--espacio-2) var(--espacio-2);
+  border: 2px dashed var(--borde);
+  border-radius: 3px;
+}
+
+.revelacion-entero .revelacion-escuchar {
+  margin-top: 0;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--texto);
+}
+
+.revelacion-audio {
+  display: block;
+}
+
+/* La salida a la letra es la accion secundaria de la ficha: del ancho de "Segui", centrada
+   y en contorno, para que las dos teclas se lean como una columna y no como dos piezas
+   sueltas. Antes era un recuadro corrido a la izquierda, en otra tinta. */
 .revelacion-letra {
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
   margin-top: var(--espacio-2);
   min-height: var(--toque-min);
   padding: var(--espacio-1) var(--espacio-2);
-  color: var(--cat-letras);
-  border: 2px solid var(--cat-letras);
-  border-radius: 3px;
+  color: var(--texto);
+  border: var(--linea) solid var(--borde);
+  border-radius: var(--radio);
+  font-weight: 700;
+  text-align: center;
   text-decoration: none;
-  line-height: var(--toque-min);
 }
 
 .seguir {
@@ -4178,10 +4355,13 @@ body > main {
     color: var(--texto);
   }
 
-  /* Reusa la tinta del disco de letras, que es la que ya tiene en reposo. */
+  /* Como `.secundario`: se afirma el contorno, sin rellenar. */
   .revelacion-letra:hover {
-    background: var(--cat-letras);
-    color: var(--fondo);
+    border-color: var(--acento-2);
+  }
+
+  .estampa-girar:hover {
+    border-color: var(--acento-2);
   }
 
   .sugerencia:hover {
@@ -4897,8 +5077,6 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
 .estampa {
   width: min(100%, 240px);
   margin: var(--espacio-2) auto 0;
-  /* La profundidad del giro: sin esto, dar vuelta la hoja es un aplastamiento. */
-  perspective: 900px;
 }
 
 /* La hoja: lo que se da vuelta. Es un boton cuando hay trasera para mostrar. */
@@ -5047,13 +5225,33 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
 /* Lo que dice el boton a la vista (`UX-22` §5, `CNT-14` §2.3): que la estampa se da
    vuelta. Va abajo de la hoja, chico y en tenue: es una instruccion, registro 3. */
 .estampa-girar {
-  display: block;
-  margin-top: 0.5rem;
-  color: var(--texto-tenue);
+  /* Se lee como lo que es, una accion: un sello con su borde, pegado sobre la esquina de la
+     tapa, y se puede tocar (ademas de la tapa entera, que sigue siendo el boton de verdad).
+     Antes era un renglon suelto colgando abajo, que no parecia nada. */
+  position: absolute;
+  z-index: 1;
+  left: -0.6rem;
+  bottom: -0.7rem;
+  padding: 0.3rem 0.6rem;
+  border: 2px solid var(--borde);
+  border-radius: 3px;
+  background: var(--fondo);
+  color: var(--texto);
   font-family: var(--fuente-rotulada);
   font-size: 0.7rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  rotate: -3deg;
+  cursor: pointer;
+}
+
+/* La caja de la hoja: el sello de arriba se ubica contra ella, no contra la figura entera. */
+.estampa-caja {
+  position: relative;
+  display: block;
+  /* La profundidad del giro: sin esto, dar vuelta la hoja es un aplastamiento. Va aca
+     porque la perspectiva solo alcanza a los hijos directos, y la hoja es hija de esta caja. */
+  perspective: 900px;
 }
 
 /* El pie de la estampa: el nombre del disco en su letra. */
@@ -5177,12 +5375,17 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
    (`.cinta-fila`, arriba en el bloque del reproductor). */
 .casete-vivo {
   flex: none;
-  width: 3.6rem;
+  /* Grande: es el objeto que la gente mira mientras escucha. A este ancho los carretes miden
+     unos catorce pixeles y se los ve girar. */
+  width: 6.2rem;
   height: auto;
-  margin-top: 1px;
+  margin-top: 0;
   color: var(--cat-mitologia);
 }
 
+/* El giro lo prende `casete.ts` (`.casete-vivo--girando`), no el estado del reproductor: asi
+   el carrete puede seguir girando un momento despues de que el sonido paro —la inercia— y
+   girar para atras cuando rebobina. La velocidad se la cambia la isla; aca solo esta el giro. */
 .casete-carrete {
   transform-box: fill-box;
   transform-origin: center;
@@ -5190,13 +5393,69 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
   animation-play-state: paused;
 }
 
-.reproductor--sonando .casete-carrete {
+.casete-vivo--girando .casete-carrete {
   animation-play-state: running;
 }
 
 @keyframes carrete {
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* La cinta enrollada: llena en el carrete de la izquierda, casi nada en el de la derecha, y
+   se pasa de uno al otro con el audio. `--avance` (de 0 a 1) lo escribe la isla en cada
+   cuadro mientras suena; lo unico que cambia es un `transform`. */
+.casete-bobina {
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0.4;
+}
+
+.casete-bobina--llena {
+  transform: scale(calc(1 - 0.36 * var(--avance, 0)));
+}
+
+.casete-bobina--vacia {
+  transform: scale(calc(0.64 + 0.36 * var(--avance, 0)));
+}
+
+/* Al rebobinar, la cinta vuelve a la izquierda en el tiempo de un sub-paso. */
+.casete-vivo--rebobina .casete-bobina {
+  transition: transform var(--duracion-umbral) var(--curva-cinta);
+}
+
+/* La cinta entre los carretes cuelga floja cuando esta quieta y se tensa cuando corre. */
+.casete-cinta {
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+  transition: transform var(--duracion-paso) var(--curva-cinta);
+}
+
+.casete-vivo--girando .casete-cinta {
+  transform: scaleY(0.15);
+}
+
+/* El piloto: apagado es un cuadrado vacio; con la cinta corriendo se llena de tinta y
+   parpadea en dos tiempos. Forma ademas de brillo: lleno o vacio. Sin resplandor. */
+.casete-piloto {
+  fill: none;
+}
+
+.reproductor--sonando .casete-piloto {
+  fill: currentColor;
+  animation: piloto var(--duracion-piloto) linear infinite;
+}
+
+@keyframes piloto {
+  0%,
+  59% {
+    opacity: 1;
+  }
+
+  60%,
+  100% {
+    opacity: 0.35;
   }
 }
 
@@ -5208,8 +5467,9 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
    en la bandeja: mismo lugar siempre, y no le roba un renglon a la pantalla. */
 .casete-estado {
   position: absolute;
-  left: -2px;
-  top: 2.35rem;
+  z-index: 3;
+  left: -4px;
+  top: -0.6rem;
   display: inline-block;
   padding: 0.05rem 0.35rem;
   border: 1px solid currentColor;
@@ -5228,6 +5488,15 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
 
 @media (prefers-reduced-motion: reduce) {
   .casete-carrete {
+    animation: none;
+  }
+
+  /* El piloto queda prendido fijo y la aguja quieta: lo que dicen lo dice la palabra SONANDO. */
+  .reproductor--sonando .casete-piloto {
+    animation: none;
+  }
+
+  .reproductor--sonando .barra-aguja-fiel {
     animation: none;
   }
 }
@@ -7505,4 +7774,148 @@ html.incrustado .ejes-acciones > :not(.primario, .secundario) {
   min-height: var(--toque-min);
   margin-top: var(--espacio-3);
   text-decoration: none;
+}
+
+/* ==========================================================================
+   El jugo (ronda de pulida de los juegos, 2026-11-17)
+
+   La respuesta de las piezas cuando pasa algo en la partida. Son gestos del idioma del
+   sitio —el sello que cae, la hoja que se apoya, el temblor de un fichin— y los dispara
+   `src/scripts/jugo.ts`. Estan escritos para todos los juegos: ninguno nombra a "Adivina el
+   tema". Los tiempos salen de tokens que el corte de movimiento reducido lleva a cero, asi
+   que con el corte cada pieza aparece ya en su lugar.
+
+   NINGUN ESTADO DEPENDE DE ESTO. Cada gesto acompana a un texto o a un simbolo que ya dice
+   lo mismo: el error tiene su cruz, el acierto su sello escrito, el numero su cifra final.
+   ========================================================================== */
+
+/* El golpe: la pieza se sacude de costado en saltos duros, cuadro a cuadro —sin curva, como
+   el temblor de la pantalla de un fichin— y vuelve a su lugar. Es el error. Se anima
+   `translate`, asi que el giro de reposo que la pieza ya tenga no se toca. */
+.jugo-golpe {
+  animation: jugo-golpe var(--duracion-golpe) linear both;
+}
+
+@keyframes jugo-golpe {
+  0%,
+  19% {
+    translate: -7px 0;
+  }
+
+  20%,
+  39% {
+    translate: 6px 0;
+  }
+
+  40%,
+  59% {
+    translate: -4px 0;
+  }
+
+  60%,
+  79% {
+    translate: 3px 0;
+  }
+
+  80%,
+  100% {
+    translate: 0 0;
+  }
+}
+
+/* El sello: la pieza cae mas grande y mas torcida y apoya en su angulo de reposo. Es el
+   mismo `sello-golpe` del acierto, para cualquier pieza que cambie de valor o se cierre. */
+.jugo-sello {
+  animation: sello-golpe var(--duracion-pasada) var(--curva-cinta) both;
+}
+
+/* La entrada de una pantalla: sus piezas se apoyan una atras de la otra, cada una un
+   escalon despues (`--orden`, que escribe la pagina o la isla). Bajan los ultimos pixeles
+   y se enderezan; no hay fundido. Corre cada vez que la pantalla deja de estar escondida. */
+.jugo-entra {
+  animation: jugo-entra var(--duracion-umbral) var(--curva-cinta) calc(var(--escalon-umbral) * var(--orden, 0)) backwards;
+}
+
+@keyframes jugo-entra {
+  from {
+    translate: 0 14px;
+  }
+}
+
+/* Una pieza de papel que se pega: llega torcida de mas y termina de apoyar. Para la chapa
+   de puntajes y para cada renglon del afiche del resultado. */
+.jugo-pega {
+  animation: jugo-pega var(--duracion-umbral) var(--curva-cinta) calc(var(--escalon-umbral) * var(--orden, 0)) backwards;
+}
+
+/* El barrido termina en `inset(0)` y el relleno es `backwards`: al terminar, la pieza queda
+   sin recorte ninguno, y lo que le sobresale (la cinta de la chapa) vuelve a verse. */
+@keyframes jugo-pega {
+  from {
+    translate: -6px -10px;
+    rotate: -3deg;
+    clip-path: inset(0 100% 0 0);
+  }
+
+  to {
+    clip-path: inset(0);
+  }
+}
+
+/* ---- La partida revelada ("Adivina el tema") ----
+   Con el tema cerrado la pantalla cambia de modo: ya no hay audio que comprar ni puntos en
+   juego, asi que el reproductor deja de decir "tenes 10 s" y "vale 10". Queda en un renglon
+   —el casete, la regla con lo que hiciste marcado y la tecla para volver a oirlo— y la
+   cabecera pasa a decir cuanto llevas. */
+.partida--revelada .reproductor {
+  display: grid;
+  grid-template-columns: 1fr var(--toque-min);
+  column-gap: var(--espacio-2);
+  align-items: center;
+  margin-bottom: 0;
+}
+
+.partida--revelada .reproductor-cabeza,
+.partida--revelada .barra-escala,
+.partida--revelada .cinta-contador,
+.partida--revelada .sin-sonido {
+  display: none;
+}
+
+.partida--revelada .cinta-fila {
+  align-items: center;
+}
+
+.partida--revelada .escuchar {
+  width: var(--toque-min);
+  min-height: var(--toque-min);
+  margin: 0;
+  padding: 0;
+}
+
+.partida--revelada .escuchar::before {
+  margin-right: 0;
+}
+
+.partida--revelada .escuchar-texto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Con el casete grande, en el renglon de la revelacion la regla baja a su alto de siempre. */
+.partida--revelada .barra {
+  height: 3.1rem;
+}
+
+.partida--revelada .casete-vivo {
+  width: 4.8rem;
+}
+
+/* Lo que llevas: el numero que suma al acertar. Mismo lugar que "te quedan N intentos". */
+.restantes--llevas {
+  color: var(--texto);
 }

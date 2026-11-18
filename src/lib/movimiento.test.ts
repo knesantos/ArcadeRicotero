@@ -194,6 +194,17 @@ const ANIMACIONES = [
   // El grito estampado de "adivina el tema": el sello del acierto y el de lo que sumaste.
   // Corre en el compas de una pasada, asi que el mismo token lo apaga.
   { nombre: 'sello-golpe', apaga: 'token', valor: '--duracion-pasada', hoja: 'src/styles/juego.css' },
+  // El jugo de los juegos (ronda de pulida, 2026-11-17), en `juego.css`. El golpe del error
+  // va en saltos duros; la hoja de la revelacion que se apoya; las piezas de una pantalla
+  // que entran una atras de la otra, y el papel que se pega.
+  { nombre: 'jugo-golpe', apaga: 'token', valor: '--duracion-golpe', hoja: 'src/styles/juego.css' },
+  { nombre: 'hoja-cae', apaga: 'token', valor: '--duracion-paso', hoja: 'src/styles/juego.css' },
+  { nombre: 'jugo-entra', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  { nombre: 'jugo-pega', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  // Los dos bucles del casete, atados a que la cinta corra: la aguja que tiembla y el piloto
+  // que parpadea. Como el carrete, se apagan con `animation: none`.
+  { nombre: 'aguja-tiembla', apaga: 'regla', valor: '.reproductor--sonando .barra-aguja-fiel', hoja: 'src/styles/juego.css' },
+  { nombre: 'piloto', apaga: 'regla', valor: '.reproductor--sonando .casete-piloto', hoja: 'src/styles/juego.css' },
   // El sello del momento de "¿Qué tipo de ricotero sos?" (`UX-36` §4.5): se apoya en la hoja
   // cuando cambia el momento, cinco veces por noche. Es el único movimiento de ese juego.
   { nombre: 'momento-entra', apaga: 'token', valor: '--duracion-paso', hoja: 'src/styles/juego.css' },

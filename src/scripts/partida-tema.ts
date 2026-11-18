@@ -39,7 +39,8 @@ import { Reproductor, urlDeTema } from '../lib/tema/audio.ts';
 import { sonarAunqueEsteEnSilencio, laLlaveManda } from '../lib/audio/sesion.ts';
 import { PARTIDA, REVELACION, RESULTADO, TARJETA, TRAMOS, PANTALLA_0, SIN_SONIDO } from '../lib/tema/copy.ts';
 import { estampaDe } from '../lib/tapa/pasadas.ts';
-import { armarCasete } from '../lib/tema/casete.ts';
+import { armarCasete, correrCasete, frenarCasete, rebobinarCasete, ponerAvance } from '../lib/tema/casete.ts';
+import { golpear, estampar, contar, duracionDe } from './jugo.ts';
 import { esIOS, esMovil, navegadorIncrustado } from '../lib/sitio/aparato.ts';
 import { tramo } from '../lib/quiz/tramo.ts';
 import { armarLink, leerDesafio } from '../lib/desafio.ts';
@@ -172,6 +173,8 @@ for (const boton of portada.querySelectorAll<HTMLButtonElement>('[data-disco]'))
       otro.setAttribute('aria-pressed', String(otro === boton));
     }
     const cuantos = pozo().length;
+    // La cuenta ya la dice el boton del pozo elegido; este renglon es para el lector de
+    // pantalla, que se entera asi de que la eleccion cambio (`aria-live`).
     $('cuantos').textContent = PANTALLA_0.hay(cuantos);
     $<HTMLButtonElement>('jugar').disabled = cuantos === 0;
   });
@@ -303,6 +306,7 @@ function comenzar(): void {
 
 function arrancarTema(): void {
   escuchoEsteTema = false;
+  tramoAcertado = -1;
   // La sala vuelve a ser Lobo suelto: el disco anterior ya no es la respuesta.
   sacarLaSala();
   pasoActual = 1;
@@ -312,9 +316,16 @@ function arrancarTema(): void {
   buscadorInput.value = '';
   buscadorInput.disabled = false;
   cajaBuscador.hidden = false;
-  // Lo gastado vuelve a verse: la revelacion del tema anterior las habia escondido.
-  renglones.hidden = false;
+  // La pantalla sale del modo revelado: vuelve a haber audio que comprar y puntos en juego.
+  const veniaDeOtro = zonaPartida.classList.contains('partida--revelada');
+  zonaPartida.classList.remove('partida--revelada');
+  restantesEl.classList.remove('restantes--llevas');
+  if (veniaDeOtro) rebobinar();
+  // Si "lo que llevas" todavia estaba contando, se corta: la cabecera vuelve a los intentos.
+  contar(restantesEl, puntaje, puntaje, PARTIDA.llevas);
   pintarTodo();
+  // "Tema 2 de 4" cae como un sello: es lo que cambio en la cabecera.
+  if (veniaDeOtro) estampar(progreso);
   // El reloj arranca con el tema listo para jugar, no antes: lo que se mide es decidir,
   // no cargar la pantalla.
   temaEnCurso = true;
@@ -342,6 +353,10 @@ let barra!: HTMLElement;
  * cambia de ancho (girar el teléfono, abrir el teclado).
  */
 let aguja!: HTMLElement;
+/** El casete que gira: lo arma `casete.ts`, y la isla le dice cuando corre, frena o rebobina. */
+let casete!: SVGSVGElement;
+/** El contador de la casetera: por donde va la aguja, en segundos. */
+let contador!: HTMLElement;
 let etiquetaPaso!: HTMLElement;
 /** Lo que vale acertar en el paso en curso, al lado del audio que tenés. */
 let valeEl!: HTMLElement;
@@ -372,6 +387,8 @@ let sala: HTMLElement | null = null;
  * (`UX-22`, `T-201`): quien jugo a ciegas no recibe diez segundos de sonido que no pidio.
  */
 let escuchoEsteTema = false;
+/** El tramo de la regla donde sacaste el tema en curso (de 0 a 5), o -1 si todavia no. */
+let tramoAcertado = -1;
 
 
 /** Arma la pantalla de partida una sola vez por vuelta. Después solo se actualiza. */
@@ -394,11 +411,10 @@ function armarPantalla(): void {
   cab.append(vuelta, restantesEl);
   zonaPartida.append(cab);
 
-  // Los seis renglones de intento. Se dibujan siempre los seis: la altura de la escalera
-  // tiene que verse antes de empezar a gastarla, y cada renglón dice con cuánto audio se
-  // juega ese intento.
+  // Lo que ya escribiste en este tema. Nace vacia y va debajo del reproductor: la escalera
+  // entera la dibuja la regla, una sola vez, y esta lista es solo lo gastado (ver `juego.css`).
   renglones = el('ol', 'intentos');
-  zonaPartida.append(renglones);
+  renglones.hidden = true;
 
   reproductorCaja = el('div', 'reproductor');
 
@@ -431,7 +447,8 @@ function armarPantalla(): void {
    * palabra de sello dice lo mismo (`CNT-14` §2.5).
    */
   const fila = el('div', 'cinta-fila');
-  fila.append(armarCasete());
+  casete = armarCasete();
+  fila.append(casete);
   const pista = el('div', 'barra-pista');
   barra = el('div', 'barra');
   // La regla dibuja lo que el renglon de arriba ya dice con palabras.
@@ -454,6 +471,7 @@ function armarPantalla(): void {
     previo = p.segundos;
   }
   aguja = el('span', 'barra-aguja');
+  aguja.append(el('span', 'barra-aguja-fiel'));
   pista.append(barra);
 
   /*
@@ -478,6 +496,10 @@ function armarPantalla(): void {
   palabraCinta = el('span', 'casete-estado', REVELACION.sonando);
   palabraCinta.hidden = true;
   fila.append(palabraCinta);
+  // El contador de la casetera, debajo del casete. Dibuja lo que la aguja ya dice.
+  contador = el('span', 'cinta-contador', '0,0');
+  contador.setAttribute('aria-hidden', 'true');
+  fila.append(contador);
   reproductorCaja.append(fila);
 
   botonEscuchar = el('button', 'escuchar');
@@ -497,6 +519,7 @@ function armarPantalla(): void {
   reproductorCaja.append(ayuda);
 
   zonaPartida.append(reproductorCaja);
+  zonaPartida.append(renglones);
 
   // El panel de revelación vive acá y se muestra cuando el tema se cierra. El aviso de
   // sonido NO está: `US-02` criterio 2 lo pide **antes de arrancar la partida**, y ahí
@@ -595,16 +618,10 @@ function pintarVuelta(): void {
 
 function pintarRenglones(): void {
   renglones.replaceChildren();
-  for (let i = 0; i < INTENTOS; i++) {
-    const usado = i < intentos.length;
-    const fallado = usado ? intentos[i] : undefined;
+  // Solo lo gastado: un renglon por intento que ya hiciste, en el orden en que los hiciste.
+  intentos.forEach((fallado, i) => {
     const li = el('li', 'intento');
-    if (!usado) {
-      li.classList.add('intento--libre');
-      // El renglon que toca: el proximo intento se juega con el audio que dice su numero.
-      if (i === intentos.length) li.classList.add('intento--actual');
-      li.append(el('span', 'intento-texto', ''));
-    } else if (fallado === null) {
+    if (fallado === null) {
       li.classList.add('intento--pasado');
       // Símbolo además de color: ningún estado se comunica solo con tinte (`UX-01`).
       li.append(el('span', 'intento-marca', '·'));
@@ -612,16 +629,17 @@ function pintarRenglones(): void {
     } else {
       li.classList.add('intento--fallado');
       li.append(el('span', 'intento-marca', '✕︎'));
-      li.append(el('span', 'intento-texto', PARTIDA.fallado(fallado!.titulo)));
+      li.append(el('span', 'intento-texto', PARTIDA.fallado(fallado.titulo)));
     }
-    // El ultimo que gastaste es el unico que queda a la vista con el teclado abierto: es la
-    // respuesta a lo que acabas de hacer, y el resto ya lo leiste.
-    if (usado && i === intentos.length - 1) li.classList.add('intento--ultimo');
-    // Con cuanto audio se jugo (o se va a jugar) este intento. Es lo que ata cada renglon a
-    // la regla de abajo: errar no te saca nada, te da el renglon siguiente.
+    // El ultimo que gastaste es el que se escribe (el barrido), y el unico que queda a la
+    // vista con el teclado abierto: es la respuesta a lo que acabas de hacer.
+    if (i === intentos.length - 1) li.classList.add('intento--ultimo');
+    // Con cuanto audio se jugo este intento: lo ata a su tramo de la regla.
     li.append(el('span', 'intento-paso', ESCALERA[i]!.etiqueta));
     renglones.append(li);
-  }
+  });
+  // Sin nada gastado no hay lista: ni un renglon vacio ocupando lugar.
+  renglones.hidden = intentos.length === 0;
 }
 
 /** Pinta la regla: los tramos ya ganados entintados, el que suena entintándose, y la aguja. */
@@ -640,7 +658,13 @@ function pintarBarra(transcurrido: number): void {
     tramos[i]!.classList.toggle('barra-tramo--abierto', abierto);
     const largo = p.segundos - previo;
     const dentro = Math.min(Math.max(transcurrido - previo, 0), largo);
-    relleno.style.width = `${largo > 0 ? (dentro / largo) * 100 : 0}%`;
+    relleno.style.setProperty('--lleno', String(largo > 0 ? dentro / largo : 0));
+    // Lo que hiciste con este escalon queda marcado en su tramo: cruz si erraste, punto si
+    // pasaste. Es la misma informacion de la lista de abajo, puesta sobre la escala.
+    const gastado = intentos[i];
+    tramos[i]!.classList.toggle('barra-tramo--fallo', gastado !== undefined && gastado !== null);
+    tramos[i]!.classList.toggle('barra-tramo--pasado', gastado === null);
+    tramos[i]!.classList.toggle('barra-tramo--acierto', i === tramoAcertado);
     if (abierto && t >= previo) {
       dondeAguja = i;
       fraccionAguja = largo > 0 ? Math.min((t - previo) / largo, 1) : 1;
@@ -653,7 +677,13 @@ function pintarBarra(transcurrido: number): void {
     fraccionAguja = 0;
   }
   if (aguja.parentElement !== tramos[dondeAguja]) tramos[dondeAguja]!.append(aguja);
-  aguja.style.left = `${fraccionAguja * 100}%`;
+  aguja.style.setProperty('--donde', String(fraccionAguja));
+
+  // El casete y su contador siguen a la aguja: la cinta se pasa de un carrete al otro en
+  // proporcion al fragmento entero, y el contador dice el segundo por donde va.
+  ponerAvance(casete, t / DURACION_FRAGMENTO_SEG);
+  const cifra = t.toFixed(1).replace('.', ',');
+  if (contador.textContent !== cifra) contador.textContent = cifra;
 
   // La regla de abajo se tine con la barra: el numero del escalon que ya tenes deja de
   // ser una promesa y pasa a ser un dato. Es la misma senal, en la misma columna. El del
@@ -787,6 +817,7 @@ function sonar(segundos: number): void {
   textoEscuchar.textContent = PARTIDA.parar;
   botonEscuchar.classList.add('escuchar--sonando');
   reproductorCaja.classList.add('reproductor--sonando');
+  correrCasete(casete);
   palabraCinta.hidden = false;
   reproductor.sonar(tema.slug, segundos, {
     alAvanzar: (t) => pintarBarra(t),
@@ -799,8 +830,26 @@ function frenar(): void {
   textoEscuchar.textContent = PARTIDA.escuchar;
   botonEscuchar.classList.remove('escuchar--sonando');
   reproductorCaja.classList.remove('reproductor--sonando');
+  // El sonido ya paro; el carrete sigue un momento por inercia y se detiene solo.
+  frenarCasete(casete);
   palabraCinta.hidden = true;
   pintarBarra(paso(pasoActual).segundos);
+}
+
+/**
+ * Tema nuevo: la cinta se rebobina. La tinta de la regla se recoge hacia el principio, el
+ * tramado vuelve a cubrir los tramos y los carretes giran para atras. Dura un sub-paso
+ * (`--duracion-umbral`); con movimiento reducido no dura nada y la regla aparece ya vacia.
+ */
+let relojRebobinado = 0;
+function rebobinar(): void {
+  window.clearTimeout(relojRebobinado);
+  reproductorCaja.classList.add('reproductor--rebobina');
+  rebobinarCasete(casete);
+  relojRebobinado = window.setTimeout(
+    () => reproductorCaja.classList.remove('reproductor--rebobina'),
+    duracionDe('--duracion-umbral'),
+  );
 }
 
 // ---------------------------------------------------------------- el buscador
@@ -953,16 +1002,16 @@ function arriesgar(): void {
   }
 
   intentos.push(elegido);
-  gastarIntento();
+  gastarIntento(true);
 }
 
 function pasar(): void {
   intentos.push(null);
-  gastarIntento();
+  gastarIntento(false);
 }
 
 /** Un intento gastado abre el paso siguiente. Si no quedan, el tema se cierra en 0. */
-function gastarIntento(): void {
+function gastarIntento(erro: boolean): void {
   elegido = null;
   buscadorInput.value = '';
   cerrarLista();
@@ -978,6 +1027,16 @@ function gastarIntento(): void {
   pintarRenglones();
   pintarBarra(0);
   pintarBotonPrincipal();
+  /*
+   * El error pega (ronda de pulida, 2026-11-17). Antes lo unico que pasaba era una cruz
+   * nueva en una lista. Ahora la regla recibe el golpe —se sacude en saltos duros—, la cruz
+   * cae como un sello en el tramo que gastaste, el tramado del tramo siguiente se levanta, y
+   * los dos numeros que cambiaron se vuelven a estampar: lo que vale ahora, que bajo, y los
+   * intentos que te quedan. Pasar no es errar: no hay golpe, solo lo que cambio.
+   */
+  if (erro) golpear(barra);
+  estampar(valeEl);
+  estampar(restantesEl);
   // Se escucha solo el paso nuevo: errar tiene que devolver audio en el acto, sin que
   // haya que ir a buscar el botón otra vez.
   alternarSonido();
@@ -994,10 +1053,27 @@ function cerrarTema(acerto: boolean): void {
   tiempos.push(cronometro.cerrar());
 
   const ganados = acerto ? puntos(pasoActual) : 0;
+  if (acerto) tramoAcertado = pasoActual - 1;
   puntaje += ganados;
   marcador.push(acerto ? pasoActual : 0);
   recorridos.push(intentos.map((t) => (t === null ? 'paso' : 'fallo')));
   pintarVuelta();
+  // La casilla del tema que se cerro cae como un sello: llena si la sacaste, tachada si no.
+  estampar(casillas.children[indice]);
+
+  /*
+   * La pantalla cambia de modo (ronda de pulida, 2026-11-17).
+   *
+   * Con el tema revelado, la cabecera seguia diciendo "Ultimo intento" y el reproductor
+   * "Tenes 10 s de audio · Vale 10": tres datos de una partida que ya habia terminado. Ahora
+   * la cabecera dice cuanto llevas —y si acertaste, el numero sube hasta ahi— y el
+   * reproductor se queda en un renglon: el casete, la regla con lo que hiciste y la tecla
+   * para volver a oirlo (`.partida--revelada` en `juego.css`).
+   */
+  zonaPartida.classList.add('partida--revelada');
+  restantesEl.classList.remove('restantes--ultimo');
+  restantesEl.classList.add('restantes--llevas');
+  contar(restantesEl, puntaje - ganados, puntaje, PARTIDA.llevas);
 
   // El buscador se esconde entero, no se deshabilita: una caja de texto apagada abajo
   // del resultado es un control muerto ocupando la zona del pulgar.
@@ -1112,7 +1188,17 @@ function pintarRevelacion(tema: Tema, acerto: boolean, ganados: number): void {
     acreditarTapas([tema.discoTitulo]);
   }
   revelacion.append(el('h2', 'revelacion-titulo', `${REVELACION.eraEl} ${tema.titulo}`));
-  revelacion.append(el('p', 'revelacion-ficha', REVELACION.ficha(tema.discoTitulo, tema.anio, tema.pista)));
+  // Con la estampa a la vista el disco ya esta nombrado en su pie, en su letra: el renglon
+  // de la ficha no lo repite. Sin estampa (un disco fuera de los diez) lo dice entero.
+  revelacion.append(
+    el(
+      'p',
+      'revelacion-ficha',
+      estampa
+        ? REVELACION.fichaCorta(tema.anio, tema.pista)
+        : REVELACION.ficha(tema.discoTitulo, tema.anio, tema.pista),
+    ),
+  );
 
   /*
    * Lo que costo el tema, en las dos monedas del juego.
@@ -1139,8 +1225,22 @@ function pintarRevelacion(tema: Tema, acerto: boolean, ganados: number): void {
     audio.controls = true;
     audio.preload = 'none';
     audio.src = urlDeTema(tema.slug);
-    revelacion.append(el('p', 'revelacion-escuchar', REVELACION.escucharEntero));
-    revelacion.append(audio);
+    /*
+     * El tema entero tiene su caja y su rotulo, y el casete tambien gira con el: es la misma
+     * cinta. Al darle play se corta el fragmento —no pueden sonar los dos— y los carretes
+     * toman velocidad; al pausar o terminar, frenan.
+     */
+    audio.addEventListener('play', () => {
+      if (sonando) {
+        reproductor.detener();
+        frenar();
+      }
+      correrCasete(casete);
+    });
+    for (const fin of ['pause', 'ended'] as const) audio.addEventListener(fin, () => frenarCasete(casete));
+    const caja = el('div', 'revelacion-entero');
+    caja.append(el('p', 'revelacion-escuchar', REVELACION.escucharEntero), audio);
+    revelacion.append(caja);
   }
 
   if (tema.letra) {
@@ -1292,25 +1392,39 @@ function pintarResultado(): void {
 
   // Registro 3 arriba de todo: dice que hay adentro y se calla. Es el mismo rotulo que
   // ya usa el desenlace del quiz, para que las dos pantallas se lean igual.
-  zonaResultado.append(el('p', 'rotulo-desenlace', RESULTADO.titulo));
-  const encabezado = el('h2', `tramo tramo--${t}`, TRAMOS[t]);
+  /*
+   * El resultado tiene su momento (ronda de pulida, 2026-11-17). Las piezas se apoyan una
+   * atras de la otra —`--orden` marca el turno—: el rotulo, la linea que canta, el reloj, que
+   * cuenta hasta el tiempo que hiciste, y despues cada tema de la vuelta se pega en la pared
+   * como un afiche. Con movimiento reducido todo aparece puesto y el reloj dice el total.
+   */
+  let orden = 0;
+  const entra = <T extends HTMLElement>(pieza: T, clase = 'jugo-entra'): T => {
+    pieza.classList.add(clase);
+    pieza.style.setProperty('--orden', String(orden++));
+    return pieza;
+  };
+  zonaResultado.append(entra(el('p', 'rotulo-desenlace', RESULTADO.titulo)));
+  const encabezado = entra(el('h2', `tramo tramo--${t}`, TRAMOS[t]));
   zonaResultado.append(encabezado);
 
   // El reloj: el dato que el jugador cuenta cuando sale de la partida.
   const reloj = el('div', 'cifra');
   reloj.append(el('p', 'cifra-rotulo', RESULTADO.rotuloTiempo));
-  reloj.append(el('p', 'cifra-numero', duracion(sumarTiempos(tiempos))));
+  const cifraReloj = el('p', 'cifra-numero');
+  contar(cifraReloj, 0, sumarTiempos(tiempos), duracion);
+  reloj.append(cifraReloj);
   // Abajo del tiempo, las dos cuentas que se dicen en la previa: cuantos sacaste y cuanto
   // sumaste. El punto medio las separa sin sumarlas, igual que en la revelacion.
   reloj.append(
     el('p', 'cifra-pie', `${RESULTADO.sacaste(aciertos, ronda.length)} · ${RESULTADO.puntos(puntaje, maximo)}`),
   );
-  zonaResultado.append(reloj);
+  zonaResultado.append(entra(reloj));
 
   // La linea que canta del afiche (`CNT-14` §2.6): la vuelta se pega en la pared. La que
   // nombra es el `h3` de abajo, que sigue diciendo que hay en la lista (`UX-22` §10).
-  zonaResultado.append(el('p', 'afiche-canta', RESULTADO.afiche));
-  zonaResultado.append(el('h3', 'resumen-titulo', RESULTADO.detalle));
+  zonaResultado.append(entra(el('p', 'afiche-canta', RESULTADO.afiche)));
+  zonaResultado.append(entra(el('h3', 'resumen-titulo', RESULTADO.detalle)));
   const detalle = el('ol', 'resumen');
   ronda.forEach((tema, i) => {
     const p = marcador[i] ?? 0;
@@ -1324,6 +1438,7 @@ function pintarResultado(): void {
     cuerpo.append(el('span', 'resumen-pie', pieDeTema(i)));
     cuerpo.append(armarEscalerita(recorridos[i] ?? [], p > 0, INTENTOS));
     li.append(cuerpo);
+    entra(li, 'jugo-pega');
     detalle.append(li);
   });
   zonaResultado.append(detalle);

@@ -1905,6 +1905,20 @@
   /* Una vuelta entera del carrete mientras suena el fragmento. */
   --duracion-carrete: 1.6s;
 
+  /* El jugo de los juegos (ronda de pulida, 2026-11-17). Tres tiempos, y los tres se van a
+     cero con movimiento reducido:
+     - el golpe: lo que dura la sacudida de una pieza cuando errás. Va en saltos duros, cuadro
+       a cuadro, como el temblor de un fichín, y por eso no necesita curva propia;
+     - la inercia: lo que tarda el carrete en frenar (y en tomar velocidad) cuando la cinta
+       para o arranca. La lee `casete.ts` con `getComputedStyle`;
+     - la cuenta: lo que tarda un número en llegar a su valor cuando suma (el puntaje, el
+       reloj del resultado). La lee la isla; sube en escalones, no en un deslizamiento. */
+  --duracion-golpe: 260ms;
+  --duracion-inercia: 900ms;
+  --duracion-cuenta: 600ms;
+  /* Lo que tarda el piloto de la casetera en dar un parpadeo entero mientras la cinta corre. */
+  --duracion-piloto: 1.2s;
+
   /* El registro imperfecto: cuanto se corren las pasadas de la estampa una respecto de la
      otra (`UX-22` §2.3), como una imprenta a mano que no calzo el segundo color. NO es
      movimiento, es como queda la estampa en reposo, y por eso el corte de movimiento
@@ -2242,5 +2256,10 @@ a[role='button'] {
     --duracion-pasada: 0ms;
     --escalon-pasada: 0ms;
     --duracion-giro: 0ms;
+    /* El jugo: sin golpe, sin inercia y sin cuenta. El piloto, que es un bucle, se apaga
+       con `animation: none` en juego.css y queda prendido fijo. */
+    --duracion-golpe: 0ms;
+    --duracion-inercia: 0ms;
+    --duracion-cuenta: 0ms;
   }
 }
