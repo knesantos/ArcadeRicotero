@@ -88,7 +88,21 @@ async function abrir(nav, ancho, alto, quieto) {
     /** Una captura quieta. Con `entera`, la hoja completa y no solo la ventana. */
     async foto(nombre, { entera = false } = {}) {
       const ruta = join(salida, `${prefijo}-${numero()}-${nombre}.png`);
+      /*
+       * El grano de la pantalla es una capa FIJA (`body::after`). En una captura de la hoja
+       * entera el navegador la pinta solo sobre la primera ventana, y lo que queda más abajo
+       * sale sin grano: un botón que cruza esa línea se ve de dos tonos. No es un defecto del
+       * sitio (así se vio "Volvé al fichín" en las rondas 1 y 2): es de la captura. Para la
+       * foto entera la capa pasa a medir la hoja, y después vuelve a como estaba.
+       */
+      let parche = null;
+      if (entera) {
+        parche = await pagina.addStyleTag({
+          content: 'html{position:relative}body::after{position:absolute!important;inset:0!important;height:auto!important}',
+        });
+      }
       await pagina.screenshot({ path: ruta, fullPage: entera });
+      if (parche) await parche.evaluate((n) => n.remove());
       console.log('foto', ruta);
     },
     /**
@@ -185,7 +199,8 @@ async function adivinarElTema(ctx) {
   await ctx.espera(150);
   await foto('portada-tecla-apretada');
   // Al soltar, el casete de la portada arranca y la pantalla pasa a la partida.
-  await tira('arranca', () => pagina.mouse.up(), { ms: 1000, lento: 1 });
+  // Al soltar, el casete de la portada viaja a su lugar en la partida.
+  await tira('casete-viaja', () => pagina.mouse.up(), { ms: 420 });
   await ctx.espera(900);
 
   const catalogo = await pagina.evaluate(() => JSON.parse(document.getElementById('catalogo').textContent));
@@ -221,9 +236,30 @@ async function adivinarElTema(ctx) {
   await escribir(otro.titulo.slice(0, 5));
   await foto('sugerencias');
   await escribir(otro.titulo);
-  await elegir(otro.titulo);
-  await ctx.espera(200);
+  await foto('sugerencia-exacta');
+  // Elegir: la ficha se pega en el campo.
+  await tira('elige', () => elegir(otro.titulo), { ms: 420 });
   await foto('elegido');
+  // El interruptor de los ruidos: se apaga, se mira, y se vuelve a prender.
+  if (await pagina.$('.ruidos')) {
+    await pagina.click('.ruidos');
+    await ctx.espera(150);
+    await foto('ruidos-apagados');
+    console.log(
+      'ruidos:',
+      await pagina.$eval('.ruidos', (b) => `${b.textContent} | aria-pressed=${b.getAttribute('aria-pressed')}`),
+      '| guardado:',
+      await pagina.evaluate(() => {
+        try {
+          return localStorage.getItem('fichin:ruidos');
+        } catch {
+          return 'sin almacenamiento';
+        }
+      }),
+    );
+    await pagina.click('.ruidos');
+    await ctx.espera(150);
+  }
   await tira('error', boton, { ms: 440 });
   await ctx.espera(900);
   await foto('tras-el-error');
@@ -281,7 +317,35 @@ async function adivinarElTema(ctx) {
   await tira('tema-siguiente', () => pagina.click('.seguir'), { ms: 420 });
   await foto('tema-2');
 
-  // ---- tema 2: se escapa. Seis pases; el último es la revelación en una tinta.
+  // ---- tema 2: un pase y se saca. Dos seguidos: aparece la racha.
+  const dos = await elQueSuena(1);
+  await boton();
+  await ctx.espera(900);
+  await escribir(tituloDe(dos));
+  await elegir(tituloDe(dos));
+  await ctx.espera(200);
+  await boton();
+  await ctx.espera(2600);
+  // La racha está en la cabecera: se sube la hoja para que entre en la foto.
+  await pagina.evaluate(() => window.scrollTo(0, 0));
+  await ctx.espera(150);
+  await foto('racha-de-dos');
+  await pagina.click('.seguir');
+  await ctx.espera(700);
+
+  // ---- tema 3: de una, con la décima. La hazaña.
+  const tres = await elQueSuena(2);
+  await escribir(tituloDe(tres));
+  await elegir(tituloDe(tres));
+  await ctx.espera(200);
+  await tira('hazana', boton, { ms: 1500 });
+  await ctx.espera(1500);
+  await foto('hazana');
+  await foto('hazana-entera', { entera: true });
+  await pagina.click('.seguir');
+  await ctx.espera(700);
+
+  // ---- tema 4: se escapa. Seis pases; el último es la revelación en una tinta.
   for (let i = 0; i < 5; i++) {
     await boton();
     await ctx.espera(350);
@@ -293,28 +357,6 @@ async function adivinarElTema(ctx) {
   await ctx.espera(800);
   await foto('revelacion-fallo');
   await foto('revelacion-fallo-entera', { entera: true });
-  await pagina.click('.seguir');
-  await ctx.espera(700);
-
-  // ---- tema 3: de una, con la décima.
-  const tres = await elQueSuena(2);
-  await escribir(tituloDe(tres));
-  await elegir(tituloDe(tres));
-  await ctx.espera(150);
-  await boton();
-  await ctx.espera(450);
-  await tira('lo-que-llevas', async () => {}, { ms: 500, lento: 1 });
-  await ctx.espera(1500);
-  await foto('revelacion-de-una');
-  await pagina.click('.seguir');
-  await ctx.espera(700);
-
-  // ---- tema 4: se escapa, y al resultado.
-  for (let i = 0; i < 6; i++) {
-    await boton();
-    await ctx.espera(300);
-  }
-  await ctx.espera(900);
   await tira('resultado-entra', () => pagina.click('.seguir'), { ms: 1000 });
   await ctx.espera(900);
   await foto('resultado');
@@ -334,6 +376,18 @@ async function generico(ctx, ruta) {
   await ctx.espera(1200);
   await foto('partida');
   await foto('partida-entera', { entera: true });
+  // Si la pantalla tiene buscador, se escribe algo para ver el campo y la lista.
+  if (await pagina.$('.buscador-caja')) {
+    await pagina.type('.buscador-caja', 'la ');
+    await ctx.espera(400);
+    await foto('sugerencias');
+    const primera = await pagina.$('.sugerencia:not(:disabled)');
+    if (primera) {
+      await primera.click();
+      await ctx.espera(500);
+      await foto('elegido');
+    }
+  }
   // La primera respuesta, si la pantalla es de opciones.
   const opcionUno = await pagina.$('.opcion:not(:disabled)');
   if (opcionUno) {

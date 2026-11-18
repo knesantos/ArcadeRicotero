@@ -208,6 +208,8 @@ const ANIMACIONES = [
   // Ronda 2: la cinta que corre por la boca del casete (otro bucle atado a que suene), y el
   // error que cae sobre la regla: el sello rojo y el marco, en el tiempo del golpe.
   { nombre: 'cinta-pasa', apaga: 'regla', valor: '.casete-vivo--rebobina .casete-pasa', hoja: 'src/styles/juego.css' },
+  // Ronda 3: el casete que expulsa al acertar, en saltos y en el tiempo del golpe.
+  { nombre: 'casete-expulsa', apaga: 'token', valor: '--duracion-golpe', hoja: 'src/styles/juego.css' },
   { nombre: 'sello-error', apaga: 'token', valor: '--duracion-golpe', hoja: 'src/styles/juego.css' },
   { nombre: 'marco-error', apaga: 'token', valor: '--duracion-golpe', hoja: 'src/styles/juego.css' },
   // El sello del momento de "¿Qué tipo de ricotero sos?" (`UX-36` §4.5): se apoya en la hoja

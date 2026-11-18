@@ -401,6 +401,11 @@ const ESTADOS_TEMA = [
   '.restantes--llevas',
   // La cinta que se rebobina al empezar un tema nuevo.
   '.reproductor--rebobina',
+  // Ronda 3: el campo vestido de ficha cuando hay un tema elegido, la cabina del tema entero
+  // y la ficha de la hazana (sacarlo con la primera decima).
+  '.buscador-fila--elegida',
+  '.partida--entero',
+  '.revelacion--hazana',
   // La regla graduada de abajo de la barra: el numero del escalon que ya tenes cambia de
   // tinta igual que su tramo. Sin regla que lo pinte, la regla queda toda del mismo gris
   // y deja de decir donde estas.

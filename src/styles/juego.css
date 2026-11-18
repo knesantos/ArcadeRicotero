@@ -5631,6 +5631,13 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
   height: 1.25em;
 }
 
+/* La rueda de las decimas cambia diez veces por segundo: si rodara, nunca se la veria con una
+   cifra entera. Salta de cifra en cifra —el paso mecanico— y las otras dos, que cambian una vez
+   por segundo o menos, ruedan. Asi, pare donde pare, las tres muestran cifras enteras. */
+.casete-rueda:last-child .casete-cifras {
+  transition: none;
+}
+
 .casete-coma {
   width: 0.3em;
   text-align: center;
@@ -5869,99 +5876,6 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
   rotate: -4deg;
 }
 
-/* ---- El tema entero, con reproductor propio (`D-22`) ----
-   La misma regla, en largo: una tecla para sonar o parar, la cinta con su aguja —que se
-   puede arrastrar— y el tiempo. La cinta es un control de rango del navegador, vestido: asi
-   el teclado y el lector de pantalla funcionan sin escribir nada. */
-.entero-fila {
-  display: flex;
-  align-items: center;
-  gap: var(--espacio-2);
-}
-
-.entero-tecla {
-  flex: none;
-  width: var(--toque-min);
-  min-height: var(--toque-min);
-  margin: 0;
-  padding: 0;
-}
-
-.entero-tecla::before {
-  margin-right: 0;
-}
-
-.entero-avance {
-  flex: 1;
-  min-width: 0;
-  height: var(--toque-min);
-  margin: 0;
-  background: transparent;
-  appearance: none;
-  -webkit-appearance: none;
-  cursor: pointer;
-  touch-action: none;
-}
-
-.entero-avance::-webkit-slider-runnable-track {
-  height: 1.9rem;
-  background: linear-gradient(
-    to right,
-    var(--cat-mitologia) 0 calc(var(--lleno, 0) * 100%),
-    var(--papel) calc(var(--lleno, 0) * 100%) 100%
-  );
-  border: 2px solid var(--papel-borde);
-  border-radius: 2px;
-}
-
-.entero-avance::-moz-range-track {
-  height: 1.9rem;
-  background: var(--papel);
-  border: 2px solid var(--papel-borde);
-  border-radius: 2px;
-}
-
-.entero-avance::-moz-range-progress {
-  height: 1.9rem;
-  background: var(--cat-mitologia);
-}
-
-.entero-avance::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 7px;
-  height: 2.7rem;
-  margin-top: calc((1.9rem - 2.7rem) / 2 - 2px);
-  background: var(--fondo);
-  border: 0;
-  border-radius: 1px;
-  box-shadow: 0 0 0 2px var(--papel);
-}
-
-.entero-avance::-moz-range-thumb {
-  width: 7px;
-  height: 2.7rem;
-  background: var(--fondo);
-  border: 0;
-  border-radius: 1px;
-  box-shadow: 0 0 0 2px var(--papel);
-}
-
-.entero-avance:focus-visible {
-  outline: var(--linea) solid var(--acento-2);
-  outline-offset: 2px;
-}
-
-.entero-tiempo {
-  flex: none;
-  min-width: 5.2rem;
-  font-family: var(--fuente-rotulada);
-  font-size: 0.72rem;
-  letter-spacing: 0.06em;
-  text-align: right;
-  color: var(--texto-tenue);
-  font-variant-numeric: tabular-nums;
-}
-
 /* ---- La revelacion en la computadora ----
    A 1280 × 800 la ficha media mas que la ventana y la pantalla bajaba hasta cortar la
    cabecera. Con ancho de sobra, la tapa va a la izquierda y lo escrito y las teclas a la
@@ -5999,6 +5913,447 @@ html.incrustado .juego-tema #partida .cabina .reproductor-cabeza {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+}
+
+/* ==========================================================================
+   Ronda 3 de la pulida de "Adivina el tema" (2026-11-18): el cierre
+   ========================================================================== */
+
+/* ---- El buscador, en el idioma del sitio ----
+   Era lo mas generico que quedaba: una caja de texto oscura, la cruz en otra caja y una lista
+   con borde de color. Ahora el campo es **un renglon de papel** —la etiqueta de un casete
+   donde se escribe el titulo—, la cruz vive adentro del papel, y cada sugerencia es **una
+   ficha** de papel suelta. Tinta del fondo sobre papel, que es el par testeado; lo apagado va
+   en la tinta apagada del papel, que tambien lo es. Lo comparte "Sacalo por la letra". */
+.buscador-fila {
+  gap: 0;
+  rotate: -0.4deg;
+}
+
+.buscador-caja {
+  padding: 0 3.4rem 0 var(--espacio-2);
+  /* El renglon: una raya de tinta apagada cerca del pie del papel, como la linea donde se
+     escribe en una etiqueta. Es una raya, no un degradado: dos paradas iguales. */
+  background:
+    linear-gradient(var(--papel-borde), var(--papel-borde)) var(--espacio-2) calc(100% - 0.7rem) /
+      calc(100% - var(--espacio-2) * 2) 2px no-repeat,
+    var(--papel);
+  color: var(--fondo);
+  border: 2px solid var(--papel-borde);
+  border-radius: 2px;
+  font-weight: 700;
+  caret-color: var(--fondo);
+}
+
+.buscador-caja::placeholder {
+  color: var(--papel-tenue);
+  font-weight: 400;
+  opacity: 1;
+}
+
+/* El foco: un anillo dorado por afuera del papel (pegado, no una sombra corrida). */
+.buscador-caja:focus {
+  border-color: var(--papel-borde);
+  outline: var(--linea) solid var(--acento-2);
+  outline-offset: 2px;
+}
+
+/* La cruz, adentro del papel y en su tinta. Aparece cuando hay algo escrito. */
+.buscador-borrar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 3.25rem;
+  background: transparent;
+  color: var(--fondo);
+  border: 0;
+  border-radius: 0;
+}
+
+.buscador-caja:placeholder-shown + .buscador-borrar {
+  display: none;
+}
+
+/* Con un tema elegido, el campo es la ficha que elegiste: pegada con cinta y con el borde en
+   tinta. La fila entera llega torcida y apoya (`pegar`, en `jugo.ts`). */
+.buscador-fila--elegida {
+  rotate: -1.2deg;
+}
+
+.buscador-fila--elegida .buscador-caja {
+  border: var(--linea) solid var(--fondo);
+  outline: 2px solid var(--papel-borde);
+  outline-offset: 0;
+  background: var(--papel);
+}
+
+.buscador-fila--elegida::before {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  top: -9px;
+  left: 16%;
+  width: 58px;
+  height: 18px;
+  background: color-mix(in srgb, var(--papel) 35%, transparent);
+  rotate: -5deg;
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+.buscador-ayuda[hidden] {
+  display: none;
+}
+
+/* La lista: un mazo de fichas sobre el fondo. La caja que las contiene es del fondo, con un
+   borde fino: lo que se ve son las fichas. */
+.sugerencias {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  /* Seis fichas de 3,4rem, sus cinco huecos y el margen de la caja: entran sin desplazarse. */
+  max-height: 23.5rem;
+  padding: 6px;
+  border: 2px solid var(--borde);
+}
+
+.sugerencias > li {
+  display: block;
+}
+
+.sugerencias .sugerencia {
+  /* La ficha tiene borde propio, asi que el alto fijo de la lista vieja le comia el segundo
+     renglon: aca mide lo que miden sus dos renglones, siempre igual. */
+  min-height: 3.4rem;
+  max-height: 3.4rem;
+  padding-block: 0.4rem;
+  justify-content: center;
+  background: var(--papel);
+  color: var(--fondo);
+  border: 2px solid var(--papel-borde);
+  border-radius: 2px;
+}
+
+/* Apenas desparejas, como fichas apoyadas a mano: una para un lado, otra para el otro. */
+.sugerencias > li:nth-child(odd) .sugerencia {
+  rotate: -0.5deg;
+}
+
+.sugerencias > li:nth-child(even) .sugerencia {
+  rotate: 0.4deg;
+}
+
+.sugerencias .sugerencia:last-child {
+  border-bottom: 2px solid var(--papel-borde);
+}
+
+.sugerencias .sugerencia-disco {
+  color: var(--papel-tenue);
+}
+
+/* Lo que coincide con lo escrito: subrayado grueso en la tinta del juego, y la letra queda
+   en la tinta del papel (el naranja sobre papel no llega a leerse). */
+.sugerencias .sugerencia-coincide {
+  color: var(--fondo);
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-decoration-color: var(--tinte-accion, var(--cat-mitologia));
+  text-underline-offset: 2px;
+}
+
+/* La marcada con el teclado: la ficha se levanta del mazo —borde en tinta y el anillo dorado
+   del foco—, sin cambiar de color de fondo. */
+.sugerencias .sugerencia--marcada {
+  border-color: var(--fondo);
+  outline: var(--linea) solid var(--acento-2);
+  outline-offset: -1px;
+  rotate: 0deg;
+}
+
+.sugerencias .sugerencia--probada {
+  color: var(--papel-tenue);
+}
+
+.sugerencias .sugerencia--vacia {
+  background: transparent;
+  color: var(--texto-tenue);
+  border: 0;
+  rotate: 0deg;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .sugerencias .sugerencia:hover:not(:disabled) {
+    background: var(--papel);
+    color: var(--fondo);
+    border-color: var(--fondo);
+  }
+
+  .buscador-borrar:hover {
+    border-color: var(--papel-borde);
+    color: var(--fondo);
+  }
+
+  .ruidos:hover,
+  .cabina-puertas .sin-sonido-abrir:hover {
+    color: var(--texto);
+    border-bottom-color: var(--acento-2);
+  }
+}
+
+/* ---- Las dos puertas chicas de la cabina ----
+   "¿No se escucha?" y el interruptor de los ruidos, juntas y chicas debajo de lo que vale.
+   Antes la primera era un renglon suelto con su separador, entre la tecla y la lista. Cada
+   una mide de alto lo que pide el pulgar aunque la letra sea chica. */
+.cabina-puertas {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: var(--espacio-2);
+  margin-top: -0.2rem;
+}
+
+.cabina-puertas .sin-sonido-abrir,
+.ruidos {
+  min-height: var(--toque-min);
+  padding: 0;
+  background: none;
+  border: none;
+  border-bottom: 0;
+  color: var(--texto-tenue);
+  font: inherit;
+  font-size: 0.74rem;
+  text-decoration: underline;
+  text-decoration-color: var(--borde);
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+/* Apagados, el interruptor lo dice con forma ademas de con el texto: va tachado. */
+.ruidos[aria-pressed='false'] {
+  text-decoration: underline line-through;
+  text-decoration-color: var(--texto-tenue);
+}
+
+/* El ancla del panel de ayuda: vacia no ocupa nada. */
+.sin-sonido:empty {
+  display: none;
+}
+
+.partida--tecleando .cabina-puertas,
+html.incrustado .juego-tema #partida .cabina-puertas {
+  display: none;
+}
+
+/* ---- La racha ----
+   Dos o mas temas sacados uno atras del otro: un sello chico en la cabecera, al lado de las
+   casillas, en el verde del acierto (que no se disfraza de ningun disco). Dice cuantos van. */
+.racha {
+  padding: 0 0.4rem;
+  border: 2px solid currentColor;
+  border-radius: 3px;
+  color: var(--acento-3);
+  font-family: var(--fuente-rotulada);
+  font-size: 0.66rem;
+  line-height: 1.5;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  rotate: -4deg;
+}
+
+.racha[hidden] {
+  display: none;
+}
+
+/* ---- El acierto, el momento mas grande ---- */
+
+/* El casete expulsa: salta, se ladea y vuelve a caer en su lugar, como cuando se abre la tapa
+   del grabador. En saltos, sin curva. Una vez por acierto. */
+.casete-expulsa {
+  animation: casete-expulsa var(--duracion-golpe) linear both;
+}
+
+@keyframes casete-expulsa {
+  0%,
+  24% {
+    translate: 0 -12px;
+    rotate: -7deg;
+  }
+
+  25%,
+  54% {
+    translate: 0 -6px;
+    rotate: 4deg;
+  }
+
+  55%,
+  79% {
+    translate: 0 2px;
+    rotate: -1deg;
+  }
+
+  80%,
+  100% {
+    translate: 0 0;
+    rotate: 0deg;
+  }
+}
+
+/* Lo que sumaste, volando a la cabecera: una copia suelta del "+40" que viaja por encima de
+   la pantalla (`volar`, en `jugo.ts`) y se borra al llegar. */
+.suma-vuela {
+  position: fixed;
+  z-index: 30;
+  font-family: var(--fuente-rotulada);
+  font-size: 2.1rem;
+  line-height: 1;
+  color: var(--acento-3);
+  pointer-events: none;
+}
+
+/* La hazana: sacarlo con la primera decima. El sello es mas grande, lo que sumaste tambien, y
+   la ficha lleva doble filete (un segundo marco pegado por afuera, no una sombra). */
+.revelacion--hazana {
+  outline: var(--linea) solid var(--acento-3);
+  outline-offset: 4px;
+}
+
+.revelacion--hazana.ok .micro {
+  font-size: clamp(1rem, 4.4vw, 1.32rem);
+  white-space: nowrap;
+  rotate: -5deg;
+}
+
+.revelacion--hazana .revelacion-suma {
+  font-size: clamp(2rem, 8.5vw, 2.7rem);
+}
+
+.revelacion--hazana .revelacion-cabeza {
+  min-height: 3.6rem;
+}
+
+/* ---- El tema entero, en la cabina (`D-22`) ----
+   Con el tema revelado y el archivo entero a mano, la cabina pasa a ser la del tema: el mismo
+   casete, la regla en largo y la tecla. El fragmento de diez segundos le deja el lugar. La
+   regla es un control de rango del navegador, vestido igual que la de la partida: papel,
+   rayitas, tinta plana y la aguja. */
+.partida--entero .cinta-fila,
+.partida--entero .escuchar:not(.entero-tecla) {
+  display: none;
+}
+
+.entero {
+  min-width: 0;
+}
+
+.entero-avance {
+  display: block;
+  width: 100%;
+  height: 3.1rem;
+  margin: 0;
+  background: transparent;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  touch-action: none;
+  rotate: -0.6deg;
+}
+
+/* El papel con sus rayitas (una cada decima parte del tema) y, encima, la tinta de lo que ya
+   sono. Cada capa es plana: paradas iguales, sin fundido. */
+.entero-avance::-webkit-slider-runnable-track {
+  height: 3.1rem;
+  background:
+    linear-gradient(var(--cat-mitologia), var(--cat-mitologia)) 0 0 / calc(var(--lleno, 0) * 100%) 100% no-repeat,
+    linear-gradient(to right, var(--papel-tenue) 1.5px, transparent 1.5px) 0 100% / 10% 34% repeat-x,
+    var(--papel);
+  background-blend-mode: multiply, normal, normal;
+  border: 2px solid var(--papel-borde);
+  border-radius: 2px;
+}
+
+.entero-avance::-moz-range-track {
+  height: 3.1rem;
+  background:
+    linear-gradient(to right, var(--papel-tenue) 1.5px, transparent 1.5px) 0 100% / 10% 34% repeat-x,
+    var(--papel);
+  border: 2px solid var(--papel-borde);
+  border-radius: 2px;
+}
+
+.entero-avance::-moz-range-progress {
+  height: 3.1rem;
+  background: var(--cat-mitologia);
+  mix-blend-mode: multiply;
+}
+
+/* La aguja: la misma de la regla de la partida, asomando arriba y abajo del papel. */
+.entero-avance::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 5px;
+  height: calc(3.1rem + 14px);
+  margin-top: -9px;
+  background: var(--fondo);
+  border: 0;
+  border-radius: 1px;
+  box-shadow: 0 0 0 1px var(--papel);
+}
+
+.entero-avance::-moz-range-thumb {
+  width: 5px;
+  height: calc(3.1rem + 14px);
+  background: var(--fondo);
+  border: 0;
+  border-radius: 1px;
+  box-shadow: 0 0 0 1px var(--papel);
+}
+
+.entero-avance:focus-visible {
+  outline: var(--linea) solid var(--acento-2);
+  outline-offset: 6px;
+}
+
+/* El pie de la regla: que es esto, a la izquierda, y por donde va, a la derecha. Ocupa el
+   lugar de los numeros de la escala. */
+.entero-pie {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--espacio-1);
+  margin: 7px 0 0;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--texto-tenue);
+}
+
+.entero-rotulo {
+  color: var(--cat-mitologia);
+}
+
+.entero-tiempo {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.entero-tecla {
+  width: var(--toque-min);
+  min-height: var(--toque-min);
+  margin: 0;
+  padding: 0;
+}
+
+.entero-tecla::before {
+  margin-right: 0;
+}
+
+.partida--entero.partida--revelada .reproductor {
+  align-items: start;
+}
+
+.partida--entero .cabina,
+.partida--entero .entero-tecla {
+  margin-top: 1px;
 }
 
 /* =====================================================================

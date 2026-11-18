@@ -99,6 +99,17 @@ export const PARTIDA = {
   fallado: (titulo: string) => titulo,
   ultimoIntento: 'Último intento',
   /**
+   * El interruptor de los ruidos de interfaz (las teclas, el golpe, el sello). El botón dice
+   * lo que va a hacer el toque. No apaga la música.
+   */
+  ruidosApagar: 'Apagá los ruidos',
+  ruidosPrender: 'Prendé los ruidos',
+  /**
+   * La racha: dos o más temas sacados uno atrás del otro. Va de sello en la cabecera, al lado
+   * de las casillas. Registro 1, corto: es lo que se dice en la tribuna cuando salen seguidas.
+   */
+  racha: (n: number) => `${n} al hilo`,
+  /**
    * Lo que dice la cabecera con el tema ya revelado, en el lugar de los intentos que quedan:
    * cuánto sumaste en la vuelta hasta acá. Registro 3. Al acertar, el número sube hasta ahí.
    */
@@ -151,6 +162,8 @@ export const SIN_SONIDO = {
 
 export const REVELACION = {
   acerto: '¡La sacaste!',
+  /** El acierto con la primera décima: la hazaña del juego. Es el otro grito del sitio. */
+  hazana: '¡Con una décima!',
   /**
    * `CNT-14` §2.1: la tapa que no sacaste se imprime en una sola tinta, y la línea lo
    * dice sin explicar el truco. Antes: "Se te escapó."
