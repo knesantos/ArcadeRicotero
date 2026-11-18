@@ -116,7 +116,9 @@ class Capa {
  */
 async function imprimir(nombre, ancho, alto, cuerpo, { grano = 0, mano = 3, semilla = 4 } = {}) {
   // El grano: donde el ruido pasa de un umbral, no hay tinta. `grano` es cuánta falta (0 a 1).
-  const corte = 5.4 + (1 - grano) * 1.6;
+  // (Ronda 3: un punto menos de grano en todo. A 1× se leía como ruido. Lo de lejos lleva más
+  // falta que lo de cerca, y eso también da profundidad.)
+  const corte = 6.4 + (0.5 - grano) * 2.4;
   const filtro =
     `<filter id="f" filterUnits="userSpaceOnUse" x="0" y="0" width="${ancho}" height="${alto}" color-interpolation-filters="sRGB">` +
     `<feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="2" seed="${semilla}" result="n"/>` +
@@ -213,15 +215,35 @@ function antena(x, base, alto) {
   cerca.lleno(caja(x, y - alto, 1.8, alto, 0.4) + caja(x - 8, y - alto + 3, 18, 1.6, 0.4) + caja(x - 5, y - alto + 9, 12, 1.6, 0.4));
 }
 
+/** Un miembro: un trazo grueso de una punta a la otra, cortado a mano. */
+function miembro([x1, y1], [x2, y2], grosor = 2.4) {
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+  const largo = Math.hypot(dx, dy) || 1;
+  const nx = (-dy / largo) * (grosor / 2);
+  const ny = (dx / largo) * (grosor / 2);
+  return poli([[x1 + nx + j(0.3), y1 + ny + j(0.3)], [x2 + nx * 0.8, y2 + ny * 0.8], [x2 - nx * 0.8, y2 - ny * 0.8], [x1 - nx + j(0.3), y1 - ny + j(0.3)]]);
+}
+
+/** Un árbol: tronco, dos ramas y una copa de tres o cuatro manchas, cada una con sus tajos. */
 function arbol(x, alto, copa) {
-  cerca.lleno(caja(x - 2.5, PISO - alto * 0.5, 5, alto * 0.5 + 3, 0.8) + mancha(x + j(3), PISO - alto * 0.72, copa, copa * 0.82, 13, 0.24));
-  // Las hojas: tajos cortos y sueltos, más del lado en sombra.
-  for (let i = 0; i < copa * 0.9; i++) {
-    const a = rnd() * Math.PI * 2;
-    const r = rnd() * copa * 0.78;
-    const cx = x + Math.cos(a) * r + copa * 0.12;
-    const cy = PISO - alto * 0.72 + Math.sin(a) * r * 0.8;
-    cerca.gubia(linea(cx, cy, cx + 3 + rnd() * 3, cy + 2 + rnd() * 2), 1.2);
+  const horq = PISO - alto * 0.46;
+  cerca.lleno(
+    miembro([x, PISO + 3], [x + j(1.5), horq], 5) +
+      miembro([x, horq + 4], [x - copa * 0.5, horq - copa * 0.5], 2.6) +
+      miembro([x, horq + 4], [x + copa * 0.55, horq - copa * 0.4], 2.6),
+  );
+  const cy = PISO - alto * 0.74;
+  for (const [dx, dy, k] of [[-0.5, 0.1, 0.62], [0.45, 0.16, 0.6], [0, -0.38, 0.66], [0.05, 0.12, 0.5]]) {
+    const cx = x + dx * copa + j(2);
+    const yy = cy + dy * copa + j(2);
+    cerca.lleno(mancha(cx, yy, copa * k, copa * k * 0.82, 11, 0.16));
+    // Hojas: pocos tajos cortos, del lado de abajo a la derecha, que es donde no llega la luz.
+    for (let i = 0; i < 5; i++) {
+      const a = rnd() * 1.6 - 0.2;
+      const r = copa * k * (0.35 + rnd() * 0.45);
+      cerca.gubia(linea(cx + Math.cos(a) * r, yy + Math.sin(a) * r * 0.8, cx + Math.cos(a) * r + 4, yy + Math.sin(a) * r * 0.8 + 2.5), 1.2);
+    }
   }
 }
 
@@ -231,20 +253,82 @@ function farol(x, alto, lado = 1, prendido = true) {
   if (prendido) llama.lleno(poli([[x + lado * 19 - 4, y + 7], [x + lado * 19 + 5, y + 7], [x + lado * 19 + 3, y + 13], [x + lado * 19 - 2.5, y + 13]]));
 }
 
-/** Una figura parada, en la capa que se pida. Con `brazo`, levanta uno. */
-function figura(capa, x, alto = 32, ancho = 9, { base = PISO, brazo = 0 } = {}) {
-  const y = base - alto;
-  let d =
-    mancha(x, y + 4, 3.6, 4.1, 8, 0.14) +
-    poli([[x - ancho / 2 + j(0.8), y + 9], [x + ancho / 2 + j(0.8), y + 9], [x + ancho / 2 - 0.5 + j(0.8), base + 2], [x - ancho / 2 + 0.5 + j(0.8), base + 2]]);
-  if (brazo) d += poli([[x + brazo * (ancho / 2 - 1), y + 11], [x + brazo * (ancho / 2 + 5), y - 4 + j()], [x + brazo * (ancho / 2 + 7.5), y - 3 + j()], [x + brazo * (ancho / 2 + 1.5), y + 14]]);
+/**
+ * Una persona de frente o de espaldas, a silueta: cabeza, hombros más anchos que la cadera, dos
+ * piernas separadas y dos brazos que hacen algo. Sin cara ni detalle fino: lo que se lee es el
+ * cuerpo (`voz-ricotera.md` §4.3).
+ *
+ *   brazos: por lado, 'baja' | 'arriba' | 'boca' (fumando) | 'jarra' | nada
+ *   gorra: -1 | 1 (para dónde mira la visera) · capucha · inclina (cuánto se apoya, en unidades)
+ */
+function persona(capa, x, base, alto, o = {}) {
+  const r = alto * 0.088;
+  const hombro = alto * (o.ancho ?? 0.165);
+  const cadera = hombro * 0.6;
+  const inc = o.inclina ?? 0;
+  const yCab = base - alto + r * 1.1;
+  const yHom = base - alto + r * 2.5;
+  const yCad = base - alto * 0.46;
+  const paso = o.paso ?? 1.2;
+  let d = mancha(x + inc, yCab, r, r * 1.15, 9, 0.08);
+  // El cuello y el torso: los hombros caen, la cintura se angosta.
+  d += poli([[x + inc - hombro, yHom + 1.6], [x + inc - hombro * 0.45, yHom - 1.2], [x + inc + hombro * 0.45, yHom - 1.2], [x + inc + hombro, yHom + 1.6], [x + inc * 0.4 + cadera + 0.4, yCad], [x + inc * 0.4 - cadera - 0.4, yCad]]);
+  d += poli([[x + inc - r * 0.45, yCab + r * 0.7], [x + inc + r * 0.45, yCab + r * 0.7], [x + inc + r * 0.5, yHom], [x + inc - r * 0.5, yHom]]);
+  // Las piernas, cada una por su lado.
+  d += poli([[x + inc * 0.4 - cadera - 0.4, yCad - 1], [x + inc * 0.4 - 0.3, yCad - 1], [x - paso + 0.2, base + 2], [x - paso - cadera * 0.95, base + 2]]);
+  d += poli([[x + inc * 0.4 + 0.3, yCad - 1], [x + inc * 0.4 + cadera + 0.4, yCad - 1], [x + paso + cadera * 0.95, base + 2], [x + paso - 0.2, base + 2]]);
+  const brazos = o.brazos ?? ['baja', 'baja'];
+  [-1, 1].forEach((lado, i) => {
+    const hom = [x + inc + lado * (hombro - 0.6), yHom + 1.4];
+    const g = Math.max(1.9, alto * 0.065);
+    const que = brazos[i];
+    if (que === 'baja') d += miembro(hom, [x + inc * 0.5 + lado * (hombro + 1.6), yCad + alto * 0.05], g);
+    if (que === 'jarra') d += miembro(hom, [x + inc + lado * (hombro + 3.4), yHom + alto * 0.17], g) + miembro([x + inc + lado * (hombro + 3.4), yHom + alto * 0.17], [x + lado * cadera, yCad - 1], g);
+    if (que === 'arriba') {
+      const codo = [x + inc + lado * (hombro + 2.6 + j(1)), yHom - alto * 0.16];
+      const mano = [x + inc + lado * (hombro + 1 + j(1.5)), yHom - alto * 0.36 + j(1.5)];
+      d += miembro(hom, codo, g) + miembro(codo, mano, g) + mancha(mano[0], mano[1] - 1, g * 0.8, g * 0.8, 7, 0.1);
+    }
+    if (que === 'boca') {
+      const codo = [x + inc + lado * (hombro + 2.4), yHom + alto * 0.15];
+      const mano = [x + inc + lado * r * 1.5, yCab + r * 0.5];
+      d += miembro(hom, codo, g) + miembro(codo, mano, g);
+      // La brasa.
+      llama.lleno(mancha(mano[0] + lado * 1.6, mano[1] - 0.4, 1.1, 1.1, 6, 0.1));
+    }
+  });
+  if (o.gorra) d += poli([[x + inc - r, yCab - r * 0.35], [x + inc + o.gorra * r * 2.1, yCab - r * 0.2], [x + inc + o.gorra * r * 2, yCab + r * 0.25], [x + inc - r, yCab + r * 0.1]]);
+  if (o.capucha) d += poli([[x + inc - hombro * 0.8, yHom + 1], [x + inc - r * 1.35, yCab - r * 0.5], [x + inc + r * 0.2, yCab - r * 1.75], [x + inc + r * 1.4, yCab - r * 0.3], [x + inc + hombro * 0.8, yHom + 1]]);
   capa.lleno(d);
-  // La raya de las piernas.
-  capa.hueco(caja(x - 0.5, base - alto * 0.38, 1, alto * 0.4, 0.2));
+  return { hombros: yHom, cabeza: yCab, r };
 }
 
-function sentada(capa, x) {
-  capa.lleno(mancha(x, PISO - 20, 3.6, 4, 8, 0.14) + poli([[x - 6, PISO - 15 + j()], [x + 5, PISO - 15 + j()], [x + 11 + j(), PISO + 2], [x - 8 + j(), PISO + 2]]));
+/** Compatibilidad con lo que ya llamaba a `figura`: una persona parada. */
+function figura(capa, x, alto = 32, _ancho = 9, { base = PISO, brazo = 0 } = {}) {
+  persona(capa, x, base, alto, { brazos: [brazo < 0 ? 'arriba' : 'baja', brazo > 0 ? 'arriba' : 'baja'] });
+}
+
+/** Alguien sentado en el piso o en el cordón, de costado: las rodillas arriba y los brazos sobre ellas. */
+function sentada(capa, x, { mira = 1, base = PISO, guitarra = false } = {}) {
+  const cad = [x, base - 3];
+  const hom = [x - mira * 1.5, base - 17];
+  const rod = [x + mira * 9, base - 11];
+  const pie = [x + mira * 12, base + 2];
+  let d = mancha(hom[0] + mira * 0.8, hom[1] - 4.6, 3.1, 3.5, 9, 0.08);
+  d += poli([[hom[0] - 3.4, hom[1]], [hom[0] + 3.6, hom[1] - 0.6], [cad[0] + 4, cad[1] + 3], [cad[0] - 4.4, cad[1] + 3]]);
+  d += miembro([cad[0] + mira * 1, cad[1]], rod, 3.6) + miembro(rod, pie, 3);
+  d += miembro([hom[0] + mira * 2, hom[1] + 2], [rod[0] - mira * 1, rod[1] - 1.5], 2.2);
+  if (guitarra) {
+    // La guitarra, cruzada sobre la falda: la caja y el mango para arriba.
+    d += mancha(x + mira * 4, base - 9, 4.6, 3.6, 9, 0.1) + miembro([x + mira * 6, base - 11], [x + mira * 15, base - 20], 1.6);
+  }
+  capa.lleno(d);
+}
+
+/** Uno con un chico a caballito, los dos brazos del chico arriba. */
+function aCaballito(capa, x, base, alto) {
+  const p = persona(capa, x, base, alto, { brazos: ['jarra', 'jarra'] });
+  persona(capa, x, p.hombros + 1, alto * 0.56, { brazos: ['arriba', 'arriba'], paso: 2.6 });
 }
 
 function poste(capa, x, alto, base = PISO) {
@@ -308,10 +392,10 @@ casa(290, 84, 58, { techo: 'dos-aguas' });
   tanque(x + 132, 134);
   arbol(x + 214, 110, 34);
   // La ronda. El fuego lo dibuja su propia pieza, que es la que se mueve.
-  sentada(cuero, x + 270);
-  figura(cuero, x + 288, 34);
-  sentada(cuero, x + 346);
-  figura(cuero, x + 366, 31, 10, { brazo: 1 });
+  sentada(cuero, x + 274, { mira: 1, guitarra: true });
+  persona(cuero, x + 258, PISO, 36, { brazos: ['jarra', 'baja'], gorra: 1 });
+  sentada(cuero, x + 356, { mira: -1 });
+  persona(cuero, x + 372, PISO, 34, { brazos: ['baja', 'arriba'] });
   // Un cajón con botellas.
   cerca.lleno(caja(x + 392, PISO - 12, 22, 13, 0.8) + caja(x + 396, PISO - 24, 4, 12, 0.5) + caja(x + 404, PISO - 26, 4, 14, 0.5));
   cerca.gubia(linea(x + 393, PISO - 6, x + 413, PISO - 6), 1);
@@ -357,7 +441,7 @@ casa(290, 84, 58, { techo: 'dos-aguas' });
   );
   for (let tx = x + 48; tx < x + 126; tx += 9) cerca.gubia(linea(tx, PISO - 52, tx - 3, PISO - 42), 1.6);
   llama.lleno(caja(x + 62, PISO - 30, 44, 4, 0.6));
-  figura(cuero, x + 136, 33);
+  persona(cuero, x + 138, PISO, 35, { brazos: ['baja', 'jarra'], gorra: -1 });
 
   // La reja: barrotes, dos travesaños, los pilares y el portón cerrado, con su cadena.
   const r0 = x + 168;
@@ -386,17 +470,35 @@ casa(290, 84, 58, { techo: 'dos-aguas' });
   trapo(cuero, x + 448, PISO - altoReja + 12, 52, 25);
   trapo(cuero, x + 522, PISO - altoReja + 16, 40, 22);
 
-  // La cola: de espaldas a nosotros, contra la reja. Altos, bajos, alguno con el brazo arriba.
-  for (let fx = x + 178; fx < x + 580; fx += 11 + rnd() * 9) {
-    if (fx > x + 300 && fx < x + 336) continue; // el claro del charco
-    figura(cuero, fx, 27 + rnd() * 9, 8 + rnd() * 2.5, { base: PISO - 2 + rnd() * 5, brazo: rnd() < 0.14 ? (rnd() < 0.5 ? 1 : -1) : 0 });
+  // La cola, de verdad: parados de a dos, alguno apoyado en la reja, dos sentados en el cordón,
+  // uno fumando, un chico a caballito. El claro del medio es el charco.
+  const cola = [
+    [178, 'apoyado'], [192, 'gorra'], [206, 'parado'], [222, 'sentado'], [238, 'fuma'], [252, 'capucha'], [266, 'caballito'], [284, 'parado'],
+    [362, 'jarra'], [376, 'gorra'], [392, 'parado'], [408, 'capucha'], [424, 'sentado'], [440, 'apoyado'], [456, 'arriba'], [472, 'parado'],
+    [490, 'fuma'], [506, 'gorra'], [522, 'caballito'], [540, 'parado'], [556, 'sentado'], [572, 'capucha'],
+  ];
+  for (const [dx, que] of cola) {
+    const px = x + dx + j(2);
+    const base = PISO + 1 + rnd() * 4;
+    const alto = 31 + rnd() * 7;
+    if (que === 'sentado') sentada(cuero, px, { mira: rnd() < 0.5 ? 1 : -1, base: base + 2 });
+    else if (que === 'caballito') aCaballito(cuero, px, base, alto + 2);
+    else if (que === 'apoyado') persona(cuero, px, base, alto, { inclina: 3.2, brazos: ['jarra', 'baja'], paso: 2.2 });
+    else if (que === 'fuma') persona(cuero, px, base, alto, { brazos: ['baja', 'boca'] });
+    else if (que === 'gorra') persona(cuero, px, base, alto, { gorra: rnd() < 0.5 ? 1 : -1, brazos: ['baja', 'jarra'] });
+    else if (que === 'capucha') persona(cuero, px, base, alto - 2, { capucha: true, brazos: ['jarra', 'jarra'] });
+    else if (que === 'jarra') persona(cuero, px, base, alto, { brazos: ['jarra', 'jarra'] });
+    else if (que === 'arriba') persona(cuero, px, base, alto, { brazos: ['arriba', 'baja'] });
+    else persona(cuero, px, base, alto, {});
   }
 
-  // El charco: un hueco en la tinta del piso, y el reflejo roto del cartel adentro.
-  cerca.gubia(poli([[x + 286, PISO + 12], [x + 300, PISO + 8], [x + 332, PISO + 7], [x + 352, PISO + 11], [x + 346, PISO + 18], [x + 318, PISO + 21], [x + 294, PISO + 19]]), 0.1);
-  cerca.hueco(poli([[x + 288, PISO + 12.5], [x + 301, PISO + 9], [x + 331, PISO + 8], [x + 350, PISO + 11.5], [x + 344, PISO + 17], [x + 318, PISO + 19.5], [x + 295, PISO + 18]]));
-  for (const [lx, ly, lw] of [[306, 10.5, 9], [321, 11.5, 15], [311, 14, 6], [327, 15, 10], [316, 17, 5], [300, 13.5, 4]]) {
-    llama.lleno(poli([[x + lx + j(0.5), PISO + ly], [x + lx + lw + j(0.8), PISO + ly + 0.3], [x + lx + lw - 1, PISO + ly + 1.5], [x + lx + 1, PISO + ly + 1.3]]));
+  // El charco: a caballo de la línea del piso, en el claro de la cola. Un hueco de canto roto
+  // en la tinta (se ve la sombra) y adentro el reflejo del cartel, roto: manchas acostadas,
+  // cortas, de distinto largo.
+  cerca.hueco(poli([[x + 292, PISO + 4], [x + 304, PISO - 1], [x + 322, PISO + 0.5], [x + 340, PISO - 1.5], [x + 356, PISO + 3], [x + 352, PISO + 10], [x + 334, PISO + 14], [x + 312, PISO + 12.5], [x + 298, PISO + 10]]));
+  cerca.lleno(poli([[x + 288, PISO + 4], [x + 303, PISO - 3], [x + 322, PISO - 1.5], [x + 341, PISO - 3.5], [x + 360, PISO + 3], [x + 355, PISO + 12], [x + 334, PISO + 16], [x + 311, PISO + 14.5], [x + 294, PISO + 11]]));
+  for (const [lx, ly, lw] of [[306, 2, 12], [322, 3.6, 20], [311, 6, 7], [330, 7.4, 14], [316, 9.6, 9], [301, 5, 5], [342, 4.4, 7]]) {
+    llama.lleno(poli([[x + lx + j(0.5), PISO + ly], [x + lx + lw + j(0.8), PISO + ly + 0.3], [x + lx + lw - 1, PISO + ly + 1.7], [x + lx + 1, PISO + ly + 1.5]]));
   }
 
   // El parlante: una bocina grande en su poste, del lado de adentro.
@@ -471,10 +573,10 @@ poste(cerca, X(5) + 298, 120);
 casa(X(5) + 210, 76, 60, { techo: 'chapa' });
 casa(X(5) + 312, 90, 96, { techo: 'chato' });
 
-await imprimir('noche-sombra', ANCHO, ALTO, cerca.cuerpo(ANCHO, ALTO, false), { mano: 3.4, semilla: 4 });
-await imprimir('noche-tinta', ANCHO, ALTO, cerca.cuerpo(ANCHO, ALTO, true), { mano: 3.4, semilla: 4, grano: 0.5 });
-await imprimir('noche-cuero', ANCHO, ALTO, cuero.cuerpo(ANCHO, ALTO, true), { mano: 2.2, semilla: 9, grano: 0.3 });
-await imprimir('noche-llama', ANCHO, ALTO, llama.cuerpo(ANCHO, ALTO, true), { mano: 1.6, semilla: 12, grano: 0.2 });
+await imprimir('noche-sombra', ANCHO, ALTO, cerca.cuerpo(ANCHO, ALTO, false), { mano: 3, semilla: 4 });
+await imprimir('noche-tinta', ANCHO, ALTO, cerca.cuerpo(ANCHO, ALTO, true), { mano: 3, semilla: 4, grano: 0.26 });
+await imprimir('noche-cuero', ANCHO, ALTO, cuero.cuerpo(ANCHO, ALTO, true), { mano: 1.3, semilla: 9, grano: 0.12 });
+await imprimir('noche-llama', ANCHO, ALTO, llama.cuerpo(ANCHO, ALTO, true), { mano: 1.2, semilla: 12, grano: 0.1 });
 
 /* ---------------------------------------------------------------- lo de lejos: una baldosa */
 {
@@ -500,7 +602,7 @@ await imprimir('noche-llama', ANCHO, ALTO, llama.cuerpo(ANCHO, ALTO, true), { ma
   // El monte: rayas largas, acostadas, que siguen la loma.
   for (let y = 186; y < 236; y += 9) for (let x = 10 + rnd() * 40; x < ancho - 60; x += 70 + rnd() * 90) capa.gubia(linea(x, y + j(2), x + 30 + rnd() * 50, y + j(2)), 1.1);
   // Sin corrimiento de canto: es una baldosa y tiene que cerrar consigo misma.
-  await imprimir('noche-lejos', ancho, ALTO, capa.cuerpo(ancho, ALTO, true), { mano: 0, grano: 0.45, semilla: 21 });
+  await imprimir('noche-lejos', ancho, ALTO, capa.cuerpo(ancho, ALTO, true), { mano: 0, grano: 0.42, semilla: 21 });
 }
 
 /* ---------------------------------------------------------------- los postes que pasan */
@@ -531,7 +633,7 @@ await imprimir('noche-llama', ANCHO, ALTO, llama.cuerpo(ANCHO, ALTO, true), { ma
   // La franja del costado y el barro de abajo.
   capa.gubia(linea(10, 52, 206, 54), 2.4);
   for (let x = 14; x < 206; x += 5 + rnd() * 6) capa.gubia(linea(x, 70 + rnd() * 6, x + 2 + rnd() * 3, 73 + rnd() * 4), 1);
-  await imprimir('noche-micro', ancho, alto, capa.cuerpo(ancho, alto, true), { mano: 2, grano: 0.35, semilla: 5 });
+  await imprimir('noche-micro', ancho, alto, capa.cuerpo(ancho, alto, true), { mano: 1.6, grano: 0.15, semilla: 5 });
 }
 
 /* ---------------------------------------------------------------- la gente de adelante: una baldosa */
@@ -542,46 +644,85 @@ await imprimir('noche-llama', ANCHO, ALTO, llama.cuerpo(ANCHO, ALTO, true), { ma
   const trapos = new Capa();
   const ancho = 520;
   const alto = 150;
-  // Tres filas: las de atrás, chicas y apretadas; la de adelante, de espaldas, con hombros.
-  const fila = (capa, y, radio, paso, hombros) => {
-    for (let x = -paso; x < ancho + paso; x += paso * (0.8 + rnd() * 0.45)) {
-      const cy = y + j(radio * 0.7);
-      const pieza =
-        mancha(x, cy, radio, radio * 1.12, 9, 0.12) +
-        poli([[x - hombros + j(1.5), cy + radio * 1.5], [x - radio * 0.6, cy + radio * 0.7], [x + radio * 0.6, cy + radio * 0.7], [x + hombros + j(1.5), cy + radio * 1.5], [x + hombros + 1, alto + 2], [x - hombros - 1, alto + 2]]);
-      for (const dx of [0, ancho, -ancho]) {
-        if (x + dx < -40 || x + dx > ancho + 40) continue;
-        capa.lleno(pieza.replace(/([ML])(-?[\d.]+) /g, (_, c, n) => `${c}${r1(Number(n) + dx)} `));
-      }
-      // Cada tanto, un brazo arriba o un trapo en su caña.
-      const que = rnd();
-      if (que < 0.22 && x > 14 && x < ancho - 14) {
-        const lado = rnd() < 0.5 ? -1 : 1;
-        capa.lleno(poli([[x + lado * hombros * 0.7, cy + radio * 1.3], [x + lado * (hombros * 0.7 + 4), cy - radio * 2.2 + j(2)], [x + lado * (hombros * 0.7 + 4) + 3.4, cy - radio * 2.1 + j(2)], [x + lado * hombros * 0.7 + 4, cy + radio * 1.5]]));
-      } else if (que < 0.3 && x > 40 && x < ancho - 60) {
-        const tope = cy - radio * 3.4 - rnd() * 14;
-        capa.lleno(caja(x + hombros * 0.6, tope, 1.5, cy - tope + radio, 0.3));
-        trapos.lleno(poli([[x + hombros * 0.6 + 1.5, tope + j()], [x + hombros * 0.6 + 16 + j(2), tope + 3 + j(2)], [x + hombros * 0.6 + 30 + j(3), tope - 1 + j(2)], [x + hombros * 0.6 + 27 + j(3), tope + 15 + j(2)], [x + hombros * 0.6 + 13 + j(2), tope + 19 + j(2)], [x + hombros * 0.6 + 1.5, tope + 15 + j()]]));
-      }
+  const correr = (d, dx) => d.replace(/([ML])(-?[\d.]+) /g, (_, k, n) => `${k}${r1(Number(n) + dx)} `);
+
+  /**
+   * Uno de espaldas: la cabeza, el cuello, los hombros que caen y la espalda hasta abajo. Los
+   * brazos hacen algo: arriba los dos, uno solo, o sosteniendo un trapo con las dos manos.
+   */
+  const espalda = (capa, x, y, r, que) => {
+    const propia = new Capa();
+    const tela = new Capa();
+    const h = r * 2.05;
+    let d = mancha(x, y, r, r * 1.16, 10, 0.07);
+    d += poli([[x - r * 0.5, y + r * 0.8], [x + r * 0.5, y + r * 0.8], [x + r * 0.62, y + r * 1.5], [x - r * 0.62, y + r * 1.5]]);
+    d += poli([[x - h, y + r * 2.5 + j(1)], [x - h * 0.72, y + r * 1.62], [x - r * 0.6, y + r * 1.3], [x + r * 0.6, y + r * 1.3], [x + h * 0.72, y + r * 1.62], [x + h, y + r * 2.5 + j(1)], [x + h * 0.94, alto + 2], [x - h * 0.94, alto + 2]]);
+    const g = r * 0.62;
+    const brazo = (lado, abre, sube) => {
+      const hom = [x + lado * h * 0.8, y + r * 1.9];
+      const codo = [x + lado * (h * 0.8 + abre), y + r * 0.2 - sube * 0.4];
+      const mano = [x + lado * (h * 0.5 + abre * 0.6), y - r * 1.4 - sube];
+      d += miembro(hom, codo, g) + miembro(codo, mano, g * 0.9) + mancha(mano[0], mano[1] - g * 0.4, g * 0.75, g * 0.8, 7, 0.1);
+      return mano;
+    };
+    if (que === 'dos') {
+      brazo(-1, r * 0.9 + j(1.5), r * (1 + rnd()));
+      brazo(1, r * 0.9 + j(1.5), r * (1 + rnd()));
+    }
+    if (que === 'uno') brazo(rnd() < 0.5 ? -1 : 1, r * 0.8, r * (1.4 + rnd()));
+    if (que === 'trapo') {
+      const a = brazo(-1, r * 1.5, r * 1.5);
+      const b = brazo(1, r * 1.5, r * 1.5);
+      // El trapo, tirante entre las dos manos, con su panza.
+      tela.lleno(poli([[a[0] - 1, a[1] - 3], [x, a[1] - 0.5 + j(1)], [b[0] + 1, b[1] - 3], [b[0] + 2, b[1] - 3 - r * 1.5], [x + j(2), a[1] - r * 1.9], [a[0] - 2, a[1] - 3 - r * 1.5]]));
+      tela.hueco(poli([[a[0] + 2, a[1] - 3 - r * 0.55], [b[0] - 2, b[1] - 3 - r * 0.55], [b[0] - 2, b[1] - 3 - r * 0.95], [a[0] + 2, a[1] - 3 - r * 0.95]]));
+    }
+    if (que === 'gorra') {
+      const lado = rnd() < 0.5 ? -1 : 1;
+      d += poli([[x - lado * r, y - r * 0.3], [x + lado * r * 2, y - r * 0.15], [x + lado * r * 1.9, y + r * 0.3], [x - lado * r, y + r * 0.15]]);
+    }
+    if (que === 'capucha') d += poli([[x - h * 0.7, y + r * 1.9], [x - r * 1.3, y - r * 0.4], [x + r * 0.1, y - r * 1.6], [x + r * 1.35, y - r * 0.3], [x + h * 0.7, y + r * 1.9]]);
+    if (que === 'caballito') {
+      // El chico arriba de los hombros: media espalda, la cabeza y los dos brazos al cielo.
+      const cy = y - r * 2.2;
+      const k = r * 0.68;
+      d += mancha(x, cy, k, k * 1.15, 9, 0.07) + poli([[x - k * 1.7, cy + k * 2.3], [x - k * 0.6, cy + k * 1.2], [x + k * 0.6, cy + k * 1.2], [x + k * 1.7, cy + k * 2.3], [x + k * 1.5, y - r * 0.2], [x - k * 1.5, y - r * 0.2]]);
+      for (const lado of [-1, 1]) d += miembro([x + lado * k * 1.4, cy + k * 2], [x + lado * (k * 2.6 + j(1)), cy - k * 1.8], k * 0.62);
+      // Las piernas del chico, colgando sobre el pecho del grande.
+      for (const lado of [-1, 1]) d += miembro([x + lado * k, y - r * 0.2], [x + lado * r * 1.1, y + r * 2.4], k * 0.7);
+    }
+    propia.lleno(d);
+    // El pelo y la costura de la espalda: dos o tres tajos, no más.
+    propia.gubia(linea(x - r * 0.4, y - r * 0.5, x - r * 0.1, y + r * 0.3), 0.9);
+    propia.gubia(linea(x + j(1), y + r * 2.6, x + j(1.5), y + r * 4.6), 0.9);
+    // Para que la baldosa cierre, cada uno se dibuja también a un ancho de distancia.
+    for (const dx of [0, ancho, -ancho]) {
+      if (x + dx < -60 || x + dx > ancho + 60) continue;
+      capa.llenos.push(...propia.llenos.map((p) => correr(p, dx)));
+      capa.gubias.push(...propia.gubias.map(([p, a]) => [correr(p, dx), a]));
+      trapos.llenos.push(...tela.llenos.map((p) => correr(p, dx)));
+      trapos.huecos.push(...tela.huecos.map((p) => correr(p, dx)));
     }
   };
-  // Las dos filas de atrás van a la pasada de sombra; la de adelante, sola, al cuero: entre
-  // cabeza y cabeza se ve la fila de atrás, y la gente deja de ser una mancha.
-  fila(atras, 50, 4.8, 12, 7);
-  fila(atras, 74, 6.4, 16, 10);
-  fila(gente, 106, 8.8, 27, 12);
-  // Un piso lleno debajo de la fila de adelante: la baldosa no deja ver nada por abajo.
-  atras.lleno(`M0 92H${ancho}V${alto + 2}H0Z`);
-  gente.lleno(`M0 138H${ancho}V${alto + 2}H0Z`);
-  // El pelo y los hombros de la fila de adelante: tajos cortos.
-  for (let i = 0; i < 150; i++) {
-    const x = rnd() * ancho;
-    const y = 96 + rnd() * 50;
-    gente.gubia(linea(x, y, x + j(3), y + 4 + rnd() * 4), 1);
-  }
-  await imprimir('noche-gente', ancho, alto, gente.cuerpo(ancho, alto, true), { mano: 0, grano: 0.3, semilla: 31 });
-  await imprimir('noche-gente-atras', ancho, alto, atras.cuerpo(ancho, alto, true), { mano: 0, grano: 0.4, semilla: 32 });
-  await imprimir('noche-gente-trapos', ancho, alto, trapos.cuerpo(ancho, alto, true), { mano: 0, grano: 0.25, semilla: 33 });
+
+  /** Una fila: las cabezas suben y bajan como una ola, y cada tanto alguien hace algo. */
+  const fila = (capa, y, r, paso, ola, gestos) => {
+    let n = 0;
+    for (let x = paso * 0.5; x < ancho; x += paso * (0.86 + rnd() * 0.3)) {
+      const cy = y + Math.sin((x / ancho) * Math.PI * 4 + ola) * r * 0.9 + j(r * 0.45);
+      espalda(capa, x, cy, r * (0.9 + rnd() * 0.22), gestos[n % gestos.length]);
+      n++;
+    }
+  };
+  // Atrás, chicos y apretados, casi todos con un brazo arriba: es la masa. Adelante, grandes y
+  // separados, cada uno en lo suyo: entre hombro y hombro se ve la fila de atrás.
+  fila(atras, 46, 3.6, 13, 0.4, ['dos', 'nada', 'uno', 'nada', 'dos', 'gorra', 'uno', 'nada']);
+  fila(atras, 70, 5, 19, 1.9, ['uno', 'nada', 'trapo', 'nada', 'dos', 'capucha', 'nada', 'caballito', 'uno']);
+  fila(gente, 104, 7.4, 33, 3.1, ['nada', 'dos', 'gorra', 'trapo', 'nada', 'caballito', 'uno', 'capucha', 'dos']);
+  atras.lleno(`M0 96H${ancho}V${alto + 2}H0Z`);
+  await imprimir('noche-gente', ancho, alto, gente.cuerpo(ancho, alto, true), { mano: 0, grano: 0.1, semilla: 31 });
+  await imprimir('noche-gente-atras', ancho, alto, atras.cuerpo(ancho, alto, true), { mano: 0, grano: 0.3, semilla: 32 });
+  await imprimir('noche-gente-trapos', ancho, alto, trapos.cuerpo(ancho, alto, true), { mano: 0, grano: 0.12, semilla: 33 });
 }
 
 /* ---------------------------------------------------------------- las estrellas: una baldosa */
@@ -614,24 +755,42 @@ await imprimir('noche-llama', ANCHO, ALTO, llama.cuerpo(ANCHO, ALTO, true), { ma
 /* ---------------------------------------------------------------- los guiños: lo que aparece al elegir */
 {
   rnd = azar(42);
-  // Una figura que se suma, y un trapo en su caña. Las medidas las dice `noche.ts`.
-  const f = new Capa();
-  const fw = GUINOS.figura.ancho;
-  const fh = GUINOS.figura.alto;
-  f.lleno(
-    mancha(fw / 2, 6, 4.2, 4.8, 9, 0.12) +
-      poli([[fw / 2 - 6, 12], [fw / 2 + 6, 12], [fw / 2 + 5, fh], [fw / 2 - 5, fh]]) +
-      poli([[fw / 2 + 5, 14], [fw / 2 + 11, 2], [fw / 2 + 13.5, 3], [fw / 2 + 7, 18]]),
-  );
-  f.hueco(caja(fw / 2 - 0.6, fh * 0.62, 1.2, fh * 0.4, 0.2));
-  await imprimir('noche-figura', fw, fh, f.cuerpo(fw, fh, true), { mano: 1.2, grano: 0.25, semilla: 14 });
-
-  const t = new Capa();
-  const tw = GUINOS.trapo.ancho;
-  const th = GUINOS.trapo.alto;
-  t.lleno(caja(3, 2, 1.8, th - 2, 0.3) + poli([[5, 3], [20, 6], [tw - 2, 2], [tw - 5, 20], [22, 25], [5, 21]]));
-  t.hueco(poli([[8, 10], [tw - 7, 9], [tw - 8, 14], [8, 15]]));
-  await imprimir('noche-trapo', tw, th, t.cuerpo(tw, th, true), { mano: 1.4, grano: 0.25, semilla: 15 });
+  // Las medidas las dice `noche.ts`. Todos pisan en el borde de abajo de su pieza.
+  const pieza = async (nombre, dibujar, semilla) => {
+    const capa = new Capa();
+    const { ancho, alto } = GUINOS[nombre];
+    dibujar(capa, ancho, alto);
+    await imprimir(`noche-${nombre}`, ancho, alto, capa.cuerpo(ancho, alto, true), { mano: 0.8, grano: 0.08, semilla });
+  };
+  // Alguien que se suma, saludando.
+  await pieza('figura', (c, w, h) => persona(c, w / 2 - 2, h - 2, h - 4, { brazos: ['baja', 'arriba'] }), 14);
+  // Un trapo en su caña.
+  await pieza('trapo', (c, w, h) => {
+    c.lleno(caja(3, 2, 1.8, h - 2, 0.3) + poli([[5, 3], [20, 6], [w - 2, 2], [w - 5, 20], [22, 25], [5, 21]]));
+    c.hueco(poli([[8, 10], [w - 7, 9], [w - 8, 14], [8, 15]]));
+  }, 15);
+  // Un perro sentado, de costado: el lomo en bajada, las orejas paradas, la cola en el piso.
+  await pieza('perro', (c, w, h) => {
+    c.lleno(
+      poli([[10, h], [9, h - 9], [13, h - 17], [20, h - 21], [24, h - 20], [26, h - 13], [25, h - 5], [27, h]]) +
+        poli([[19, h - 20], [20, h - 28], [23, h - 26], [25, h - 29], [27, h - 25], [33, h - 23], [32, h - 20], [26, h - 18]]) +
+        miembro([23, h - 12], [24, h], 2.6) +
+        miembro([10, h - 2], [2, h - 5], 2),
+    );
+  }, 16);
+  // Una bici apoyada: dos ruedas, el cuadro, el manubrio.
+  await pieza('bici', (c, w, h) => {
+    const rueda = (cx) => {
+      c.lleno(mancha(cx, h - 9, 8.6, 8.6, 14, 0.04));
+      c.hueco(mancha(cx, h - 9, 6.4, 6.4, 12, 0.04));
+      c.trazo(linea(cx - 6, h - 9, cx + 6, h - 9), 0.7);
+      c.trazo(linea(cx, h - 15, cx, h - 3), 0.7);
+    };
+    rueda(10);
+    rueda(36);
+    c.trazo(`M10 ${h - 9}L19 ${h - 21}L32 ${h - 21}L36 ${h - 9}M19 ${h - 21}L24 ${h - 9}L10 ${h - 9}M32 ${h - 21}L24 ${h - 9}`, 1.7);
+    c.trazo(`M17 ${h - 25}L22 ${h - 25}M19 ${h - 25}L19 ${h - 21}M32 ${h - 21}L33 ${h - 27}L37 ${h - 28}`, 1.7);
+  }, 17);
 }
 
 console.log('la noche, impresa en', SALIDA);

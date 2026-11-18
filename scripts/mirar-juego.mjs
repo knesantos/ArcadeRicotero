@@ -249,6 +249,10 @@ async function adivinarElTema(ctx) {
   await tira('elige', () => elegir(otro.titulo), { ms: 420 });
   await foto('elegido');
   // El interruptor de los ruidos: se apaga, se mira, y se vuelve a prender.
+  // En el teléfono, mientras el buscador tiene el foco (el teclado abierto) las dos puertas
+  // chicas de la cabina se esconden a propósito (`.partida--tecleando`): se suelta el foco antes.
+  await pagina.evaluate(() => document.activeElement instanceof HTMLElement && document.activeElement.blur());
+  await ctx.espera(200);
   // Solo si está a la vista: presentado como teléfono, el interruptor puede no tener caja.
   if (await (await pagina.$('.ruidos'))?.boundingBox()) {
     await pagina.click('.ruidos');

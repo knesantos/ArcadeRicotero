@@ -4,6 +4,53 @@
 > en decisión o la corrija. Juego: `US-06`. Sigue a las tres `pulida-juegos-*.md` de «Adiviná el
 > tema». No toca `ESTADO.md`, `Docs/DECISIONES.md` ni la carpeta de ningún rol.
 
+## Ronda 3: el cierre
+
+### Lo que necesita decisión
+
+1. **«Compartí» volvió arriba del pliegue.** El orden del resultado es: el lugar que amanece, la
+   ficha, la tarjeta que asoma, «Compartí», «Empezá otra noche», el plano y la grilla. El plano
+   bajó de nuevo; lo que cae a la vista es el **sello de tus dos polos en la ficha**, después
+   del nombre. El recuadro de tu manera sigue cayendo en el plano cuando se lo llega a ver.
+2. **El nombre del momento está escrito una sola vez.** El sello grande cae sobre el cielo, se
+   queda un par de segundos y se va; lo que queda es el sello chico de la hoja, que ahora se
+   estampa cuando la hoja entra. En el cielo queda la tira de papel con la línea que canta.
+3. **Guiños: cinco tipos, todos en el yeso de la luna** (figura, perro, bici, trapo, ventana)
+   para que no se confundan con la gente (cuero) ni con sus trapos (llama). Siguen respondiendo
+   al lado tocado y no al polo. **Para `contenido`, sin hacer:** si se quiere que el guiño
+   responda a *lo que dice* la opción, hacen falta 40 guiños escritos (uno por opción de las 20
+   hojas listas), con los dos de cada hoja del mismo peso para que ninguno delate el eje.
+4. **La vuelta tiene un solo detalle**: queda una ventana prendida en la casa del medio, que a
+   los tres segundos de llegar titila una vez y se apaga. Pasa una vez; con movimiento reducido
+   ya está apagada.
+5. **El interruptor de ruidos de «Adiviná el tema» no tiene defecto.** En el teléfono las dos
+   puertas chicas de la cabina se esconden a propósito mientras el buscador tiene el foco
+   (`.partida--tecleando`). El recorrido del script ahora suelta el foco antes de tocarlo.
+6. **Defecto de la ronda 2, arreglado**: la hoja que seguía a cada pase de momento quedaba
+   tapada por la anterior hasta la hoja siguiente (la clase `--entra` le ganaba a la de irse y
+   la animación no terminaba nunca). Lo encontró la medición de cuadros, no una captura.
+
+### Rendimiento (CPU ×4, 430 × 860 a 2×, dos tandas con control en cada una)
+
+| Qué | Media | p95 | Peor cuadro |
+|---|---|---|---|
+| Control: portada quieta | 16,7 ms | 16,8 | 16,9 |
+| La previa quieta (fuego) | 16,7 | 16,8 | 16,8 |
+| La caminata previa → ida | 17,0 y 16,7 | 16,8 | 33,2 y 16,8 |
+| La ida quieta (postes, micro) | 16,7 | 16,8 | 16,8 |
+| La caminata vereda → cuando suena | 17,0 y 16,7 | 16,8 | 33,4 y 16,8 |
+| Cuando suena quieta (pogo, haces) | 16,7 | 16,8 | 16,8 |
+
+Ningún cuadro pasó de 34 ms; lo peor fue un cuadro perdido en una caminata de cada tanda 1.
+**No partí la tira.** Las cuatro pasadas pesan 109 + 255 + 21 + 7 KB en disco y unos 5,7 MB
+cada una ya abiertas (4750 × 300). Ojo con lo que mide esto: el freno es de CPU, no de la
+placa de video, y el navegador no tenía ventana; no reemplaza a un teléfono de verdad.
+
+### Lo que sigue sin probar
+
+Los ruidos (nadie los oyó), el modo incrustado en X, el teclado durante el pase, y un teléfono
+de verdad.
+
 ## Ronda 2: la mano de la tapa
 
 ### Lo que necesita decisión

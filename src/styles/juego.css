@@ -3473,6 +3473,44 @@ html.incrustado .juego-tema #partida .cabina {
   }
 }
 
+/* ---- La vuelta: la ultima luz se apaga ----
+   El barrio duerme y nada se mueve. Queda una ventana prendida en la casa del medio, que al
+   rato de llegar titila una vez y se apaga: es lo unico que pasa, y pasa una sola vez. Con
+   movimiento reducido ya esta apagada. */
+.ejes-lugar-velador {
+  bottom: calc(var(--u) * 89);
+  left: calc(var(--u) * 3477);
+  width: calc(var(--u) * 15);
+  height: calc(var(--u) * 15);
+  background: var(--noche-llama);
+}
+
+.ejes-lugar--vuelta .ejes-lugar-velador {
+  animation: se-apaga calc(var(--duracion-inercia) * 5) linear forwards;
+}
+
+@keyframes se-apaga {
+  0%,
+  68% {
+    opacity: 1;
+  }
+
+  69%,
+  74% {
+    opacity: 0.15;
+  }
+
+  75%,
+  84% {
+    opacity: 1;
+  }
+
+  85%,
+  100% {
+    opacity: 0;
+  }
+}
+
 /* ---- La ida: los postes que pasan y el micro ---- */
 
 .ejes-lugar-postes {
@@ -3771,16 +3809,39 @@ html.incrustado .juego-tema #partida .cabina {
   transform-origin: 50% 100%;
 }
 
-.ejes-guino--figura {
+/* Todos en el yeso de la luna: es la tinta mas clara del lugar, y asi un guiño no se
+   confunde con la gente (cuero) ni con sus trapos (llama). */
+.ejes-guino--figura,
+.ejes-guino--trapo,
+.ejes-guino--perro,
+.ejes-guino--bici {
   background: var(--noche-luna);
+}
+
+.ejes-guino--figura {
   -webkit-mask-image: url('/arte/dos-ejes/noche-figura.webp');
   mask-image: url('/arte/dos-ejes/noche-figura.webp');
 }
 
 .ejes-guino--trapo {
-  background: var(--noche-llama);
   -webkit-mask-image: url('/arte/dos-ejes/noche-trapo.webp');
   mask-image: url('/arte/dos-ejes/noche-trapo.webp');
+}
+
+.ejes-guino--perro {
+  -webkit-mask-image: url('/arte/dos-ejes/noche-perro.webp');
+  mask-image: url('/arte/dos-ejes/noche-perro.webp');
+}
+
+.ejes-guino--bici {
+  -webkit-mask-image: url('/arte/dos-ejes/noche-bici.webp');
+  mask-image: url('/arte/dos-ejes/noche-bici.webp');
+}
+
+/* La ventana no tiene dibujo: es un hueco de una casa de la tira, que se prende. */
+.ejes-guino--ventana {
+  bottom: calc(var(--u) * (26 + var(--sube, 0)));
+  background: var(--noche-llama);
 }
 
 .ejes-guino--cae {
@@ -3793,17 +3854,22 @@ html.incrustado .juego-tema #partida .cabina {
    cielo, y no suelta contra un borde. Cae cuando se llega: primero el sello, despues la tira. */
 .ejes-lugar-cartel {
   position: absolute;
-  top: calc((100% - var(--alto-suelo)) * 0.5 + 0.4rem);
+  top: calc((100% - var(--alto-suelo)) * 0.5 + 1.4rem);
   left: 50%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.45rem;
   width: min(100% - 2rem, 22rem);
   translate: -50% -50%;
 }
 
+/* El sello grande: cae cuando se llega al momento, se queda un rato y se va de golpe. Lo que
+   queda es el sello chico de la hoja, que se estampa cuando la hoja entra: el nombre del
+   momento esta escrito una sola vez. Con movimiento reducido no aparece. */
 .ejes-lugar-sello {
+  position: absolute;
+  bottom: calc(100% + 0.5rem);
+  left: 50%;
   padding: 0.1rem 0.8rem 0.2rem;
   background: var(--fondo);
   color: var(--texto);
@@ -3814,7 +3880,9 @@ html.incrustado .juego-tema #partida .cabina {
   line-height: 1.1;
   text-transform: uppercase;
   white-space: nowrap;
+  translate: -50% 0;
   rotate: -3deg;
+  opacity: 0;
 }
 
 .ejes-lugar-canta {
@@ -3838,7 +3906,35 @@ html.incrustado .juego-tema #partida .cabina {
 }
 
 .ejes-lugar-cartel--cae .ejes-lugar-sello {
-  animation: ejes-sello-cae var(--duracion-pasada) var(--curva-cinta) backwards;
+  animation: cartel-sello calc(var(--duracion-inercia) * 2.4) linear both;
+}
+
+@keyframes cartel-sello {
+  0% {
+    opacity: 0;
+    scale: 1.5;
+    rotate: -10deg;
+  }
+
+  1% {
+    opacity: 1;
+    scale: 1.5;
+    rotate: -10deg;
+  }
+
+  9%,
+  88% {
+    opacity: 1;
+    scale: 1;
+    rotate: -3deg;
+  }
+
+  89%,
+  100% {
+    opacity: 0;
+    scale: 1;
+    rotate: -3deg;
+  }
 }
 
 .ejes-lugar-cartel--cae .ejes-lugar-canta {
@@ -3851,7 +3947,7 @@ html.incrustado .juego-tema #partida .cabina {
 .ejes-pila {
   position: relative;
   z-index: 1;
-  margin: -6px 0 var(--espacio-2);
+  margin: -3px 0 var(--espacio-2);
 }
 
 .ejes-pila > .ejes-hoja {
@@ -3898,10 +3994,24 @@ html.incrustado .juego-tema #partida .cabina {
   }
 }
 
-/* El pase de momento, en orden: la hoja nueva guarda su lugar sin verse mientras la tira
-   camina y cae el cartel, y entra al final, desde abajo, a apoyarse. */
-.ejes-hoja--espera {
+/* El pase de momento, en orden: mientras la tira camina y cae el cartel, la hoja nueva
+   espera DADA VUELTA: se ve el papel, en blanco, con los renglones del dorso. (En la ronda 2
+   esperaba escondida y quedaba un hueco negro de mas de un segundo.) Al final se da vuelta de
+   un golpe y termina de apoyar. */
+.ejes-hoja--espera > * {
   visibility: hidden;
+}
+
+.ejes-hoja--espera {
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 1.9rem,
+      color-mix(in srgb, var(--papel-borde) 45%, transparent) 1.9rem,
+      color-mix(in srgb, var(--papel-borde) 45%, transparent) calc(1.9rem + 1px)
+    ),
+    var(--papel);
 }
 
 .ejes-hoja--entra {
@@ -3910,8 +4020,8 @@ html.incrustado .juego-tema #partida .cabina {
 
 @keyframes hoja-entra {
   from {
-    translate: 0 26px;
-    rotate: 1.4deg;
+    translate: 0 -8px;
+    rotate: -1.6deg;
   }
 }
 
@@ -4135,10 +4245,20 @@ html.incrustado .juego-tema #partida .cabina {
   margin-top: -8px;
 }
 
-/* El plano, pegado a la ultima hoja: sube de donde estaba (abajo de los botones). */
+/* El plano va debajo de los botones ("Comparti" no puede quedar bajo el pliegue) y arriba de
+   la grilla. Lo que cae a la vista, en la ficha, es el sello de tus dos polos. */
 #resultado > .ejes-plano {
-  margin-top: var(--espacio-3);
+  margin-top: var(--espacio-4);
   margin-bottom: 0;
+}
+
+.ejes-polos--cae {
+  animation: ejes-sello-cae var(--duracion-pasada) var(--curva-cinta) calc(var(--duracion-umbral) + var(--duracion-pasada)) backwards;
+}
+
+/* Con el lugar arriba, la ficha del resultado aprieta su aire para que entren los botones. */
+.ejes-lugar--amanece ~ .ejes-acciones {
+  margin-top: var(--espacio-2);
 }
 
 /* El nombre cae sobre la ultima hoja cuando la hoja termino de apoyar: el sellazo de la

@@ -46,6 +46,8 @@ export const PIEZAS_DE_LA_NOCHE = [
   'noche-fuego.webp',
   'noche-figura.webp',
   'noche-trapo.webp',
+  'noche-perro.webp',
+  'noche-bici.webp',
 ] as const;
 
 /** Dónde empieza un lugar de la tira, en unidades. El 0 es la previa. */
@@ -79,7 +81,7 @@ export function lunaDe(paso: number, total: number): { readonly x: number; reado
 
 /** Un guiño: algo chico que aparece en el lugar cuando se contesta una hoja. */
 export interface Guino {
-  readonly tipo: 'figura' | 'trapo';
+  readonly tipo: 'figura' | 'trapo' | 'perro' | 'bici' | 'ventana';
   /** El medio del guiño, en unidades de la tira. */
   readonly x: number;
   /** Cuánto sube del piso, en unidades (un trapo entre la gente va más alto). */
@@ -101,20 +103,28 @@ const g = (tipo: Guino['tipo'], lugar: number, x: number, sube = 0): Guino => ({
 export const GUINOS = {
   figura: { ancho: 30, alto: 40 },
   trapo: { ancho: 44, alto: 66 },
+  perro: { ancho: 36, alto: 32 },
+  bici: { ancho: 46, alto: 30 },
+  /** La ventana no tiene dibujo propio: es un hueco de una casa de la tira, que se prende. */
+  ventana: { ancho: 15, alto: 15 },
   porHoja: [
-    [g('figura', 0, 250), g('figura', 0, 384)],
-    [g('trapo', 0, 236), g('trapo', 0, 414)],
-    [g('figura', 1, 120), g('figura', 1, 232)],
+    [g('figura', 0, 240), g('figura', 0, 392)],
+    [g('perro', 0, 236), g('perro', 0, 416)],
+    [g('bici', 1, 124), g('bici', 1, 236)],
     [g('trapo', 1, 300), g('trapo', 1, 440)],
-    [g('figura', 2, 152), g('figura', 2, 316)],
+    [g('perro', 2, 152), g('perro', 2, 372)],
     [g('trapo', 2, 244, 30), g('trapo', 2, 506, 30)],
     [g('trapo', 3, 74, 56), g('trapo', 3, 400, 56)],
     [g('trapo', 3, 204, 60), g('trapo', 3, 556, 60)],
-    [g('figura', 4, 160), g('figura', 4, 396)],
-    [g('figura', 4, 208), g('figura', 4, 474)],
+    [g('bici', 4, 160), g('bici', 4, 396)],
+    // Dos ventanas de verdad: los huecos de la casa del medio y de la última (ver el dibujo).
+    [g('ventana', 4, 309.8, 31), g('ventana', 4, 536.5, 55)],
   ],
 } as const satisfies {
   figura: { ancho: number; alto: number };
   trapo: { ancho: number; alto: number };
+  perro: { ancho: number; alto: number };
+  bici: { ancho: number; alto: number };
+  ventana: { ancho: number; alto: number };
   porHoja: readonly (readonly [Guino, Guino])[];
 };

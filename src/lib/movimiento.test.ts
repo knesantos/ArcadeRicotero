@@ -222,6 +222,10 @@ const ANIMACIONES = [
   { nombre: 'hoja-se-va', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
   { nombre: 'hoja-vuelve', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
   { nombre: 'hoja-entra', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  // Ronda 3: el sello grande del momento, que cae sobre el cielo y se va; y la última luz del
+  // barrio de la vuelta, que titila una vez y se apaga. Las dos pasan una sola vez.
+  { nombre: 'cartel-sello', apaga: 'token', valor: '--duracion-inercia', hoja: 'src/styles/juego.css' },
+  { nombre: 'se-apaga', apaga: 'token', valor: '--duracion-inercia', hoja: 'src/styles/juego.css' },
   { nombre: 'ejes-sello-cae', apaga: 'token', valor: '--duracion-pasada', hoja: 'src/styles/juego.css' },
   { nombre: 'eje-vertical', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
   { nombre: 'eje-horizontal', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },

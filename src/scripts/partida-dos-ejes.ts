@@ -185,6 +185,8 @@ function armarLugar(): HTMLElement {
     el('span', 'ejes-lugar-pasada ejes-lugar-cuero'),
     el('span', 'ejes-lugar-pasada ejes-lugar-llama'),
     el('span', 'ejes-lugar-fuego'),
+    // La única luz que queda prendida en el barrio de la vuelta, y que se apaga al rato de llegar.
+    el('span', 'ejes-lugar-velador'),
     ondas,
     el('span', 'ejes-lugar-guinos'),
   );
@@ -283,6 +285,11 @@ function pasarHoja(nueva: HTMLElement, pase: Pase): void {
     return;
   }
   // La que se va queda dibujada pero ya no existe para nadie: ni foco, ni lector, ni toque.
+  // Sin las clases con las que llegó: `--entra` y `--vuelve` también son una animación, y
+  // mientras la tuviera puesta la de irse no corría nunca y la hoja vieja se quedaba encima
+  // de la nueva (pasaba en la hoja que sigue a cada pase de momento; lo encontró la medición
+  // de cuadros de la ronda 3).
+  vieja.classList.remove('ejes-hoja--entra', 'ejes-hoja--vuelve');
   vieja.classList.add('ejes-hoja--fantasma');
   vieja.setAttribute('aria-hidden', 'true');
   vieja.inert = true;
@@ -425,6 +432,11 @@ function pintarPregunta(pase: Pase, antes?: Polo): void {
     window.setTimeout(() => {
       hoja.classList.remove('ejes-hoja--espera');
       hoja.classList.add('ejes-hoja--entra');
+      // El sello chico se estampa ahora, que la hoja se ve: es el que queda cuando el grande
+      // del cielo se va.
+      sello.classList.remove('ejes-momento--entra');
+      void sello.offsetWidth;
+      sello.classList.add('ejes-momento--entra');
       bloqueado = false;
       enfocar(enunciado);
     }, seVa + camina + cae),
@@ -679,21 +691,12 @@ function pintarResultado(): void {
   const nombre = el('h2', 'ejes-nombre ejes-nombre--cae', r.nombre);
   hoja.append(nombre);
   window.setTimeout(() => sonarEfecto('sello'), duracionDe('--duracion-umbral'));
-  hoja.append(el('p', 'ejes-polos', selloDePolos(c.luzOscuridad, c.ordenCaos)));
+  // El sello de los dos polos cae en la ficha después del nombre: es tu lugar en el plano,
+  // dicho acá arriba, donde se ve sin bajar.
+  hoja.append(el('p', 'ejes-polos ejes-polos--cae', selloDePolos(c.luzOscuridad, c.ordenCaos)));
   hoja.append(el('p', 'ejes-nombra', lineaQueNombra(c.luzOscuridad, c.ordenCaos)));
   hoja.append(el('p', 'ejes-bajada', r.bajada));
   zonaResultado.append(hoja);
-
-  // El plano, pegado a la hoja (`UX-38` lo ponía después de los botones): tu manera se marca
-  // sobre el dibujo del juego y no en una lista aparte. Es un dibujo de más: si no se puede
-  // armar, la pantalla sigue sin él.
-  try {
-    const dibujo = plano(r.id);
-    zonaResultado.append(dibujo);
-    armarAlVerlo(dibujo);
-  } catch {
-    /* sin plano, nada más cambia */
-  }
 
   const acciones = el('div', 'ejes-acciones jugo-entra');
   acciones.style.setProperty('--orden', '5');
@@ -721,6 +724,18 @@ function pintarResultado(): void {
   denuevo.addEventListener('click', empezar);
   acciones.append(denuevo);
   zonaResultado.append(acciones);
+
+  // El plano, debajo de los botones y arriba de la grilla (ronda 3: «Compartí» no puede quedar
+  // bajo el pliegue). Tu manera se marca sobre el dibujo del juego y no en una lista aparte, y
+  // se arma cuando se lo llega a ver. Es un dibujo de más: si no se puede armar, la pantalla
+  // sigue sin él.
+  try {
+    const dibujo = plano(r.id);
+    zonaResultado.append(dibujo);
+    armarAlVerlo(dibujo);
+  } catch {
+    /* sin plano, nada más cambia */
+  }
 
   zonaResultado.append(grilla(r.id, disposicion(banco, r.id)));
 
