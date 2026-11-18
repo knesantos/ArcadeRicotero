@@ -106,6 +106,12 @@ export const PARTIDA = {
   puntos: (p: number, versos: number) =>
     p > 0 ? `${p} puntos · Con ${versos === 1 ? '1 verso' : `${versos} versos`}` : 'Esta vez no salió',
   verLetra: 'Mirá la letra y los acordes',
+  /**
+   * Con el tema cerrado el papel se pliega a un renglón para que la ficha entre en la pantalla.
+   * Estas dos lo abren y lo vuelven a doblar: los versos que se leyeron no se pierden.
+   */
+  releer: 'Releé los versos',
+  plegar: 'Doblá el papel',
   seguir: 'Seguí',
   /** El último tema de la vuelta no sigue nada: entrega el resultado, y lo dice. */
   ultimo: 'Mirá cómo te fue',

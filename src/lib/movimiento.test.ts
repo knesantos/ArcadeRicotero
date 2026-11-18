@@ -245,6 +245,9 @@ const ANIMACIONES = [
   { nombre: 'palabra-escribe', apaga: 'token', valor: '--duracion-sello', hoja: 'src/styles/juego.css' },
   { nombre: 'tachon-pasa', apaga: 'token', valor: '--duracion-golpe', hoja: 'src/styles/juego.css' },
   { nombre: 'papel-sale', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  // Ronda 2: el papel doblado que respira mientras espera la respuesta. Es un bucle atado a un
+  // estado (`.partida--esperando`), asi que se apaga con `animation: none`, como el carrete.
+  { nombre: 'papel-respira', apaga: 'regla', valor: '.partida--esperando .dobleces', hoja: 'src/styles/juego.css' },
   // Los sellos del bestiario que se asientan (`D-83`): el bocadillo, el «Anotado» y la libreta
   // terminan de apoyar; la hoja de la ficha baja los últimos píxeles. Un solo token los apaga.
   { nombre: 'sello-apoya', apaga: 'token', valor: '--duracion-sello', hoja: 'src/styles/sitio.css' },

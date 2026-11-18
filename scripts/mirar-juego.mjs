@@ -570,6 +570,16 @@ async function porLaLetra(ctx) {
   await foto('partida');
   await foto('partida-entera', { entera: true });
 
+  // El papel respira mientras espera: el canto de los dobleces se hincha al final de cada
+  // ciclo. El bucle se lleva a ese tramo para que la tira lo agarre.
+  if (!quieto) {
+    await pagina.evaluate(() => {
+      const bucle = document.querySelector('.dobleces')?.getAnimations()[0];
+      if (bucle) bucle.currentTime = 3300;
+    });
+    await tira('papel-respira', async () => {}, { ms: 1000, lento: 1 });
+  }
+
   // ---- tema 1: un error, dos pases (ocho versos) y se saca.
   const uno = await elDeAhora();
   const otro = catalogo.find((t) => t.titulo !== uno.titulo && t.titulo.length > 8 && t.titulo.length < 22);
@@ -596,23 +606,29 @@ async function porLaLetra(ctx) {
   await foto('ocho-versos-ultimo-intento');
   await foto('ocho-versos-entera', { entera: true });
   await sacar(uno);
-  await tira('acierto', boton, { ms: 1400 });
-  await ctx.espera(1200);
+  // El acierto tiene dos tiempos que lleva un reloj de JavaScript (el sello y la respuesta
+  // sobre el papel; después el papel se pliega y llega la ficha): la tira va a velocidad real.
+  await tira('acierto', boton, { ms: 2600, lento: 1 });
+  await ctx.espera(1500);
   await foto('revelacion-acierto');
   await foto('revelacion-acierto-entera', { entera: true });
-  await pagina.evaluate(() => window.scrollTo(0, 0));
-  await ctx.espera(150);
-  await foto('revelacion-acierto-arriba');
+  // El papel plegado se vuelve a abrir: los versos no se pierden.
+  if (await pagina.$('.hoja-releer')) {
+    await pagina.click('.hoja-releer');
+    await ctx.espera(600);
+    await foto('papel-reabierto');
+    await pagina.click('.hoja-releer');
+    await ctx.espera(600);
+  }
 
   // ---- el pase al tema 2: el papel nuevo sale del bolsillo.
   await tira('tema-siguiente', () => pagina.click('.seguir'), { ms: 900 });
   await ctx.espera(500);
   await foto('tema-2');
-
   // ---- tema 2: de una, con un renglón. La hazaña, y dos al hilo.
   await sacar(await elDeAhora());
-  await tira('hazana', boton, { ms: 1500 });
-  await ctx.espera(1500);
+  await tira('hazana', boton, { ms: 2600, lento: 1 });
+  await ctx.espera(1800);
   await foto('hazana');
   await foto('hazana-entera', { entera: true });
   await pagina.evaluate(() => window.scrollTo(0, 0));
@@ -626,7 +642,7 @@ async function porLaLetra(ctx) {
   await ctx.espera(quieto ? 200 : 900);
   await sacar(await elDeAhora());
   await boton();
-  await ctx.espera(1800);
+  await ctx.espera(3400);
   await pagina.click('.seguir');
   await ctx.espera(900);
 
@@ -642,8 +658,8 @@ async function porLaLetra(ctx) {
   await soltarFoco();
   await ctx.espera(quieto ? 200 : 2200);
   await foto('ultimo-intento');
-  await tira('se-escapa', boton, { ms: 900 });
-  await ctx.espera(800);
+  await tira('se-escapa', boton, { ms: 2600, lento: 1 });
+  await ctx.espera(1500);
   await foto('revelacion-fallo');
   await foto('revelacion-fallo-entera', { entera: true });
   await pagina.click('.seguir');
@@ -652,7 +668,7 @@ async function porLaLetra(ctx) {
   // ---- tema 5: se saca de una, y el resultado.
   await sacar(await elDeAhora());
   await boton();
-  await ctx.espera(1800);
+  await ctx.espera(3400);
   await tira('resultado-entra', () => pagina.click('.seguir'), { ms: 1000 });
   await ctx.espera(900);
   await foto('resultado');

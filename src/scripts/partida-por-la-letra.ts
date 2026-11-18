@@ -37,7 +37,6 @@ import { golpear, estampar, pegar, volar, contar, duracionDe, armarInterruptorDe
 import {
   armarEstampa,
   armarEstampita,
-  armarEscalerita,
   acreditarTapas,
   armarCasillas,
   pintarCasillas,
@@ -123,6 +122,11 @@ let restantesEl: HTMLElement;
 let rachaEl: HTMLElement;
 let buscadorFila: HTMLElement;
 let ayudaBuscador: HTMLElement;
+/**
+ * Si lo ultimo que cerro el tema fue un toque (dedo o mouse) y no el teclado. Decide si el
+ * foco que la isla le pone a "Seguí" dibuja su anillo: con el teclado si, con el dedo no.
+ */
+let conPuntero = false;
 let entrada: HTMLInputElement;
 let lista: HTMLUListElement;
 let botonPrincipal: HTMLButtonElement;
@@ -148,6 +152,15 @@ function el<K extends keyof HTMLElementTagNameMap>(
   return n;
 }
 
+/**
+ * El papel respira mientras espera (ronda 2): con el tema abierto y nada escrito, el canto de
+ * los dobleces se hincha apenas cada tanto, como un papel doblado que quiere abrirse. Es un
+ * estado —"esperando respuesta"— y no un adorno: en cuanto se escribe algo, para.
+ */
+function esperar(si: boolean): void {
+  zonaPartida.classList.toggle('partida--esperando', si);
+}
+
 function mostrar(seccion: HTMLElement): void {
   for (const s of [portada, zonaPartida, zonaResultado]) s.hidden = s !== seccion;
 }
@@ -166,6 +179,12 @@ function enfocar(destino: HTMLElement): void {
  */
 const teclado = modoTeclado(zonaPartida, {
   alMedir: () => {
+    if (hoja) hoja.scrollTop = hoja.scrollHeight;
+  },
+  // Al cerrarse el teclado la mesa del papel se vuelve a armar (deja de ser `display: contents`)
+  // y el navegador le pierde el desplazamiento a la hoja: quedaba arriba, con el verso nuevo
+  // —o la respuesta recien escrita— fuera de la vista. Se vuelve a bajar.
+  alSalir: () => {
     if (hoja) hoja.scrollTop = hoja.scrollHeight;
   },
 });
@@ -382,6 +401,7 @@ function pintarPantalla(): void {
   // El boton nace diciendo cuanta letra compra pasar, no "Pasá" a secas: el que llega sin
   // idea lo lee antes de tocar nada.
   pintarBotonPrincipal();
+  esperar(true);
   enfocar(hoja);
 }
 
@@ -519,6 +539,7 @@ function armarBuscador(): HTMLElement {
     elegido = null;
     cerrarLista();
     pintarBotonPrincipal();
+    esperar(true);
     entrada.focus();
   });
   fila.append(borrar);
@@ -531,8 +552,19 @@ function armarBuscador(): HTMLElement {
 
   botonPrincipal = el('button', 'arriesgar', PARTIDA.pasa);
   botonPrincipal.type = 'button';
-  botonPrincipal.addEventListener('click', () => (elegido ? arriesgar() : pasar()));
+  botonPrincipal.addEventListener('click', (ev) => {
+    // Un clic de teclado (Enter o espacio sobre el boton) llega con `detail` en cero.
+    conPuntero = ev.detail > 0;
+    if (elegido) arriesgar();
+    else pasar();
+  });
   caja.append(botonPrincipal);
+
+  // El interruptor de los ruidos tambien vive aca, chico y debajo de la tecla, como en la
+  // cabina del hermano. Con el teclado abierto se esconde (`juego.css`).
+  const puertas = el('p', 'buscador-puertas');
+  puertas.append(armarInterruptorDeRuidos({ apagar: PARTIDA.ruidosApagar, prender: PARTIDA.ruidosPrender }));
+  caja.append(puertas);
 
   return caja;
 }
@@ -565,6 +597,7 @@ function alTipear(): void {
     yaEscribio = true;
     ayudaBuscador.hidden = true;
   }
+  esperar(entrada.value === '');
   // Escribir después de elegir desarma la elección: vale lo que se eligió de la lista.
   elegido = null;
   sugerencias = sugerir(buscables, entrada.value, MAX_SUGERENCIAS);
@@ -696,6 +729,7 @@ function alTeclear(ev: KeyboardEvent): void {
   if (lista.hidden || sugerencias.length === 0) {
     if (ev.key === 'Enter' && elegido) {
       ev.preventDefault();
+      conPuntero = false;
       arriesgar();
     }
     return;
@@ -728,6 +762,7 @@ function alTeclear(ev: KeyboardEvent): void {
     } else if (primeraElegible() >= 0) {
       elegirSugerencia(primeraElegible());
     } else if (elegido) {
+      conPuntero = false;
       arriesgar();
     }
   } else if (ev.key === 'Escape') {
@@ -798,6 +833,7 @@ function gastarIntento(): void {
   pintarVersos(fallo);
   estampar(valeEl);
   pintarBotonPrincipal();
+  esperar(true);
   entrada.focus();
 }
 
@@ -855,16 +891,43 @@ function cerrarTema(acerto: boolean): void {
   const hazana = acerto && versos === 1;
 
   /*
-   * El resultado se marca **sobre el papel**: un sello redondo en la esquina, con la tilde si
-   * lo sacaste y la cruz si se escapo. Es la marca chica que deja el sello grande de la ficha.
-   * Forma ademas de tinta: el simbolo lo escribe la isla.
+   * El acierto se juega sobre el papel (ronda 2).
+   *
+   * Antes el sello caia en la esquina de arriba y la pantalla bajaba a la ficha: con ocho
+   * versos el sello quedaba fuera de la vista. Ahora el cierre tiene dos tiempos:
+   *
+   *  1. **Sobre el papel**, donde estaba el ojo: debajo del ultimo verso se escribe la
+   *     respuesta —"Era …", palabra por palabra— y al lado cae el sello, con la tilde si lo
+   *     sacaste y la cruz si se escapo. El tablero sigue siendo el de la partida, asi que el
+   *     papel no se mueve de lugar.
+   *  2. **Despues**, el papel se pliega a ese renglon y aparece la ficha del tema.
+   *
+   * La espera entre los dos sale de tokens que el movimiento reducido lleva a cero: con el
+   * corte, papel plegado y ficha aparecen juntos. El renglon del papel va escondido del lector
+   * de pantalla: la ficha (`role="status"`) dice lo mismo, con el titulo como encabezado.
    */
+  const respuesta = el('p', 'hoja-titulo');
+  respuesta.setAttribute('aria-hidden', 'true');
+  const escrito = el('span', 'hoja-titulo-texto');
+  PARTIDA.era(item.titulo)
+    .split(' ')
+    .forEach((palabra, k) => {
+      if (k > 0) escrito.append(document.createTextNode(' '));
+      const trazo = el('span', 'palabra', palabra);
+      trazo.style.setProperty('--orden', String(k));
+      escrito.append(trazo);
+    });
+  // Forma ademas de tinta: el simbolo lo escribe la isla.
   const marca = el('span', `hoja-sello hoja-sello--${acerto ? 'ok' : 'no'}`, acerto ? '✔︎' : '✕︎');
-  marca.setAttribute('aria-hidden', 'true');
-  hoja.append(marca);
+  respuesta.append(escrito, marca);
+  hoja.insertBefore(respuesta, dobleces);
   hoja.classList.add(acerto ? 'hoja-versos--sacada' : 'hoja-versos--escapada');
+  hoja.scrollTop = hoja.scrollHeight;
   // Lo que suena es lo que se ve: el sello de goma si salio, el golpe sordo si no.
   sonarEfecto(acerto ? 'sello' : 'golpe');
+  if (acerto) vibrarAcierto();
+  // La hazana golpea dos veces.
+  if (hazana) window.setTimeout(() => sonarEfecto('sello'), 150);
 
   cerrarLista();
 
@@ -878,29 +941,88 @@ function cerrarTema(acerto: boolean): void {
    * 3. **Panel duplicado por el otro camino**: agotados los intentos, el botón decía
    *    `Pasá` y seguía vivo, así que otro toque volvía a entrar en `cerrarTema(false)`.
    */
-  cajaBuscador.hidden = true;
+  // Deja su lugar sin irse (`.buscador--cerrado`): el papel no salta mientras cae el sello. Se
+  // va del todo cuando llega la ficha.
+  cajaBuscador.classList.add('buscador--cerrado');
   entrada.disabled = true;
+  botonPrincipal.disabled = true;
   elegido = null;
+  esperar(false);
   // Si el teclado estaba abierto, se cierra aca: la respuesta se mira con la pantalla
   // entera. A mano, porque una caja que desaparece con el foco adentro no siempre avisa.
   teclado.salir();
+  hoja.scrollTop = hoja.scrollHeight;
+  // El foco no se queda en una caja apagada: va al papel, que es donde pasa todo.
+  enfocar(hoja);
+
+  const cual = indice;
+  const papel = hoja;
+  const mostrarLaFicha = (): void => {
+    // Si en el medio se paso de tema (o se reinicio la vuelta), esta ficha ya no va.
+    if (indice !== cual || hoja !== papel || !papel.isConnected) return;
+    pintarFicha({ item, ficha, acerto, hazana, suma, versos });
+  };
+  const espera = duracionDe('--duracion-inercia') + duracionDe('--duracion-umbral');
+  if (espera > 0) window.setTimeout(mostrarLaFicha, espera);
+  else mostrarLaFicha();
+}
+
+/**
+ * El segundo tiempo del cierre: el papel se pliega y aparece la ficha del tema.
+ *
+ * La ficha tiene **la misma gramatica que la del hermano de audio** (`partida-tema.ts`): el
+ * grito estampado y lo que sumaste, la tapa impresa, el titulo en la tinta de su disco, el
+ * dato del disco, lo que costo, la salida a la letra como tecla secundaria de ancho completo
+ * y "Seguí" adentro, cerrando la columna. Debajo, en un solo renglon de registro 3, de donde
+ * salio la letra y la puerta para corregirla.
+ */
+function pintarFicha(datos: {
+  item: ItemDelBanco;
+  ficha: TemaDelCatalogo | undefined;
+  acerto: boolean;
+  hazana: boolean;
+  suma: number;
+  versos: number;
+}): void {
+  const { item, ficha, acerto, hazana, suma, versos } = datos;
 
   /*
    * El tablero suelta el alto fijo.
    *
    * Es una columna de `100svh` con la hoja en `flex: 1 1 auto`, así que appendear el panel
-   * le comía el alto a los versos: medido, **de 515 px a 59 px**. Los versos que estabas
-   * tratando de sacar quedaban ilegibles justo cuando aparece la respuesta.
+   * le comía el alto a los versos: medido, **de 515 px a 59 px**.
    */
   zonaPartida.classList.add('partida--revelada');
+  cajaBuscador.hidden = true;
+
+  /*
+   * El papel se pliega a un renglon: la respuesta escrita y su sello, con el canto de los
+   * dobleces abajo. Asi la ficha entra en la pantalla sin bajar. **Los versos no se pierden**:
+   * el propio papel es el boton que lo vuelve a abrir, porque el momento en que aparece la
+   * respuesta es cuando mas ganas dan de releerlos (lo decia el comentario de `juego.css`
+   * que este pliegue reemplaza).
+   */
+  const plegado = armarDobleces(INTENTOS_VERSOS - 1);
+  plegado.classList.add('dobleces--plegado');
+  hoja.append(plegado);
+  const releer = el('button', 'hoja-releer', PARTIDA.releer);
+  releer.type = 'button';
+  releer.setAttribute('aria-expanded', 'false');
+  const papel = hoja;
+  releer.addEventListener('click', () => {
+    const abierto = papel.classList.toggle('hoja-versos--plegada') === false;
+    releer.setAttribute('aria-expanded', String(abierto));
+    releer.textContent = abierto ? PARTIDA.plegar : PARTIDA.releer;
+    sonarEfecto('tecla');
+    pegar(papel);
+  });
+  hoja.insertBefore(releer, plegado);
+  hoja.classList.add('hoja-versos--plegada');
+  hoja.scrollTop = 0;
+  pegar(hoja);
 
   /*
    * La respuesta viste **la tinta real del disco de ese tema** (`paleta.ts`).
-   *
-   * `UX-08` §6 lo pedía textual —"reusa la estructura entera de `pintarRevelacion()` del
-   * hermano: micro-copy corto, título grande con el nombre del tema, ficha de disco y
-   * año"— y estaba sin construir: los 89 temas se revelaban con el mismo par verde/rojo de
-   * estado y una línea tenue con el nombre del disco.
    *
    * Va con `.revelacion` y no con `.feedback` pelado, y eso es una condición y no un
    * gusto: `.feedback` trae `background: var(--fondo-elevado)`, y `contraste.test.ts` deja
@@ -914,8 +1036,7 @@ function cerrarTema(acerto: boolean): void {
 
   /*
    * El grito, estampado (`D-33`), igual que en el hermano: "¡Lo sacaste!" cae como un sello
-   * de goma y al lado otro con lo que sumaste. Bajan y apoyan una vez. Al errar la linea
-   * queda quieta y en su tinta: no hay nada que festejar.
+   * de goma y al lado otro con lo que sumaste. Al errar la linea queda quieta y en su tinta.
    */
   const cabeza = el('div', 'revelacion-cabeza');
   cabeza.append(el('p', 'micro', hazana ? PARTIDA.hazana : acerto ? PARTIDA.ok : PARTIDA.no));
@@ -928,14 +1049,8 @@ function cerrarTema(acerto: boolean): void {
   panel.append(cabeza);
 
   /*
-   * **La tapa del disco, impresa por pasadas** (`sacar-temas.ts`): la misma estampa que ya
-   * premiaba al hermano de audio y que este juego no tenia. Al acertar entran las tres tintas
-   * y la foto; al errar, la clave sola. Es lo que hace que sacar un tema por la letra termine
-   * en un objeto y no en un renglon.
-   *
-   * Y lo que se ve se acredita (`D-21`, condicion 1): el pie de esta pantalla estaba
-   * escondido mientras se juega porque ninguna tapa entraba al tablero. Ahora entra, asi que
-   * el pie vuelve apenas se revela (`juego.css`) y el credito nombra el disco.
+   * **La tapa del disco, impresa por pasadas** (`sacar-temas.ts`). Al acertar entran las tres
+   * tintas y la foto; al errar, la clave sola. Y lo que se ve se acredita (`D-21`, condicion 1).
    */
   const estampa = ficha ? armarEstampa(ficha, acerto) : null;
   if (estampa && ficha) {
@@ -943,54 +1058,50 @@ function cerrarTema(acerto: boolean): void {
     acreditarTapas([ficha.discoTitulo]);
   }
   panel.append(el('h2', 'revelacion-titulo', PARTIDA.era(item.titulo)));
-
-  // De qué disco salió y de qué año. `PARTIDA.deDonde` estaba escrita y sin usar: al que
-  // no lo sacó se le daba el nombre del disco y nada más.
   if (ficha) panel.append(el('p', 'revelacion-ficha', PARTIDA.deDonde(ficha.discoTitulo, ficha.anio)));
-  panel.append(el('p', 'puntaje-paso', PARTIDA.puntos(suma, versos)));
+  // Lo que costo: registro 3, tenue, como el "costo" del hermano.
+  panel.append(el('p', 'revelacion-costo', PARTIDA.puntos(suma, versos)));
 
-  // La fuente del verso, a la vista — mismo mecanismo que `US-03` (`T-145`, `D-25`).
+  // La salida a la letra: la tecla secundaria de la ficha, del ancho de "Seguí".
+  const verLetra = el('a', 'revelacion-letra', PARTIDA.verLetra);
+  verLetra.href = `/letras-y-acordes/${item.slug}/`;
+  panel.append(verLetra);
+
+  // El último tema no sigue nada: entrega el resultado, y el botón lo dice.
+  const ultimo = indice + 1 >= ronda.length;
+  const seguir = el('button', 'seguir', ultimo ? PARTIDA.ultimo : PARTIDA.seguir);
+  seguir.type = 'button';
+  seguir.addEventListener('click', avanzar, { once: true });
+  panel.append(seguir);
+  zonaPartida.append(panel);
+
+  /*
+   * El pie de la ficha, en un renglon: de donde salio la letra (`T-145`, `D-25`) y la puerta
+   * para corregirla (`UX-09`). Van afuera del panel, que es `role="status"`, y juntas: antes
+   * la fuente estaba chocada contra un boton y "Corregí esto" flotaba sola debajo de todo.
+   */
+  const pie = el('div', 'ficha-pie');
   const linea = el('p', 'fuente-verso');
   const enlace = el('a', 'fuente-verso-enlace', PARTIDA.fuenteDe(item.fuente.sitio));
   enlace.href = item.fuente.url;
   enlace.target = '_blank';
   enlace.rel = 'noopener';
   linea.append(enlace);
-  panel.append(linea);
-
-  const verLetra = el('a', 'volver', PARTIDA.verLetra);
-  verLetra.href = `/letras-y-acordes/${item.slug}/`;
-  panel.append(verLetra);
-
   const correccion = botonCorreccion(() => ({
-      juego: 'por-la-letra',
-      itemId: item.slug,
-      ubicacion: 'los versos',
-      dice: `${item.versos.slice(0, pasoDeVersos(pasoActual).versos).join(' / ')} → ${item.titulo}`,
-      fuente: { sitio: item.fuente.sitio, url: item.fuente.url },
-      banco: { contrato: 'CTR-09', version: 1 },
+    juego: 'por-la-letra',
+    itemId: item.slug,
+    ubicacion: 'los versos',
+    dice: `${item.versos.slice(0, versos).join(' / ')} → ${item.titulo}`,
+    fuente: { sitio: item.fuente.sitio, url: item.fuente.url },
+    banco: { contrato: 'CTR-09', version: 1 },
   }));
-
-  zonaPartida.append(panel);
-
-  // El último tema no sigue nada: entrega el resultado, y el botón lo dice. Un rótulo que
-  // promete otra pregunta y devuelve la pantalla final no está diciendo qué hay adentro.
-  const ultimo = indice + 1 >= ronda.length;
-  // `.seguir` y no `.primario`: es la misma tecla con canto que la del hermano, y toma la
-  // plata de Momo por `--tinte-accion`.
-  const seguir = el('button', 'seguir', ultimo ? PARTIDA.ultimo : PARTIDA.seguir);
-  seguir.type = 'button';
-  seguir.addEventListener('click', avanzar, { once: true });
-  zonaPartida.append(seguir);
-  // `UX-09`: despues de `Seguí` y afuera del panel, que es `role="status"`.
-  zonaPartida.append(correccion);
+  pie.append(linea, correccion);
+  zonaPartida.append(pie);
 
   if (acerto) {
-    vibrarAcierto();
     /*
      * Lo que sumaste vuela desde el sello de la ficha hasta la cuenta de la cabecera, que sube
-     * recien cuando llega. Espera a que el sello termine de apoyar. Si para entonces ya se paso
-     * al tema siguiente, no hay nada que sumar a la vista.
+     * recien cuando llega. Espera a que el sello termine de apoyar.
      */
     const sumaEl = panel.querySelector('.revelacion-suma');
     const cual = indice;
@@ -1008,22 +1119,22 @@ function cerrarTema(acerto: boolean): void {
       },
       duracionDe('--duracion-pasada') + duracionDe('--escalon-pasada'),
     );
-    // La hazana golpea dos veces.
-    if (hazana) window.setTimeout(() => sonarEfecto('sello'), 150);
   }
 
   /*
-   * A donde mira la pantalla, con el mismo criterio que el hermano (`UX-22` §1.4): con
-   * tapa, el foco va a `Seguí` sin arrastrar la vista, y lo que se alinea al pie es el
-   * boton — nunca queda afuera, y lo que varia con el largo es cuanto del premio se ve
-   * arriba. Sin tapa, el foco se lleva la vista como siempre.
+   * El foco va a "Seguí" sin arrastrar la vista (`UX-22` §1.4), y la pantalla solo baja si el
+   * boton no entra. **El anillo de foco se dibuja si se llego con el teclado, y no si se llego
+   * con el dedo**: la caja de texto siempre cuenta como "foco visible" para el navegador, asi
+   * que al pasarle el foco desde ahi "Seguí" salia con el anillo amarillo puesto aunque nadie
+   * hubiera tocado una tecla de navegar. Se le saca solo a este foco: al salir del boton la
+   * clase se va, y un foco posterior por teclado lo dibuja como siempre.
    */
-  if (estampa) {
-    seguir.focus({ preventScroll: true });
-    seguir.scrollIntoView({ block: 'end' });
-  } else {
-    seguir.focus();
+  if (conPuntero) {
+    seguir.classList.add('seguir--sin-anillo');
+    seguir.addEventListener('blur', () => seguir.classList.remove('seguir--sin-anillo'), { once: true });
   }
+  seguir.focus({ preventScroll: true });
+  seguir.scrollIntoView({ block: 'nearest' });
 }
 
 function avanzar(): void {
@@ -1123,20 +1234,36 @@ function pintarResultado(): void {
   zonaResultado.append(entra(cifra));
 
   zonaResultado.append(entra(el('h3', 'resumen-titulo', RESULTADO.detalle)));
-  const detalle = el('ol', 'resumen');
+  /*
+   * Los papeles de la vuelta (ronda 2). El resumen era la lista del hermano; ahora es **el
+   * bolsillo vaciado sobre el jean**: un papel por tema, doblado hasta donde lo abriste. Cada
+   * intento gastado es un quiebre abierto, con su marca —la cruz si arriesgaste y no era, el
+   * punto si pasaste—, y abajo queda el canto de los dobleces que no hizo falta abrir. El
+   * sello dice como salio. Es la misma informacion que daba la escalerita, dicha con el
+   * objeto del juego. Las marcas van escondidas del lector de pantalla: el pie lo dice con
+   * palabras.
+   */
+  const detalle = el('ol', 'resumen resumen--papeles');
   for (const h of hechos) {
-    const disco = claseDisco(h.disco);
-    const li = el('li', `resumen-fila resumen-fila--${h.acerto ? 'ok' : 'no'}${disco ? ` ${disco}` : ''}`);
-    li.append(el('span', 'resumen-marca', h.acerto ? '✔︎' : '✕︎'));
-    // La tapa del tamano de un sello, a color si lo sacaste y en una tinta si no, y abajo
-    // los cuatro escalones del tema: las mismas dos piezas que el afiche del hermano.
+    const li = el('li', `resumen-fila resumen-fila--${h.acerto ? 'ok' : 'no'} papelito`);
+    const cara = el('span', 'papelito-cara');
+    // La tapa del tamano de un sello, a color si lo sacaste y en una tinta si no.
     const estampita = armarEstampita(h.disco, h.acerto);
-    if (estampita) li.append(estampita);
+    if (estampita) cara.append(estampita);
     const cuerpo = el('span', 'resumen-cuerpo');
     cuerpo.append(el('span', 'resumen-tema', h.titulo));
     cuerpo.append(el('span', 'resumen-pie', pieDeTema(h)));
-    cuerpo.append(armarEscalerita(h.recorrido, h.acerto, INTENTOS_VERSOS));
-    li.append(cuerpo);
+    cara.append(cuerpo);
+    li.append(cara);
+    const sello = el('span', `hoja-sello hoja-sello--${h.acerto ? 'ok' : 'no'}`, h.acerto ? '✔︎' : '✕︎');
+    sello.setAttribute('aria-hidden', 'true');
+    li.append(sello);
+    for (const gastado of h.recorrido) {
+      const quiebre = el('span', `papelito-quiebre papelito-quiebre--${gastado}`, gastado === 'fallo' ? '✕︎' : '·');
+      quiebre.setAttribute('aria-hidden', 'true');
+      li.append(quiebre);
+    }
+    li.append(armarDobleces(Math.max(0, INTENTOS_VERSOS - 1 - h.recorrido.length)));
     entra(li, 'jugo-pega');
     detalle.append(li);
   }

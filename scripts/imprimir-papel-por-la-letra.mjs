@@ -14,6 +14,8 @@
  *   · `garabato.webp`  — renglones de letra que no se llega a leer: lo escrito del lado de
  *                        adentro, visto con el papel doblado. No es ninguna letra de ningún tema.
  *   · `tachon.webp`    — el tachón de lápiz, de ida y vuelta, para lo que se arriesgó y no era.
+ *   · `sarga.webp`     — la tela del jean, en baldosa que cierra: la banda de la partida y la
+ *                        mesa del resultado.
  *   · `bolsillo-tela.webp`, `bolsillo-costura.webp` — el bolsillo de atrás del jean: la sarga y
  *                        el pespunte doble con sus remaches.
  *
@@ -71,7 +73,7 @@ async function imprimir(nombre, ancho, alto, cuerpo, defs = '', escala = 1) {
   const tramos = [];
   // Quiebres largos: una línea quebrada en dos o tres tramos, casi recta, como queda un papel
   // que se hizo un bollo y se alisó con la mano.
-  for (let i = 0; i < 9; i++) {
+  for (let i = 0; i < 11; i++) {
     let x = M + rnd() * (L - 2 * M);
     let y = M + rnd() * (L - 2 * M);
     let ang = rnd() * Math.PI;
@@ -80,25 +82,32 @@ async function imprimir(nombre, ancho, alto, cuerpo, defs = '', escala = 1) {
     for (let k = 0; k < cuantos; k++) {
       const largo = 50 + rnd() * 110;
       ang += (rnd() - 0.5) * 0.9;
-      x = Math.min(L - M, Math.max(M, x + Math.cos(ang) * largo));
-      y = Math.min(L - M, Math.max(M, y + Math.sin(ang) * largo));
+      const nx = x + Math.cos(ang) * largo;
+      const ny = y + Math.sin(ang) * largo;
+      // El quiebre que se sale de la baldosa se corta ahí (ronda 2): aplastarlo contra el
+      // margen dejaba líneas rectas, verticales y horizontales, que se leían como una caja.
+      if (nx < M || nx > L - M || ny < M || ny > L - M) break;
+      x = nx;
+      y = ny;
       pts.push([x, y]);
     }
+    if (pts.length < 2) continue;
     const d = `M${pts.map(([a, b]) => `${r1(a)} ${r1(b)}`).join('L')}`;
-    tramos.push(`<path d="${d}" stroke-width="${r1(1.5 + rnd() * 1.1)}"/>`);
+    tramos.push(`<path d="${d}" stroke-width="${r1(1.1 + rnd() * 0.8)}"/>`);
     // De cada quiebre sale alguno más corto.
     if (rnd() > 0.35) {
       const [bx, by] = pts[1];
       const a2 = ang + 1.2 + rnd();
       const l2 = 24 + rnd() * 46;
-      const ex = Math.min(L - M, Math.max(M, bx + Math.cos(a2) * l2));
-      const ey = Math.min(L - M, Math.max(M, by + Math.sin(a2) * l2));
-      tramos.push(`<path d="M${r1(bx)} ${r1(by)}L${r1(ex)} ${r1(ey)}" stroke-width="1.3"/>`);
+      const ex = bx + Math.cos(a2) * l2;
+      const ey = by + Math.sin(a2) * l2;
+      if (ex > M && ex < L - M && ey > M && ey < L - M)
+        tramos.push(`<path d="M${r1(bx)} ${r1(by)}L${r1(ex)} ${r1(ey)}" stroke-width="1.3"/>`);
     }
   }
   // Las pecas del papel: puntos sueltos, pocos.
   const pecas = [];
-  for (let i = 0; i < 46; i++) {
+  for (let i = 0; i < 30; i++) {
     pecas.push(`<circle cx="${r1(M + rnd() * (L - 2 * M))}" cy="${r1(M + rnd() * (L - 2 * M))}" r="${r1(0.5 + rnd() * 0.9)}"/>`);
   }
   await imprimir(
@@ -170,6 +179,32 @@ async function imprimir(nombre, ancho, alto, cuerpo, defs = '', escala = 1) {
     H,
     `<g filter="url(#m)" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></g>`,
     mano('m', { pulso: 4, grano: 0.7, falta: 0.5, semilla: 4 }),
+  );
+}
+
+// ---------------------------------------------------------------- la sarga del jean
+
+{
+  /*
+   * La tela del jean, en una baldosa que cierra (ronda 2): la banda del medio de la partida y la
+   * mesa del resultado son jean de lado a lado, y el bolsillo va cosido encima. Las rayas van a
+   * 45° con un paso que divide justo al lado de la baldosa, y la falta de tinta sale de un ruido
+   * cosido (`stitchTiles`), sin desplazamiento: así no hay costura al repetir.
+   */
+  const L = 416;
+  const rayas = [];
+  for (let x = -L; x < L; x += 13) rayas.push(`M${x} 0L${x + L} ${L}`);
+  await imprimir(
+    'sarga',
+    L,
+    L,
+    `<g filter="url(#s)"><path d="${rayas.join('')}" stroke="#fff" stroke-width="5.2" fill="none"/></g>`,
+    `<filter id="s" x="0" y="0" width="1" height="1">
+       <feTurbulence type="fractalNoise" baseFrequency="0.3" numOctaves="2" seed="12" stitchTiles="stitch" result="g"/>
+       <feColorMatrix in="g" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 8 -3.3" result="h"/>
+       <feComposite in="SourceGraphic" in2="h" operator="in"/>
+     </filter>`,
+    0.5,
   );
 }
 

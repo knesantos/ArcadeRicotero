@@ -471,6 +471,17 @@ const ESTADOS_LETRA = [
   '.hoja-versos--sacada',
   '.hoja-versos--escapada',
   '.hoja-versos--sale',
+  // Ronda 2: el papel plegado a un renglon con la ficha a la vista, y su canto de dobleces; el
+  // buscador que deja su lugar mientras cae el sello; "Seguí" sin anillo si se llego con el dedo;
+  // el papel que respira mientras espera, y los papeles de la vuelta en el resultado.
+  '.hoja-versos--plegada',
+  '.dobleces--plegado',
+  '.buscador--cerrado',
+  '.seguir--sin-anillo',
+  '.partida--esperando',
+  '.resumen--papeles',
+  '.papelito-quiebre--fallo',
+  '.papelito-quiebre--paso',
   // El buscador de papel del hermano, la racha, la hazana y la cabecera que dice cuanto llevas.
   '.buscador-fila--elegida',
   '.restantes--llevas',

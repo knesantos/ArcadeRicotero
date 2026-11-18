@@ -72,3 +72,56 @@ adentro, dos anillos pegados— sin tocar la tinta. Si se quiere otro disco, es 
 - En la mesa (1280), el papel de la portada queda medio metido detrás de la chapa de puntajes.
 - Con ocho versos, al acertar la pantalla baja hasta "Seguí" y el sello del papel queda arriba,
   fuera de la vista.
+
+---
+
+# Ronda 2 (2026-11-18)
+
+## 5. Lo que cambió y conviene dejar escrito
+
+1. **El cierre del tema tiene dos tiempos.** Primero, sobre el papel: debajo del último verso
+   se escribe "Era …" y al lado cae el sello (tilde o cruz). Después de `--duracion-inercia` +
+   `--duracion-umbral` (1,28 s; cero con movimiento reducido) el papel se pliega a ese renglón y
+   aparece la ficha. El renglón del papel va con `aria-hidden`: la ficha (`role="status"`) dice
+   lo mismo con el título como encabezado.
+2. **El papel plegado se puede volver a abrir** ("Releé los versos" / "Doblá el papel"). El
+   comentario viejo de `juego.css` pedía que los versos siguieran legibles al revelar; plegarlo
+   sin esa puerta lo habría roto. Dos textos nuevos para `contenido`.
+3. **La ficha tiene la gramática de la del hermano**: grito y suma, tapa, título, dato del disco,
+   lo que costó (ahora tenue, `revelacion-costo`), "Mirá la letra y los acordes" como tecla
+   secundaria de ancho completo (`revelacion-letra`) y "Seguí" adentro del panel. Debajo, un
+   renglón con la fuente de la letra y "Corregí esto". **Toca `UX-09`** en un detalle:
+   "Corregí esto" sigue afuera del panel y después de "Seguí", pero ya no sola.
+4. **El anillo amarillo de "Seguí" no era un resto: era `:focus-visible`.** La isla le pasa el
+   foco a "Seguí" desde la caja de texto, y una caja de texto siempre cuenta como foco visible,
+   así que el anillo salía también al que venía tocando con el dedo. Ahora ese foco no dibuja
+   anillo si el tema se cerró con un toque (`click` con `detail > 0`), y sí si se cerró con el
+   teclado. La clase se va al salir del botón. **"Adiviná el tema" tiene el mismo anillo** y no
+   lo toqué: si se quiere igual, es llevar `conPuntero` a `partida-tema.ts`.
+5. **La banda del medio es el jean entero**, de borde a borde, con dos dobladillos
+   pespunteados; el bolsillo es un parche cosido encima (tapa la sarga de la banda y lleva la
+   suya). `sarga.webp` es una baldosa que cierra (ruido cosido, sin desplazamiento).
+6. **Los rótulos son dos recortes de papel pegados al papel**: "Tenés N versos" con su cinta y
+   "Vale N" como sello. La letra va en `--fondo` sobre `--papel`, el par medido. Con la ficha a
+   la vista se van los dos.
+7. **El resultado son los papeles de la vuelta sobre el jean**, uno por tema, doblado hasta
+   donde lo abriste: cada intento gastado es un quiebre con su marca (cruz o punto) y abajo
+   queda el canto de los dobleces sin abrir. Reemplaza a la escalerita en este juego (el
+   hermano la sigue usando). El título va en `--fondo` sobre papel, no en la tinta del disco:
+   ese par no está medido sobre papel. La tarjeta compartible no cambió.
+8. **Un desplazamiento que se perdía.** Al cerrarse el teclado la mesa deja de ser
+   `display: contents` y el navegador le borra el desplazamiento a la hoja: con ocho versos
+   quedaba arriba. Ahora se vuelve a bajar (`alSalir`).
+9. **El interruptor de los ruidos también está en la partida**, debajo de la tecla. Cuesta un
+   renglón de 48 px: con ocho versos a 430 × 860 el papel ya no entra entero y desplaza por
+   dentro (queda abajo, en lo nuevo).
+10. **Token nuevo**: `--duracion-respiro` (4,5 s).
+
+## 6. Detalles vivos de la ronda 2
+
+| Detalle | Estado al que está atado | Con movimiento reducido |
+|---|---|---|
+| El canto de los dobleces se hincha cada 4,5 s | "esperando respuesta": tema abierto y nada escrito | quieto (`animation: none`) |
+| El papel se endereza bajo el dedo | `:active` sobre el papel | igual: es respuesta al toque |
+| "Era …" se escribe y cae el sello | cerrar el tema | puesto |
+| El papel se pliega y apoya | llega la ficha | puesto |
