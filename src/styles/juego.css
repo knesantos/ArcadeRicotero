@@ -5196,64 +5196,12 @@ body.juego-por-la-letra:has(#partida:not([hidden])) {
  * Se tine el APOYO del disco y no la tinta: es una linea, no texto.
  */
 .verso--nuevo {
-  border-bottom: 2px solid var(--disco-momo-sampler-apoyo);
+  border-bottom: 1px solid var(--disco-momo-sampler-apoyo);
 }
 
 /* El ultimo verso nuevo no pierde su marca por ser el ultimo de la hoja. */
 .verso--nuevo:last-child {
-  border-bottom: 2px solid var(--disco-momo-sampler-apoyo);
-}
-
-/* Los intentos gastados. Sello de goma, no pastilla capsula: esquina casi viva, borde
-   fino, apenas torcido (regla anti-slop). Nunca se predibujan los que faltan. */
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--espacio-1);
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-/*
- * Sin esto, `chips.hidden = intentos.length === 0` no apaga nada.
- *
- * `display: flex` de autor le gana siempre al `display: none` de la hoja del navegador, y
- * el motor confiaba en que la regla existia. Resultado: en el paso 1, una lista vacia se
- * llevaba su renglon y su `gap` de la unica pantalla del sitio que pelea el espacio por
- * pixel. El repo ya lo sabia y lo tiene resuelto tres veces —`.buscador[hidden]`,
- * `.sugerencias[hidden]`, `.revelacion[hidden]`—; a esta le faltaba.
- */
-.chips[hidden] {
-  display: none;
-}
-
-.chip {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.35em;
-  border: 1px solid var(--borde);
-  border-radius: 3px;
-  padding: 0.15em 0.5em;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  transform: rotate(-0.4deg);
-}
-
-.chip--fallado {
-  color: var(--acento-4);
-  border-color: var(--acento-4);
-}
-
-.chip--pasado {
-  color: var(--texto-tenue);
-}
-
-/* El ultimo intento gastado: el unico chip que queda con el teclado abierto (abajo). Sin
-   pintura propia fuera de esa pantalla — es un gancho, no un estado que se vea distinto. */
-.chip--ultimo {
-  rotate: 0.6deg;
+  border-bottom: 1px solid var(--disco-momo-sampler-apoyo);
 }
 
 /* ---- "Sacalo por la letra" con el teclado abierto (`partida--tecleando`) ----
@@ -5280,21 +5228,6 @@ body.juego-por-la-letra:has(#partida:not([hidden])) {
   min-height: 4.5rem;
   margin-bottom: 0;
   padding-block: var(--espacio-1);
-}
-
-.juego-por-la-letra .partida--tecleando .chip {
-  display: none;
-}
-
-.juego-por-la-letra .partida--tecleando .chip--ultimo {
-  display: inline-flex;
-}
-
-.chip-texto {
-  max-width: 14ch;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 /* Cuando queda un solo intento, el dato se pone urgente — con peso ademas de tinta. */
@@ -7434,6 +7367,455 @@ html.incrustado .juego-tema #partida .cabina-puertas {
 .partida--entero .cabina,
 .partida--entero .entero-tecla {
   margin-top: 1px;
+}
+
+/* =====================================================================
+   El papel de "Sacalo por la letra" (ronda de pulida de los juegos, 2026-11-18)
+
+   El lugar de este juego lo dice su portada: "un papel arrugado te pesa en el bolsillo". Hasta
+   esta ronda la partida era un rectangulo beige flotando en una banda negra. Ahora la banda es
+   el bolsillo de atras del jean y la hoja es el papel doblado que sale de ahi: cada escalon
+   abre un doblez y duplica lo que se ve —1, 2, 4, 8 versos (`BR-20`)—, lo que arriesgaste
+   queda anotado y tachado sobre el quiebre, y abajo asoma el canto de los dobleces que quedan.
+
+   Las piezas con mano (las arrugas, el tachon, la sarga, el pespunte, el garabato) son
+   MASCARAS impresas una vez (`scripts/imprimir-papel-por-la-letra.mjs`); la tinta sale de los
+   tokens: el papel de las etiquetas, el peltre de *Momo Sampler* para el hilo, el rojo del
+   error para el tachon. Ningun color nuevo, ninguna sombra, ningun degradado. En vivo solo se
+   mueven `transform` y `opacity`.
+
+   NINGUN ESTADO DEPENDE DEL MOVIMIENTO: el error tiene su cruz y su tachon quietos, el acierto
+   su sello con la tilde, y con movimiento reducido el papel aparece abierto y escrito.
+   ===================================================================== */
+
+/* ---- La mesa: la banda del medio, con el bolsillo detras ---- */
+.mesa-papel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.bolsillo {
+  position: absolute;
+  z-index: 0;
+  top: 50%;
+  left: 50%;
+  height: min(100%, 27rem);
+  max-width: 100%;
+  aspect-ratio: 760 / 860;
+  translate: -50% -50%;
+  pointer-events: none;
+}
+
+.bolsillo-tela,
+.bolsillo-costura {
+  position: absolute;
+  inset: 0;
+}
+
+/* La sarga: rayas en diagonal con la falta de tinta impresa. Es fondo: no lleva texto encima. */
+.bolsillo-tela {
+  background: var(--borde);
+  -webkit-mask: url('/arte/por-la-letra/bolsillo-tela.webp') center / 100% 100% no-repeat;
+  mask: url('/arte/por-la-letra/bolsillo-tela.webp') center / 100% 100% no-repeat;
+}
+
+/* El pespunte doble y los remaches, en el peltre de la tapa: el hilo. */
+.bolsillo-costura {
+  background: var(--disco-momo-sampler-apoyo);
+  -webkit-mask: url('/arte/por-la-letra/bolsillo-costura.webp') center / 100% 100% no-repeat;
+  mask: url('/arte/por-la-letra/bolsillo-costura.webp') center / 100% 100% no-repeat;
+}
+
+/* El rotulo de los versos y lo que vale: la etiqueta cosida arriba del bolsillo. Lleva el
+   fondo liso para que su letra siga sobre `--fondo`, que es el par medido, y no sobre la sarga. */
+.juego-por-la-letra .versos-cabeza {
+  position: relative;
+  z-index: 1;
+  align-self: center;
+  width: min(100%, 21.5rem);
+  margin-bottom: var(--espacio-1);
+  padding: 0.2rem 0.5rem;
+  background: var(--fondo);
+  border: 1px dashed var(--disco-momo-sampler-apoyo);
+  border-radius: 3px;
+}
+
+/* ---- El papel ---- */
+.juego-por-la-letra .hoja-versos {
+  position: relative;
+  z-index: 1;
+  display: block;
+  align-self: center;
+  width: min(100%, 21.5rem);
+  min-height: 0;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  rotate: -1.1deg;
+}
+
+/* Cada doblez abierto es un pedazo del mismo papel. */
+.pliego {
+  position: relative;
+  padding: var(--espacio-2);
+  background: var(--papel);
+  color: var(--fondo);
+  border-inline: 2px solid var(--papel-borde);
+}
+
+/* El quiebre: la linea por donde estaba doblado. */
+.pliego + .pliego,
+.nota + .pliego {
+  border-top: 2px dashed var(--papel-borde);
+}
+
+/* El primero es el papel todavia doblado: tiene cuerpo aunque traiga un solo renglon. */
+.pliego:first-child {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 6.5rem;
+  border-top: 2px solid var(--papel-borde);
+  border-radius: 3px 3px 0 0;
+}
+
+/* Las arrugas: quiebres finos y pecas, en el borde del papel. Van debajo de la letra. */
+.pliego::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--papel-borde);
+  -webkit-mask: url('/arte/por-la-letra/arrugas.webp') 0 0 / 420px 420px repeat;
+  mask: url('/arte/por-la-letra/arrugas.webp') 0 0 / 420px 420px repeat;
+  pointer-events: none;
+}
+
+/* Cada doblez muestra otro pedazo de la misma arruga. */
+.pliego:nth-child(4n + 2)::after,
+.pliego:nth-child(4n + 3)::after {
+  -webkit-mask-position: -180px -130px;
+  mask-position: -180px -130px;
+}
+
+.pliego:nth-child(4n)::after,
+.pliego:nth-child(4n + 5)::after {
+  -webkit-mask-position: -60px -250px;
+  mask-position: -60px -250px;
+}
+
+.pliego > .verso {
+  position: relative;
+  z-index: 1;
+}
+
+/* El doblez que se abre: gira desde el quiebre hasta quedar plano. Si lo abrio un error,
+   espera a que termine el golpe. */
+.pliego--nuevo {
+  transform-origin: 50% 0;
+  animation: pliego-abre var(--duracion-umbral) var(--curva-cinta) both;
+}
+
+.pliego--tras-error {
+  animation-delay: var(--duracion-golpe);
+}
+
+@keyframes pliego-abre {
+  from {
+    transform: perspective(38rem) rotateX(-88deg);
+  }
+}
+
+/* La letra se escribe: cada palabra entra un instante despues que la anterior, corrida desde
+   la izquierda como viene el lapiz. Espera a que el papel termine de llegar o de abrirse. */
+.palabra {
+  display: inline-block;
+  animation: palabra-escribe var(--duracion-sello) linear
+    calc(var(--duracion-umbral) + var(--escalon-umbral) * var(--orden, 0) / 2) backwards;
+}
+
+.pliego--tras-error .palabra {
+  animation-delay: calc(var(--duracion-golpe) + var(--duracion-umbral) + var(--escalon-umbral) * var(--orden, 0) / 2);
+}
+
+@keyframes palabra-escribe {
+  from {
+    opacity: 0;
+    translate: -5px 0;
+  }
+}
+
+/* ---- Lo anotado sobre el quiebre: el intento que abrio ese doblez ---- */
+.nota {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 0.4em;
+  margin: 0;
+  padding: 0.3rem var(--espacio-2) 0.25rem;
+  background: var(--papel);
+  color: var(--papel-tenue);
+  border-inline: 2px solid var(--papel-borde);
+  border-top: 2px dashed var(--papel-borde);
+  font-size: 0.82rem;
+  font-style: italic;
+}
+
+/* Lo que arriesgaste y no era: en la tinta del papel, con la cruz y el tachon encima. */
+.nota--fallada {
+  color: var(--fondo);
+}
+
+.nota--pasada .nota-texto {
+  letter-spacing: 0.04em;
+}
+
+/* La ultima anotada es la unica que queda a la vista con el teclado abierto (abajo). */
+.nota--ultima {
+  font-weight: 700;
+}
+
+.nota-marca {
+  font-style: normal;
+}
+
+.nota-texto {
+  position: relative;
+  max-width: 24ch;
+  overflow-wrap: anywhere;
+}
+
+/* El tachon: el trazo de lapiz impreso, en el rojo del error, que pasa de izquierda a derecha. */
+.nota-tachon {
+  position: absolute;
+  inset: -0.15em -0.5em;
+  background: var(--acento-4);
+  -webkit-mask: url('/arte/por-la-letra/tachon.webp') center / 100% 100% no-repeat;
+  mask: url('/arte/por-la-letra/tachon.webp') center / 100% 100% no-repeat;
+  transform-origin: 0 50%;
+  animation: tachon-pasa var(--duracion-golpe) var(--curva-cinta) both;
+  pointer-events: none;
+}
+
+@keyframes tachon-pasa {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+/* ---- El canto de los dobleces que quedan: uno por intento sin gastar ---- */
+.dobleces {
+  display: block;
+  border-top: 2px solid var(--papel-borde);
+}
+
+.doblez {
+  display: block;
+  height: 7px;
+  margin-inline: 3px;
+  background: var(--papel);
+  border: 2px solid var(--papel-borde);
+  border-top: 0;
+}
+
+.doblez:nth-child(2) {
+  margin-inline: 8px;
+}
+
+.doblez:nth-child(3) {
+  margin-inline: 14px;
+}
+
+.doblez:last-child {
+  border-radius: 0 0 3px 3px;
+}
+
+/* ---- El resultado, marcado sobre el papel ---- */
+.hoja-sello {
+  position: absolute;
+  z-index: 2;
+  top: -1rem;
+  right: -0.4rem;
+  display: grid;
+  place-items: center;
+  width: 2.7rem;
+  height: 2.7rem;
+  background: var(--fondo);
+  border: var(--linea) solid currentColor;
+  border-radius: 50%;
+  font-size: 1.25rem;
+  line-height: 1;
+  rotate: 11deg;
+  animation: sello-golpe var(--duracion-pasada) var(--curva-cinta) both;
+}
+
+.hoja-sello--ok {
+  color: var(--acento-3);
+}
+
+.hoja-sello--no {
+  color: var(--acento-4);
+}
+
+/* El papel cerrado lleva el borde de arriba mas grueso del lado del sello: sacado, entero;
+   escapado, cortado. Forma, ademas del simbolo que escribe la isla. */
+.hoja-versos--sacada .pliego:first-child {
+  border-top-style: double;
+  border-top-width: 6px;
+}
+
+.hoja-versos--escapada .pliego:first-child {
+  border-top-style: dashed;
+}
+
+/* El pase: el papel del tema nuevo sube del bolsillo, torcido, y apoya. */
+.hoja-versos--sale {
+  animation: papel-sale var(--duracion-umbral) var(--curva-cinta) backwards;
+}
+
+@keyframes papel-sale {
+  from {
+    translate: 0 4.5rem;
+    rotate: 4deg;
+  }
+}
+
+/* ---- Con el tema revelado: el papel queda, el bolsillo se va ---- */
+.partida--revelada .mesa-papel {
+  flex: none;
+}
+
+.partida--revelada .bolsillo {
+  display: none;
+}
+
+/* Lo que valia el tema ya no esta en juego: la etiqueta se queda con cuantos versos leiste, y
+   el sello del papel cae en ese lugar. */
+.juego-por-la-letra .partida--revelada .reproductor-vale {
+  display: none;
+}
+
+/* ---- Con el teclado abierto: la mesa se desarma y el papel cede alto ---- */
+.partida--tecleando .mesa-papel {
+  display: contents;
+}
+
+.partida--tecleando .bolsillo {
+  display: none;
+}
+
+.juego-por-la-letra .partida--tecleando .versos-cabeza {
+  width: 100%;
+  padding-block: 0;
+  border: 0;
+}
+
+.juego-por-la-letra .partida--tecleando .hoja-versos {
+  width: 100%;
+  padding: 0;
+  rotate: none;
+}
+
+.partida--tecleando .pliego {
+  padding-block: var(--espacio-1);
+}
+
+.partida--tecleando .pliego:first-child {
+  min-height: 0;
+}
+
+.partida--tecleando .nota {
+  display: none;
+}
+
+.partida--tecleando .nota--ultima {
+  display: flex;
+}
+
+/* En la mesa (`UX-35`) el tablero no es de alto fijo: la banda del bolsillo tiene su piso. */
+@media (min-width: 64rem) {
+  .juego-por-la-letra main:has(> .caratula) .mesa-papel {
+    min-height: 23rem;
+  }
+
+  /* El papel va al medio del bolsillo, no apoyado en el buscador. */
+  .juego-por-la-letra main:has(> .caratula) .mesa-papel .hoja-versos {
+    margin-bottom: auto;
+  }
+
+  .juego-por-la-letra main:has(> .caratula) #partida.partida--revelada .mesa-papel {
+    min-height: 0;
+  }
+}
+
+/* ---- El papel de la portada: doblado, con lo escrito del lado de adentro ---- */
+.portada-papel {
+  position: absolute;
+  z-index: 0;
+  top: 4.9rem;
+  right: 0.7rem;
+  width: min(38vw, 10rem);
+  rotate: 6deg;
+  pointer-events: none;
+}
+
+.papel-doblado {
+  display: block;
+}
+
+.papel-doblado-letra {
+  position: relative;
+  display: block;
+  aspect-ratio: 520 / 330;
+  background: var(--papel);
+  border: 2px solid var(--papel-borde);
+  border-bottom: 0;
+  border-radius: 3px 3px 0 0;
+}
+
+/* Lo escrito se trasluce: se ve al reves y apenas, en el borde del papel. No es letra de
+   ningun tema: es un garabato impreso. */
+.papel-doblado-letra::before {
+  content: '';
+  position: absolute;
+  inset: 9% 7%;
+  background: var(--papel-borde);
+  -webkit-mask: url('/arte/por-la-letra/garabato.webp') center / 100% 100% no-repeat;
+  mask: url('/arte/por-la-letra/garabato.webp') center / 100% 100% no-repeat;
+  scale: -1 1;
+}
+
+.papel-doblado-letra::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--papel-borde);
+  -webkit-mask: url('/arte/por-la-letra/arrugas.webp') -40px -60px / 300px 300px repeat;
+  mask: url('/arte/por-la-letra/arrugas.webp') -40px -60px / 300px 300px repeat;
+}
+
+@media (min-width: 64rem) {
+  /* En la mesa el titulo cruza la hoja de punta a punta: el papel baja al costado de la
+     bajada, entre el titulo y la chapa, para no taparle la ultima palabra. */
+  .portada-papel {
+    top: 7.4rem;
+    right: 0.4rem;
+    width: 8.5rem;
+  }
+}
+
+/* El interruptor de los ruidos, en la portada, debajo de la tecla. */
+.arranque-ruidos {
+  margin: 0;
+  text-align: right;
+}
+
+.arranque-ruidos:empty {
+  display: none;
 }
 
 /* =====================================================================

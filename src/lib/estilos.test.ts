@@ -457,10 +457,24 @@ const JS_LETRA = leer('src/scripts/partida-por-la-letra.ts');
 
 /** Las clases de estado que crea la isla de la letra y que tienen que verse distinto. */
 const ESTADOS_LETRA = [
-  '.chip--fallado',
-  '.chip--pasado',
-  // El ultimo intento gastado: el unico chip que queda con el teclado abierto.
-  '.chip--ultimo',
+  // El intento gastado se anota en el papel, sobre el quiebre (ronda de pulida, 2026-11-18):
+  // antes eran chips arriba de la hoja. La ultima es la unica que queda con el teclado abierto.
+  '.nota--fallada',
+  '.nota--pasada',
+  '.nota--ultima',
+  // El doblez que se abre, y el que espera al golpe de un error.
+  '.pliego--nuevo',
+  '.pliego--tras-error',
+  // El resultado marcado sobre el papel, y el papel del tema nuevo que sale del bolsillo.
+  '.hoja-sello--ok',
+  '.hoja-sello--no',
+  '.hoja-versos--sacada',
+  '.hoja-versos--escapada',
+  '.hoja-versos--sale',
+  // El buscador de papel del hermano, la racha, la hazana y la cabecera que dice cuanto llevas.
+  '.buscador-fila--elegida',
+  '.restantes--llevas',
+  '.revelacion--hazana',
   // Lo que ya arriesgaste sigue en la lista, tachado y sin poder elegirse.
   '.sugerencia--probada',
   '.verso--nuevo',

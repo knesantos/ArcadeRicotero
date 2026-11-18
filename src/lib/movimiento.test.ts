@@ -238,6 +238,13 @@ const ANIMACIONES = [
   { nombre: 'onda', apaga: 'regla', valor: '.ejes-lugar--vereda .ejes-lugar-onda', hoja: 'src/styles/juego.css' },
   { nombre: 'pogo', apaga: 'regla', valor: '.ejes-lugar--adentro .ejes-lugar-gente-salta', hoja: 'src/styles/juego.css' },
   { nombre: 'haz-barre', apaga: 'regla', valor: '.ejes-lugar--adentro .ejes-lugar-haz', hoja: 'src/styles/juego.css' },
+  // El papel de "Sacalo por la letra" (ronda de pulida, 2026-11-18): el doblez que se abre, la
+  // letra que se escribe palabra por palabra, el tachon de lapiz sobre lo que se erro y el papel
+  // del tema nuevo que sale del bolsillo. Las cuatro pasan una vez, atadas a un intento o a un tema.
+  { nombre: 'pliego-abre', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  { nombre: 'palabra-escribe', apaga: 'token', valor: '--duracion-sello', hoja: 'src/styles/juego.css' },
+  { nombre: 'tachon-pasa', apaga: 'token', valor: '--duracion-golpe', hoja: 'src/styles/juego.css' },
+  { nombre: 'papel-sale', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
   // Los sellos del bestiario que se asientan (`D-83`): el bocadillo, el «Anotado» y la libreta
   // terminan de apoyar; la hoja de la ficha baja los últimos píxeles. Un solo token los apaga.
   { nombre: 'sello-apoya', apaga: 'token', valor: '--duracion-sello', hoja: 'src/styles/sitio.css' },

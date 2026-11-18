@@ -80,6 +80,13 @@ async function abrir(nav, ancho, alto, quieto) {
   const dedo = ancho < 768 && !bandera('--sin-dedo');
   await pagina.setViewport({ width: ancho, height: alto, deviceScaleFactor: 1, hasTouch: dedo, isMobile: dedo });
   await pagina.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: quieto ? 'reduce' : 'no-preference' }]);
+  // Contra `astro dev` (--base), la barra de herramientas de Astro flota abajo y se come los
+  // toques de la zona del pulgar: no es del sitio, así que no sale en la foto ni recibe clics.
+  await pagina.evaluateOnNewDocument(() => {
+    const estilo = document.createElement('style');
+    estilo.textContent = 'astro-dev-toolbar{display:none!important}';
+    document.addEventListener('DOMContentLoaded', () => document.head.append(estilo));
+  });
   const cdp = await pagina.createCDPSession();
   await cdp.send('Animation.enable');
   const prefijo = `${ancho}${quieto ? '-quieto' : ''}`;
@@ -497,6 +504,161 @@ async function dosEjes(ctx) {
   await foto('postal');
 }
 
+/**
+ * «Sacalo por la letra»: la vuelta entera. La portada con su papel, el papel que viaja, un
+ * error que cae sobre el papel, dos pases que abren dobleces, un acierto, la hazaña (sacarlo
+ * con un renglón) con su racha, un tema que se escapa y el resultado.
+ *
+ * El juego no dice cuál es el tema, pero el banco viaja en la página: el primer verso que se
+ * ve alcanza para saber cuál es.
+ */
+async function porLaLetra(ctx) {
+  const { pagina, foto, tira, quieto } = ctx;
+  const url = `${base}/juegos/adivinar-por-la-letra/`;
+  await pagina.goto(url, { waitUntil: 'networkidle0' });
+  await tira('portada-entra', () => pagina.reload({ waitUntil: 'domcontentloaded' }), { ms: 900 });
+  await foto('portada');
+  await foto('portada-entera', { entera: true });
+
+  // La tecla apretada: se baja el dedo sobre "Jugá" y no se levanta.
+  const jugar = await pagina.$('#jugar');
+  const caja = await jugar.boundingBox();
+  await pagina.mouse.move(caja.x + caja.width / 2, caja.y + caja.height / 2);
+  await pagina.mouse.down();
+  await ctx.espera(150);
+  await foto('portada-tecla-apretada');
+  // Al soltar, el papel de la portada viaja a su lugar en la partida y el verso se escribe.
+  await tira('papel-viaja', () => pagina.mouse.up(), { ms: 900 });
+  await ctx.espera(600);
+
+  const banco = await pagina.evaluate(() => JSON.parse(document.getElementById('banco').textContent));
+  const catalogo = await pagina.evaluate(() => JSON.parse(document.getElementById('catalogo').textContent));
+  /** El tema en curso, por su primer verso. */
+  const elDeAhora = async () => {
+    const primero = await pagina.$eval('.hoja-versos .verso', (v) => v.textContent);
+    const item = banco.find((i) => i.versos[0] === primero);
+    if (!item) throw new Error(`no encuentro en el banco el verso "${primero}"`);
+    return item;
+  };
+  const soltarFoco = async () => {
+    // En el teléfono, con el foco en el buscador la pantalla es otra a propósito
+    // (`.partida--tecleando`): se suelta el foco antes de mirar el tablero.
+    await pagina.evaluate(() => document.activeElement instanceof HTMLElement && document.activeElement.blur());
+    await ctx.espera(200);
+  };
+  const escribir = async (texto) => {
+    await pagina.click('.buscador-caja', { clickCount: 3 });
+    await pagina.keyboard.press('Backspace');
+    await pagina.type('.buscador-caja', texto);
+    await ctx.espera(250);
+  };
+  const elegir = async (titulo) => {
+    const botones = await pagina.$$('.sugerencia:not(:disabled)');
+    for (const b of botones) {
+      const t = await b.$eval('.sugerencia-titulo', (n) => n.textContent);
+      if (t === titulo) return b.click();
+    }
+    throw new Error(`"${titulo}" no salió en la lista`);
+  };
+  const boton = () => pagina.click('.arriesgar');
+  const sacar = async (item) => {
+    await escribir(item.titulo);
+    await elegir(item.titulo);
+    await ctx.espera(200);
+  };
+
+  await foto('partida');
+  await foto('partida-entera', { entera: true });
+
+  // ---- tema 1: un error, dos pases (ocho versos) y se saca.
+  const uno = await elDeAhora();
+  const otro = catalogo.find((t) => t.titulo !== uno.titulo && t.titulo.length > 8 && t.titulo.length < 22);
+  await escribir(otro.titulo.slice(0, 5));
+  await foto('sugerencias-con-teclado');
+  await escribir(otro.titulo);
+  // Elegir: la ficha se pega en el campo.
+  await tira('elige', () => elegir(otro.titulo), { ms: 420 });
+  await soltarFoco();
+  await foto('elegido');
+  // El error: el papel se sacude, lo arriesgado queda tachado y recién ahí se abre el doblez.
+  await tira('error', boton, { ms: 1500 });
+  await soltarFoco();
+  await ctx.espera(700);
+  await foto('tras-el-error');
+  // Pasar: la marca, y el doblez que se abre con sus dos versos.
+  await tira('pasar', boton, { ms: 1100 });
+  await soltarFoco();
+  await ctx.espera(900);
+  await foto('cuatro-versos');
+  await boton();
+  await soltarFoco();
+  await ctx.espera(quieto ? 200 : 2200);
+  await foto('ocho-versos-ultimo-intento');
+  await foto('ocho-versos-entera', { entera: true });
+  await sacar(uno);
+  await tira('acierto', boton, { ms: 1400 });
+  await ctx.espera(1200);
+  await foto('revelacion-acierto');
+  await foto('revelacion-acierto-entera', { entera: true });
+  await pagina.evaluate(() => window.scrollTo(0, 0));
+  await ctx.espera(150);
+  await foto('revelacion-acierto-arriba');
+
+  // ---- el pase al tema 2: el papel nuevo sale del bolsillo.
+  await tira('tema-siguiente', () => pagina.click('.seguir'), { ms: 900 });
+  await ctx.espera(500);
+  await foto('tema-2');
+
+  // ---- tema 2: de una, con un renglón. La hazaña, y dos al hilo.
+  await sacar(await elDeAhora());
+  await tira('hazana', boton, { ms: 1500 });
+  await ctx.espera(1500);
+  await foto('hazana');
+  await foto('hazana-entera', { entera: true });
+  await pagina.evaluate(() => window.scrollTo(0, 0));
+  await ctx.espera(150);
+  await foto('racha-de-dos');
+  await pagina.click('.seguir');
+  await ctx.espera(900);
+
+  // ---- tema 3: un pase y se saca. Tres al hilo.
+  await boton();
+  await ctx.espera(quieto ? 200 : 900);
+  await sacar(await elDeAhora());
+  await boton();
+  await ctx.espera(1800);
+  await pagina.click('.seguir');
+  await ctx.espera(900);
+
+  // ---- tema 4: se escapa. Un error, dos pases y el último intento.
+  const cuatro = await elDeAhora();
+  const errado = catalogo.find((t) => t.titulo !== cuatro.titulo && t.titulo.length > 14 && t.titulo.length < 30);
+  await sacar(errado);
+  await boton();
+  await ctx.espera(quieto ? 200 : 1300);
+  await boton();
+  await ctx.espera(quieto ? 200 : 900);
+  await boton();
+  await soltarFoco();
+  await ctx.espera(quieto ? 200 : 2200);
+  await foto('ultimo-intento');
+  await tira('se-escapa', boton, { ms: 900 });
+  await ctx.espera(800);
+  await foto('revelacion-fallo');
+  await foto('revelacion-fallo-entera', { entera: true });
+  await pagina.click('.seguir');
+  await ctx.espera(900);
+
+  // ---- tema 5: se saca de una, y el resultado.
+  await sacar(await elDeAhora());
+  await boton();
+  await ctx.espera(1800);
+  await tira('resultado-entra', () => pagina.click('.seguir'), { ms: 1000 });
+  await ctx.espera(900);
+  await foto('resultado');
+  await foto('resultado-entero', { entera: true });
+}
+
 /** Cualquier otra ruta: la portada, y lo que aparece al tocar el botón de empezar. */
 async function generico(ctx, ruta) {
   const { pagina, foto, tira } = ctx;
@@ -534,6 +696,7 @@ async function generico(ctx, ruta) {
 const RECORRIDOS = {
   'adivinar-el-tema': adivinarElTema,
   'dos-ejes': dosEjes,
+  'adivinar-por-la-letra': porLaLetra,
 };
 
 // ---------------------------------------------------------------- correr
