@@ -720,9 +720,17 @@ const ESTADOS_EJES = [
   '.ejes-hoja--fantasma',
   '.ejes-hoja--se-va',
   '.ejes-hoja--vuelve',
-  // El sello grande del momento sobre el cielo, y la tapa que se abre al empezar.
-  '.ejes-lugar-sello--cae',
+  // El pase de momento en orden (ronda 2): la hoja nueva espera sin verse y entra al final.
+  '.ejes-hoja--espera',
+  '.ejes-hoja--entra',
+  // El cartel del momento que cae sobre el cielo y se va con su momento; la tapa que se abre.
+  '.ejes-lugar-cartel--cae',
+  '.ejes-lugar-cartel--fuera',
   '.ejes-tapa--abre',
+  // El guiño que cae en el lugar al elegir, y el lugar que amanece en el resultado.
+  '.ejes-guino--cae',
+  '.ejes-lugar--amanece',
+  '.ejes-lugar--alba',
   // El plano que espera a que lo vean y se arma: sin regla, el recuadro de la tuya no cae.
   '.ejes-plano--espera',
   '.ejes-plano--armado',

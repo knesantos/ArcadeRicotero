@@ -32,13 +32,20 @@ export const TIRA = {
 /** Los archivos, tal como quedan servidos. */
 export const CARPETA_NOCHE = '/arte/dos-ejes';
 export const PIEZAS_DE_LA_NOCHE = [
-  'noche-cerca.svg',
-  'noche-luz.svg',
-  'noche-lejos.svg',
-  'noche-postes.svg',
-  'noche-micro.svg',
+  'noche-sombra.webp',
+  'noche-tinta.webp',
+  'noche-cuero.webp',
+  'noche-llama.webp',
+  'noche-lejos.webp',
+  'noche-postes.webp',
+  'noche-micro.webp',
+  'noche-gente.webp',
+  'noche-gente-atras.webp',
+  'noche-gente-trapos.webp',
   'noche-estrellas.svg',
-  'noche-fuego.svg',
+  'noche-fuego.webp',
+  'noche-figura.webp',
+  'noche-trapo.webp',
 ] as const;
 
 /** Dónde empieza un lugar de la tira, en unidades. El 0 es la previa. */
@@ -69,3 +76,45 @@ export function lunaDe(paso: number, total: number): { readonly x: number; reado
   const arco = Math.sin(Math.PI * (0.14 + 0.72 * t));
   return { x: Math.round(t * 1000) / 10, y: Math.round((1 - arco) * 1000) / 10 };
 }
+
+/** Un guiño: algo chico que aparece en el lugar cuando se contesta una hoja. */
+export interface Guino {
+  readonly tipo: 'figura' | 'trapo';
+  /** El medio del guiño, en unidades de la tira. */
+  readonly x: number;
+  /** Cuánto sube del piso, en unidades (un trapo entre la gente va más alto). */
+  readonly sube: number;
+}
+
+const g = (tipo: Guino['tipo'], lugar: number, x: number, sube = 0): Guino => ({ tipo, x: inicioDelLugar(lugar) + x, sube });
+
+/**
+ * Los guiños de la noche (ronda 2 de la pulida): el lugar responde al toque. Con cada hoja
+ * contestada aparece algo chico en la escena —alguien que se suma a la ronda, un trapo más en
+ * la reja—, **a la izquierda si se tocó la opción de arriba y a la derecha si se tocó la de
+ * abajo**.
+ *
+ * **No mide ni delata** (`BR-17`): el orden de las dos opciones se sortea en cada hoja, así que
+ * el lado no dice nada del polo. Lo que queda en la escena es que estuviste, no qué elegiste.
+ * Por eso cada hoja tiene su par, uno de cada lado, del mismo tipo y del mismo peso.
+ */
+export const GUINOS = {
+  figura: { ancho: 30, alto: 40 },
+  trapo: { ancho: 44, alto: 66 },
+  porHoja: [
+    [g('figura', 0, 250), g('figura', 0, 384)],
+    [g('trapo', 0, 236), g('trapo', 0, 414)],
+    [g('figura', 1, 120), g('figura', 1, 232)],
+    [g('trapo', 1, 300), g('trapo', 1, 440)],
+    [g('figura', 2, 152), g('figura', 2, 316)],
+    [g('trapo', 2, 244, 30), g('trapo', 2, 506, 30)],
+    [g('trapo', 3, 74, 56), g('trapo', 3, 400, 56)],
+    [g('trapo', 3, 204, 60), g('trapo', 3, 556, 60)],
+    [g('figura', 4, 160), g('figura', 4, 396)],
+    [g('figura', 4, 208), g('figura', 4, 474)],
+  ],
+} as const satisfies {
+  figura: { ancho: number; alto: number };
+  trapo: { ancho: number; alto: number };
+  porHoja: readonly (readonly [Guino, Guino])[];
+};

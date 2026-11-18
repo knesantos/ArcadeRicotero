@@ -69,7 +69,7 @@ import {
 } from '../lib/dos-ejes/copy.ts';
 import { rutaDeTarjeta, rutaDePieza, slugDe } from '../lib/dos-ejes/arte.ts';
 import { leerDesafio } from '../lib/desafio.ts';
-import { TIRA, lunaDe, paradaDe } from '../lib/dos-ejes/noche.ts';
+import { GUINOS, TIRA, lunaDe, paradaDe } from '../lib/dos-ejes/noche.ts';
 import { despertarSalida } from '../lib/audio/contexto.ts';
 import { sonarEfecto } from '../lib/audio/efectos.ts';
 import { botonCompartir } from './compartir.ts';
@@ -106,6 +106,15 @@ let lugar: HTMLElement | null = null;
 let pila: HTMLElement | null = null;
 /** El pie de la partida (volver, teclas, ruidos), que se rehace con cada hoja. */
 let pie: HTMLElement | null = null;
+
+/**
+ * Los guiños que ya están en el lugar: por hoja, **de qué lado** se tocó (0, la opción de
+ * arriba; 1, la de abajo). No guarda el polo, y el orden de las opciones se sortea: de acá no
+ * sale ninguna medida (`BR-17`).
+ */
+const lados: (0 | 1)[] = [];
+/** Los relojes del pase de momento, para poder cortarlos si se sale de la partida. */
+let relojes: number[] = [];
 
 /** Cómo llega una hoja: abre la noche, sigue a la anterior, o se vuelve a ella. */
 type Pase = 'abre' | 'sigue' | 'vuelve';
@@ -147,13 +156,13 @@ const momentoDe = (id: string) => banco.momentos.find((m) => m.id === id)!;
    ------------------------------------------------------------------ */
 
 /**
- * Arma el lugar: el cielo, la luna, lo de lejos, la tira del camino y lo que vive en cada
- * momento. Todo es para el ojo —va sin voz para el lector de pantalla— menos la línea que
- * canta, que es texto de la partida.
+ * Arma el lugar: el cielo de mármol, la luna, lo de lejos, la tira del camino en sus cuatro
+ * pasadas de tinta y lo que vive en cada momento. Todo es para el ojo —va sin voz para el
+ * lector de pantalla— menos el cartel, que lleva la línea que canta.
  *
- * Las piezas son cajas vacías: el dibujo llega como máscara desde `juego.css` y la tinta
- * desde `tokens.css`. Lo que se mueve es `transform` y `opacity`, en animaciones y
- * transiciones de CSS; acá solo se escriben la parada, la luna y el momento.
+ * Las piezas son cajas vacías: el dibujo llega como máscara desde `juego.css` y la tinta desde
+ * `tokens.css`. Lo que se mueve es `transform` y `opacity`, en animaciones y transiciones de
+ * CSS; acá solo se escriben la parada, la luna y el momento.
  */
 function armarLugar(): HTMLElement {
   const caja = el('div', 'ejes-lugar');
@@ -166,38 +175,44 @@ function armarLugar(): HTMLElement {
   const tira = el('span', 'ejes-lugar-tira');
   const haces = el('span', 'ejes-lugar-haces');
   haces.append(el('i', 'ejes-lugar-haz'), el('i', 'ejes-lugar-haz'), el('i', 'ejes-lugar-haz'));
-  const cola = el('span', 'ejes-lugar-cola');
-  cola.append(el('i', 'ejes-lugar-cola-gente'), el('i', 'ejes-lugar-cola-banderas'));
-  tira.append(haces, el('span', 'ejes-lugar-cerca'), el('span', 'ejes-lugar-luz'), el('span', 'ejes-lugar-fuego'), cola);
+  // Lo que sale del parlante de la vereda: tres ondas que se prenden de a una.
+  const ondas = el('span', 'ejes-lugar-ondas');
+  ondas.append(el('i', 'ejes-lugar-onda'), el('i', 'ejes-lugar-onda'), el('i', 'ejes-lugar-onda'));
+  tira.append(
+    haces,
+    el('span', 'ejes-lugar-pasada ejes-lugar-sombra'),
+    el('span', 'ejes-lugar-pasada ejes-lugar-tinta'),
+    el('span', 'ejes-lugar-pasada ejes-lugar-cuero'),
+    el('span', 'ejes-lugar-pasada ejes-lugar-llama'),
+    el('span', 'ejes-lugar-fuego'),
+    ondas,
+    el('span', 'ejes-lugar-guinos'),
+  );
 
   const micro = el('span', 'ejes-lugar-micro');
-  micro.append(el('span', 'ejes-lugar-micro-caja'));
+  const cajaDelMicro = el('span', 'ejes-lugar-micro-caja');
+  cajaDelMicro.append(el('i', 'ejes-lugar-micro-sombra'), el('i', 'ejes-lugar-micro-tinta'));
+  micro.append(cajaDelMicro);
 
   const gente = el('span', 'ejes-lugar-gente');
   const salta = el('span', 'ejes-lugar-gente-salta');
-  salta.append(el('i', 'ejes-lugar-gente-silueta'), el('i', 'ejes-lugar-gente-clara'), el('i', 'ejes-lugar-gente-banderas'));
+  salta.append(el('i', 'ejes-lugar-gente-sombra'), el('i', 'ejes-lugar-gente-cuero'), el('i', 'ejes-lugar-gente-trapos'));
   gente.append(salta);
 
-  arte.append(
-    el('span', 'ejes-lugar-tarde'),
-    el('span', 'ejes-lugar-estrellas'),
-    luna,
-    el('span', 'ejes-lugar-lejos'),
-    tira,
-    el('span', 'ejes-lugar-postes'),
-    micro,
-    gente,
-    el('span', 'ejes-lugar-sello'),
-  );
-  caja.append(arte, el('p', 'ejes-lugar-canta'));
+  arte.append(el('span', 'ejes-lugar-estrellas'), el('span', 'ejes-lugar-alba'), luna, el('span', 'ejes-lugar-lejos'), tira, el('span', 'ejes-lugar-postes'), micro, gente);
+
+  // El cartel del momento: el sello con su nombre y, debajo, la línea que canta. El nombre va
+  // sin voz (lo dicen el sello de la hoja y el anuncio); la línea no, que es texto de la partida.
+  const cartel = el('div', 'ejes-lugar-cartel');
+  const sello = el('span', 'ejes-lugar-sello');
+  sello.setAttribute('aria-hidden', 'true');
+  cartel.append(sello, el('p', 'ejes-lugar-canta'));
+  caja.append(arte, cartel);
   return caja;
 }
 
-/**
- * Lleva el lugar a la hoja `paso`: corre la tira, mueve la luna y, si cambió el momento,
- * cambia lo que vive y deja caer el sello grande con su nombre.
- */
-function ponerLugar(momento: { id: string; nombre: string; canta: string }, cambio: boolean, pase: Pase): void {
+/** Corre la tira y la luna a la hoja `paso`, y pone lo que vive en ese momento. */
+function caminar(momentoId: string): void {
   if (!lugar) return;
   const hojas = ronda.length;
   const porMomento = Math.max(1, Math.round(hojas / banco.momentos.length));
@@ -205,19 +220,46 @@ function ponerLugar(momento: { id: string; nombre: string; canta: string }, camb
   const luna = lunaDe(paso, hojas);
   lugar.style.setProperty('--luna-x', String(luna.x));
   lugar.style.setProperty('--luna-y', String(luna.y));
-  if (!cambio) return;
+  for (const m of banco.momentos) lugar.classList.toggle(`ejes-lugar--${m.id}`, m.id === momentoId);
+}
 
-  for (const m of banco.momentos) lugar.classList.toggle(`ejes-lugar--${m.id}`, m.id === momento.id);
-  lugar.querySelector('.ejes-lugar-canta')!.textContent = momento.canta;
-  // El sello grande cae cuando se llega a un momento, no cuando se vuelve a él: volver es
-  // corregir una respuesta, no llegar de nuevo.
-  const sello = lugar.querySelector<HTMLElement>('.ejes-lugar-sello')!;
-  sello.classList.remove('ejes-lugar-sello--cae');
-  if (pase === 'vuelve') return;
-  sello.textContent = momento.nombre;
-  void sello.offsetWidth;
-  sello.classList.add('ejes-lugar-sello--cae');
+/**
+ * Cambia el cartel al momento nuevo. `cae`: el sello cae con su ruido y la línea entra
+ * detrás; sin eso (al volver a un momento) el cartel cambia y nada más.
+ */
+function rotular(momento: { nombre: string; canta: string }, cae: boolean): void {
+  if (!lugar) return;
+  const cartel = lugar.querySelector<HTMLElement>('.ejes-lugar-cartel')!;
+  cartel.classList.remove('ejes-lugar-cartel--fuera', 'ejes-lugar-cartel--cae');
+  cartel.querySelector('.ejes-lugar-sello')!.textContent = momento.nombre;
+  cartel.querySelector('.ejes-lugar-canta')!.textContent = momento.canta;
+  if (!cae) return;
+  void cartel.offsetWidth;
+  cartel.classList.add('ejes-lugar-cartel--cae');
   sonarEfecto('sello');
+}
+
+/**
+ * Un guiño: lo que aparece en el lugar cuando se contesta la hoja `hoja`, del lado que se
+ * tocó (`noche.ts` dice qué y dónde). `cae`: llega como un sello; si no, ya está puesto.
+ */
+function ponerGuino(hoja: number, lado: 0 | 1, cae: boolean): void {
+  const caja = lugar?.querySelector('.ejes-lugar-guinos');
+  const dato = GUINOS.porHoja[hoja]?.[lado];
+  if (!caja || !dato) return;
+  const medida = GUINOS[dato.tipo];
+  const pieza = el('i', `ejes-guino ejes-guino--${dato.tipo}`);
+  pieza.dataset['hoja'] = String(hoja);
+  pieza.style.setProperty('--x', String(dato.x - medida.ancho / 2));
+  pieza.style.setProperty('--sube', String(dato.sube));
+  pieza.style.setProperty('--ancho', String(medida.ancho));
+  pieza.style.setProperty('--alto', String(medida.alto));
+  if (cae) pieza.classList.add('ejes-guino--cae');
+  caja.append(pieza);
+}
+
+function sacarGuino(hoja: number): void {
+  lugar?.querySelector(`.ejes-guino[data-hoja="${hoja}"]`)?.remove();
 }
 
 /* ------------------------------------------------------------------
@@ -248,20 +290,23 @@ function pasarHoja(nueva: HTMLElement, pase: Pase): void {
   pila.append(nueva);
   const quien = pase === 'vuelve' ? nueva : vieja;
   quien.classList.add(pase === 'vuelve' ? 'ejes-hoja--vuelve' : 'ejes-hoja--se-va');
-  quien.addEventListener(
-    'animationend',
-    (e) => {
-      if (e.target !== quien) return;
-      vieja.remove();
-      nueva.classList.remove('ejes-hoja--vuelve');
-    },
-    { once: false },
-  );
+  quien.addEventListener('animationend', (e) => {
+    if (e.target !== quien) return;
+    vieja.remove();
+    nueva.classList.remove('ejes-hoja--vuelve');
+  });
+}
+
+/** Corta los relojes de un pase de momento que quedó a medias. */
+function cortarRelojes(): void {
+  for (const r of relojes) window.clearTimeout(r);
+  relojes = [];
 }
 
 function pintarPregunta(pase: Pase, antes?: Polo): void {
   const item = ronda[paso]!;
   const momento = momentoDe(item.momento);
+  cortarRelojes();
   bloqueado = false;
 
   const hoja = el('article', 'ejes-hoja');
@@ -300,8 +345,8 @@ function pintarPregunta(pase: Pase, antes?: Polo): void {
   cabeza.append(noche);
   cabeza.append(el('p', 'ejes-folio', PARTIDA.folio(paso + 1, ronda.length)));
   hoja.append(cabeza);
-  // La línea que canta vive en el lugar, arriba. Acá queda su copia para cuando el lugar no
-  // está (la ventana petisa y el modo incrustado): `juego.css` muestra una sola de las dos.
+  // La línea que canta vive en el cartel del lugar. Acá queda su copia para cuando el lugar no
+  // tiene cielo (la ventana petisa y el modo incrustado): `juego.css` muestra una sola de las dos.
   hoja.append(el('p', 'ejes-canta', momento.canta));
 
   const enunciado = el('h2', 'ejes-enunciado', item.enunciado);
@@ -324,13 +369,10 @@ function pintarPregunta(pase: Pase, antes?: Polo): void {
       boton.classList.add('ejes-opcion--antes');
       boton.setAttribute('aria-pressed', 'true');
     }
-    boton.addEventListener('click', () => elegir(boton, o.polo));
+    boton.addEventListener('click', () => elegir(boton, o.polo, k === 0 ? 0 : 1));
     opciones.append(boton);
   });
   hoja.append(opciones);
-
-  ponerLugar(momento, cambio, pase);
-  pasarHoja(hoja, pase);
 
   pie?.replaceChildren();
   if (paso > 0) {
@@ -347,10 +389,49 @@ function pintarPregunta(pase: Pase, antes?: Polo): void {
 
   // El momento y el folio, una vez por hoja; el enunciado no, que ya lo lee el foco.
   anuncio.textContent = PARTIDA.anuncio(momento.nombre, paso + 1, ronda.length);
-  enfocar(enunciado);
+
+  const seVa = duracionDe('--duracion-umbral');
+  if (!cambio || pase !== 'sigue' || seVa <= 0) {
+    // La hoja que sigue en el mismo momento, la primera de la noche y la vuelta atrás: todo
+    // junto. El cartel cae solo cuando se llega a un momento, no cuando se vuelve a él.
+    caminar(item.momento);
+    if (cambio) rotular(momento, pase !== 'vuelve');
+    pasarHoja(hoja, pase);
+    enfocar(enunciado);
+    return;
+  }
+
+  /*
+   * El pase de momento, en orden (ronda 2): primero se va la hoja, después camina la tira,
+   * después cae el cartel del lugar y al final entra la hoja nueva. Cuatro tiempos, uno atrás
+   * del otro, todos de tokens. Mientras dura no se puede elegir ni volver: la hoja nueva
+   * todavía no llegó. Con movimiento reducido los tiempos valen cero y se cae en la rama de
+   * arriba.
+   */
+  bloqueado = true;
+  const camina = duracionDe('--duracion-inercia');
+  const cae = duracionDe('--duracion-pasada');
+  const cartel = lugar?.querySelector('.ejes-lugar-cartel');
+  // 1. La hoja se va, y con ella el cartel del momento que termina.
+  hoja.classList.add('ejes-hoja--espera');
+  pasarHoja(hoja, 'sigue');
+  cartel?.classList.add('ejes-lugar-cartel--fuera');
+  // 2. La tira camina.
+  relojes.push(window.setTimeout(() => caminar(item.momento), seVa));
+  // 3. Cae el cartel del lugar.
+  relojes.push(window.setTimeout(() => rotular(momento, true), seVa + camina));
+  // 4. Entra la hoja nueva, y recién ahí se puede tocar.
+  relojes.push(
+    window.setTimeout(() => {
+      hoja.classList.remove('ejes-hoja--espera');
+      hoja.classList.add('ejes-hoja--entra');
+      bloqueado = false;
+      enfocar(enunciado);
+    }, seVa + camina + cae),
+  );
 }
 
-function elegir(boton: HTMLButtonElement, polo: Polo): void {
+function elegir(boton: HTMLButtonElement, polo: Polo, lado: 0 | 1): void {
   if (bloqueado) return;
   bloqueado = true;
   for (const b of zonaPregunta.querySelectorAll<HTMLButtonElement>('.ejes-opcion')) {
@@ -369,6 +450,10 @@ function elegir(boton: HTMLButtonElement, polo: Polo): void {
   const media = pila?.querySelector('.ejes-hoja:not(.ejes-hoja--fantasma) .ejes-noche-media[data-esta]');
   estampar(marca);
   sonarEfecto('tecla');
+  // Y el lugar responde: algo chico aparece del lado que se tocó (`ponerGuino`).
+  sacarGuino(paso);
+  lados[paso] = lado;
+  ponerGuino(paso, lado, true);
   if (marca && media) {
     window.setTimeout(() => {
       if (!marca.isConnected || !media.isConnected) return;
@@ -391,6 +476,8 @@ function volverAnterior(): void {
   if (bloqueado || paso === 0) return;
   paso--;
   const antes = elegidos.pop();
+  // El guiño de la hoja a la que se vuelve se queda hasta que se elija de nuevo: lo que se
+  // deshace es la respuesta, y la escena la acompaña cuando llega la nueva.
   pintarPregunta('vuelve', antes);
 }
 
@@ -519,14 +606,8 @@ function grilla(id: string, d: Disposicion): HTMLElement {
     );
   }
 
-  // El plano va antes que la grilla y después del contraste (`UX-38` §3.1): orienta primero,
-  // la grilla lee después. Es un dibujo de más: si no se puede armar, la grilla sigue sola.
-  try {
-    seccion.append(plano(id));
-  } catch {
-    /* sin plano, nada más cambia */
-  }
-
+  // El plano ya no va acá: desde la ronda 2 de la pulida sube, pegado a la última hoja
+  // (`pintarResultado`), para que el sello de tu manera caiga a la vista y no bajo el pliegue.
   const tabla = el('div', 'ejes-grilla');
   // Los rótulos de columna van arriba, una vez; los de renglón, encima de cada par. Son
   // `aria-hidden`: cada manera ya dice sus dos polos en palabras adentro de su bajada.
@@ -552,11 +633,22 @@ function pintarResultado(): void {
   const r = resolverCuadrante(banco, elegidos);
   const c = banco.cuadrantes.find((x) => x.id === r.id)!;
 
+  // El lugar no se tira: se muda al resultado, parado donde terminó la noche, y amanece.
+  cortarRelojes();
+  const amanecer = lugar;
   zonaPregunta.hidden = true;
   zonaPregunta.replaceChildren();
   lugar = pila = pie = null;
   zonaResultado.hidden = false;
   zonaResultado.replaceChildren();
+  if (amanecer) {
+    amanecer.classList.add('ejes-lugar--amanece');
+    amanecer.querySelector('.ejes-lugar-cartel')?.remove();
+    zonaResultado.append(amanecer);
+    // Un cuadro después, para que el cambio se vea como cambio: la luna baja y sale el alba.
+    void amanecer.offsetWidth;
+    amanecer.classList.add('ejes-lugar--alba');
+  }
   // Al resultado, la región calla: el foco en el nombre ya lo dice.
   anuncio.textContent = '';
 
@@ -592,6 +684,17 @@ function pintarResultado(): void {
   hoja.append(el('p', 'ejes-bajada', r.bajada));
   zonaResultado.append(hoja);
 
+  // El plano, pegado a la hoja (`UX-38` lo ponía después de los botones): tu manera se marca
+  // sobre el dibujo del juego y no en una lista aparte. Es un dibujo de más: si no se puede
+  // armar, la pantalla sigue sin él.
+  try {
+    const dibujo = plano(r.id);
+    zonaResultado.append(dibujo);
+    armarAlVerlo(dibujo);
+  } catch {
+    /* sin plano, nada más cambia */
+  }
+
   const acciones = el('div', 'ejes-acciones jugo-entra');
   acciones.style.setProperty('--orden', '5');
   // Compartir: viaja **la identidad** —la postal de este cuadrante y su tarjeta— y ningún
@@ -620,8 +723,6 @@ function pintarResultado(): void {
   zonaResultado.append(acciones);
 
   zonaResultado.append(grilla(r.id, disposicion(banco, r.id)));
-  const dibujo = zonaResultado.querySelector<HTMLElement>('.ejes-plano');
-  if (dibujo) armarAlVerlo(dibujo);
 
   const bajar = el('a', 'ejes-bajar', RESULTADO.bajar) as HTMLAnchorElement;
   bajar.href = rutaDeTarjeta(r.id);
@@ -661,6 +762,8 @@ function empezar(): void {
   paso = 0;
   elegidos.length = 0;
   momentoAnterior = undefined;
+  lados.length = 0;
+  cortarRelojes();
   // Este toque es el gesto que los celulares piden para dejar sonar algo: se despierta la
   // salida acá, y los ruidos de la noche (la tecla, el sello) ya pueden salir.
   void despertarSalida().then(() => sonarEfecto('clac'));

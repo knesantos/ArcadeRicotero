@@ -221,7 +221,7 @@ const ANIMACIONES = [
   // resultado y los dos ejes del plano que se trazan.
   { nombre: 'hoja-se-va', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
   { nombre: 'hoja-vuelve', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
-  { nombre: 'lugar-sello', apaga: 'token', valor: '--duracion-inercia', hoja: 'src/styles/juego.css' },
+  { nombre: 'hoja-entra', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
   { nombre: 'ejes-sello-cae', apaga: 'token', valor: '--duracion-pasada', hoja: 'src/styles/juego.css' },
   { nombre: 'eje-vertical', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
   { nombre: 'eje-horizontal', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
@@ -231,6 +231,7 @@ const ANIMACIONES = [
   { nombre: 'llama', apaga: 'regla', valor: '.ejes-lugar--previa .ejes-lugar-fuego', hoja: 'src/styles/juego.css' },
   { nombre: 'ruta-pasa', apaga: 'regla', valor: '.ejes-lugar--ida .ejes-lugar-postes', hoja: 'src/styles/juego.css' },
   { nombre: 'traqueteo', apaga: 'regla', valor: '.ejes-lugar--ida .ejes-lugar-micro-caja', hoja: 'src/styles/juego.css' },
+  { nombre: 'onda', apaga: 'regla', valor: '.ejes-lugar--vereda .ejes-lugar-onda', hoja: 'src/styles/juego.css' },
   { nombre: 'pogo', apaga: 'regla', valor: '.ejes-lugar--adentro .ejes-lugar-gente-salta', hoja: 'src/styles/juego.css' },
   { nombre: 'haz-barre', apaga: 'regla', valor: '.ejes-lugar--adentro .ejes-lugar-haz', hoja: 'src/styles/juego.css' },
   // Los sellos del bestiario que se asientan (`D-83`): el bocadillo, el «Anotado» y la libreta

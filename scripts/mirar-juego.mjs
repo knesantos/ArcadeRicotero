@@ -117,7 +117,7 @@ async function abrir(nav, ancho, alto, quieto) {
      * que dura de verdad; `lento` es cuánto se frenan las animaciones de CSS para sacarla (1 es
      * velocidad real, y es lo que va para lo que mueve un reloj de JavaScript o el audio).
      */
-    async tira(nombre, disparar, { ms = 400, lento = 0.1, cuadros = 6 } = {}) {
+    async tira(nombre, disparar, { ms = 400, lento = 0.1, cuadros = 6, asentar = true } = {}) {
       if (quieto) {
         // Con movimiento reducido no hay animación que mirar: se dispara y se saca una sola.
         await disparar();
@@ -141,7 +141,8 @@ async function abrir(nav, ancho, alto, quieto) {
       if (lento === 1) console.log(`   (${nombre}: cuadros a ${momentos.join(', ')} ms)`);
       await cdp.send('Animation.setPlaybackRate', { playbackRate: 1 });
       // Lo que quedó a medio camino termina a velocidad real antes de seguir.
-      await espera(Math.min(ms * 2, 1500));
+      // (Salvo que la tira siga en otra: `asentar: false` las encadena sin soltar el reloj.)
+      if (asentar) await espera(Math.min(ms * 2, 1500));
       const hueco = 6;
       const ruta = join(salida, `${prefijo}-tira-${numero()}-${nombre}${lento < 1 ? `-lento-x${Math.round(1 / lento)}` : ''}.png`);
       await sharp({
@@ -248,7 +249,8 @@ async function adivinarElTema(ctx) {
   await tira('elige', () => elegir(otro.titulo), { ms: 420 });
   await foto('elegido');
   // El interruptor de los ruidos: se apaga, se mira, y se vuelve a prender.
-  if (await pagina.$('.ruidos')) {
+  // Solo si está a la vista: presentado como teléfono, el interruptor puede no tener caja.
+  if (await (await pagina.$('.ruidos'))?.boundingBox()) {
     await pagina.click('.ruidos');
     await ctx.espera(150);
     await foto('ruidos-apagados');
@@ -395,7 +397,8 @@ async function dosEjes(ctx) {
       (m) => {
         const f = document.querySelector('.ejes-hoja:not(.ejes-hoja--fantasma) .ejes-folio');
         const o = document.querySelector('.ejes-hoja:not(.ejes-hoja--fantasma) .ejes-opcion');
-        return f && f.textContent.trim().startsWith(`${m} de`) && o && o.getAttribute('aria-disabled') !== 'true';
+        // En el pase de momento la hoja nueva espera sin verse hasta que la tira caminó y cayó el cartel.
+        return f && f.textContent.trim().startsWith(`${m} de`) && o && o.getAttribute('aria-disabled') !== 'true' && !document.querySelector('.ejes-hoja--espera');
       },
       { timeout: 8000 },
       n,
@@ -431,8 +434,21 @@ async function dosEjes(ctx) {
   const NOMBRES = { 5: 'momento-3-la-vereda', 7: 'momento-4-cuando-suena', 9: 'momento-5-la-vuelta' };
   for (let n = 3; n <= 9; n++) {
     if (n === 6) {
-      // El pase que entra a «Cuando suena».
-      await tira('pasa-a-cuando-suena', () => opcion(0), { ms: 1900, lento: 1 });
+      // El pase que entra a «Cuando suena», parte por parte. Sus cuatro tiempos salen de tokens
+      // y los lleva un reloj de JavaScript, así que no se frena el navegador: se estiran los
+      // tokens por cuatro, y la isla y el CSS van lentos juntos.
+      const LENTO = 4;
+      const freno = quieto
+        ? null
+        : await pagina.addStyleTag({ content: `:root{--duracion-umbral:${380 * LENTO}ms;--duracion-inercia:${900 * LENTO}ms;--duracion-pasada:${300 * LENTO}ms}` });
+      await opcion(0);
+      await ctx.espera(quieto ? 0 : 640);
+      const nada = async () => {};
+      await tira('pase-1-la-hoja-se-va', nada, { ms: 380 * LENTO, lento: 1, asentar: false });
+      await tira('pase-2-la-tira-camina', nada, { ms: 900 * LENTO, lento: 1, asentar: false });
+      await tira('pase-3-cae-el-cartel', nada, { ms: 600 * LENTO, lento: 1, asentar: false });
+      await tira('pase-4-entra-la-hoja', nada, { ms: 380 * LENTO, lento: 1 });
+      if (freno) await freno.evaluate((n) => n.remove());
     } else {
       await opcion(n % 2);
     }

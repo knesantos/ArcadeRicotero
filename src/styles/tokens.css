@@ -1981,17 +1981,17 @@
      encima, y `contraste.test.ts` mezcla cada peso con su tinta y falla si `--texto-tenue`
      baja de 4,5:1 o la marca —letra grande en `--marca-rojo`— baja de 3:1. El par más justo
      hoy es la marca contra las banderas de cerca: 3,25:1. */
-  /* La noche de «¿Qué tipo de ricotero sos?» (ronda de pulida, 2026-11-18): cuánto papel lleva
-     cada plano del lugar sobre el fondo, y cuánta tinta del disco lo que está prendido. No son
-     colores nuevos: son el papel y el cuero de *Luzbelito*, rebajados. Nada de esto lleva
-     texto encima, así que no arma ningún par de contraste. */
-  --peso-noche-lejos: 8%;
-  --peso-noche-cerca: 21%;
-  --peso-noche-luz: 82%;
-  --peso-noche-tarde: 20%;
-  --peso-noche-haz: 34%;
-  --peso-noche-luna: 86%;
-  --peso-noche-gente: 36%;
+  /* La noche de «¿Qué tipo de ricotero sos?» (ronda de pulida, 2026-11-18). El lugar es una
+     serigrafía con las tintas de la tapa de *Luzbelito* (`D-19`), y ninguna es nueva: son
+     las que ya estaban medidas sobre esa tapa para el bestiario, con otro nombre. Nada de
+     esto lleva texto encima, así que no arma ningún par de contraste. */
+  --noche-sombra: var(--bestia-lechuza-marmol); /* el papel marmolado: la primera pasada */
+  --noche-tinta: var(--bestia-lechuza-marmol-claro); /* el mármol donde aclara: la segunda */
+  --noche-cuero: var(--disco-luzbelito-tinta); /* el cuero del lomo: la gente y los trapos */
+  --noche-llama: var(--bestia-lechuza-oro); /* el dorado del marco, a la luz de la vela: lo prendido */
+  --noche-luna: var(--bestia-pontiac-yeso); /* el yeso del busto: la luna y las estrellas */
+  --peso-noche-lejos: 46%; /* cuánto queda de una tinta cuando está lejos o en sombra */
+  --peso-noche-haz: 30%; /* la llama de un haz y del alba, contra el fondo */
   --peso-multitud-lejos: 12%;
   --peso-bandera-lejos: 28%;
   --peso-multitud-cerca: 16%;
