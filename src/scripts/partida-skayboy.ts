@@ -221,11 +221,12 @@ import {
   mostrarFinDeNivel,
   nivelDelBotonGrande,
   pasadosDeLaFila,
-  conVentanaAlTubo,
   regionDelMenu,
+  seTocan,
   type Rectangulo,
 } from '../lib/skayboy/menu.ts';
-import { ENTRADA, FIN_DE_NIVEL, MENU, PANTALLA } from '../lib/skayboy/copy.ts';
+import { ENTRADA, FIN_DE_NIVEL, FINAL, MENU, PANTALLA } from '../lib/skayboy/copy.ts';
+import { creditosDelFinal, ladoDelFinal } from '../lib/skayboy/final.ts';
 import { crearMemoria, hundimiento, sentir, type Golpe, type Memoria } from '../lib/skayboy/sensacion.ts';
 import { crearChispero } from '../lib/skayboy/chispas.ts';
 import { avanzarVidriera, crearVidriera, type Vidriera } from '../lib/skayboy/vidriera.ts';
@@ -1028,9 +1029,8 @@ async function arrancar(): Promise<void> {
     if (menu === null || !menuAbierto()) return;
     const fichin = document.querySelector<HTMLElement>('.fichin');
     const aire = fichin === null ? 0 : parseFloat(getComputedStyle(fichin).getPropertyValue('--tecla-aire')) || 0;
-    const tubo = medir(document.querySelector('.recorte'));
-    const entera = regionDelMenu({
-      recorte: tubo,
+    const region = regionDelMenu({
+      recorte: medir(document.querySelector('.recorte')),
       mandos: [...document.querySelectorAll('.mando')].map(medir),
       pie: medir(document.querySelector('.chapa-pie')),
       // Sin la barra de desplazamiento (`clientWidth`), y lo que se ve de verdad de alto: en el
@@ -1044,8 +1044,6 @@ async function arrancar(): Promise<void> {
       // Parado, el menú baja hasta el borde de la ventana, pero no tapa la firma ni los créditos.
       tope: medir(document.querySelector('body > footer')).arriba || undefined,
     });
-    // De costado y con alto, el menú deja a la vista la franja de abajo del tubo (`menu.ts`).
-    const region = conVentanaAlTubo(entera, tubo, modo?.enElModo() ?? false);
     const base = menu.offsetParent?.getBoundingClientRect() ?? { left: -window.scrollX, top: -window.scrollY };
     menu.style.left = `${region.izquierda - base.left}px`;
     menu.style.top = `${region.arriba - base.top}px`;
@@ -1056,7 +1054,39 @@ async function arrancar(): Promise<void> {
   for (const pieza of document.querySelectorAll('.recorte, .mando, .chapa-pie, .fichin')) reubicar.observe(pieza);
   window.addEventListener('resize', ubicarMenu);
 
+  /**
+   * **El final** (`final.ts`): con el último nivel de la fila ganado y el menú cerrado, la capa de
+   * los créditos. Se mira en cada tic, que es barato, y así no hay camino —Seguí, Repetí, el menú,
+   * otra ficha— que la deje colgada. La primera vez que aparece se llena y la marquesina titila.
+   */
+  let finalDe: Mundo | null = null;
+  function pintarFinal(): void {
+    if (final === null) return;
+    const toca = mundo.terminado && esElUltimo(mundo, banco.niveles) && !menuAbierto();
+    if (final.hidden === !toca) return;
+    final.hidden = !toca;
+    if (!toca || finalDe === mundo) return;
+    finalDe = mundo;
+    final.dataset.lado = ladoDelFinal(mundo);
+    const rotuloFinal = final.querySelector('.final-rotulo');
+    if (rotuloFinal !== null) rotuloFinal.textContent = FINAL.rotulo(banco.niveles.length);
+    const lista = final.querySelector('.final-creditos-lista');
+    if (lista !== null) {
+      lista.replaceChildren(
+        ...creditosDelFinal(banco.niveles).map((linea) => {
+          const renglon = document.createElement('span');
+          renglon.textContent = linea;
+          return renglon;
+        }),
+      );
+    }
+    // La marquesina titila una vez (la hoja, con esta clase). Con movimiento reducido, no.
+    if (!movimientoReducido()) correr(document.querySelector<HTMLElement>('.fichin'), 'fichin--final');
+  }
+  finalVolver?.addEventListener('click', () => seguir?.click());
+
   k.onUpdate(() => {
+    pintarFinal();
     // Con el menú abierto la partida está en pausa: el mundo no avanza y su reloj no corre. En la
     // entrada corre la vidriera, sobre su mundo aparte, y lo único que se lleva es el polvo.
     if (menuAbierto()) {
@@ -1135,6 +1165,9 @@ const rotulo = document.querySelector<HTMLElement>('#rotulo-nivel');
 const recorte = document.querySelector<HTMLElement>('.recorte');
 const pasada = document.querySelector<HTMLElement>('#pasada-area');
 const telon = document.querySelector<HTMLElement>('#telon');
+/** La capa del final del juego, y su botón de volver a empezar: nacen escondidos en el HTML. */
+const final = document.querySelector<HTMLElement>('#final-juego');
+const finalVolver = document.querySelector<HTMLButtonElement>('#final-volver');
 
 /** De qué mundo tiene los textos la tarjeta: se llenan una vez, cuando aparece. */
 let tarjetaDe: Mundo | null = null;
@@ -1163,18 +1196,14 @@ function lugaresInertes(si: boolean): void {
 }
 
 /**
- * Si el menú abierto deja ver el piso del tubo: parado va en la zona de las teclas, y de costado
- * con alto le deja una ventana abajo (`conVentanaAlTubo()`). Hace falta ver al menos tres filas de
- * la sala —un tercio del tubo— para que la vidriera valga lo que cuesta.
+ * Si el menú abierto deja ver el tubo. Parado va en la zona de las teclas; de costado y con alto
+ * es **el tablero partido** —dos paneles, uno sobre cada columna de mando, y el tubo libre en el
+ * medio (la hoja)—; a ×1 de costado y en el modo lo tapa. Se pregunta por los dos paneles, que
+ * son lo que de verdad se pinta: la caja del menú abarca el tubo aunque no lo tape.
  */
 function tuboALaVista(): boolean {
-  const m = medir(menu);
-  const t = medir(recorte);
-  const tapaDeCostado = m.izquierda < t.izquierda + t.ancho && t.izquierda < m.izquierda + m.ancho;
-  if (!tapaDeCostado) return true;
-  const libreAbajo = t.arriba + t.alto - Math.max(t.arriba, m.arriba + m.alto);
-  const libreArriba = Math.min(t.arriba + t.alto, m.arriba) - t.arriba;
-  return Math.max(libreAbajo, libreArriba) >= t.alto / 3;
+  const tubo = medir(recorte);
+  return ![menu?.querySelector('.menu-accion'), menu?.querySelector('.menu-lista')].some((panel) => seTocan(medir(panel ?? null), tubo));
 }
 
 /** Un elemento medido en la ventana, o un rectángulo vacío si no está. */

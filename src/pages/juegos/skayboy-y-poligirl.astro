@@ -28,7 +28,7 @@ import '../../styles/skayboy.css';
 import Cabeza from '../../components/Cabeza.astro';
 import PieImprenta from '../../components/PieImprenta.astro';
 import { PORTAL } from '../../lib/sitio/copy.ts';
-import { CASETE, FIN_DE_NIVEL, MENU, PANTALLA, PANTALLA_COMPLETA, PIE_HOMENAJE, TECLAS } from '../../lib/skayboy/copy.ts';
+import { CASETE, FIN_DE_NIVEL, FINAL, MENU, PANTALLA, PANTALLA_COMPLETA, PIE_HOMENAJE, TECLAS } from '../../lib/skayboy/copy.ts';
 import { nivelesASembrar, problemasDelBanco, type Banco } from '../../lib/skayboy/niveles.ts';
 import { planoDelNivel } from '../../lib/skayboy/menu.ts';
 import { marquesinaDe, problemasDeLaMarquesina } from '../../lib/skayboy/marquesina.ts';
@@ -260,6 +260,23 @@ const PISO = [
                   <button type="button" id="fin-repetir" class="secundario">{FIN_DE_NIVEL.repetir}</button>
                   <button type="button" id="fin-menu" class="secundario" aria-haspopup="dialog" aria-controls="menu-juego">{FIN_DE_NIVEL.menu}</button>
                   <button type="button" id="fin-seguir" class="primario">{PANTALLA.seguir}</button>
+                </span>
+              </section>
+              {/*
+                El final del juego (ronda de pulida, 2026-11-18): al pasar el último nivel de la fila.
+                Una capa de HTML encima del área, del lado contrario a las puertas —así los dos, que
+                bailan en las suyas, quedan a la vista—: la que canta, la que nombra, los créditos
+                que suben (los nombres de los niveles) y dos salidas. Sin Compartí: todavía no hay
+                tarjeta (`BR-27`). Reemplaza a la tarjeta de fin de nivel en ese único caso (la
+                esconde la hoja); el toque sobre el área sigue siendo seguir. Va última, y sin `<div>`.
+              */}
+              <section id="final-juego" class="final-juego juego--historia" hidden aria-labelledby="final-titulo">
+                <span id="final-titulo" class="final-titulo">{FINAL.titulo}</span>
+                <span class="final-rotulo"></span>
+                <span class="final-creditos" aria-hidden="true"><span class="final-creditos-lista"></span></span>
+                <span class="final-botones">
+                  <button type="button" id="final-volver" class="primario">{FIN_DE_NIVEL.volverAlPrimero}</button>
+                  <a class="secundario final-salir" href="/">{FINAL.volverAlFichin}</a>
                 </span>
               </section>
             </div>

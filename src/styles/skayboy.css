@@ -2405,8 +2405,8 @@ html[data-pantalla='completa'],
 }
 
 .juego-skayboy .marquesina-letras {
-  width: calc(var(--marquesina-ancho) * 2px);
-  height: calc(var(--marquesina-alto) * 2px);
+  width: calc(var(--marquesina-ancho) * var(--marquesina-pixel, 2px));
+  height: calc(var(--marquesina-alto) * var(--marquesina-pixel, 2px));
   shape-rendering: crispEdges;
 }
 
@@ -2543,6 +2543,16 @@ html[data-pantalla='completa'],
    mueble**: filete de papel del ancho de la chapa, esquina casi viva, la tinta del fondo
    adentro. Sin sombra y sin degradado, como todo. */
 .juego-skayboy .menu-juego {
+  background: none;
+  border: 0;
+  /* La caja del menu no toma toques ni se pinta: lo que se ve y se toca es su hoja (o, en el
+     tablero partido, sus dos paneles). Asi el hueco del medio deja ver el tubo. */
+  pointer-events: none;
+}
+
+.juego-skayboy .menu-hoja {
+  pointer-events: auto;
+  background: var(--fondo);
   border: var(--chapa) solid var(--papel);
   border-radius: 3px;
 }
@@ -2691,15 +2701,11 @@ html[data-pantalla='completa'],
   }
 }
 
-/* Baja y ancha (x1 de costado): la tecla de los ruidos toma el lugar de "empeza de nuevo", que
-   en la entrada no esta. En pausa manda el otro: ahi no hay un renglon mas. */
+/* Baja y ancha (x1 de costado): la tecla de los ruidos tiene su celda en la grilla de tres
+   columnas (ronda 3, mas abajo). */
 @container (max-height: 220px) and (min-width: 440px) {
   .juego-skayboy .menu-accion .ruidos {
-    grid-area: repetir;
-  }
-
-  .juego-skayboy #menu-repetir:not([hidden]) ~ .ruidos {
-    display: none;
+    grid-area: ruidos;
   }
 }
 
@@ -2717,9 +2723,8 @@ html[data-pantalla='completa'],
   visibility: hidden;
 }
 
-/* **Ancho y con alto** —de costado con lugar, la computadora—: desde que el menu le deja una
-   ventana al tubo (`conVentanaAlTubo()`) tiene poco mas de la mitad del alto, y tiene que entrar
-   sin desplazar. Las dos teclas chicas comparten renglon, y con mucho ancho los doce cartuchos
+/* **Ancho y con alto** —la pantalla completa acostada; afuera del modo manda el tablero partido de
+   la ronda 3—: tiene que entrar sin desplazar. Las dos teclas chicas comparten renglon, y con mucho ancho los doce cartuchos
    van de a seis. No toca la composicion baja (x1 de costado), que arma su propia grilla. */
 @container (min-width: 440px) and (min-height: 220.02px) {
   .juego-skayboy .menu-accion {
@@ -2740,5 +2745,626 @@ html[data-pantalla='completa'],
 @container (min-width: 900px) and (min-height: 220.02px) {
   .juego-skayboy .fichas {
     grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+/* ==========================================================================
+   Ronda 3 de la pulida (2026-11-18): el mismo mueble en la computadora, el tablero
+   partido, los menus que entran sin desplazar y el final del juego.
+   ========================================================================== */
+
+/* ---- La marquesina, tambien con la cabecera acostada ----
+
+   De 720 de ancho y 500 de alto para arriba —la tableta de costado, la computadora— el titulo
+   iba suelto en la rotulada con la bajada larga al lado, y el mueble no tenia frente. Ahora la
+   marquesina va atornillada arriba del tubo, como parado, con el pixel a la escala del area
+   (2, 3 o 4 px). El `h1` queda para el lector de pantalla y la bajada se va, igual que en el
+   telefono (sigue en la descripcion de la pagina): la cabecera es el volver a la izquierda y la
+   marca a la derecha. Lo que la marquesina suma de alto se lo devuelve la cabecera, que pierde
+   su segundo renglon: a 1220 x 760 el mueble x4 termina en 728, y a 980 x 620 el x3 en 598. */
+@media (min-width: 980px) and (min-height: 500.02px),
+  (min-width: 720px) and (min-height: 500.02px) and (max-height: 799.98px) {
+  .juego-skayboy .marquesina {
+    --marquesina-pixel: calc(1px * var(--escala));
+    display: block;
+    padding-block: calc(2.5px * var(--escala));
+  }
+
+  .juego-skayboy .pantalla h1 {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .juego-skayboy .encabezado-juego {
+    justify-content: flex-end;
+  }
+
+  .juego-skayboy .encabezado-juego .tenue {
+    display: none;
+  }
+
+  .juego-skayboy .marca {
+    width: 3.5rem;
+  }
+}
+
+/* ---- El tablero partido ----
+
+   De costado y con alto, la region del menu es el tubo y las dos columnas de mando
+   (`regionDelMenu()`), y el menu tapaba la escena. Ahora **el tablero son dos paneles, uno sobre
+   cada columna, y el tubo queda entero a la vista en el medio**: a la izquierda el boton de
+   fichin, que nivel juega y las teclas chicas; a la derecha los doce niveles, de a dos. Las
+   columnas de mando no hacen falta con el menu abierto, asi que el tablero ocupa su lugar y el
+   mueble no se mueve un pixel al tocar Juga. La vidriera se ve entera.
+
+   La columna del medio mide lo que el mueble (el area, el bisel y la chapa); los paneles, lo que
+   sobra a cada lado. En cada cartucho va el plano con el numero sellado; el nombre lo dice el
+   renglon del boton para el que toca, y el `aria-label` para todos. En la pantalla completa no
+   se parte: ahi la region es la sala entera y el menu es la pausa. */
+@container (min-width: 700px) and (min-height: 280px) {
+  :root:not([data-pantalla='completa']) .juego-skayboy .menu-hoja {
+    height: 100%;
+    min-height: 0;
+    grid-template-columns:
+      minmax(0, 1fr)
+      calc(var(--area-ancho) + 2 * (var(--bisel) + var(--chapa)))
+      minmax(0, 1fr);
+    grid-template-areas: 'accion . lista';
+    align-items: start;
+    gap: 0;
+    padding: 0;
+    background: none;
+    border: 0;
+    pointer-events: none;
+  }
+
+  :root:not([data-pantalla='completa']) .juego-skayboy .menu-accion,
+  :root:not([data-pantalla='completa']) .juego-skayboy .menu-lista {
+    box-sizing: border-box;
+    /* Hasta el alto del mueble: al lado del pie de homenaje no hay nada, y el pie no se toca. */
+    max-height: calc(100% + var(--chapa-pie-alto) + var(--chapa));
+    overflow-y: auto;
+    pointer-events: auto;
+    background: var(--fondo);
+    border: var(--chapa) solid var(--papel);
+    border-radius: 3px;
+  }
+
+  :root:not([data-pantalla='completa']) .juego-skayboy .menu-accion {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    gap: 6px;
+    padding: var(--espacio-1) 6px;
+  }
+
+  :root:not([data-pantalla='completa']) .juego-skayboy #menu-jugar {
+    box-sizing: border-box;
+    width: min(5.25rem, 100%);
+    height: auto;
+    aspect-ratio: 1;
+    min-height: 0;
+    padding: 0;
+    font-size: 1.2rem;
+    line-height: 1.05;
+    border: var(--chapa) solid var(--papel);
+    border-radius: 50%;
+  }
+
+  :root:not([data-pantalla='completa']) .juego-skayboy #menu-jugar[data-momento='pausa'] {
+    font-size: 0.9rem;
+  }
+
+  :root:not([data-pantalla='completa']) .juego-skayboy #menu-cual {
+    color: var(--texto);
+    text-wrap: balance;
+  }
+
+  :root:not([data-pantalla='completa']) .juego-skayboy .menu-accion .secundario,
+  :root:not([data-pantalla='completa']) .juego-skayboy .menu-accion .ruidos {
+    width: 100%;
+    min-height: var(--toque-min);
+    padding: 2px 4px;
+    font-size: 0.76rem;
+    line-height: 1.15;
+  }
+
+  :root:not([data-pantalla='completa']) .juego-skayboy .menu-lista {
+    gap: 3px;
+    padding: 6px;
+  }
+
+  /* El titulo de la lista y las teclas escritas no entran en una columna de mando: quedan para
+     el lector de pantalla. Cuantos pasaste, si: es un dato. */
+  :root:not([data-pantalla='completa']) .juego-skayboy .menu-niveles,
+  :root:not([data-pantalla='completa']) .juego-skayboy .menu-teclas,
+  :root:not([data-pantalla='completa']) .juego-skayboy .ficha-nivel-nombre {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  :root:not([data-pantalla='completa']) .juego-skayboy .menu-pasados {
+    margin: 0;
+    font-size: 0.7rem;
+    text-align: center;
+  }
+
+  :root:not([data-pantalla='completa']) .juego-skayboy .fichas {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 3px;
+  }
+
+  :root:not([data-pantalla='completa']) .juego-skayboy .ficha-nivel {
+    position: relative;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'plano';
+    justify-items: center;
+    align-content: center;
+    min-height: var(--toque-min);
+    padding: 4px 3px;
+  }
+
+  :root:not([data-pantalla='completa']) .juego-skayboy .ficha-nivel-plano {
+    width: min(100%, 60px);
+    height: auto;
+    aspect-ratio: 15 / 9;
+  }
+
+  :root:not([data-pantalla='completa']) .juego-skayboy .ficha-nivel-numero {
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    min-width: 0;
+    padding: 0 3px;
+    font-size: 0.85rem;
+    background: var(--fondo);
+    border: 1px solid var(--papel);
+    border-radius: 3px;
+  }
+
+  :root:not([data-pantalla='completa']) .juego-skayboy .ficha-nivel-sello {
+    position: absolute;
+    right: 1px;
+    bottom: 1px;
+    padding: 0 2px;
+    font-size: 0.46rem;
+    white-space: nowrap;
+    background: var(--fondo);
+    transform: none;
+  }
+}
+
+/* Con columnas de 112 (x2: la tableta chica, el telefono grande de costado) el plano no entra
+   al lado de nada: el cartucho es su numero, como en la composicion baja. */
+@container (min-width: 700px) and (max-width: 899.98px) and (min-height: 280px) {
+  :root:not([data-pantalla='completa']) .juego-skayboy .ficha-nivel-plano {
+    display: none;
+  }
+
+  :root:not([data-pantalla='completa']) .juego-skayboy .ficha-nivel-numero {
+    position: static;
+    padding: 0;
+    font-size: 1.2rem;
+    background: none;
+    border: 0;
+  }
+
+  :root:not([data-pantalla='completa']) .juego-skayboy .ficha-nivel {
+    grid-template-areas:
+      'numero'
+      'sello';
+  }
+
+  :root:not([data-pantalla='completa']) .juego-skayboy .ficha-nivel-sello {
+    position: static;
+  }
+
+  :root:not([data-pantalla='completa']) .juego-skayboy #menu-jugar {
+    width: min(4.5rem, 100%);
+  }
+}
+
+/* ---- Angosto y bajo: el telefono chico, y la pausa ----
+
+   A 375 x 667 y a 360 x 740 la zona de las teclas mide poco mas de 330 de alto, y doce
+   cartuchos con nombre no entran. Ahi van **de a cuatro, sin el nombre**: el plano con su
+   numero sellado. El nombre del que toca lo dice el renglon del boton, al lado. El titulo de la
+   lista y la cuenta de pasados quedan para el lector de pantalla. Tres renglones de 48: entra
+   sin desplazar, tambien en pausa. */
+@container (max-width: 439.98px) and (max-height: 430px) {
+  .juego-skayboy .menu-niveles,
+  .juego-skayboy .menu-pasados,
+  .juego-skayboy .ficha-nivel-nombre {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .juego-skayboy .fichas {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 4px;
+  }
+
+  .juego-skayboy .ficha-nivel {
+    grid-template-areas: 'plano';
+    align-content: center;
+    min-height: var(--toque-min);
+    padding: 4px 3px;
+    border-bottom: 2px solid var(--borde);
+  }
+
+  .juego-skayboy .ficha-nivel-plano {
+    width: 52px;
+    height: 31px;
+  }
+
+  .juego-skayboy .ficha-nivel-sello {
+    top: auto;
+    bottom: 2px;
+    font-size: 0.46rem;
+    transform: none;
+  }
+}
+
+/* Angosto y en pausa: "Empeza el nivel de nuevo" suma un renglon al tablero. El titulo de la
+   lista le deja el suyo (queda para el lector), y asi a 430 x 860 la pausa tampoco desplaza. */
+@container (max-width: 439.98px) {
+  .juego-skayboy .menu-hoja:has(#menu-repetir:not([hidden])) .menu-niveles {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .juego-skayboy .menu-hoja:has(#menu-repetir:not([hidden])) .ficha-nivel {
+    padding-block: 3px 2px;
+    border-bottom-width: 4px;
+  }
+}
+
+/* ---- Bajo y ancho: x1 de costado, en tres columnas ----
+
+   La region mide 152 de alto y ahi no hay ventana que abrir: el menu tapa el tubo. Desde los
+   doce niveles (`D-86`) desplazaba 39 px y la tecla de pantalla completa quedaba cortada. Ahora
+   son tres columnas —el boton y su renglon; los doce cartuchos de a seis; las dos teclas
+   chicas— y entra entero. En pausa, "empeza de nuevo" toma el lugar del renglon del boton. */
+@container (max-height: 220px) and (min-width: 440px) {
+  .juego-skayboy .menu-hoja {
+    grid-template-columns: minmax(5.5rem, 1fr) minmax(298px, auto) 5.75rem;
+    grid-template-areas:
+      'jugar lista pantalla'
+      'cual lista ruidos';
+    grid-template-rows: auto auto;
+    align-items: center;
+    column-gap: 6px;
+    row-gap: 4px;
+    padding: 4px 6px;
+  }
+
+  .juego-skayboy #menu-repetir {
+    grid-area: cual;
+    font-size: 0.72rem;
+    line-height: 1.1;
+  }
+
+  .juego-skayboy .menu-accion:has(#menu-repetir:not([hidden])) #menu-cual-corto {
+    display: none;
+  }
+
+  .juego-skayboy #menu-jugar[data-momento='pausa'] {
+    padding-inline: 2px;
+    font-size: 0.9rem;
+    line-height: 1.1;
+  }
+
+  .juego-skayboy .menu-niveles {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .juego-skayboy .fichas {
+    grid-template-columns: repeat(6, minmax(var(--toque-min), 1fr));
+    gap: 2px;
+  }
+
+  .juego-skayboy .menu-accion .secundario,
+  .juego-skayboy .menu-accion .ruidos {
+    min-height: var(--toque-min);
+    padding: 1px 3px;
+    font-size: 0.7rem;
+    line-height: 1.1;
+  }
+}
+
+/* ---- El final del juego (`final.ts`) ----
+
+   Al pasar el ultimo nivel de la fila. Una capa encima del area, del lado contrario a las
+   puertas (`data-lado`), con el mismo recorte pegado que la tarjeta de fin de nivel: tinta de
+   `--fondo`, borde en la tinta de *Gulp!*, sin sombra. Adentro, la que canta, la que nombra,
+   **los creditos que suben** —los nombres de los niveles, un renglon cada medio segundo, en
+   saltos— y las dos salidas, tocables desde el primer cuadro. La letra va en `cqw` de la capa:
+   ocupa lo mismo a x1 que a x4.
+
+   Es lo unico del juego que dura mas que un compas, y es a proposito: son creditos, pasan una
+   vez y no frenan nada. Con movimiento reducido quedan quietos en el ultimo renglon. */
+.juego-skayboy .final-juego {
+  position: absolute;
+  inset-block: 4px;
+  left: 4px;
+  z-index: 3;
+  box-sizing: border-box;
+  width: 70%;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  gap: 2px;
+  margin: 0;
+  padding: 4px;
+  background: var(--fondo);
+  border: 2px solid var(--disco-gulp-tinta);
+  border-radius: 3px;
+  container-type: size;
+  pointer-events: none;
+  --sello-desde: 1.02;
+  --sello-giro: -0.6deg;
+  animation: tubo-sella var(--duracion-sello) linear both;
+}
+
+.juego-skayboy .final-juego[hidden] {
+  display: none;
+}
+
+.juego-skayboy .final-juego[data-lado='derecha'] {
+  left: auto;
+  right: 4px;
+}
+
+.juego-skayboy .final-juego[data-lado='medio'] {
+  left: 15%;
+}
+
+.juego-skayboy .final-juego button,
+.juego-skayboy .final-juego a {
+  pointer-events: auto;
+}
+
+/* En el final la tarjeta de fin de nivel no aparece: sus tres salidas son las de esta capa y el
+   sello del menu. Lo que junto cada uno tampoco: las etiquetas asomaban cortadas por detras de la
+   capa, y el final es de los doce niveles, no de este. */
+.juego-skayboy .recorte:has(.final-juego:not([hidden])) .fin-nivel,
+.juego-skayboy .recorte:has(.final-juego:not([hidden])) [data-de] {
+  /* Las dos etiquetas, por su atributo: `escena.test.ts` lee toda regla que nombre su clase como
+     si fuera la de la caja, y esta no le cambia la caja a nadie; las esconde en el final. */
+  display: none;
+}
+
+.juego-skayboy .final-titulo {
+  font-family: var(--fuente-rotulada);
+  font-size: 7.4cqw;
+  line-height: 1.1;
+  text-align: center;
+  text-wrap: balance;
+  color: var(--disco-gulp-tinta);
+}
+
+.juego-skayboy .final-rotulo {
+  font-family: var(--fuente-rotulada);
+  font-size: 4.6cqw;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--texto);
+}
+
+.juego-skayboy .final-creditos {
+  position: relative;
+  overflow: hidden;
+  border-block: 1px solid var(--borde);
+}
+
+.juego-skayboy .final-creditos-lista {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  display: grid;
+  gap: 1.2cqw;
+  padding-block: 1.5cqw;
+  font-size: 5.2cqw;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--texto);
+  animation: creditos-suben var(--duracion-creditos) linear both;
+}
+
+/* Catorce posiciones: la lista arranca entera debajo de la ventana y sube de a un tramo. */
+@keyframes creditos-suben {
+  0%,
+  7.13% {
+    transform: translateY(100%);
+  }
+
+  7.14%,
+  14.28% {
+    transform: translateY(92.31%);
+  }
+
+  14.29%,
+  21.42% {
+    transform: translateY(84.62%);
+  }
+
+  21.43%,
+  28.56% {
+    transform: translateY(76.92%);
+  }
+
+  28.57%,
+  35.7% {
+    transform: translateY(69.23%);
+  }
+
+  35.71%,
+  42.85% {
+    transform: translateY(61.54%);
+  }
+
+  42.86%,
+  49.99% {
+    transform: translateY(53.85%);
+  }
+
+  50%,
+  57.13% {
+    transform: translateY(46.15%);
+  }
+
+  57.14%,
+  64.28% {
+    transform: translateY(38.46%);
+  }
+
+  64.29%,
+  71.42% {
+    transform: translateY(30.77%);
+  }
+
+  71.43%,
+  78.56% {
+    transform: translateY(23.08%);
+  }
+
+  78.57%,
+  85.7% {
+    transform: translateY(15.38%);
+  }
+
+  85.71%,
+  92.85% {
+    transform: translateY(7.69%);
+  }
+
+  92.86%,
+  100% {
+    transform: translateY(0%);
+  }
+}
+
+.juego-skayboy .final-botones {
+  display: flex;
+  gap: 4px;
+}
+
+.juego-skayboy .final-botones .primario,
+.juego-skayboy .final-botones .secundario {
+  flex: 1 1 0;
+  box-sizing: border-box;
+  width: auto;
+  min-width: var(--toque-min);
+  min-height: var(--toque-min);
+  margin: 0;
+  padding: 2px 4px;
+  font-size: 0.78rem;
+  line-height: 1.1;
+  white-space: normal;
+}
+
+.juego-skayboy .final-salir {
+  display: grid;
+  place-items: center;
+  text-align: center;
+  text-decoration: none;
+}
+
+@media (min-width: 720px) and (min-height: 400.02px) {
+  .juego-skayboy .final-juego {
+    inset-block: var(--espacio-1);
+    gap: var(--espacio-1);
+    padding: var(--espacio-1) var(--espacio-2);
+    border-width: var(--linea);
+  }
+
+  .juego-skayboy .final-botones .primario,
+  .juego-skayboy .final-botones .secundario {
+    font-size: 0.95rem;
+  }
+}
+
+[data-pantalla='completa'] .juego-skayboy .final-juego {
+  inset-block: calc(var(--toque-min) + var(--tecla-aire)) var(--tecla-aire);
+}
+
+/* La marquesina titila tres veces y queda prendida: una sola vez, al llegar al final. */
+.juego-skayboy .fichin--final .marquesina-palabra {
+  animation: marquesina-titila var(--duracion-golpe) linear both;
+  animation-delay: calc(var(--duracion-golpe) * 0);
+}
+
+@keyframes marquesina-titila {
+  0%,
+  14.28% {
+    fill: var(--px-skay-3);
+  }
+
+  14.29%,
+  28.56% {
+    fill: var(--px-infierno);
+  }
+
+  28.57%,
+  42.85% {
+    fill: var(--px-skay-3);
+  }
+
+  42.86%,
+  57.13% {
+    fill: var(--px-infierno);
+  }
+
+  57.14%,
+  71.42% {
+    fill: var(--px-skay-3);
+  }
+
+  71.43%,
+  85.7% {
+    fill: var(--px-infierno);
+  }
+
+  85.71%,
+  100% {
+    fill: var(--px-infierno);
+  }
+}
+
+/* ---- El boton de fichin es redondo: excepcion declarada ----
+
+   `diseno-marca.md` veta la pastilla capsula como chip por defecto y pide esquina casi viva en lo
+   chico. El boton grande de Juga (`#menu-jugar`, en el tablero angosto y en el partido) es un
+   circulo, y **no es una pastilla de interfaz: es un objeto**, el pulsador de un fichin, que es
+   redondo en todos los muebles del mundo. Tinta plana del disco, aro de papel del ancho de la
+   chapa, sin sombra, sin brillo y sin volumen. Es el unico circulo tocable del sitio y no se copia
+   a otra pantalla: afuera de un mueble de fichin, un boton redondo si es una pastilla. Decision del
+   hilo principal en la ronda 3 de la pulida (2026-11-18). */
+
+/* De costado, con el tablero abierto, las columnas de mando no se ven: el tablero ocupa su lugar
+   y las teclas asomaban por debajo de los paneles. Vuelven cuando el menu se cierra. */
+@media (min-width: 720px) and (min-height: 400.02px) {
+  :root:not([data-pantalla='completa']) .juego-skayboy .fichin:has(.menu-juego:not([hidden])) .mando {
+    visibility: hidden;
   }
 }

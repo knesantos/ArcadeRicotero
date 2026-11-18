@@ -247,6 +247,22 @@ export const FIN_DE_NIVEL = {
 } as const;
 
 /**
+ * El final del juego (ronda de pulida, 2026-11-18): pasar el último nivel de la fila. No hay
+ * tarjeta para compartir todavía (`BR-27`), así que no hay Compartí: el título, los créditos —que
+ * son los nombres de los niveles, en orden, y un renglón de cierre— y dos salidas. Volver a
+ * empezar usa el `volverAlPrimero` de `FIN_DE_NIVEL`: es el mismo toque.
+ *
+ * `titulo` es la que canta (registro 1: segunda persona, cuatro palabras); `rotulo` es la que
+ * nombra (registro 3). El cierre es el pie del sitio, sin la palabra "sitio": acá firma el fichín.
+ */
+export const FINAL = {
+  titulo: 'Abriste todas las puertas',
+  rotulo: (total: number) => `${total} DE ${total} · PASADOS`,
+  cierre: 'Hecho por ricoteros, para ricoteros.',
+  volverAlFichin: '← Volvé al fichín',
+} as const;
+
+/**
  * El rótulo de entrada de cada nivel (`D-61` punto 3, `CNT-40` §3): número arriba, que nombra, y el
  * nombre de `CNT-21` abajo, que canta. La regla de las dos líneas más limpia del juego.
  */

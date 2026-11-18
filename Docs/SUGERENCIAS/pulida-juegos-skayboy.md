@@ -185,3 +185,102 @@ cuadro cada ~17 ms, pegada en grilla.
 4. La marquesina en la compu y de costado, con el mueble entero como marco.
 5. La placa y la compuerta en ráfaga propia, y el nivel completado del último nivel (hoy vuelve
    al primero sin nada propio).
+
+## Ronda 3 (2026-11-18): el cierre
+
+### 1. Qué se hizo
+
+- **La compu y la tableta tienen el mismo mueble que el teléfono.** Con la cabecera acostada (de
+  720 × 500 para arriba) la marquesina va arriba del tubo, con el pixel a la escala del área; el
+  `<h1>` queda para el lector y la bajada se va, como en el teléfono. La cabecera es el volver a la
+  izquierda y la marca a la derecha: pierde su segundo renglón, y con eso paga el alto de la
+  marquesina. El mueble ×4 termina en 757 a 1280 × 800 y a 1366 × 768.
+- **El tablero partido.** De costado y con alto, el menú son dos paneles, uno sobre cada columna de
+  mando, y **el tubo queda entero a la vista**: a la izquierda el botón de fichín, qué nivel juega y
+  las teclas chicas; a la derecha los doce cartuchos de a dos. El mueble no se mueve al tocar Jugá,
+  y la vidriera se ve entera. Reemplaza a la ventana al tubo de la ronda 2 (`conVentanaAlTubo()`,
+  que se fue con sus dos tests).
+- **Ningún menú desplaza**, ni en la entrada ni en pausa, en los diez tamaños medidos. En teléfonos
+  bajos y en pausa los cartuchos van de a cuatro, sin nombre (lo dice el renglón del botón). A ×1 de
+  costado son tres columnas: el botón, los doce números de a seis y las dos teclas.
+- **El final del juego** (`src/lib/skayboy/final.ts`, `#final-juego`): al pasar el último nivel de
+  la fila, una capa del lado contrario a las puertas con "Abriste todas las puertas", `12 DE 12 ·
+  PASADOS`, **los créditos que suben** —los nombres de los doce niveles y "Hecho por ricoteros, para
+  ricoteros."— y dos salidas: "Volvé al primero" y "← Volvé al fichín". La marquesina titila tres
+  veces. Sin Compartí: no hay tarjeta (`BR-27`). Reemplaza a la tarjeta de fin de nivel y al
+  contador en ese único caso.
+- **La placa y la compuerta** tienen su ráfaga en el recorrido.
+
+### 2. La excepción declarada: el botón de fichín es redondo
+
+`diseno-marca.md` veta la pastilla cápsula como chip por defecto. El botón grande de Jugá es un
+círculo y **no es una pastilla de interfaz: es un objeto**, el pulsador de un fichín. Tinta plana
+del disco, aro de papel del ancho de la chapa, sin sombra ni volumen. Es el único círculo tocable
+del sitio y no se copia a otra pantalla. Decisión del hilo principal. Queda escrita al final de
+`skayboy.css`; `estilos.test.ts` solo mira `999px`, y el botón usa `50%`, así que el test no la ve.
+Si se quiere que la vea, es una línea en la tabla de `diseno-marca.md` y un caso en ese test.
+
+### 3. Lo que pide una decisión de otro
+
+1. **Los créditos duran 7 s** (`--duracion-creditos`, token nuevo en `tokens.css`). Es lo único del
+   juego que pasa de los 400 ms de `D-32` límite 1. No frena nada y con movimiento reducido queda
+   quieto en el último renglón, pero va en la enmienda.
+2. **El texto del final es nuevo** (`FINAL` en `copy.ts`): "Abriste todas las puertas" y "Hecho por
+   ricoteros, para ricoteros." Pasa `voz.test.ts`; lo tiene que mirar `contenido`.
+3. **La bajada del casete ya no se ve en ninguna pantalla de este juego** (sigue en la descripción
+   de la página). En la compu se veía; es de `experiencia`.
+4. **`UX-37 §3.3`** describía el menú de costado como una hoja sobre el tubo y las columnas. Ahora
+   es el tablero partido. Hay que enmendarla.
+
+### 4. Cómo se verificó
+
+- `npm test`: 2507. `npm run check`: 0 errores. `npm run build`: verde.
+- Diez tamaños, con y sin movimiento reducido, en portada, partida y pausa: 430 × 860, 375 × 667,
+  390 × 844, 360 × 740, 812 × 375, 568 × 320, 1024 × 768, 1280 × 800, 1366 × 768 y 1440 × 900.
+  Ninguno desplaza el menú, y el pie de homenaje queda adentro de la ventana en los diez.
+- El recorrido completo a 430, 1280 y 1024 × 768, con y sin movimiento reducido.
+- El final se capturó **cambiándole el orden a la fila en el HTML que recibe el navegador** (el
+  nivel 1 último): el 12 no se puede pasar con un guion sin su traza. El sitio no se tocó.
+- CPU ×4 a 430 contra control: portada 17,5 y 17,5 ms contra 17,7 y 17,5; partida saltando 17,7 y
+  17,7 contra 17,8 y 17,6. Ningún cuadro de más de 25 ms.
+
+### 5. Lo flojo
+
+- **El final no se vio en el nivel 12 de verdad**, donde las dos puertas están arriba a la
+  derecha y la capa va a la izquierda. Ese lado lo prueba el test, no una captura.
+- **Los ruidos siguen sin oírse**: nadie lo jugó con sonido.
+- En el tablero partido los cartuchos no llevan nombre, y en la compu hay lugar de sobra abajo de
+  los paneles. El nombre de cada nivel solo se lee en el elegido.
+- A ×1 de costado no hay vidriera ni marquesina, y los cartuchos son números.
+- La tableta parada (768 × 1024) no tiene marquesina: no entra en ninguna de las dos reglas.
+- La placa se ve poco en su ráfaga; la reja que suelta virutas, sí.
+- Los foquitos de la marquesina no se hicieron.
+- No se probó en Safari ni en un teléfono de verdad.
+
+### 6. Top 5 para lo que siga
+
+1. Jugarlo en un teléfono con sonido, de punta a punta, y pasar el 12 de verdad.
+2. El nombre de los niveles en el tablero partido de la compu: hay lugar para una columna más ancha.
+3. La tarjeta compartible del final (`BR-27`), que es lo que le falta al cierre.
+4. La marquesina en la tableta parada y a ×1 de costado.
+5. Los foquitos, y un cuarto ruido para el final.
+
+### 7. Lo aprendido de un juego de motor (para "Ponelos en fila" y "Más o menos")
+
+1. **Leé los auditores antes de tocar la isla.** Acá `motor.test.ts` y `escena.test.ts` leen el
+   fuente con expresiones regulares: no se puede pintar tinta plana en el canvas ni cambiarle la
+   firma a una llamada. La salida fue acomodarse, no tocar el test.
+2. **Lo que se siente va en capas de HTML encima del área**, no adentro del motor: partículas,
+   telón, golpe, final. Miden en `cqw` de la capa y sirven a cualquier escala.
+3. **La lógica de la sensación va en un módulo puro**, que mira el mundo antes y después y devuelve
+   hechos. Se prueba en Node y la isla solo dibuja.
+4. **Las curvas no se escriben en la hoja**: ni `steps()` ni tiempos sueltos. Los saltos duros van
+   en tramos sostenidos de los cuadros clave, con `linear` y un token.
+5. **Una tira de seis fotos no alcanza para lo que dura seis cuadros.** `rafaga()` usa la
+   filmación del navegador (un cuadro cada 17 ms) y ahí se decidió el peso y el golpe.
+6. **Una consulta de contenedor no viste al contenedor.** El filete del menú tuvo que bajar a su
+   hoja para poder partirlo en dos paneles.
+7. **Medí el menú en diez tamaños con un script, no en dos capturas.** El desplazamiento a 375 × 667
+   y a ×1 de costado no se veía a 430 ni a 1280.
+8. **Para capturar un estado difícil de alcanzar, cambiá los datos que recibe el navegador**, no
+   el sitio: el final se fotografió reordenando la fila en el HTML interceptado.

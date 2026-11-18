@@ -940,14 +940,17 @@ async function skayboy(ctx) {
     async () => {
       await bajar('izquierda', 'izquierda');
       await bajar('izquierda', 'salto');
+      // Suelta la dirección en el aire: cae parado, lejos de la caja, que se empuja después.
+      setTimeout(() => void subir('izquierda', 'izquierda'), 380);
     },
     { desde: 520, hasta: 1000, sobre: '.gabinete', zoom: ancho < 768 ? 2 : 1, porRenglon: 6, tope: 24 },
   );
   await subir('izquierda', 'salto');
-  await ctx.espera(120);
-  await tira('empuje', async () => {}, { ms: 1300, ...tubo });
-  // Sigue empujando: la caja llega a la placa de la columna 1 y la reja de arriba se abre.
-  await ctx.rafaga('placa-y-compuerta', async () => {}, { desde: 700, hasta: 2200, sobre: '.recorte', zoom: ancho < 768 ? 2 : 1, porRenglon: 6, tope: 140, cada: 4 }).catch(() => {});
+  await ctx.espera(300);
+  await tira('empuje', () => bajar('izquierda', 'izquierda'), { ms: 700, ...tubo });
+  // Sigue empujando: la caja llega a la placa de la columna 1 y la reja de arriba se abre. Uno de
+  // cada tres cuadros, desde ya: la placa cede y la reja suelta sus virutas en menos de medio segundo.
+  await ctx.rafaga('placa-y-compuerta', async () => {}, { desde: 0, hasta: 2400, sobre: '.recorte', zoom: ancho < 768 ? 2 : 1, porRenglon: 6, tope: 42, cada: 3 });
   await subir('izquierda', 'izquierda');
   await foto('caja-empujada');
 
@@ -967,6 +970,47 @@ async function skayboy(ctx) {
   await tocar('#abrir-menu');
   await ctx.espera(300);
   await foto('pantalla-completa-menu');
+
+  /*
+   * El final del juego. Pasar el nivel 12 a mano no se puede guionar sin su traza, que no viaja al
+   * navegador; así que **para la foto se le cambia el orden a la fila**: el nivel 1, que se pasa
+   * caminando, va último. La página es la misma y el banco tiene los mismos doce niveles: lo único
+   * distinto es cuál es el último. Se hace interceptando el HTML, sin tocar nada del sitio.
+   */
+  await pagina.setRequestInterception(true);
+  pagina.on('request', async (pedido) => {
+    if (pedido.resourceType() !== 'document' || !pedido.url().includes('/juegos/skayboy-y-poligirl')) return pedido.continue();
+    try {
+      const html = await (await fetch(pedido.url())).text();
+      const cambiado = html.replace(/(<script type="application\/json" id="banco-skayboy">)([\s\S]*?)(<\/script>)/, (_, abre, json, cierra) => {
+        const banco = JSON.parse(json);
+        banco.niveles = [...banco.niveles.filter((n) => n.id !== 'NIV-01'), ...banco.niveles.filter((n) => n.id === 'NIV-01')];
+        return abre + JSON.stringify(banco).replace(/</g, '\\u003c') + cierra;
+      });
+      await pedido.respond({ status: 200, contentType: 'text/html; charset=utf-8', body: cambiado });
+    } catch {
+      await pedido.continue();
+    }
+  });
+  await pagina.goto(url, { waitUntil: 'networkidle0' });
+  await pagina.evaluate(() => localStorage.clear());
+  await pagina.goto(url, { waitUntil: 'networkidle0' });
+  await pagina.waitForSelector('#menu-juego:not([hidden])', { timeout: 20000 });
+  await ctx.espera(800);
+  await tocar('.ficha-nivel[data-nivel="NIV-01"]');
+  await ctx.espera(2900);
+  await bajar('izquierda', 'izquierda');
+  await ctx.espera(1300);
+  await subir('izquierda', 'izquierda');
+  // Poligirl llega a su puerta: es el último de la fila, y se terminó el juego.
+  await ctx.rafaga('final-llega', () => bajar('derecha', 'derecha'), { desde: 700, hasta: 1700, sobre: '.gabinete', zoom: ancho < 768 ? 2 : 1, porRenglon: 6, tope: 30, cada: 2 });
+  await pagina.waitForSelector('#final-juego:not([hidden])', { timeout: 5000 });
+  await subir('derecha', 'derecha');
+  await tira('creditos-suben', async () => {}, { ms: 6500, ...real, sobre: '.gabinete' });
+  await foto('final');
+  await tocar('#final-volver');
+  await ctx.espera(1200);
+  await foto('final-vuelve-al-primero');
 }
 
 /** Cualquier otra ruta: la portada, y lo que aparece al tocar el botón de empezar. */

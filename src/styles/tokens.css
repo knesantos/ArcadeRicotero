@@ -1914,6 +1914,7 @@
      - la cuenta: lo que tarda un número en llegar a su valor cuando suma (el puntaje, el
        reloj del resultado). La lee la isla; sube en escalones, no en un deslizamiento. */
   --duracion-golpe: 400ms;
+  --duracion-creditos: 7s; /* lo que tardan en subir los creditos del final de Skayboy y Poligirl: medio segundo por renglon */
   --duracion-inercia: 900ms;
   --duracion-cuenta: 600ms;
   /* INFORMACION, no movimiento (como `--pausa-eleccion`): lo que espera el audio nuevo despues
@@ -2280,6 +2281,7 @@ a[role='button'] {
     /* El jugo: sin golpe, sin inercia y sin cuenta. El piloto, que es un bucle, se apaga
        con `animation: none` en juego.css y queda prendido fijo. */
     --duracion-golpe: 0ms;
+    --duracion-creditos: 0ms;
     --duracion-inercia: 0ms;
     --duracion-cuenta: 0ms;
   }

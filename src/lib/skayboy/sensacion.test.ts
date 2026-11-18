@@ -6,8 +6,8 @@ import type { Banco, Nivel } from './niveles.ts';
 import { CAIDA_FUERTE, CAIDA_QUE_SE_SIENTE, PESO_SEG, crearMemoria, hundimiento, sentir, type Golpe } from './sensacion.ts';
 import { AREA, CHISPAS_EN_LA_FILA, TECHO_MS, TINTAS_DE_CHISPA, chispasDe } from './chispas.ts';
 import { ALTO_DE_LETRA, LETRAS, marquesinaDe, problemasDeLaMarquesina } from './marquesina.ts';
-import { ALTO_MINIMO_CON_VENTANA, PARTE_DEL_MENU_SOBRE_EL_TUBO, conVentanaAlTubo } from './menu.ts';
-import { CASETE } from './copy.ts';
+import { CASETE, FINAL } from './copy.ts';
+import { creditosDelFinal, ladoDelFinal } from './final.ts';
 import { CUADROS_POR_VUELTA, GUIONES, VUELTAS, avanzarVidriera, crearVidriera, guionLimpio, guionPara, mandosDelGuion, vidrieraViva } from './vidriera.ts';
 
 /**
@@ -296,35 +296,6 @@ test('una letra que falta se nombra, no se saltea; y toda letra mide siete rengl
   }
 });
 
-/* ---------------------------------------------------------------- la ventana al tubo */
-
-test('de costado y con alto, el menú deja a la vista la franja de abajo del tubo', () => {
-  const tubo = { izquierda: 152, arriba: 133, ancho: 976, alto: 584 };
-  const region = { izquierda: 12, arriba: 133, ancho: 1256, alto: 584 };
-  const conVentana = conVentanaAlTubo(region, tubo, false);
-  assert.equal(conVentana.arriba, region.arriba);
-  assert.equal(conVentana.izquierda, region.izquierda);
-  assert.equal(conVentana.ancho, region.ancho);
-  assert.equal(conVentana.alto, Math.round(584 * PARTE_DEL_MENU_SOBRE_EL_TUBO));
-  assert.ok(tubo.alto - conVentana.alto >= tubo.alto / 3, 'quedan a la vista más de tres filas de la sala');
-});
-
-test('la ventana no se abre parado, ni en el modo, ni donde el menú no entraría', () => {
-  const tubo = { izquierda: 87, arriba: 150, ancho: 256, alto: 160 };
-  // Parado: el menú va debajo del tubo y no lo toca.
-  const parado = { izquierda: 71, arriba: 368, ancho: 288, alto: 484 };
-  assert.deepEqual(conVentanaAlTubo(parado, tubo, false), parado);
-  // ×1 de costado: 152 de alto. El menú necesita todo.
-  const chico = { izquierda: 44, arriba: 60, ancho: 480, alto: 152 };
-  assert.deepEqual(conVentanaAlTubo(chico, { izquierda: 164, arriba: 60, ancho: 248, alto: 152 }, false), chico);
-  // El alto justo que no alcanza, y el que sí.
-  const casi = { izquierda: 0, arriba: 0, ancho: 720, alto: Math.floor((ALTO_MINIMO_CON_VENTANA - 1) / PARTE_DEL_MENU_SOBRE_EL_TUBO) };
-  assert.deepEqual(conVentanaAlTubo(casi, casi, false), casi);
-  // En el modo la región es la sala entera, y el menú es la pausa.
-  const sala = { izquierda: 8, arriba: 8, ancho: 1264, alto: 700 };
-  assert.deepEqual(conVentanaAlTubo(sala, sala, true), sala);
-});
-
 /* ---------------------------------------------------------------- la vidriera */
 
 test('la vidriera no importa las soluciones: la traza no viaja al teléfono (ADR-09.2)', () => {
@@ -390,4 +361,21 @@ test('la vidriera corre sobre un mundo aparte: el de la partida no se entera', (
   assert.notEqual(v.mundo, partida);
   assert.equal(partida.tiempo, 0, 'la partida sigue en la entrada');
   assert.ok(v.mundo.tiempo > 0);
+});
+
+/* ---------------------------------------------------------------- el final */
+
+test('los créditos del final son los niveles sembrados, en orden, y el cierre', () => {
+  const lineas = creditosDelFinal(BANCO.niveles);
+  assert.equal(lineas.length, BANCO.niveles.length + 1);
+  BANCO.niveles.forEach((n, i) => assert.equal(lineas[i], `${i + 1}. ${n.nombre}`));
+  assert.equal(lineas.at(-1), FINAL.cierre);
+});
+
+test('el final va del lado contrario a las puertas: no tapa a los dos que bailan', () => {
+  // En el nivel 12 las dos puertas están arriba a la derecha: los créditos van a la izquierda.
+  const doce = crearMundo(BANCO, nivel('NIV-12'));
+  assert.equal(ladoDelFinal(doce), 'izquierda');
+  // Con una puerta en cada punta (nivel 1) no hay lado libre: va al medio.
+  assert.equal(ladoDelFinal(crearMundo(BANCO, nivel('NIV-01'))), 'medio');
 });

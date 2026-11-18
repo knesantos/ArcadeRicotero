@@ -272,6 +272,11 @@ const ANIMACIONES = [
   // del medio y la marquesina enciende sus palabras con un parpadeo.
   { nombre: 'tubo-prende', apaga: 'token', valor: '--duracion-pasada', hoja: 'src/styles/skayboy.css' },
   { nombre: 'marquesina-prende', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/skayboy.css' },
+  // Ronda 3: el final del juego. Los créditos suben renglón por renglón y la marquesina titila,
+  // una vez, al pasar el último nivel. Con el token en cero los créditos quedan en su último
+  // renglón y la marquesina, prendida.
+  { nombre: 'creditos-suben', apaga: 'token', valor: '--duracion-creditos', hoja: 'src/styles/skayboy.css' },
+  { nombre: 'marquesina-titila', apaga: 'token', valor: '--duracion-golpe', hoja: 'src/styles/skayboy.css' },
 ] as const;
 
 test('no hay ninguna animacion que esta lista no conozca', () => {

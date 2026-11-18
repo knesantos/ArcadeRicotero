@@ -294,31 +294,6 @@ export function regionDelMenu(p: PiezasDelFichin): Rectangulo {
   return { izquierda: desde, arriba: r.arriba, ancho: hasta - desde, alto: r.alto };
 }
 
-/** Cuánto del alto del tubo ocupa el menú cuando le deja una ventana: lo de arriba. */
-export const PARTE_DEL_MENU_SOBRE_EL_TUBO = 0.58;
-
-/** El alto mínimo que tiene que quedarle al menú para que valga la pena abrir la ventana, en px CSS. */
-export const ALTO_MINIMO_CON_VENTANA = 236;
-
-/**
- * **La ventana al tubo** (ronda de pulida, 2026-11-18): de costado y en la computadora la región
- * del menú es el tubo entero (`regionDelMenu()`), y tapaba el nivel y la vidriera. Cuando hay alto
- * de sobra, el menú se queda con la parte de arriba y **deja a la vista la franja de abajo**, que
- * es donde está el piso de la sala y donde saltan los dos.
- *
- * Es un recorte de la misma región —nunca más grande, nunca más abajo—, así que el pie de homenaje
- * y la cabecera siguen como estaban (`BR-26`, `UX-37` §3.3). No se abre:
- * - **parado**, donde el menú ya va debajo del tubo y no lo toca;
- * - **en el modo**, donde la región es la sala entera y el menú es la pausa;
- * - **si no entra**: a ×1 de costado la región mide 152 de alto y el menú necesita todo.
- */
-export function conVentanaAlTubo(region: Rectangulo, recorte: Rectangulo, enElModo: boolean): Rectangulo {
-  if (enElModo || !seTocan(region, recorte)) return region;
-  const alto = Math.round(region.alto * PARTE_DEL_MENU_SOBRE_EL_TUBO);
-  if (alto < ALTO_MINIMO_CON_VENTANA) return region;
-  return { ...region, alto };
-}
-
 /** Si dos rectángulos se cruzan (compartir un borde no es cruzarse). */
 export function seTocan(a: Rectangulo, b: Rectangulo): boolean {
   return (
