@@ -210,6 +210,12 @@ export const MENU = {
   pasado: 'PASADO',
   estasAca: 'ACÁ ESTÁS',
   /**
+   * La tecla de los ruidos, en el tablero del menú (ronda de pulida, 2026-11-18). Dice lo que hace
+   * el toque, en voseo, igual que en los otros juegos: es el mismo interruptor (`efectos.ts`).
+   */
+  ruidosApagar: 'Apagá los ruidos',
+  ruidosPrender: 'Prendé los ruidos',
+  /**
    * El `aria-label` de cada ficha (`CNT-40` §1.1): `Nivel {n}, {nombre}. {estado}.`, donde el estado
    * es lo que dicen los sellos de esa ficha —`Pasado`, `Acá estás` o `Pasado, acá estás`—, y sin
    * estado, sin el segundo tramo. El lector dice lo mismo que el sello, no una paráfrasis.

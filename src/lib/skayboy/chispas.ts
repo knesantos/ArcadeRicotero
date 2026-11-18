@@ -55,8 +55,12 @@ type Paso = readonly [number, number];
 /** Una trayectoria espejada: lo que iba a la derecha va a la izquierda. */
 const espejo = (pasos: readonly Paso[]): Paso[] => pasos.map(([dx, dy]) => [dx === 0 ? 0 : -dx, dy] as const);
 
-const POLVO: readonly Paso[] = [[0, 0], [2, -1], [4, -2], [5, -2]];
-const POLVO_ALTO: readonly Paso[] = [[0, 0], [2, -3], [4, -5], [5, -6], [6, -5]];
+const POLVO: readonly Paso[] = [[0, 0], [3, -1], [6, -2], [8, -2]];
+const POLVO_ALTO: readonly Paso[] = [[0, 0], [2, -3], [4, -6], [6, -8], [7, -7]];
+const POLVO_MEDIO: readonly Paso[] = [[0, 0], [3, -2], [5, -4], [7, -5]];
+/** Lo que se desprende de arriba y cae: la única trayectoria que baja. */
+const CAE: readonly Paso[] = [[0, 0], [1, 2], [2, 5], [2, 9]];
+const CAE_DERECHO: readonly Paso[] = [[0, 0], [0, 3], [0, 7], [0, 12]];
 const RASPA: readonly Paso[] = [[0, 0], [2, 0], [3, 0]];
 const VIRUTA: readonly Paso[] = [[0, 0], [2, -2], [3, -3], [4, -2]];
 const DESTELLO: readonly Paso[] = [[0, 0], [3, -3], [5, -5], [6, -6]];
@@ -82,35 +86,42 @@ export function chispasDe(golpe: Golpe): Chispa[] {
     }
     case 'aterrizaje': {
       const { x, y, fuerte } = golpe;
+      // Una ráfaga que se abre: dos motas gordas a ras del piso y dos chicas que suben. A ×1 un
+      // pixel nativo es un pixel de pantalla: con menos de cuatro de lado no se veía.
       const polvo: Chispa[] = [
-        { x: x + 4, y: y - 3, lado: 3, tinta: 'clave', pasos: POLVO, ms: 220 },
-        { x: x - 7, y: y - 3, lado: 3, tinta: 'clave', pasos: espejo(POLVO), ms: 220 },
+        { x: x + 4, y: y - 4, lado: 4, tinta: 'clave', pasos: POLVO, ms: 260 },
+        { x: x - 8, y: y - 4, lado: 4, tinta: 'clave', pasos: espejo(POLVO), ms: 260 },
+        { x: x + 5, y: y - 4, lado: 2, tinta: 'clave', pasos: POLVO_MEDIO, ms: 300 },
+        { x: x - 7, y: y - 4, lado: 2, tinta: 'clave', pasos: espejo(POLVO_MEDIO), ms: 300 },
       ];
       if (!fuerte) return polvo;
       return [
         ...polvo,
-        { x: x + 2, y: y - 3, lado: 2, tinta: 'clave', pasos: POLVO_ALTO, ms: 280 },
-        { x: x - 4, y: y - 3, lado: 2, tinta: 'clave', pasos: espejo(POLVO_ALTO), ms: 280 },
+        { x: x + 2, y: y - 4, lado: 3, tinta: 'clave', pasos: POLVO_ALTO, ms: 340 },
+        { x: x - 5, y: y - 4, lado: 3, tinta: 'clave', pasos: espejo(POLVO_ALTO), ms: 340 },
       ];
     }
     case 'cajaApoya': {
       const { x, y } = golpe;
       return [
-        { x: x + 7, y: y - 3, lado: 3, tinta: 'clave', pasos: POLVO, ms: 220 },
-        { x: x - 10, y: y - 3, lado: 3, tinta: 'clave', pasos: espejo(POLVO), ms: 220 },
-        { x: x + 5, y: y - 3, lado: 2, tinta: 'clave', pasos: POLVO_ALTO, ms: 280 },
-        { x: x - 7, y: y - 3, lado: 2, tinta: 'clave', pasos: espejo(POLVO_ALTO), ms: 280 },
+        { x: x + 7, y: y - 4, lado: 4, tinta: 'clave', pasos: POLVO, ms: 260 },
+        { x: x - 11, y: y - 4, lado: 4, tinta: 'clave', pasos: espejo(POLVO), ms: 260 },
+        { x: x + 6, y: y - 4, lado: 3, tinta: 'clave', pasos: POLVO_ALTO, ms: 340 },
+        { x: x - 9, y: y - 4, lado: 3, tinta: 'clave', pasos: espejo(POLVO_ALTO), ms: 340 },
       ];
     }
     case 'empuje': {
-      // Lo que raspa queda atrás: sale para el lado contrario al que va la caja.
+      // La caja raspa el piso que tiene adelante: del otro lado está el que empuja, y lo taparía.
       const { x, y, lado } = golpe;
-      const atras = lado > 0 ? espejo(POLVO) : POLVO;
-      const atrasAlto = lado > 0 ? espejo(VIRUTA) : VIRUTA;
-      const desde = lado > 0 ? x - 3 : x;
+      const adelante = lado > 0 ? POLVO : espejo(POLVO);
+      const adelanteMedio = lado > 0 ? POLVO_MEDIO : espejo(POLVO_MEDIO);
+      const adelanteAlto = lado > 0 ? POLVO_ALTO : espejo(POLVO_ALTO);
+      const grande = lado > 0 ? x : x - 4;
+      const chica = lado > 0 ? x : x - 2;
       return [
-        { x: desde, y: y - 3, lado: 3, tinta: 'clave', pasos: atras, ms: 220 },
-        { x: desde, y: y - 6, lado: 2, tinta: 'clave', pasos: atrasAlto, ms: 260 },
+        { x: grande, y: y - 4, lado: 4, tinta: 'clave', pasos: adelante, ms: 260 },
+        { x: chica, y: y - 4, lado: 2, tinta: 'clave', pasos: adelanteMedio, ms: 300 },
+        { x: chica, y: y - 5, lado: 2, tinta: 'clave', pasos: adelanteAlto, ms: 340 },
       ];
     }
     case 'palanca': {
@@ -120,6 +131,33 @@ export function chispasDe(golpe: Golpe): Chispa[] {
       return [
         { x: x - 1, y: y - 2, lado: 2, tinta: 'clave', pasos: hacia, ms: 200 },
         { x: x - 1, y: y - 1, lado: 2, tinta: 'clave', pasos: hastaAlla, ms: 260 },
+      ];
+    }
+    case 'placa': {
+      // La tapa cede o vuelve: dos motas que saltan de los bordes, bajas.
+      const { x, y } = golpe;
+      return [
+        { x: x + 5, y: y - 3, lado: 3, tinta: 'clave', pasos: POLVO_MEDIO, ms: 240 },
+        { x: x - 8, y: y - 3, lado: 3, tinta: 'clave', pasos: espejo(POLVO_MEDIO), ms: 240 },
+      ];
+    }
+    case 'compuerta': {
+      // Al cerrar, la reja pega contra el umbral: polvo a los dos lados. Al abrir, la reja sube
+      // y suelta virutas desde arriba del vano.
+      const { x, y, alto, abierta } = golpe;
+      if (!abierta) {
+        return [
+          { x: x + 6, y: y - 4, lado: 4, tinta: 'clave', pasos: POLVO, ms: 260 },
+          { x: x - 10, y: y - 4, lado: 4, tinta: 'clave', pasos: espejo(POLVO), ms: 260 },
+          { x: x + 6, y: y - 4, lado: 2, tinta: 'clave', pasos: POLVO_MEDIO, ms: 300 },
+          { x: x - 8, y: y - 4, lado: 2, tinta: 'clave', pasos: espejo(POLVO_MEDIO), ms: 300 },
+        ];
+      }
+      const arriba = y - alto;
+      return [
+        { x: x + 4, y: arriba + 2, lado: 3, tinta: 'clave', pasos: CAE, ms: 300 },
+        { x: x - 7, y: arriba + 2, lado: 3, tinta: 'clave', pasos: espejo(CAE), ms: 300 },
+        { x: x - 1, y: arriba + 2, lado: 2, tinta: 'clave', pasos: CAE_DERECHO, ms: 340 },
       ];
     }
     case 'favorito': {

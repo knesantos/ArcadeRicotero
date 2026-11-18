@@ -31,6 +31,7 @@ import { PORTAL } from '../../lib/sitio/copy.ts';
 import { CASETE, FIN_DE_NIVEL, MENU, PANTALLA, PANTALLA_COMPLETA, PIE_HOMENAJE, TECLAS } from '../../lib/skayboy/copy.ts';
 import { nivelesASembrar, problemasDelBanco, type Banco } from '../../lib/skayboy/niveles.ts';
 import { planoDelNivel } from '../../lib/skayboy/menu.ts';
+import { marquesinaDe, problemasDeLaMarquesina } from '../../lib/skayboy/marquesina.ts';
 import { teclaDelBoton } from '../../lib/skayboy/teclado.ts';
 import datos from '../../data/skayboy.json';
 
@@ -54,6 +55,15 @@ const SEMBRADO: Banco = {
 };
 
 const TITULO = `${CASETE.titulo} — Fichín Ricotero`;
+
+/**
+ * La marquesina del mueble: el título en pixel, armado acá, en el build (`marquesina.ts`). Si el
+ * título pide una letra que el abecedario no tiene, la página no se construye.
+ */
+const faltan = problemasDeLaMarquesina(CASETE.titulo);
+if (faltan.length > 0) throw new Error(`La marquesina no puede escribir el título: ${faltan.join(' · ')}`);
+const MARQUESINA = marquesinaDe(CASETE.titulo);
+const PALABRAS_DE_LA_MARQUESINA = Array.from({ length: MARQUESINA.palabras }, (_, i) => MARQUESINA.pixeles.filter((px) => px.palabra === i));
 
 /**
  * Las dos columnas de mando, que son **iguales**: tres teclas cada una, y cada una maneja
@@ -139,6 +149,28 @@ const PISO = [
             borde de la ventana, que es justo lo que `D-41` punto 3 no quiere.
           */}
           <div class="gabinete">
+            {/*
+              La marquesina (ronda de pulida, 2026-11-18): el título del fichín en pixel, en el
+              frente del mueble y arriba del tubo. Es para el ojo —el título de verdad es el `<h1>`—
+              y nace apagada: se prende una vez, palabra por palabra, cuando el motor ya dibuja.
+              Dónde se ve lo decide la hoja: parado, que es donde reemplaza al renglón del título.
+            */}
+            <p class="marquesina" aria-hidden="true">
+              <svg
+                class="marquesina-letras"
+                viewBox={`0 0 ${MARQUESINA.ancho} ${MARQUESINA.alto}`}
+                style={`--marquesina-ancho:${MARQUESINA.ancho};--marquesina-alto:${MARQUESINA.alto}`}
+                focusable="false"
+              >
+                {PALABRAS_DE_LA_MARQUESINA.map((palabra, i) => (
+                  <g class="marquesina-palabra" style={`--palabra:${i}`}>
+                    {palabra.map((px) => (
+                      <rect x={px.x} y={px.y} width="1" height="1" />
+                    ))}
+                  </g>
+                ))}
+              </svg>
+            </p>
             <div class="recorte">
               <canvas id="juego" width="240" height="144" aria-label={CASETE.titulo}></canvas>
               {/*
@@ -156,6 +188,8 @@ const PISO = [
                 tiene que seguir siendo el del recorte.
               */}
               <p id="chispas" class="chispas" aria-hidden="true"></p>
+              {/* El tubo que se prende: dos persianas que se abren desde la línea del medio, una vez. */}
+              <p class="encendido" aria-hidden="true"><i></i><i></i></p>
               <p id="pasada-area" class="pasada-area" aria-hidden="true" hidden><i></i></p>
               <p id="telon" class="telon" aria-hidden="true" hidden>
                 {Array.from({ length: SEMBRADO.alto }, (_, fila) => <i style={`--fila:${fila}`} />)}

@@ -2342,27 +2342,13 @@ html[data-pantalla='completa'],
   outline: none;
 }
 
-/* **Parado y con alto**: el telefono de hoy. El encabezado achicado se penso para 375 x 667, donde
-   cada renglon cuenta; de 760 de alto para arriba sobran mas de cien pixeles abajo de las teclas.
-   Aca el sello de volver deja de rozar el borde de la ventana, el titulo se lee como titulo, y la
-   hoja ocupa la pantalla entera: asi el pie del sitio empieza debajo del pliegue y el menu baja
-   hasta el borde de la ventana (`regionDelMenu()`), en vez de cortarse a mitad de una ficha contra
-   la firma. */
-@media (orientation: portrait) and (max-width: 719.98px) and (min-height: 760px) {
+/* **Parado**, la hoja ocupa la pantalla entera: asi el pie del sitio empieza debajo del pliegue y
+   el menu baja hasta el borde de la ventana (`regionDelMenu()`), en vez de cortarse a mitad de una
+   ficha contra la firma. El titulo y el aire del volver los resuelve la marquesina, mas abajo
+   (ronda 2). */
+@media (orientation: portrait) and (max-width: 719.98px) {
   .juego-skayboy > main {
     min-height: 100svh;
-  }
-
-  .juego-skayboy .cabecera-sitio {
-    padding-top: var(--espacio-1);
-  }
-
-  .juego-skayboy .marca {
-    width: 4rem;
-  }
-
-  .juego-skayboy .pantalla h1 {
-    font-size: clamp(1.05rem, 5.4vw, 1.4rem);
   }
 }
 
@@ -2387,4 +2373,372 @@ html[data-pantalla='completa'],
 .juego-skayboy .plano-pieza {
   fill: var(--px-skay-3);
   fill-opacity: 1;
+}
+
+/* ==========================================================================
+   El mueble de fichin (ronda 2 de la pulida, 2026-11-18)
+
+   Tres piezas que hacen que la portada sea un mueble y no una hoja con un recuadro:
+   la marquesina con el titulo en pixel, el tubo que se prende, y el menu como tablero
+   de mandos del mismo mueble.
+   ========================================================================== */
+
+/* ---- La marquesina (`marquesina.ts`) ----
+
+   El titulo en pixel, en una franja de la clave atornillada al frente del mueble, arriba del
+   tubo. Nace **apagada** —las letras en el gris del saco, `--px-skay-3`— y se prende una vez,
+   palabra por palabra, cuando el motor ya dibuja (`.fichin--prendido`): un parpadeo y queda en
+   el rojo de *Gulp!* (`--px-infierno`), que es la tinta de este juego (`UX-30 §4`). No vuelve a
+   parpadear. Si el motor no llega, queda apagada: es un mueble desenchufado, y no promete nada.
+
+   Se ve **solo parado**, que es donde reemplaza al renglon del titulo. De costado y en la
+   computadora el titulo ya va acostado en la cabecera y el alto esta contado pixel por pixel
+   (`UX-28 §2.3`); ahi la marquesina no se dibuja. En la pantalla completa tampoco: el mueble
+   se desarma (`ADR-10`). */
+.juego-skayboy .marquesina {
+  display: none;
+  margin: 0 0 var(--chapa);
+  padding: 5px 0;
+  line-height: 0;
+  text-align: center;
+  background: var(--px-clave);
+}
+
+.juego-skayboy .marquesina-letras {
+  width: calc(var(--marquesina-ancho) * 2px);
+  height: calc(var(--marquesina-alto) * 2px);
+  shape-rendering: crispEdges;
+}
+
+.juego-skayboy .marquesina-palabra {
+  fill: var(--px-skay-3);
+}
+
+.juego-skayboy .fichin--prendido .marquesina-palabra {
+  animation: marquesina-prende var(--duracion-umbral) linear both;
+  animation-delay: calc(var(--duracion-pasada) + var(--palabra, 0) * var(--duracion-umbral) / 3);
+}
+
+/* Un tubo de neon que arranca: prende, se cae, y queda. Cuatro tramos, sin intermedios. */
+@keyframes marquesina-prende {
+  0%,
+  19.99% {
+    fill: var(--px-skay-3);
+  }
+
+  20%,
+  34.99% {
+    fill: var(--px-infierno);
+  }
+
+  35%,
+  54.99% {
+    fill: var(--px-skay-3);
+  }
+
+  55%,
+  100% {
+    fill: var(--px-infierno);
+  }
+}
+
+@media (orientation: portrait) and (max-width: 719.98px) {
+  .juego-skayboy .marquesina {
+    display: block;
+  }
+
+  /* El titulo ya lo dice la marquesina: el `h1` sigue en la pagina para el lector de pantalla,
+     recortado a un pixel (la misma receta que `.solo-lector`). */
+  .juego-skayboy .pantalla h1 {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* La marca sube al renglon del volver, a la derecha: el renglon que ocupaba se lo queda el
+     juego. El sello de volver deja de rozar el borde de la ventana. */
+  .juego-skayboy .pantalla {
+    position: relative;
+  }
+
+  .juego-skayboy .cabecera-sitio {
+    padding-block: var(--espacio-2) var(--espacio-1);
+  }
+
+  .juego-skayboy .encabezado-juego .marca {
+    position: absolute;
+    top: var(--espacio-2);
+    right: var(--espacio-1);
+    width: 3.25rem;
+  }
+}
+
+[data-pantalla='completa'] .juego-skayboy .marquesina {
+  display: none;
+}
+
+/* ---- El tubo que se prende ----
+
+   Dos persianas de la clave, una por mitad, que se abren desde la linea del medio en cuatro
+   saltos: el tubo de un televisor viejo cuando calienta. Una sola vez, cuando el motor ya
+   dibuja; antes y despues no tapan nada (escala cero). */
+.juego-skayboy .encendido {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.juego-skayboy .encendido i {
+  position: absolute;
+  inset-inline: 0;
+  height: 50%;
+  background: var(--px-clave);
+  transform: scaleY(0);
+}
+
+.juego-skayboy .encendido i:first-child {
+  top: 0;
+  transform-origin: center top;
+}
+
+.juego-skayboy .encendido i:last-child {
+  bottom: 0;
+  transform-origin: center bottom;
+}
+
+.juego-skayboy .fichin--prendido .encendido i {
+  animation: tubo-prende var(--duracion-pasada) linear both;
+}
+
+@keyframes tubo-prende {
+  0%,
+  24.99% {
+    transform: scaleY(0.97);
+  }
+
+  25%,
+  49.99% {
+    transform: scaleY(0.8);
+  }
+
+  50%,
+  74.99% {
+    transform: scaleY(0.45);
+  }
+
+  75%,
+  100% {
+    transform: scaleY(0);
+  }
+}
+
+/* ---- El menu, tablero de mandos del mueble ----
+
+   El recuadro rojo redondeado se leia como un formulario. Ahora es **la misma chapa que el
+   mueble**: filete de papel del ancho de la chapa, esquina casi viva, la tinta del fondo
+   adentro. Sin sombra y sin degradado, como todo. */
+.juego-skayboy .menu-juego {
+  border: var(--chapa) solid var(--papel);
+  border-radius: 3px;
+}
+
+/* La tecla de los ruidos (`armarInterruptorDeRuidos()`, el mismo interruptor del sitio): aca es
+   una tecla chica del tablero, con su blanco de 48. Apagada va tachada, que ya lo traia. */
+.juego-skayboy .menu-accion .ruidos {
+  box-sizing: border-box;
+  min-height: var(--toque-min);
+  margin: 0;
+  padding: 2px 6px;
+  font-family: var(--fuente);
+  font-size: 0.8rem;
+  line-height: 1.15;
+  color: var(--texto);
+  background: var(--fondo);
+  border: 2px solid var(--borde);
+  border-radius: 3px;
+  text-decoration: none;
+}
+
+.juego-skayboy .menu-accion .ruidos[aria-pressed='false'] {
+  text-decoration: line-through;
+  color: var(--texto-tenue);
+}
+
+.juego-skayboy .menu-accion .ruidos:focus-visible {
+  outline: var(--linea) solid var(--texto);
+  outline-offset: 2px;
+}
+
+/* **Angosto** —parado, el telefono—: el tablero. A la izquierda el boton de fichin, redondo, en
+   la tinta del disco y con su aro de papel; a la derecha, que nivel juega y las dos teclas
+   chicas. Abajo, los doce niveles como **cartuchos**, tres por renglon: la etiqueta con el plano
+   y el numero sellado encima, el nombre, y el lomo estriado. Doce son cuatro renglones, y a
+   430 x 860 entran sin desplazar. */
+@container (max-width: 439.98px) {
+  .juego-skayboy .menu-accion {
+    grid-template-columns: 5.25rem minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 4px var(--espacio-1);
+  }
+
+  .juego-skayboy #menu-jugar {
+    grid-column: 1;
+    grid-row: 1 / span 3;
+    align-self: center;
+    box-sizing: border-box;
+    width: 5.25rem;
+    height: 5.25rem;
+    min-height: 0;
+    padding: 0;
+    font-size: 1.3rem;
+    line-height: 1.05;
+    border: var(--chapa) solid var(--papel);
+    border-radius: 50%;
+  }
+
+  .juego-skayboy #menu-jugar[data-momento='pausa'] {
+    font-size: 0.95rem;
+  }
+
+  .juego-skayboy #menu-cual {
+    grid-column: 2 / -1;
+    text-align: left;
+    color: var(--texto);
+  }
+
+  .juego-skayboy #menu-repetir {
+    grid-column: 2 / -1;
+  }
+
+  .juego-skayboy #menu-pantalla {
+    grid-column: 2;
+  }
+
+  .juego-skayboy .menu-accion .ruidos {
+    grid-column: 3;
+  }
+
+  .juego-skayboy .menu-accion .secundario {
+    min-height: var(--toque-min);
+    padding: 2px 6px;
+    font-size: 0.8rem;
+    line-height: 1.15;
+  }
+
+  .juego-skayboy .fichas {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .juego-skayboy .ficha-nivel {
+    position: relative;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'plano'
+      'nombre';
+    justify-items: center;
+    align-content: start;
+    row-gap: 3px;
+    padding: 5px 4px 3px;
+    /* El lomo del cartucho: dos estrias de la misma tinta del borde. */
+    border-bottom: 6px double var(--borde);
+  }
+
+  .juego-skayboy .ficha-nivel[data-toca],
+  .juego-skayboy .ficha-nivel[data-actual] {
+    border-bottom-color: var(--disco-gulp-tinta);
+  }
+
+  .juego-skayboy .ficha-nivel-plano {
+    width: 64px;
+    height: 38px;
+  }
+
+  /* El numero, sellado sobre la esquina de la etiqueta. */
+  .juego-skayboy .ficha-nivel-numero {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    min-width: 0;
+    padding: 1px 4px;
+    font-size: 0.95rem;
+    background: var(--fondo);
+    border: 1px solid var(--papel);
+    border-radius: 3px;
+  }
+
+  .juego-skayboy .ficha-nivel-nombre {
+    font-size: 0.66rem;
+    line-height: 1.15;
+    text-align: center;
+    text-wrap: balance;
+  }
+
+  /* `PASADO` y `ACA ESTAS`, estampados sobre el pie de la etiqueta. */
+  .juego-skayboy .ficha-nivel-sello {
+    position: absolute;
+    top: 28px;
+    right: 2px;
+    padding: 0 3px;
+    font-size: 0.5rem;
+    white-space: nowrap;
+    background: var(--fondo);
+  }
+}
+
+/* Baja y ancha (x1 de costado): la tecla de los ruidos toma el lugar de "empeza de nuevo", que
+   en la entrada no esta. En pausa manda el otro: ahi no hay un renglon mas. */
+@container (max-height: 220px) and (min-width: 440px) {
+  .juego-skayboy .menu-accion .ruidos {
+    grid-area: repetir;
+  }
+
+  .juego-skayboy #menu-repetir:not([hidden]) ~ .ruidos {
+    display: none;
+  }
+}
+
+/* Hasta que el fichin se prende, el tubo esta apagado: sin esto se veian pasar la barra de carga
+   del motor y un cuadro del area sin sala, y recien despues abria el tubo. El canvas ocupa su
+   lugar igual (no se mueve nada); lo que se ve es el fondo del recorte, que es la clave. Si el
+   motor no llega, queda apagado, con el rotulo de carga al lado. */
+.juego-skayboy .fichin:not(.fichin--prendido) #juego {
+  visibility: hidden;
+}
+
+/* Con el menu abierto, la leyenda de teclas de la computadora no se ve: el menu ya las dice
+   (`.menu-teclas`), y con la ventana al tubo asomaba cortada por debajo del tablero. */
+.juego-skayboy .fichin:has(.menu-juego:not([hidden])) .mando-leyenda {
+  visibility: hidden;
+}
+
+/* **Ancho y con alto** —de costado con lugar, la computadora—: desde que el menu le deja una
+   ventana al tubo (`conVentanaAlTubo()`) tiene poco mas de la mitad del alto, y tiene que entrar
+   sin desplazar. Las dos teclas chicas comparten renglon, y con mucho ancho los doce cartuchos
+   van de a seis. No toca la composicion baja (x1 de costado), que arma su propia grilla. */
+@container (min-width: 440px) and (min-height: 220.02px) {
+  .juego-skayboy .menu-accion {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .juego-skayboy #menu-jugar,
+  .juego-skayboy #menu-cual,
+  .juego-skayboy #menu-repetir {
+    grid-column: 1 / -1;
+  }
+
+  .juego-skayboy .menu-hoja {
+    align-content: start;
+  }
+}
+
+@container (min-width: 900px) and (min-height: 220.02px) {
+  .juego-skayboy .fichas {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
 }

@@ -195,7 +195,8 @@ import {
 import { cargarAvance, guardarPasado } from '../lib/skayboy/avance.ts';
 import { armarEfectos, sonar } from '../lib/skayboy/sonido.ts';
 import { despertarSalida } from '../lib/audio/contexto.ts';
-import { ruidosPrendidos } from '../lib/audio/efectos.ts';
+import { ruidosPrendidos, sonarEfecto, type Efecto as Ruido } from '../lib/audio/efectos.ts';
+import { armarInterruptorDeRuidos } from './jugo.ts';
 import { montarPantallaCompleta, type ModoDePantalla } from '../lib/skayboy/modo-pantalla.ts';
 import { botonDelEvento, type TeclaDelMando } from '../lib/skayboy/teclado.ts';
 import {
@@ -220,8 +221,8 @@ import {
   mostrarFinDeNivel,
   nivelDelBotonGrande,
   pasadosDeLaFila,
+  conVentanaAlTubo,
   regionDelMenu,
-  seTocan,
   type Rectangulo,
 } from '../lib/skayboy/menu.ts';
 import { ENTRADA, FIN_DE_NIVEL, MENU, PANTALLA } from '../lib/skayboy/copy.ts';
@@ -637,6 +638,34 @@ function dibujar(
  */
 const memoria: Memoria = crearMemoria();
 
+/**
+ * **Qué ruido hace un golpe**, de los de síntesis del sitio (`efectos.ts`), que ya pasan por el
+ * interruptor de ruidos y van bajos. Los tres efectos propios del juego (`sonido.ts`, `CTR-17`) no
+ * cambian: el salto, el favorito y las puertas siguen sonando como sonaban.
+ *
+ * - lo que pesa —una caja que apoya, o caer de más alto que un salto—, el golpe grave. **El
+ *   aterrizaje de un salto común no suena**: repicaría en cada salto;
+ * - la palanca, el clac de dos tiempos;
+ * - la caja que arranca y la placa que cede o vuelve, la tecla.
+ *
+ * La compuerta sigue callada (`CTR-16.10.7`), y la vuelta también (`UX-29 §5`).
+ */
+function ruidoDelGolpe(g: Golpe): Ruido | null {
+  switch (g.tipo) {
+    case 'cajaApoya':
+      return 'golpe';
+    case 'aterrizaje':
+      return g.fuerte ? 'golpe' : null;
+    case 'palanca':
+      return 'clac';
+    case 'empuje':
+    case 'placa':
+      return 'tecla';
+    default:
+      return null;
+  }
+}
+
 /** Vuelve a correr la animación de una pieza que nace escondida: se muestra, y la hoja hace el resto. */
 function correr(pieza: HTMLElement | null, clase: string): void {
   if (pieza === null) return;
@@ -738,10 +767,18 @@ async function arrancar(): Promise<void> {
   // La vidriera (`vidriera.ts`): lo que corre en el tubo con el menú de entrada abierto.
   let vidriera: Vidriera | null = null;
 
-  /** Lo que la isla hace con cada golpe. Con movimiento reducido, nada: el estado ya se ve. */
-  function sentirGolpes(golpes: readonly Golpe[]): void {
-    if (golpes.length === 0 || movimientoReducido()) return;
+  /**
+   * Lo que la isla hace con cada golpe: **lo que suena y lo que se mueve van por separado**. Con
+   * movimiento reducido no se mueve nada —el estado ya se ve—, pero el ruido es de quien lo dejó
+   * prendido. La vidriera no suena nunca (`conRuido` en falso): nadie tocó nada todavía.
+   */
+  function sentirGolpes(golpes: readonly Golpe[], conRuido: boolean): void {
+    if (golpes.length === 0) return;
+    const quieto = movimientoReducido();
     for (const g of golpes) {
+      const ruido = conRuido ? ruidoDelGolpe(g) : null;
+      if (ruido !== null) sonarEfecto(ruido);
+      if (quieto) continue;
       if (g.tipo === 'vuelta') correr(pasada, 'pasada-area--pasa');
       else chispero.soltar(g);
       // Lo que pesa de verdad sacude el tubo, una vez y seco.
@@ -839,7 +876,11 @@ async function arrancar(): Promise<void> {
   function pintarMenu(): void {
     const momento = momentoDe(mundo);
     const grande = enLaFila(banco.niveles, nivelDelBotonGrande(mundo, banco.niveles));
-    if (menuJugar !== null) menuJugar.textContent = momento === 'pausa' ? MENU.seguirJugando : MENU.jugar;
+    if (menuJugar !== null) {
+      menuJugar.textContent = momento === 'pausa' ? MENU.seguirJugando : MENU.jugar;
+      // Para la hoja: "Seguí jugando" son dos palabras en un botón redondo, y va más chico.
+      menuJugar.dataset.momento = momento;
+    }
     if (menuCual !== null) menuCual.textContent = grande === undefined ? '' : MENU.cualToca(grande.numero, grande.nombre);
     if (menuCualCorto !== null) menuCualCorto.textContent = grande === undefined ? '' : MENU.numero(grande.numero);
     if (menuRepetir !== null) menuRepetir.hidden = momento !== 'pausa';
@@ -987,8 +1028,9 @@ async function arrancar(): Promise<void> {
     if (menu === null || !menuAbierto()) return;
     const fichin = document.querySelector<HTMLElement>('.fichin');
     const aire = fichin === null ? 0 : parseFloat(getComputedStyle(fichin).getPropertyValue('--tecla-aire')) || 0;
-    const region = regionDelMenu({
-      recorte: medir(document.querySelector('.recorte')),
+    const tubo = medir(document.querySelector('.recorte'));
+    const entera = regionDelMenu({
+      recorte: tubo,
       mandos: [...document.querySelectorAll('.mando')].map(medir),
       pie: medir(document.querySelector('.chapa-pie')),
       // Sin la barra de desplazamiento (`clientWidth`), y lo que se ve de verdad de alto: en el
@@ -1002,6 +1044,8 @@ async function arrancar(): Promise<void> {
       // Parado, el menú baja hasta el borde de la ventana, pero no tapa la firma ni los créditos.
       tope: medir(document.querySelector('body > footer')).arriba || undefined,
     });
+    // De costado y con alto, el menú deja a la vista la franja de abajo del tubo (`menu.ts`).
+    const region = conVentanaAlTubo(entera, tubo, modo?.enElModo() ?? false);
     const base = menu.offsetParent?.getBoundingClientRect() ?? { left: -window.scrollX, top: -window.scrollY };
     menu.style.left = `${region.izquierda - base.left}px`;
     menu.style.top = `${region.arriba - base.top}px`;
@@ -1016,7 +1060,7 @@ async function arrancar(): Promise<void> {
     // Con el menú abierto la partida está en pausa: el mundo no avanza y su reloj no corre. En la
     // entrada corre la vidriera, sobre su mundo aparte, y lo único que se lleva es el polvo.
     if (menuAbierto()) {
-      if (vidriera !== null) sentirGolpes(sentir(memoria, vidriera.mundo, avanzarVidriera(vidriera, k.dt())));
+      if (vidriera !== null) sentirGolpes(sentir(memoria, vidriera.mundo, avanzarVidriera(vidriera, k.dt())), false);
       return;
     }
     // Las teclas se leen una vez por tic y valen para todos los cuadros de ese tic (ADR-09.1).
@@ -1032,7 +1076,7 @@ async function arrancar(): Promise<void> {
     const antes = mundo.tiempo;
     const sucesos = atender(jugarTic(reloj, mundo, ambos, k.dt()), deFrente, esElUltimo(mundo, banco.niveles));
     // Y lo que se sintió de eso: el polvo, la chispa, la pasada (`sensacion.ts`).
-    sentirGolpes(sentir(memoria, mundo, sucesos));
+    sentirGolpes(sentir(memoria, mundo, sucesos), true);
     // Lo que se apretó ya llegó al mundo, si el mundo avanzó; si este tic no jugó ningún cuadro,
     // espera al que viene (`D-61` punto 4).
     if (mundo.tiempo !== antes) pulsadas.clear();
@@ -1059,6 +1103,11 @@ async function arrancar(): Promise<void> {
   // Y en el mismo momento aparecen los dos sellos del mueble (`ADR-10.1`): sin motor no hay nada
   // que agrandar ni que pausar, y un botón que no hace nada sería prometer lo que no hay (`ADR-08.2`).
   document.querySelector('.sellos-mueble')?.removeAttribute('hidden');
+  // **El fichín se prende, una vez**: el tubo abre desde la línea del medio y la marquesina enciende
+  // sus palabras. Lo hace la hoja con esta clase; con movimiento reducido queda prendido de una.
+  document.querySelector('.fichin')?.classList.add('fichin--prendido');
+  // La tecla de los ruidos, en el tablero del menú: el mismo interruptor de los otros juegos.
+  menu?.querySelector('.menu-accion')?.append(armarInterruptorDeRuidos({ apagar: MENU.ruidosApagar, prender: MENU.ruidosPrender }));
   // Y el juego abre con el menú (`D-61` punto 1): el nivel ya está armado y dibujado atrás, y el
   // botón grande lo juega.
   abrirMenu();
@@ -1113,9 +1162,19 @@ function lugaresInertes(si: boolean): void {
   }
 }
 
-/** Si el menú abierto deja ver el tubo: parado va en la zona de las teclas; de costado, encima. */
+/**
+ * Si el menú abierto deja ver el piso del tubo: parado va en la zona de las teclas, y de costado
+ * con alto le deja una ventana abajo (`conVentanaAlTubo()`). Hace falta ver al menos tres filas de
+ * la sala —un tercio del tubo— para que la vidriera valga lo que cuesta.
+ */
 function tuboALaVista(): boolean {
-  return !seTocan(medir(menu), medir(recorte));
+  const m = medir(menu);
+  const t = medir(recorte);
+  const tapaDeCostado = m.izquierda < t.izquierda + t.ancho && t.izquierda < m.izquierda + m.ancho;
+  if (!tapaDeCostado) return true;
+  const libreAbajo = t.arriba + t.alto - Math.max(t.arriba, m.arriba + m.alto);
+  const libreArriba = Math.min(t.arriba + t.alto, m.arriba) - t.arriba;
+  return Math.max(libreAbajo, libreArriba) >= t.alto / 3;
 }
 
 /** Un elemento medido en la ventana, o un rectángulo vacío si no está. */

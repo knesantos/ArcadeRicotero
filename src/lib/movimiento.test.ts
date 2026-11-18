@@ -268,6 +268,10 @@ const ANIMACIONES = [
   { nombre: 'telon-abre', apaga: 'token', valor: '--duracion-pasada', hoja: 'src/styles/skayboy.css' },
   { nombre: 'tubo-golpe', apaga: 'token', valor: '--duracion-sello', hoja: 'src/styles/skayboy.css' },
   { nombre: 'tubo-sella', apaga: 'token', valor: '--duracion-sello', hoja: 'src/styles/skayboy.css' },
+  // Ronda 2: el fichín se prende, una vez, cuando el motor ya dibuja. El tubo abre desde la línea
+  // del medio y la marquesina enciende sus palabras con un parpadeo.
+  { nombre: 'tubo-prende', apaga: 'token', valor: '--duracion-pasada', hoja: 'src/styles/skayboy.css' },
+  { nombre: 'marquesina-prende', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/skayboy.css' },
 ] as const;
 
 test('no hay ninguna animacion que esta lista no conozca', () => {

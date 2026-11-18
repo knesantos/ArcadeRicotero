@@ -5,6 +5,9 @@ import { CUADRO_SEG, QUIETO, crearMundo, paso, type Mando, type Mandos, type Mun
 import type { Banco, Nivel } from './niveles.ts';
 import { CAIDA_FUERTE, CAIDA_QUE_SE_SIENTE, PESO_SEG, crearMemoria, hundimiento, sentir, type Golpe } from './sensacion.ts';
 import { AREA, CHISPAS_EN_LA_FILA, TECHO_MS, TINTAS_DE_CHISPA, chispasDe } from './chispas.ts';
+import { ALTO_DE_LETRA, LETRAS, marquesinaDe, problemasDeLaMarquesina } from './marquesina.ts';
+import { ALTO_MINIMO_CON_VENTANA, PARTE_DEL_MENU_SOBRE_EL_TUBO, conVentanaAlTubo } from './menu.ts';
+import { CASETE } from './copy.ts';
 import { CUADROS_POR_VUELTA, GUIONES, VUELTAS, avanzarVidriera, crearVidriera, guionLimpio, guionPara, mandosDelGuion, vidrieraViva } from './vidriera.ts';
 
 /**
@@ -104,20 +107,39 @@ test('dos que vuelven en el mismo tic dan una sola pasada', () => {
   assert.deepEqual(sentir(memoria, mundo, sucesos), [{ tipo: 'vuelta' }]);
 });
 
-test('la caja que arranca raspa del lado de atrás, y la palanca avisa para dónde quedó', () => {
+test('la caja que arranca raspa adelante, del lado libre, y la palanca avisa para dónde quedó', () => {
   // Nivel 10: la caja está a la izquierda de Skayboy. Nivel 8: la palanca, a su derecha.
   const conCaja = crearMundo(BANCO, nivel('NIV-10'));
   const memoria = crearMemoria();
   sentir(memoria, conCaja, []);
   const empujes = jugar(conCaja, memoria, mandos(con({ izquierda: true })), 90).filter((g) => g.tipo === 'empuje');
   assert.ok(empujes.length >= 1, 'la empujó');
-  assert.equal(empujes[0]?.tipo === 'empuje' ? empujes[0].lado : 0, -1);
+  const primero = empujes[0];
+  assert.ok(primero?.tipo === 'empuje');
+  assert.equal(primero.lado, -1);
+  // La caja arranca en la columna 3 y va a la izquierda: raspa en su borde izquierdo, lejos de
+  // Skayboy, que la empuja desde la derecha.
+  assert.equal(primero.x, 3 * 16);
 
   const conPalanca = crearMundo(BANCO, nivel('NIV-08'));
   const otra = crearMemoria();
   sentir(otra, conPalanca, []);
   const palancas = jugar(conPalanca, otra, mandos(con({ derecha: true })), 60).filter((g) => g.tipo === 'palanca');
   assert.deepEqual(palancas, [{ tipo: 'palanca', x: 3 * 16 + 8, y: 7 * 16 + 4, lado: 1 }]);
+});
+
+test('la placa y la compuerta contestan: la caja llega a la placa y la reja se abre', () => {
+  // Nivel 10: Skayboy empuja la caja hasta la placa de la columna 1, que abre la compuerta.
+  const mundo = crearMundo(BANCO, nivel('NIV-10'));
+  const memoria = crearMemoria();
+  sentir(memoria, mundo, []);
+  const golpes = jugar(mundo, memoria, mandos(con({ izquierda: true })), 240);
+  const placa = golpes.find((g) => g.tipo === 'placa');
+  const compuerta = golpes.find((g) => g.tipo === 'compuerta');
+  assert.deepEqual(placa, { tipo: 'placa', x: 1 * 16 + 8, y: 8 * 16 - 3, pisada: true });
+  assert.ok(compuerta?.tipo === 'compuerta' && compuerta.abierta, 'la compuerta se abrió');
+  // La reja del nivel 10 ocupa la columna 12, filas 2 y 3: el umbral queda al pie de la fila 3.
+  assert.deepEqual(compuerta, { tipo: 'compuerta', x: 12 * 16 + 8, y: 4 * 16, alto: 32, abierta: true });
 });
 
 test('el nivel que sigue no hereda nada: con otro mundo, cero golpes y cero peso', () => {
@@ -180,6 +202,9 @@ const GOLPES: readonly Golpe[] = [
   { tipo: 'palanca', x: 56, y: 116, lado: 1 },
   { tipo: 'palanca', x: 56, y: 116, lado: -1 },
   { tipo: 'puerta', x: 24, y: 114, de: 'skayboy' },
+  { tipo: 'placa', x: 24, y: 125, pisada: true },
+  { tipo: 'compuerta', x: 200, y: 64, alto: 32, abierta: true },
+  { tipo: 'compuerta', x: 200, y: 64, alto: 32, abierta: false },
 ];
 
 test('las chispas son pixel duro: enteros, tintas de la hoja 14, y ninguna pasa de 400 ms', () => {
@@ -209,14 +234,95 @@ test('la vuelta no suelta chispas, y ganar entra en la fila con polvo en el aire
   assert.ok(ganar + 2 * polvo <= CHISPAS_EN_LA_FILA, `${ganar} + ${2 * polvo} chispas no entran en ${CHISPAS_EN_LA_FILA}`);
 });
 
-test('el polvo del piso no se mete en el piso, y lo que raspa una caja queda atrás', () => {
+test('el polvo del piso no se mete en el piso, y lo que raspa una caja sale para adelante', () => {
   for (const golpe of GOLPES.filter((g) => g.tipo === 'aterrizaje' || g.tipo === 'cajaApoya' || g.tipo === 'favorito')) {
     for (const c of chispasDe(golpe)) {
       for (const [, dy] of c.pasos) assert.ok(dy <= 0, `${golpe.tipo}: sube o corre, no baja`);
     }
   }
   const aLaDerecha = chispasDe({ tipo: 'empuje', x: 64, y: 128, lado: 1 });
-  for (const c of aLaDerecha) assert.ok((c.pasos.at(-1)?.[0] ?? 0) < 0, 'la caja va a la derecha, la raspadura a la izquierda');
+  for (const c of aLaDerecha) {
+    assert.ok(c.x >= 64, 'nace del borde de adelante, no adentro de la caja');
+    assert.ok((c.pasos.at(-1)?.[0] ?? 0) > 0, 'la caja va a la derecha, y la raspadura también');
+  }
+  const aLaIzquierda = chispasDe({ tipo: 'empuje', x: 64, y: 128, lado: -1 });
+  for (const c of aLaIzquierda) {
+    assert.ok(c.x + c.lado <= 64, 'nace del borde de adelante, no adentro de la caja');
+    assert.ok((c.pasos.at(-1)?.[0] ?? 0) < 0);
+  }
+});
+
+test('el polvo se ve a ×1: en cada aterrizaje hay motas de cuatro pixeles, y se abren', () => {
+  for (const fuerte of [false, true]) {
+    const chispas = chispasDe({ tipo: 'aterrizaje', x: 80, y: 128, fuerte });
+    assert.ok(chispas.length >= 4, 'una ráfaga, no dos puntos');
+    assert.ok(chispas.filter((c) => c.lado >= 4).length >= 2, 'a ×1 un pixel nativo es un pixel de pantalla');
+    const alcance = Math.max(...chispas.map((c) => Math.abs(c.pasos.at(-1)?.[0] ?? 0)));
+    assert.ok(alcance >= 7, `se abre ${alcance} pixeles`);
+  }
+});
+
+test('solo lo que se desprende de arriba baja: la reja que se abre', () => {
+  const abre = chispasDe({ tipo: 'compuerta', x: 200, y: 64, alto: 32, abierta: true });
+  assert.ok(abre.every((c) => c.y <= 64 - 32 + 4), 'sale de arriba del vano');
+  assert.ok(abre.every((c) => (c.pasos.at(-1)?.[1] ?? 0) > 0), 'y cae');
+  const cierra = chispasDe({ tipo: 'compuerta', x: 200, y: 64, alto: 32, abierta: false });
+  assert.ok(cierra.every((c) => c.pasos.every(([, dy]) => dy <= 0)), 'al cerrar, el polvo es del umbral');
+});
+
+/* ---------------------------------------------------------------- la marquesina */
+
+test('la marquesina sabe escribir el título del juego, entero y en un renglón', () => {
+  assert.deepEqual(problemasDeLaMarquesina(CASETE.titulo), []);
+  const m = marquesinaDe(CASETE.titulo);
+  assert.equal(m.alto, ALTO_DE_LETRA);
+  assert.equal(m.palabras, CASETE.titulo.trim().split(/\s+/).length);
+  // A dos pixeles de pantalla por pixel, entra en el frente del mueble a ×1 (240 de área).
+  assert.ok(m.ancho * 2 <= 232, `mide ${m.ancho * 2} px CSS`);
+  for (const px of m.pixeles) {
+    assert.ok(px.x >= 0 && px.x < m.ancho && px.y >= 0 && px.y < m.alto);
+    assert.ok(px.palabra >= 0 && px.palabra < m.palabras);
+  }
+  // Cada palabra tiene tinta, y ningún pixel se repite.
+  for (let i = 0; i < m.palabras; i++) assert.ok(m.pixeles.some((px) => px.palabra === i), `la palabra ${i} quedó vacía`);
+  assert.equal(new Set(m.pixeles.map((px) => `${px.x},${px.y}`)).size, m.pixeles.length);
+});
+
+test('una letra que falta se nombra, no se saltea; y toda letra mide siete renglones parejos', () => {
+  assert.match(problemasDeLaMarquesina('Skayboy y Ñandú').join('\n'), /«Ñ»/);
+  for (const [letra, filas] of Object.entries(LETRAS)) {
+    assert.equal(filas.length, ALTO_DE_LETRA, letra);
+    assert.equal(new Set(filas.map((f) => f.length)).size, 1, letra);
+  }
+});
+
+/* ---------------------------------------------------------------- la ventana al tubo */
+
+test('de costado y con alto, el menú deja a la vista la franja de abajo del tubo', () => {
+  const tubo = { izquierda: 152, arriba: 133, ancho: 976, alto: 584 };
+  const region = { izquierda: 12, arriba: 133, ancho: 1256, alto: 584 };
+  const conVentana = conVentanaAlTubo(region, tubo, false);
+  assert.equal(conVentana.arriba, region.arriba);
+  assert.equal(conVentana.izquierda, region.izquierda);
+  assert.equal(conVentana.ancho, region.ancho);
+  assert.equal(conVentana.alto, Math.round(584 * PARTE_DEL_MENU_SOBRE_EL_TUBO));
+  assert.ok(tubo.alto - conVentana.alto >= tubo.alto / 3, 'quedan a la vista más de tres filas de la sala');
+});
+
+test('la ventana no se abre parado, ni en el modo, ni donde el menú no entraría', () => {
+  const tubo = { izquierda: 87, arriba: 150, ancho: 256, alto: 160 };
+  // Parado: el menú va debajo del tubo y no lo toca.
+  const parado = { izquierda: 71, arriba: 368, ancho: 288, alto: 484 };
+  assert.deepEqual(conVentanaAlTubo(parado, tubo, false), parado);
+  // ×1 de costado: 152 de alto. El menú necesita todo.
+  const chico = { izquierda: 44, arriba: 60, ancho: 480, alto: 152 };
+  assert.deepEqual(conVentanaAlTubo(chico, { izquierda: 164, arriba: 60, ancho: 248, alto: 152 }, false), chico);
+  // El alto justo que no alcanza, y el que sí.
+  const casi = { izquierda: 0, arriba: 0, ancho: 720, alto: Math.floor((ALTO_MINIMO_CON_VENTANA - 1) / PARTE_DEL_MENU_SOBRE_EL_TUBO) };
+  assert.deepEqual(conVentanaAlTubo(casi, casi, false), casi);
+  // En el modo la región es la sala entera, y el menú es la pausa.
+  const sala = { izquierda: 8, arriba: 8, ancho: 1264, alto: 700 };
+  assert.deepEqual(conVentanaAlTubo(sala, sala, true), sala);
 });
 
 /* ---------------------------------------------------------------- la vidriera */

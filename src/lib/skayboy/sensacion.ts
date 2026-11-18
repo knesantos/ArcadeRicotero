@@ -14,7 +14,7 @@
  * - **Los sucesos del mundo** (`Suceso`): el salto, el favorito, la vuelta y las puertas.
  * - **Lo que el mundo no avisa**, comparando con la foto del tic anterior: el aterrizaje (un
  *   cuerpo que venía cayendo y ahora pisa), la caja que arranca su tramo, la caja que apoya
- *   después de caer, y la palanca que cambió de lado.
+ *   después de caer, la palanca que cambió de lado y la placa que se pisa o se suelta.
  *
  * ## Las barandas (`D-32`, `UX-29 §3`, `UX-32 §2.3`)
  *
@@ -39,12 +39,16 @@ export type Golpe =
   | { readonly tipo: 'despegue'; readonly x: number; readonly y: number }
   /** Un favorito juntado: el centro de su celda. */
   | { readonly tipo: 'favorito'; readonly x: number; readonly y: number; readonly de: IdPersonaje }
-  /** Una caja arranca su tramo: la esquina de abajo que queda atrás. `lado` es hacia dónde va. */
+  /** Una caja arranca su tramo: la esquina de abajo que va adelante, del lado libre. `lado` es hacia dónde va. */
   | { readonly tipo: 'empuje'; readonly x: number; readonly y: number; readonly lado: -1 | 1 }
   /** Una caja apoya después de caer: el medio de su base. */
   | { readonly tipo: 'cajaApoya'; readonly x: number; readonly y: number }
   /** Una palanca cambió de lado: la punta. `lado` es para dónde quedó. */
   | { readonly tipo: 'palanca'; readonly x: number; readonly y: number; readonly lado: -1 | 1 }
+  /** Una placa que se pisa o se suelta: el medio de su tapa. */
+  | { readonly tipo: 'placa'; readonly x: number; readonly y: number; readonly pisada: boolean }
+  /** Una compuerta que cambió de verdad: el medio del umbral de abajo, y cuánto mide de alto. */
+  | { readonly tipo: 'compuerta'; readonly x: number; readonly y: number; readonly alto: number; readonly abierta: boolean }
   /** Se ganó: uno por puerta, en el dintel que se acaba de abrir. */
   | { readonly tipo: 'puerta'; readonly x: number; readonly y: number; readonly de: IdPersonaje }
   /** Alguien volvió a la entrada: la pasada del área (`UX-29 §3`). No lleva lugar: es de la sala. */
@@ -88,6 +92,7 @@ export interface Memoria {
   cuerpos: Record<IdPersonaje, FotoDelCuerpo>;
   cajas: FotoDeLaCaja[];
   palancas: boolean[];
+  placas: boolean[];
   juntados: Set<string>;
   /** Cuándo aterrizó cada uno por última vez, con el reloj de la partida, y si fue fuerte. */
   peso: Record<IdPersonaje, { desde: number; fuerte: boolean } | null>;
@@ -100,6 +105,7 @@ export function crearMemoria(): Memoria {
     cuerpos: { skayboy: nada(), poligirl: nada() },
     cajas: [],
     palancas: [],
+    placas: [],
     juntados: new Set(),
     peso: { skayboy: null, poligirl: null },
   };
@@ -117,6 +123,7 @@ function fotografiar(memoria: Memoria, mundo: Mundo): void {
   }
   memoria.cajas = mundo.cajas.map((k) => ({ estado: k.estado }));
   memoria.palancas = mundo.palancas.map((p) => p.activa);
+  memoria.placas = mundo.placas.map((l) => l.pisada);
   memoria.juntados = new Set(mundo.juntados);
 }
 
@@ -149,6 +156,17 @@ export function sentir(memoria: Memoria, mundo: Mundo, sucesos: readonly Suceso[
     if (s.tipo === 'salto') {
       // De donde salió: la foto de antes, que todavía tenía los pies en el piso.
       golpes.push({ tipo: 'despegue', ...pies(memoria.cuerpos[s.quien]) });
+    } else if (s.tipo === 'compuerta') {
+      const g = mundo.compuertas.find((q) => q.id === s.id);
+      if (g !== undefined) {
+        golpes.push({
+          tipo: 'compuerta',
+          x: g.columna * TILE + TILE / 2,
+          y: (g.hastaFila + 1) * TILE,
+          alto: (g.hastaFila - g.desdeFila + 1) * TILE,
+          abierta: s.abierta,
+        });
+      }
     } else if (s.tipo === 'puerta') {
       for (const { columna, fila } of celdasDeTipo(mundo.banco, mundo.nivel, 'puerta')) {
         const de = mundo.banco.leyenda[mundo.nivel.grilla[fila]?.[columna] ?? '']?.de ?? 'skayboy';
@@ -183,8 +201,8 @@ export function sentir(memoria: Memoria, mundo: Mundo, sucesos: readonly Suceso[
   mundo.cajas.forEach((k, i) => {
     const antes = memoria.cajas[i]?.estado ?? 'quieta';
     if (antes === 'quieta' && k.estado === 'tramo' && k.direccion !== 0) {
-      // La esquina de abajo que queda atrás: de ahí raspa.
-      const x = Math.round(k.direccion > 0 ? k.x : k.x + TILE);
+      // La esquina de abajo que va adelante: del otro lado está el que empuja, y la taparía.
+      const x = Math.round(k.direccion > 0 ? k.x + TILE : k.x);
       golpes.push({ tipo: 'empuje', x, y: Math.round(k.y + TILE), lado: k.direccion });
     } else if (antes === 'cae' && k.estado === 'quieta') {
       golpes.push({ tipo: 'cajaApoya', x: Math.round(k.x + TILE / 2), y: Math.round(k.y + TILE) });
@@ -194,6 +212,11 @@ export function sentir(memoria: Memoria, mundo: Mundo, sucesos: readonly Suceso[
   mundo.palancas.forEach((p, i) => {
     if (memoria.palancas[i] === p.activa) return;
     golpes.push({ tipo: 'palanca', x: p.columna * TILE + TILE / 2, y: p.fila * TILE + 4, lado: p.activa ? 1 : -1 });
+  });
+
+  mundo.placas.forEach((l, i) => {
+    if (memoria.placas[i] === l.pisada) return;
+    golpes.push({ tipo: 'placa', x: l.columna * TILE + TILE / 2, y: (l.fila + 1) * TILE - 3, pisada: l.pisada });
   });
 
   fotografiar(memoria, mundo);

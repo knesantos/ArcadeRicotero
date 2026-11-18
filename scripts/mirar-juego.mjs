@@ -187,6 +187,80 @@ async function abrir(nav, ancho, alto, quieto) {
         .toFile(ruta);
       console.log('tira', ruta);
     },
+    /**
+     * **Una ráfaga**: todos los cuadros que el navegador pinta en un rato, uno detrás del otro, en
+     * una grilla. Para lo que dura menos que el hueco entre dos capturas de una tira —el peso de
+     * un aterrizaje son seis cuadros— no alcanza con seis fotos: acá se le pide al navegador su
+     * propia filmación (`Page.startScreencast`) y se pegan los cuadros entre `desde` y `hasta`
+     * milisegundos después de `disparar`. `sobre` recorta a una pieza y `zoom` la agranda sin
+     * suavizar (1 es tal cual se ve). A velocidad real, siempre.
+     */
+    async rafaga(nombre, disparar, { desde = 0, hasta = 600, sobre = null, zoom = 1, porRenglon = 6, tope = 24, cada = 1 } = {}) {
+      if (quieto) {
+        await disparar();
+        await espera(hasta);
+        return ctx.foto(`${nombre}-quieto`);
+      }
+      const caja = sobre ? await (await pagina.$(sobre))?.boundingBox() : null;
+      const clip = caja
+        ? { left: Math.max(0, Math.floor(caja.x) - 4), top: Math.max(0, Math.floor(caja.y) - 4), width: Math.ceil(caja.width) + 8, height: Math.ceil(caja.height) + 8 }
+        : { left: 0, top: 0, width: ancho, height: alto };
+      const cuadros = [];
+      const alLlegar = async (c) => {
+        cuadros.push({ t: Date.now(), datos: c.data });
+        await cdp.send('Page.screencastFrameAck', { sessionId: c.sessionId }).catch(() => {});
+      };
+      cdp.on('Page.screencastFrame', alLlegar);
+      await cdp.send('Page.startScreencast', { format: 'png', everyNthFrame: 1 });
+      await espera(120);
+      const t0 = Date.now();
+      await disparar();
+      await espera(hasta + 60);
+      await cdp.send('Page.stopScreencast');
+      cdp.off('Page.screencastFrame', alLlegar);
+      // `cada`: de un momento largo se queda con uno de cada tantos cuadros, para que la grilla se lea.
+      const elegidos = cuadros
+        .filter((c) => c.t - t0 >= desde && c.t - t0 <= hasta)
+        .filter((_, i) => i % cada === 0)
+        .slice(0, tope);
+      if (elegidos.length === 0) throw new Error(`la ráfaga «${nombre}» no trajo ningún cuadro`);
+      console.log(`   (${nombre}: ${elegidos.length} cuadros de ${cuadros.length}, a ${elegidos.map((c) => c.t - t0).join(', ')} ms)`);
+      const piezas = await Promise.all(
+        elegidos.map(async (c) => {
+          const imagen = sharp(Buffer.from(c.datos, 'base64'));
+          const meta = await imagen.metadata();
+          // La filmación viene en píxeles de dispositivo: se lleva el recorte a esa escala.
+          const k = (meta.width ?? ancho) / ancho;
+          return imagen
+            .extract({
+              left: Math.round(clip.left * k),
+              top: Math.round(clip.top * k),
+              width: Math.min(Math.round(clip.width * k), (meta.width ?? 0) - Math.round(clip.left * k)),
+              height: Math.min(Math.round(clip.height * k), (meta.height ?? 0) - Math.round(clip.top * k)),
+            })
+            .resize(clip.width * zoom, clip.height * zoom, { kernel: 'nearest' })
+            .png()
+            .toBuffer();
+        }),
+      );
+      const hueco = 4;
+      const anchoCuadro = clip.width * zoom;
+      const altoCuadro = clip.height * zoom;
+      const renglones = Math.ceil(piezas.length / porRenglon);
+      const ruta = join(salida, `${prefijo}-rafaga-${numero()}-${nombre}.png`);
+      await sharp({
+        create: {
+          width: porRenglon * anchoCuadro + (porRenglon - 1) * hueco,
+          height: renglones * altoCuadro + (renglones - 1) * hueco,
+          channels: 3,
+          background: '#ff00ff',
+        },
+      })
+        .composite(piezas.map((f, i) => ({ input: f, left: (i % porRenglon) * (anchoCuadro + hueco), top: Math.floor(i / porRenglon) * (altoCuadro + hueco) })))
+        .png()
+        .toFile(ruta);
+      console.log('rafaga', ruta);
+    },
   };
   return ctx;
 }
@@ -775,6 +849,26 @@ async function skayboy(ctx) {
   // El avance vive en el aparato y el perfil se reusa: sin esto, la segunda corrida abre en el 2.
   await pagina.goto(url, { waitUntil: 'networkidle0' });
   await pagina.evaluate(() => localStorage.clear());
+  // El fichín se prende una vez, al cargar: el tubo abre y la marquesina enciende sus palabras.
+  await ctx.rafaga('se-prende', () => pagina.goto(url, { waitUntil: 'domcontentloaded' }), {
+    desde: 0,
+    hasta: 2600,
+    sobre: '.gabinete',
+    zoom: ancho < 768 ? 2 : 1,
+    porRenglon: 6,
+    tope: 30,
+  }).catch((e) => console.log('   (sin ráfaga de encendido:', e.message, ')'));
+  // Y la marquesina sola, que se prende después del tubo, palabra por palabra.
+  if (await pagina.$eval('.marquesina', (m) => m.getClientRects().length > 0)) {
+    await ctx.rafaga('marquesina-se-prende', () => pagina.goto(url, { waitUntil: 'domcontentloaded' }), {
+      desde: 0,
+      hasta: 3200,
+      sobre: '.marquesina',
+      zoom: 2,
+      porRenglon: 4,
+      tope: 60,
+    });
+  }
   await pagina.goto(url, { waitUntil: 'networkidle0' });
   await pagina.waitForSelector('#menu-juego:not([hidden])', { timeout: 20000 });
   await ctx.espera(600);
@@ -790,6 +884,12 @@ async function skayboy(ctx) {
   // Nivel 1. El salto entero, parado: despegue, aire y aterrizaje.
   await tira('salto-y-aterrizaje', () => bajar('izquierda', 'salto'), { ms: 760, ...tubo });
   await subir('izquierda', 'salto');
+  await ctx.espera(500);
+  // Y el aterrizaje cuadro por cuadro, **al tamaño en que se ve** (sin agrandar): el polvo se
+  // juzga a ×1, que es como llega al teléfono.
+  await ctx.rafaga('aterrizaje-tal-cual', () => bajar('derecha', 'salto'), { desde: 480, hasta: 900, sobre: '.recorte', zoom: 1, porRenglon: 6, tope: 24 });
+  await subir('derecha', 'salto');
+  await ctx.espera(300);
   if (dedo) {
     await bajar('derecha', 'salto');
     await ctx.espera(120);
@@ -826,7 +926,28 @@ async function skayboy(ctx) {
   // Nivel 10: la caja está a dos celdas a la izquierda de Skayboy.
   await tira('elige-nivel', () => tocar('.ficha-nivel[data-nivel="NIV-10"]'), { ms: 900, ...tubo });
   await ctx.espera(2700);
-  await tira('empuje', () => bajar('izquierda', 'izquierda'), { ms: 1300, ...tubo });
+  // Antes de tocar la caja: Skayboy sube de un salto al escalón de su derecha y se tira de ahí.
+  // Cae de más alto que un salto: es el golpe fuerte, con el peso de dos pixeles y el tubo que se
+  // sacude. Se mira cuadro por cuadro.
+  await bajar('izquierda', 'derecha');
+  await bajar('izquierda', 'salto');
+  await ctx.espera(750);
+  await subir('izquierda', 'salto');
+  await subir('izquierda', 'derecha');
+  await ctx.espera(350);
+  await ctx.rafaga(
+    'golpe-fuerte',
+    async () => {
+      await bajar('izquierda', 'izquierda');
+      await bajar('izquierda', 'salto');
+    },
+    { desde: 520, hasta: 1000, sobre: '.gabinete', zoom: ancho < 768 ? 2 : 1, porRenglon: 6, tope: 24 },
+  );
+  await subir('izquierda', 'salto');
+  await ctx.espera(120);
+  await tira('empuje', async () => {}, { ms: 1300, ...tubo });
+  // Sigue empujando: la caja llega a la placa de la columna 1 y la reja de arriba se abre.
+  await ctx.rafaga('placa-y-compuerta', async () => {}, { desde: 700, hasta: 2200, sobre: '.recorte', zoom: ancho < 768 ? 2 : 1, porRenglon: 6, tope: 140, cada: 4 }).catch(() => {});
   await subir('izquierda', 'izquierda');
   await foto('caja-empujada');
 
