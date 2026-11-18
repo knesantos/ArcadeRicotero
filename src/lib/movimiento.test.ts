@@ -260,6 +260,14 @@ const ANIMACIONES = [
   { nombre: 'velo-sube', apaga: 'token', valor: '--duracion-velo', hoja: 'src/styles/sitio.css' },
   { nombre: 'velo-baja', apaga: 'token', valor: '--duracion-velo', hoja: 'src/styles/sitio.css' },
   { nombre: 'velo-corre', apaga: 'token', valor: '--duracion-velo', hoja: 'src/styles/sitio.css' },
+  // La sensación de Skayboy y Poligirl (ronda de pulida, 2026-11-18), en capas de HTML encima del
+  // área: la pasada del rodillo cuando alguien vuelve a la entrada (`UX-29 §3`), el telón de líneas
+  // que destapa cada nivel, el golpe del tubo cuando algo pesado apoya, y el sello con que caen el
+  // rótulo, la tarjeta y el contador. Las cuatro pasan una vez, atadas a un hecho de la partida.
+  { nombre: 'area-pasada', apaga: 'token', valor: '--duracion-pasada', hoja: 'src/styles/skayboy.css' },
+  { nombre: 'telon-abre', apaga: 'token', valor: '--duracion-pasada', hoja: 'src/styles/skayboy.css' },
+  { nombre: 'tubo-golpe', apaga: 'token', valor: '--duracion-sello', hoja: 'src/styles/skayboy.css' },
+  { nombre: 'tubo-sella', apaga: 'token', valor: '--duracion-sello', hoja: 'src/styles/skayboy.css' },
 ] as const;
 
 test('no hay ninguna animacion que esta lista no conozca', () => {

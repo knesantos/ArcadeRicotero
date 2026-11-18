@@ -2076,3 +2076,315 @@ html[data-pantalla='completa'],
     margin-top: calc(var(--sello-asoma) + 4px);
   }
 }
+
+/* ==========================================================================
+   La sensacion: el lugar contesta (ronda de pulida de los juegos, 2026-11-18)
+
+   Lo que se mueve cuando pasa algo en la partida, y **todo vive afuera del canvas**: adentro
+   sigue habiendo solo cuadros de atlas (`T-278`, `motor.test.ts`). Son capas de HTML encima
+   del area, del tamano del canvas, que no toman toques —la misma categoria que el contador de
+   la victoria y el rotulo de entrada—, mas el golpe del tubo y el sello con que apoyan los
+   rotulos.
+
+   Las reglas del idioma (`diseno-marca.md`, hoja 14):
+   - **Pixel duro.** Todo salta de una posicion a la otra (tramos sostenidos en los cuadros clave); nada se
+     desliza, nada se funde, nada brilla. Sin sombra, sin alfa, sin degradado.
+   - **Tintas de la hoja 14**, y ninguna nueva: la clave para el polvo, el rodillo y el telon;
+     la de objetos (`--px-tesoro`) para lo que se junta y lo que se gana.
+   - **Solo `transform`** (y la visibilidad, que es un interruptor). Nada de esto mueve la hoja.
+   - **Atado a un hecho**: ninguna corre en bucle. Y con movimiento reducido no corre ninguna:
+     la isla no las dispara, y los tokens que las miden valen cero.
+   - **Nada espera** (`D-32` limite 3): el juego responde desde el cuadro cero, debajo.
+   ========================================================================== */
+
+.juego-skayboy .chispas,
+.juego-skayboy .pasada-area,
+.juego-skayboy .telon {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.juego-skayboy .pasada-area[hidden],
+.juego-skayboy .telon[hidden] {
+  display: none;
+}
+
+/* ---- Las chispas (`chispas.ts`) ----
+
+   Un cuadradito por chispa, de `--lado` pixeles nativos: la capa es un contenedor del tamano
+   del area, asi que un pixel nativo es siempre `100cqw / 240`, a x1, a x2 y en la pantalla
+   completa. Nacen escondidas; la isla las muestra el rato que saltan (`animate()`, con cuadros
+   en `step-end`) y vuelven a esconderse solas. */
+.juego-skayboy .chispas {
+  container-type: size;
+}
+
+.juego-skayboy .chispa {
+  position: absolute;
+  box-sizing: border-box;
+  width: calc(var(--lado, 2) * 100cqw / 240);
+  height: calc(var(--lado, 2) * 100cqw / 240);
+  visibility: hidden;
+  background: var(--px-clave);
+}
+
+/* Lo que se junta y lo que se gana: la tinta de objetos, con el contorno de un pixel en la
+   clave que cierra todo lo del area (`UX-27 §5.2`). Sin el contorno, sobre el aire no se ve. */
+.juego-skayboy .chispa--tesoro {
+  background: var(--px-tesoro);
+  border: calc(100cqw / 240) solid var(--px-clave);
+}
+
+/* ---- La pasada del area (`UX-29 §3`, fila 2) ----
+
+   Cuando alguien vuelve a la entrada **lo devuelve el lugar**: el area hace una sola pasada de
+   rodillo, de izquierda a derecha, en el compas de una pasada de imprenta. Una franja de un
+   tile y medio en la clave que cruza en nueve saltos y se va. No tapa nunca el area entera, y
+   el dedo responde desde el cuadro cero. Sin temblor: volver no es un castigo. */
+.juego-skayboy .pasada-area i {
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  width: 10%;
+  background: var(--px-clave);
+  transform: translateX(-100%);
+}
+
+.juego-skayboy .pasada-area--pasa i {
+  animation: area-pasada var(--duracion-pasada) linear both;
+}
+
+/* Diez posiciones y ninguna intermedia: cada tramo sostiene la suya, y el salto es el corte. */
+@keyframes area-pasada {
+  0%,
+  9.99% {
+    transform: translateX(-100%);
+  }
+
+  10%,
+  19.99% {
+    transform: translateX(22%);
+  }
+
+  20%,
+  29.99% {
+    transform: translateX(144%);
+  }
+
+  30%,
+  39.99% {
+    transform: translateX(267%);
+  }
+
+  40%,
+  49.99% {
+    transform: translateX(389%);
+  }
+
+  50%,
+  59.99% {
+    transform: translateX(511%);
+  }
+
+  60%,
+  69.99% {
+    transform: translateX(633%);
+  }
+
+  70%,
+  79.99% {
+    transform: translateX(756%);
+  }
+
+  80%,
+  89.99% {
+    transform: translateX(878%);
+  }
+
+  90%,
+  100% {
+    transform: translateX(1000%);
+  }
+}
+
+/* ---- El telon de lineas ----
+
+   Nueve franjas, una por fila de la sala. Al empezar un nivel el area arranca tapada y las
+   franjas se retiran de a una, las pares para un lado y las impares para el otro, cada una un
+   poco despues que la de arriba: el barrido de lineas de un fichin. El nivel ya esta armado y
+   jugable debajo. El total —la pasada mas el retraso de la ultima— no pasa de 400 ms. */
+.juego-skayboy .telon {
+  display: grid;
+  grid-template-rows: repeat(9, minmax(0, 1fr));
+}
+
+.juego-skayboy .telon i {
+  /* Medio pixel de solape: con escala fraccionaria (la pantalla completa) no queda una rendija. */
+  margin-block: -0.5px;
+  background: var(--px-clave);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+.juego-skayboy .telon i:nth-child(even) {
+  transform-origin: right center;
+}
+
+.juego-skayboy .telon--abre i {
+  animation: telon-abre var(--duracion-pasada) linear backwards;
+  animation-delay: calc(var(--fila, 0) * var(--duracion-pasada) / 25);
+}
+
+@keyframes telon-abre {
+  0%,
+  16.66% {
+    transform: scaleX(1);
+  }
+
+  16.67%,
+  33.32% {
+    transform: scaleX(0.8);
+  }
+
+  33.33%,
+  49.99% {
+    transform: scaleX(0.6);
+  }
+
+  50%,
+  66.66% {
+    transform: scaleX(0.4);
+  }
+
+  66.67%,
+  83.32% {
+    transform: scaleX(0.2);
+  }
+
+  83.33%,
+  100% {
+    transform: scaleX(0);
+  }
+}
+
+/* ---- El golpe del tubo ----
+
+   Cuando algo pesado apoya —una caja que cae, o uno de los dos desde mas alto que un salto— el
+   tubo entero baja dos pixeles, rebota uno y queda. Tres posiciones, sin intermedias, en la
+   mitad de lo que tarda un sello en apoyar. Se mueve el recorte, con su bisel: la chapa no. */
+.juego-skayboy .recorte--golpe {
+  animation: tubo-golpe calc(var(--duracion-sello) / 2) linear both;
+}
+
+@keyframes tubo-golpe {
+  0%,
+  44.99% {
+    transform: translateY(2px);
+  }
+
+  45%,
+  79.99% {
+    transform: translateY(-1px);
+  }
+
+  80%,
+  100% {
+    transform: none;
+  }
+}
+
+/* ---- Lo que se lee apoya como un sello ----
+
+   El rotulo de entrada, la tarjeta de fin de nivel y lo que junto cada uno ya eran sellos de
+   goma; ahora ademas **caen**: nacen un poco mas grandes y torcidos y apoyan en tres saltos,
+   sin rebote (el gesto de `.jugo-sello`, en pixel). Corre sola cada vez que la pieza deja de
+   estar escondida. La tarjeta es tocable desde el primer cuadro: solo se mueve el dibujo. */
+.juego-skayboy .fin-nivel,
+.juego-skayboy .contador-etiqueta,
+.juego-skayboy .rotulo-nivel-numero,
+.juego-skayboy .rotulo-nivel-nombre {
+  animation: tubo-sella var(--duracion-sello) linear both;
+}
+
+/* La tarjeta ocupa el ancho del area: con el golpe de un sello chico se salia del tubo. */
+.juego-skayboy .fin-nivel {
+  --sello-desde: 1.02;
+  --sello-giro: -0.6deg;
+}
+
+@keyframes tubo-sella {
+  0%,
+  33.32% {
+    transform: scale(var(--sello-desde, 1.12)) rotate(var(--sello-giro, -2deg));
+  }
+
+  33.33%,
+  66.65% {
+    transform: scale(calc((var(--sello-desde, 1.12) + 1) / 2)) rotate(calc(var(--sello-giro, -2deg) / 2));
+  }
+
+  66.66%,
+  100% {
+    transform: none;
+  }
+}
+
+/* ==========================================================================
+   La portada (ronda de pulida de los juegos, 2026-11-18)
+   ========================================================================== */
+
+/* El boton grande recibe el foco de la isla al abrir el menu; si no se llego con el teclado, ese
+   foco no dibuja anillo (el mismo arreglo que `.seguir--sin-anillo`). Con Tab vuelve el de siempre. */
+.juego-skayboy .menu-jugar--sin-anillo:focus-visible {
+  outline: none;
+}
+
+/* **Parado y con alto**: el telefono de hoy. El encabezado achicado se penso para 375 x 667, donde
+   cada renglon cuenta; de 760 de alto para arriba sobran mas de cien pixeles abajo de las teclas.
+   Aca el sello de volver deja de rozar el borde de la ventana, el titulo se lee como titulo, y la
+   hoja ocupa la pantalla entera: asi el pie del sitio empieza debajo del pliegue y el menu baja
+   hasta el borde de la ventana (`regionDelMenu()`), en vez de cortarse a mitad de una ficha contra
+   la firma. */
+@media (orientation: portrait) and (max-width: 719.98px) and (min-height: 760px) {
+  .juego-skayboy > main {
+    min-height: 100svh;
+  }
+
+  .juego-skayboy .cabecera-sitio {
+    padding-top: var(--espacio-1);
+  }
+
+  .juego-skayboy .marca {
+    width: 4rem;
+  }
+
+  .juego-skayboy .pantalla h1 {
+    font-size: clamp(1.05rem, 5.4vw, 1.4rem);
+  }
+}
+
+/* El plano de cada ficha, mas grande y **enmarcado como el tubo**: el filete de papel afuera, el
+   muro de la sala en la clave, el aire adentro. Sin el filete el muro se perdia contra el fondo
+   de la ficha y quedaba una mancha clara sin forma. Las puertas y las piezas dejan el alfa, que
+   daba dos grises que no son de la hoja 14: las puertas van en la clave, angostas, como un vano;
+   las piezas, en el gris del saco (`--px-skay-3`). */
+.juego-skayboy .ficha-nivel-plano {
+  width: 60px;
+  height: 36px;
+  outline: 2px solid var(--papel);
+}
+
+.juego-skayboy .plano-puerta {
+  fill-opacity: 1;
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  transform: scale(0.6, 1);
+}
+
+.juego-skayboy .plano-pieza {
+  fill: var(--px-skay-3);
+  fill-opacity: 1;
+}

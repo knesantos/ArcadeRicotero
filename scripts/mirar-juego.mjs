@@ -124,7 +124,7 @@ async function abrir(nav, ancho, alto, quieto) {
      * que dura de verdad; `lento` es cuánto se frenan las animaciones de CSS para sacarla (1 es
      * velocidad real, y es lo que va para lo que mueve un reloj de JavaScript o el audio).
      */
-    async tira(nombre, disparar, { ms = 400, lento = 0.1, cuadros = 6, asentar = true } = {}) {
+    async tira(nombre, disparar, { ms = 400, lento = 0.1, cuadros = 6, asentar = true, sobre = null } = {}) {
       if (quieto) {
         // Con movimiento reducido no hay animación que mirar: se dispara y se saca una sola.
         await disparar();
@@ -133,6 +133,14 @@ async function abrir(nav, ancho, alto, quieto) {
       }
       await cdp.send('Animation.setPlaybackRate', { playbackRate: lento });
       const total = ms / lento;
+      // `sobre`: la tira se saca solo de esa pieza (el tubo de un juego de pixel), no de la
+      // ventana entera. Recortada, cada captura tarda menos —entran más cuadros adentro de un
+      // salto— y se agranda sin suavizar para poder contarle los píxeles.
+      const caja = sobre ? await (await pagina.$(sobre))?.boundingBox() : null;
+      const clip = caja
+        ? { x: Math.max(0, Math.floor(caja.x) - 4), y: Math.max(0, Math.floor(caja.y) - 4), width: Math.ceil(caja.width) + 8, height: Math.ceil(caja.height) + 8 }
+        : null;
+      const zoom = clip ? Math.max(1, Math.min(3, Math.floor(820 / clip.width))) : 1;
       const fotos = [];
       const momentos = [];
       const t0 = Date.now();
@@ -141,7 +149,7 @@ async function abrir(nav, ancho, alto, quieto) {
         const cuando = (total * i) / (cuadros - 1);
         const falta = cuando - (Date.now() - t0);
         if (falta > 0) await espera(falta);
-        fotos.push(await pagina.screenshot({ optimizeForSpeed: true }));
+        fotos.push(await pagina.screenshot({ optimizeForSpeed: true, ...(clip ? { clip } : {}) }));
         momentos.push(Date.now() - t0);
       }
       // A velocidad real una captura tarda lo suyo: se dice cuándo cayó cada cuadro de verdad.
@@ -152,10 +160,29 @@ async function abrir(nav, ancho, alto, quieto) {
       if (asentar) await espera(Math.min(ms * 2, 1500));
       const hueco = 6;
       const ruta = join(salida, `${prefijo}-tira-${numero()}-${nombre}${lento < 1 ? `-lento-x${Math.round(1 / lento)}` : ''}.png`);
+      const anchoCuadro = clip ? clip.width * zoom : ancho;
+      const altoCuadro = clip ? clip.height * zoom : alto;
+      const piezas = clip
+        ? await Promise.all(fotos.map((f) => sharp(f).resize(anchoCuadro, altoCuadro, { kernel: 'nearest' }).png().toBuffer()))
+        : fotos;
+      // Recortada, la tira va en dos renglones de tres: seis tubos en fila no entran en una pantalla.
+      const porRenglon = clip ? Math.ceil(cuadros / 2) : cuadros;
+      const renglones = Math.ceil(cuadros / porRenglon);
       await sharp({
-        create: { width: cuadros * ancho + (cuadros - 1) * hueco, height: alto, channels: 3, background: '#ff00ff' },
+        create: {
+          width: porRenglon * anchoCuadro + (porRenglon - 1) * hueco,
+          height: renglones * altoCuadro + (renglones - 1) * hueco,
+          channels: 3,
+          background: '#ff00ff',
+        },
       })
-        .composite(fotos.map((f, i) => ({ input: f, left: i * (ancho + hueco), top: 0 })))
+        .composite(
+          piezas.map((f, i) => ({
+            input: f,
+            left: (i % porRenglon) * (anchoCuadro + hueco),
+            top: Math.floor(i / porRenglon) * (altoCuadro + hueco),
+          })),
+        )
         .png()
         .toFile(ruta);
       console.log('tira', ruta);
@@ -688,6 +715,139 @@ async function porLaLetra(ctx) {
   await foto('resultado-entero', { entera: true });
 }
 
+/**
+ * Skayboy y Poligirl: el único que no es de preguntas. Se juega de verdad, con el teclado en la
+ * compu y con los dedos sobre las seis teclas en el teléfono, y **todo se saca a velocidad real**
+ * (`lento: 1`): lo que se mueve adentro del tubo lo mueve el reloj del motor, no una animación de
+ * CSS que se pueda frenar.
+ *
+ * El nivel 1 es un piso liso (cada uno camina a su puerta), así que alcanza para el salto, el
+ * favorito, la victoria y el pase. La caja se mira en el 10, la palanca en el 8 y la vuelta a la
+ * entrada en el 2: se eligen desde el menú, que los tiene todos abiertos. Ninguna secuencia de
+ * acá sale de las trazas grabadas, que no viajan al navegador (`ADR-09.2`).
+ */
+async function skayboy(ctx) {
+  const { pagina, foto, ancho } = ctx;
+  /**
+   * Con movimiento reducido la tira genérica saca una sola foto a los 250 ms, y acá lo que se
+   * mira tarda lo que tarda el muñeco en llegar: se deja pasar el momento entero y se saca al final.
+   */
+  const tira = async (nombre, disparar, opciones) => {
+    if (!ctx.quieto) return ctx.tira(nombre, disparar, opciones);
+    await disparar();
+    await ctx.espera(opciones.ms);
+    return foto(`${nombre}-quieto`);
+  };
+  const url = `${base}/juegos/skayboy-y-poligirl/`;
+  const dedo = ancho < 768 && !bandera('--sin-dedo');
+  const CODIGOS = {
+    izquierda: { izquierda: 'KeyA', derecha: 'KeyD', salto: 'KeyW' },
+    derecha: { izquierda: 'ArrowLeft', derecha: 'ArrowRight', salto: 'ArrowUp' },
+  };
+  const dedos = new Map();
+  /** Aprieta una tecla de una columna y la deja apretada: con el dedo o con el teclado. */
+  const bajar = async (lado, tecla) => {
+    if (!dedo) return pagina.keyboard.down(CODIGOS[lado][tecla]);
+    const boton = await pagina.$(`button[data-mando="${lado}"][data-tecla="${tecla}"]`);
+    const caja = await boton.boundingBox();
+    dedos.set(`${lado}/${tecla}`, await pagina.touchscreen.touchStart(caja.x + caja.width / 2, caja.y + caja.height / 2));
+  };
+  const subir = async (lado, tecla) => {
+    if (!dedo) return pagina.keyboard.up(CODIGOS[lado][tecla]);
+    await dedos.get(`${lado}/${tecla}`)?.end();
+    dedos.delete(`${lado}/${tecla}`);
+  };
+  /**
+   * Un clic de verdad, con puntero: `elemento.click()` llega con `detail` en cero, que la isla lee
+   * como teclado y le dibuja el anillo de foco al menú. Puppeteer trae el botón a la vista antes.
+   */
+  const tocar = (selector) => pagina.click(selector);
+  const elegirNivel = async (id) => {
+    if (await pagina.$('#menu-juego[hidden]')) await tocar('#abrir-menu');
+    await ctx.espera(200);
+    await tocar(`.ficha-nivel[data-nivel="${id}"]`);
+    await ctx.espera(500);
+  };
+  const real = { lento: 1, asentar: false };
+  // Lo que pasa adentro del tubo se mira en el tubo, agrandado.
+  const tubo = { ...real, sobre: '.recorte' };
+
+  // El avance vive en el aparato y el perfil se reusa: sin esto, la segunda corrida abre en el 2.
+  await pagina.goto(url, { waitUntil: 'networkidle0' });
+  await pagina.evaluate(() => localStorage.clear());
+  await pagina.goto(url, { waitUntil: 'networkidle0' });
+  await pagina.waitForSelector('#menu-juego:not([hidden])', { timeout: 20000 });
+  await ctx.espera(600);
+  await foto('portada');
+  await foto('portada-entera', { entera: true });
+  // La vidriera: lo que pasa en el tubo mientras nadie tocó nada.
+  await tira('portada-vive', async () => {}, { ms: 2600, ...tubo });
+
+  await tira('juga', () => tocar('#menu-jugar'), { ms: 900, ...tubo });
+  await foto('inicio-de-nivel');
+  await ctx.espera(2800);
+
+  // Nivel 1. El salto entero, parado: despegue, aire y aterrizaje.
+  await tira('salto-y-aterrizaje', () => bajar('izquierda', 'salto'), { ms: 760, ...tubo });
+  await subir('izquierda', 'salto');
+  if (dedo) {
+    await bajar('derecha', 'salto');
+    await ctx.espera(120);
+    await foto('tecla-apretada');
+    await subir('derecha', 'salto');
+    await ctx.espera(700);
+  }
+  // Skayboy camina a su guitarra (dos celdas) y sigue hasta su puerta.
+  await tira('junta-el-favorito', () => bajar('izquierda', 'izquierda'), { ms: 700, ...tubo });
+  await ctx.espera(700);
+  await subir('izquierda', 'izquierda');
+  await foto('uno-en-su-puerta');
+  // Poligirl llega a la suya: se gana en ese cuadro.
+  await tira('gana', () => bajar('derecha', 'derecha'), { ms: 1500, ...tubo });
+  await pagina.waitForSelector('#fin-nivel:not([hidden])', { timeout: 5000 });
+  await subir('derecha', 'derecha');
+  await foto('nivel-completado');
+  await ctx.espera(1500);
+  await foto('nivel-completado-asentado');
+  await tira('pase-al-siguiente', () => tocar('#fin-seguir'), { ms: 1300, ...tubo });
+  await foto('nivel-2');
+  await ctx.espera(2600);
+
+  // Nivel 2: Skayboy pisa el charco que no es suyo y vuelve a la entrada.
+  await tira('vuelta-a-la-entrada', () => bajar('izquierda', 'derecha'), { ms: 1500, ...tubo });
+  await subir('izquierda', 'derecha');
+  await ctx.espera(300);
+
+  await tocar('#abrir-menu');
+  await ctx.espera(300);
+  await foto('menu-en-pausa');
+  await foto('menu-en-pausa-entero', { entera: true });
+
+  // Nivel 10: la caja está a dos celdas a la izquierda de Skayboy.
+  await tira('elige-nivel', () => tocar('.ficha-nivel[data-nivel="NIV-10"]'), { ms: 900, ...tubo });
+  await ctx.espera(2700);
+  await tira('empuje', () => bajar('izquierda', 'izquierda'), { ms: 1300, ...tubo });
+  await subir('izquierda', 'izquierda');
+  await foto('caja-empujada');
+
+  // Nivel 8: la palanca queda a dos celdas a la derecha de Skayboy.
+  await elegirNivel('NIV-08');
+  await ctx.espera(2700);
+  await tira('palanca', () => bajar('izquierda', 'derecha'), { ms: 1000, ...tubo });
+  await subir('izquierda', 'derecha');
+  await foto('palanca-puesta');
+
+  // La pantalla completa es un modo de la página: se ve aunque el sistema no dé la suya.
+  await tocar('#pantalla-completa');
+  await ctx.espera(700);
+  await foto('pantalla-completa');
+  await tira('pantalla-completa-salto', () => bajar('derecha', 'salto'), { ms: 760, ...tubo });
+  await subir('derecha', 'salto');
+  await tocar('#abrir-menu');
+  await ctx.espera(300);
+  await foto('pantalla-completa-menu');
+}
+
 /** Cualquier otra ruta: la portada, y lo que aparece al tocar el botón de empezar. */
 async function generico(ctx, ruta) {
   const { pagina, foto, tira } = ctx;
@@ -726,6 +886,7 @@ const RECORRIDOS = {
   'adivinar-el-tema': adivinarElTema,
   'dos-ejes': dosEjes,
   'adivinar-por-la-letra': porLaLetra,
+  'skayboy-y-poligirl': skayboy,
 };
 
 // ---------------------------------------------------------------- correr

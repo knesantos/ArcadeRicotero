@@ -140,12 +140,29 @@
  * Y un toque más corto que un tic no se pierde: `pulsadas` guarda lo que se apretó desde la última
  * vez que el mundo avanzó, y se vacía recién cuando avanzó.
  *
+ * ## La sensación: el lugar contesta (ronda de pulida, 2026-11-18)
+ *
+ * Después de cada avance del mundo la isla le pregunta a `sentir()` (`sensacion.ts`, jugada en
+ * Node) qué se sintió —un aterrizaje, un favorito, una caja que arranca, una palanca, las puertas—
+ * y lo dibuja **afuera del canvas**, en capas de HTML encima del área: las chispas de pixel duro
+ * (`chispas.ts`, `#chispas`), la pasada del rodillo cuando alguien vuelve a la entrada (`UX-29 §3`,
+ * fila 2, `#pasada-area`), el golpe seco del tubo cuando algo pesado apoya, y el telón de líneas
+ * que destapa cada nivel (`#telon`). Adentro del canvas sigue habiendo solo atlas: lo único que
+ * cambia ahí es que el muñeco que cae **se hunde uno o dos píxeles** un instante (`hundimiento()`),
+ * que es mover el mismo cuadro, no escalarlo.
+ *
+ * Y mientras el menú de entrada está abierto, en el tubo corre **la vidriera** (`vidriera.ts`): los
+ * dos saltan y dan unos pasos sobre un mundo aparte, que no es el de la partida, no suena y no
+ * guarda nada. Al tocar Jugá se vuelve a dibujar el de verdad, que nunca se movió.
+ *
  * ## `prefers-reduced-motion` (`ADR-08.8`, vara 1)
  *
  * El juego arranca **quieto por construcción**: los dos parados en su entrada, y nada se
- * mueve sin un dedo encima. **El único movimiento que nadie pidió con un dedo es el baile de la
- * victoria** (`D-47`), y por eso la isla consulta la preferencia (`movimientoReducido()`) y, con
- * movimiento reducido, lo deja fijo en su cuadro 0 (`CTR-15.7`). Lo demás no tiene nada que apagar.
+ * mueve sin un dedo encima. Lo que nadie pidió con un dedo —el baile de la victoria (`D-47`), la
+ * vidriera, las chispas, el golpe, la pasada, el telón y el peso al caer— se apaga con movimiento
+ * reducido: la isla consulta la preferencia (`movimientoReducido()`) antes de cada uno, y las
+ * animaciones de la hoja corren con tokens que el corte lleva a cero. El baile queda fijo en su
+ * cuadro 0 (`CTR-15.7`).
  */
 
 import type { KAPLAYCtx, SpriteData } from 'kaplay';
@@ -178,6 +195,7 @@ import {
 import { cargarAvance, guardarPasado } from '../lib/skayboy/avance.ts';
 import { armarEfectos, sonar } from '../lib/skayboy/sonido.ts';
 import { despertarSalida } from '../lib/audio/contexto.ts';
+import { ruidosPrendidos } from '../lib/audio/efectos.ts';
 import { montarPantallaCompleta, type ModoDePantalla } from '../lib/skayboy/modo-pantalla.ts';
 import { botonDelEvento, type TeclaDelMando } from '../lib/skayboy/teclado.ts';
 import {
@@ -203,9 +221,13 @@ import {
   nivelDelBotonGrande,
   pasadosDeLaFila,
   regionDelMenu,
+  seTocan,
   type Rectangulo,
 } from '../lib/skayboy/menu.ts';
 import { ENTRADA, FIN_DE_NIVEL, MENU, PANTALLA } from '../lib/skayboy/copy.ts';
+import { crearMemoria, hundimiento, sentir, type Golpe, type Memoria } from '../lib/skayboy/sensacion.ts';
+import { crearChispero } from '../lib/skayboy/chispas.ts';
+import { avanzarVidriera, crearVidriera, type Vidriera } from '../lib/skayboy/vidriera.ts';
 
 /**
  * Qué columna maneja a quién. **Siempre la misma** (`D-43`): no hay botón de cambio y no
@@ -486,7 +508,7 @@ const seguir = document.querySelector<HTMLButtonElement>('#seguir-juego');
  * `ultimo` es si el nivel que se juega es el último de la fila (`esElUltimo()`): ahí el de ganar
  * dice también que era el último, porque el toque vuelve al primero.
  */
-function atender(sucesos: readonly Suceso[], deFrente: Set<IdPersonaje>, ultimo: boolean): void {
+function atender(sucesos: readonly Suceso[], deFrente: Set<IdPersonaje>, ultimo: boolean): readonly Suceso[] {
   for (const s of sucesos) {
     const texto = avisoDelSuceso(s, ultimo);
     if (texto !== null && aviso !== null) {
@@ -501,8 +523,12 @@ function atender(sucesos: readonly Suceso[], deFrente: Set<IdPersonaje>, ultimo:
       // Callado: `vuelta` no suena (`UX-29 §5`, `CTR-17.6`).
       continue;
     }
-    sonar(s.tipo);
+    // El interruptor de ruidos del sitio (`efectos.ts`) también calla estos tres: quien los apagó
+    // en otro juego no los quiere acá. Esta pantalla todavía no tiene su botón para prenderlos.
+    if (ruidosPrendidos()) sonar(s.tipo);
   }
+  // Los mismos sucesos, para quien sigue: la sensación los mira después (`sentir()`).
+  return sucesos;
 }
 
 /**
@@ -589,14 +615,36 @@ function dibujar(
 ): void {
   for (const t of trazosDe(mundo, deFrente)) {
     const { json, sprite } = atlas[t.pieza];
+    // El peso al caer: el muñeco baja uno o dos píxeles un instante. La sala no pesa.
+    const peso = t.pieza === 'sala' ? 0 : hundimiento(memoria, t.pieza, mundo, movimientoReducido());
     k.drawSprite({
       sprite,
       // El reloj de cada trazo: el de la partida, salvo el baile, que cuenta desde que se ganó.
       frame: cuadroDelAtlas(json, t.estado, relojDelTrazo(t, mundo, victoria, movimientoReducido())),
-      pos: k.vec2(t.x, t.y),
+      pos: k.vec2(t.x, t.y + peso),
       flipX: t.espejo,
     });
   }
+}
+
+/* ==========================================================================
+   La sensación: las capas de HTML encima del área (`sensacion.ts`, `chispas.ts`)
+   ========================================================================== */
+
+/**
+ * Lo que la sensación recuerda del tic anterior (`sensacion.ts`). Una sola para la página: la lee
+ * el tic, para saber qué se sintió, y el dibujo, para el peso del que acaba de caer.
+ */
+const memoria: Memoria = crearMemoria();
+
+/** Vuelve a correr la animación de una pieza que nace escondida: se muestra, y la hoja hace el resto. */
+function correr(pieza: HTMLElement | null, clase: string): void {
+  if (pieza === null) return;
+  pieza.hidden = false;
+  pieza.classList.remove(clase);
+  // Leer una medida asienta el estilo sin la clase: sin esto, sacarla y ponerla no reinicia nada.
+  void pieza.offsetWidth;
+  pieza.classList.add(clase);
 }
 
 /* ==========================================================================
@@ -685,6 +733,21 @@ async function arrancar(): Promise<void> {
   // Cuándo se ganó, con el reloj del motor: el del baile (`CTR-15.7`). Una sola para toda la fila.
   const victoria = crearVictoria();
   const contador = capaDelContador();
+  // Lo que se siente (`sensacion.ts`): la fila de chispas que suelta cada golpe.
+  const chispero = crearChispero(document.querySelector<HTMLElement>('#chispas'));
+  // La vidriera (`vidriera.ts`): lo que corre en el tubo con el menú de entrada abierto.
+  let vidriera: Vidriera | null = null;
+
+  /** Lo que la isla hace con cada golpe. Con movimiento reducido, nada: el estado ya se ve. */
+  function sentirGolpes(golpes: readonly Golpe[]): void {
+    if (golpes.length === 0 || movimientoReducido()) return;
+    for (const g of golpes) {
+      if (g.tipo === 'vuelta') correr(pasada, 'pasada-area--pasa');
+      else chispero.soltar(g);
+      // Lo que pesa de verdad sacude el tubo, una vez y seco.
+      if (g.tipo === 'cajaApoya' || (g.tipo === 'aterrizaje' && g.fuerte)) correr(recorte, 'recorte--golpe');
+    }
+  }
 
   // Qué hace el toque y cuándo se ve el botón lo deciden `alTocarSeguir()` y `mostrarSeguir()`,
   // jugadas en Node; acá queda el pegamento con el DOM (`escena.test.ts` vigila que se llamen).
@@ -720,6 +783,15 @@ async function arrancar(): Promise<void> {
     tarjetaDe = null;
     mostrarFinDeNivel(tarjeta, mundo, banco.niveles, menuAbierto());
     mostrarRotulo();
+    abrirTelon();
+  }
+
+  /**
+   * El telón de líneas: el nivel nuevo ya está armado y jugable debajo, y las nueve franjas se
+   * retiran de a una. No espera a nadie (`D-32` límite 3): el dedo ya mueve mientras se destapa.
+   */
+  function abrirTelon(): void {
+    if (!movimientoReducido()) correr(telon, 'telon--abre');
   }
 
   /**
@@ -794,7 +866,7 @@ async function arrancar(): Promise<void> {
   /** De dónde se abrió el menú: al cerrarlo, el foco vuelve ahí si sigue a la vista. */
   let abiertoDesde: HTMLElement | null = null;
 
-  function abrirMenu(): void {
+  function abrirMenu(conTeclado = false): void {
     if (menu === null || menuAbierto()) return;
     soltarTodas();
     pintarMenu();
@@ -804,21 +876,36 @@ async function arrancar(): Promise<void> {
     ubicarMenu();
     lugaresInertes(true);
     mostrarFinDeNivel(tarjeta, mundo, banco.niveles, true);
+    // El foco va al botón grande siempre —es un diálogo—, pero el anillo solo se dibuja si se llegó
+    // con el teclado: al entrar a la página, o con el dedo, parecía un botón ya elegido.
+    if (menuJugar !== null && !conTeclado) {
+      menuJugar.classList.add('menu-jugar--sin-anillo');
+      menuJugar.addEventListener('blur', () => menuJugar.classList.remove('menu-jugar--sin-anillo'), { once: true });
+    }
     menuJugar?.focus({ preventScroll: true });
+    // En la entrada, la vidriera: un mundo aparte del mismo nivel. En pausa el tubo queda como está.
+    // Y solo si el tubo queda a la vista (parado): de costado el menú lo tapa, y no se ensaya nada.
+    vidriera = momentoDe(mundo) === 'entrada' && !movimientoReducido() && tuboALaVista() ? crearVidriera(banco, mundo.nivel) : null;
   }
 
   function cerrarMenu(): void {
     if (menu === null || !menuAbierto()) return;
     const empieza = momentoDe(mundo) === 'entrada';
-    const conTeclado = focoConTecladoEn(menu);
+    // El foco que puso la isla al abrir sin teclado no cuenta como teclado, aunque el navegador
+    // lo marque visible: si contara, al cerrar el anillo pasaba al sello del menú.
+    const conTeclado = focoConTecladoEn(menu) && !(menuJugar?.classList.contains('menu-jugar--sin-anillo') ?? false);
     const teniaElFoco = menu.contains(document.activeElement);
     menu.hidden = true;
+    vidriera = null;
     lugaresInertes(false);
     // Nadie pasa del menú a la partida con un dedo apretado (`UX-28 §3`).
     soltarTodas();
     mostrarFinDeNivel(tarjeta, mundo, banco.niveles, false);
     if (finDeNivel(mundo, banco.niveles) !== null) pintarTarjeta();
-    if (empieza) mostrarRotulo();
+    if (empieza) {
+      mostrarRotulo();
+      abrirTelon();
+    }
     // El foco vuelve a donde estaba si sigue a la vista (el sello, la tarjeta); si no, al sello del
     // menú con el teclado, y a ningún lado con el dedo. Nunca al canvas, que se traga Tab.
     const volver = abiertoDesde;
@@ -859,8 +946,9 @@ async function arrancar(): Promise<void> {
     ponerMundo(alRepetir(mundo, deFrente));
     if (conTeclado) focoAlSello();
   });
-  tarjetaMenu?.addEventListener('click', abrirMenu);
-  abrirElMenu?.addEventListener('click', abrirMenu);
+  // `detail` en cero es un clic que no vino de un puntero: Enter o la barra sobre el botón.
+  tarjetaMenu?.addEventListener('click', (e) => abrirMenu(e.detail === 0));
+  abrirElMenu?.addEventListener('click', (e) => abrirMenu(e.detail === 0));
   /*
    * `Escape` (`UX-37` §3.5): con el menú abierto en pausa o recién ganado, lo cierra —el foco vuelve
    * al sello, o a la tarjeta—; en la entrada no hace nada, porque no hay partida a la que volver.
@@ -872,7 +960,7 @@ async function arrancar(): Promise<void> {
     (e) => {
       // Una pulsación larga hace una sola cosa: sin esto el menú titilaba con la repetición.
       if (e.key !== 'Escape' || e.repeat || modo?.enElModo()) return;
-      if (!menuAbierto()) abrirMenu();
+      if (!menuAbierto()) abrirMenu(true);
       else if (momentoDe(mundo) !== 'entrada') cerrarMenu();
     },
     true,
@@ -925,8 +1013,12 @@ async function arrancar(): Promise<void> {
   window.addEventListener('resize', ubicarMenu);
 
   k.onUpdate(() => {
-    // Con el menú abierto la partida está en pausa: el mundo no avanza y su reloj no corre.
-    if (menuAbierto()) return;
+    // Con el menú abierto la partida está en pausa: el mundo no avanza y su reloj no corre. En la
+    // entrada corre la vidriera, sobre su mundo aparte, y lo único que se lleva es el polvo.
+    if (menuAbierto()) {
+      if (vidriera !== null) sentirGolpes(sentir(memoria, vidriera.mundo, avanzarVidriera(vidriera, k.dt())));
+      return;
+    }
     // Las teclas se leen una vez por tic y valen para todos los cuadros de ese tic (ADR-09.1).
     const mandos = {
       [COLUMNA.izquierda]: mandoDe('izquierda'),
@@ -938,7 +1030,9 @@ async function arrancar(): Promise<void> {
     // build, así que lo que se juega acá es, bit a bit, lo que se probó. Todo eso vive en
     // jugarTic(), probado en Node: la isla solo le da el tiempo del motor.
     const antes = mundo.tiempo;
-    atender(jugarTic(reloj, mundo, ambos, k.dt()), deFrente, esElUltimo(mundo, banco.niveles));
+    const sucesos = atender(jugarTic(reloj, mundo, ambos, k.dt()), deFrente, esElUltimo(mundo, banco.niveles));
+    // Y lo que se sintió de eso: el polvo, la chispa, la pasada (`sensacion.ts`).
+    sentirGolpes(sentir(memoria, mundo, sucesos));
     // Lo que se apretó ya llegó al mundo, si el mundo avanzó; si este tic no jugó ningún cuadro,
     // espera al que viene (`D-61` punto 4).
     if (mundo.tiempo !== antes) pulsadas.clear();
@@ -953,7 +1047,9 @@ async function arrancar(): Promise<void> {
     if (mostrarFinDeNivel(tarjeta, mundo, banco.niveles, false)) pintarTarjeta();
   });
   k.onDraw(() => {
-    dibujar(k, mundo, atlas, deFrente, victoria);
+    // Con el menú de entrada abierto se ve la vidriera, que es otro mundo; si no, la partida.
+    if (vidriera !== null && menuAbierto()) dibujar(k, vidriera.mundo, atlas, deFrente, victoria);
+    else dibujar(k, mundo, atlas, deFrente, victoria);
     // Un cuadro de frente y nada más (`UX-29 §3`): el dedo responde desde el cuadro cero.
     deFrente.clear();
   });
@@ -986,6 +1082,10 @@ const tarjetaAvanza = document.querySelector<HTMLButtonElement>('#fin-seguir');
 const tarjetaRepetir = document.querySelector<HTMLButtonElement>('#fin-repetir');
 const tarjetaMenu = document.querySelector<HTMLButtonElement>('#fin-menu');
 const rotulo = document.querySelector<HTMLElement>('#rotulo-nivel');
+/** Las capas de la sensación, encima del área: el tubo que se sacude, el rodillo y el telón. */
+const recorte = document.querySelector<HTMLElement>('.recorte');
+const pasada = document.querySelector<HTMLElement>('#pasada-area');
+const telon = document.querySelector<HTMLElement>('#telon');
 
 /** De qué mundo tiene los textos la tarjeta: se llenan una vez, cuando aparece. */
 let tarjetaDe: Mundo | null = null;
@@ -1011,6 +1111,11 @@ function lugaresInertes(si: boolean): void {
   for (const lugar of document.querySelectorAll<HTMLElement>('.fichin > .mando, .gabinete > .recorte, .gabinete > .sellos-mueble')) {
     lugar.toggleAttribute('inert', si);
   }
+}
+
+/** Si el menú abierto deja ver el tubo: parado va en la zona de las teclas; de costado, encima. */
+function tuboALaVista(): boolean {
+  return !seTocan(medir(menu), medir(recorte));
 }
 
 /** Un elemento medido en la ventana, o un rectángulo vacío si no está. */

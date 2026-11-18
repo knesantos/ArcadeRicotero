@@ -142,6 +142,25 @@ const PISO = [
             <div class="recorte">
               <canvas id="juego" width="240" height="144" aria-label={CASETE.titulo}></canvas>
               {/*
+                La sensación (ronda de pulida, 2026-11-18): tres capas de HTML encima del área, del
+                tamaño del canvas, solo para el ojo y **sin toques**. Van primero, así todo lo que se
+                lee —el contador, el rótulo, la tarjeta— se pinta encima.
+
+                - `#chispas`: el polvo y los destellos de pixel duro (`chispas.ts`); la isla le arma
+                  adentro una fila fija de cuadraditos y los reusa.
+                - `#pasada-area`: el rodillo que cruza el área cuando alguien vuelve a la entrada
+                  (`UX-29 §3`, fila 2).
+                - `#telon`: nueve franjas, una por fila de la sala, que destapan el nivel que empieza.
+
+                Son `<p>` con `<i>` adentro, y no `<div>`: el primer `</div>` después del recorte
+                tiene que seguir siendo el del recorte.
+              */}
+              <p id="chispas" class="chispas" aria-hidden="true"></p>
+              <p id="pasada-area" class="pasada-area" aria-hidden="true" hidden><i></i></p>
+              <p id="telon" class="telon" aria-hidden="true" hidden>
+                {Array.from({ length: SEMBRADO.alto }, (_, fila) => <i style={`--fila:${fila}`} />)}
+              </p>
+              {/*
                 Lo que juntó cada uno, **solo en la victoria** (`UX-33 §2.5`, `BR-31` punto 2): una
                 capa de HTML encima del área —la misma categoría que el botón de seguir, nunca
                 dibujada en el canvas—, con una etiqueta junto a cada muñeco, en registro 3 y sin
