@@ -58,5 +58,19 @@ export function cartel({ titulo, fuente, color, canta, nombra, url }) {
 </section>`;
 }
 
+/**
+ * Las reglas de `sitio.css` que pintan los trazos de los títeres (`.bt-…`: mechas, párpados, sogas):
+ * las piezas armadas de cero las necesitan, y así el color sigue saliendo del sistema.
+ */
+export function estilosDeTiteres() {
+  const css = readFileSync(`${REPO}/src/styles/sitio.css`, 'utf-8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const reglas = [];
+  for (const m of css.matchAll(/([^{}@]+)\{([^{}]*)\}/g)) {
+    const sel = m[1].trim();
+    if (sel.split(',').every((s) => /^\.bt-[\w-]+$/.test(s.trim()))) reglas.push(`${sel}{${m[2]}}`);
+  }
+  return reglas.join('\n');
+}
+
 export const pagina = (css, cuerpo, js) =>
   `<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=360,initial-scale=1"><style>${CSS_BASE}${css}</style></head><body>${cuerpo}<script>${JS_BASE}${js}</script></body></html>`;
