@@ -200,6 +200,12 @@ export const REVELACION = {
   /** Al que no la sacó también le corresponde su tiempo: jugó los seis intentos. */
   tardaste: (tiempo: string) => `${tiempo} de reloj`,
   escucharEntero: 'Escuchalo entero',
+  /** El nombre de la cinta del tema entero, para quien no la ve: es un control de avance. */
+  avanceEntero: 'Avance del tema',
+  /** Por dónde va y cuánto dura, en minutos: `1:23 de 4:56`. Lo ve y lo oye todo el mundo. */
+  tiempoEntero: (va: string, dura: string) => `${va} de ${dura}`,
+  /** Cuando el archivo del tema no carga. Registro 3: dice qué pasó y se calla. */
+  enteroNoCarga: 'No cargó',
   verLetra: 'Mirá la letra y los acordes',
   seguir: 'Seguí',
   ultimo: 'Mirá cómo te fue',
@@ -226,6 +232,8 @@ export const RESULTADO = {
   detalle: 'Los temas de esta vuelta',
   /** Cuántos sacaste, dicho al lado del puntaje: el número que se cuenta en la previa. */
   sacaste: (n: number, total: number) => `${n} de ${total} temas`,
+  /** El sello de la vuelta, al lado de la línea que canta: la misma cuenta, estampada. */
+  selloVuelta: (n: number, total: number) => `${n} de ${total}`,
   denuevo: 'Otra vuelta',
   volver: 'Volvé al fichín',
   compartir: 'Compartí',

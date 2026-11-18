@@ -33,10 +33,12 @@ function nodo<K extends keyof SVGElementTagNameMap>(
 }
 
 /**
- * Un carrete: el aro, el eje y tres rayos. Gira entero, como grupo.
+ * Un carrete: el eje de plástico claro con sus tres rayos. Gira entero, como grupo, encima de
+ * la cinta enrollada.
  *
  * Son tres rayos y no una cruz a proposito: una cruz se ve igual cada cuarto de vuelta, y a
- * la velocidad de la cinta parece quieta. Tres rayos desparejos se ven girar.
+ * la velocidad de la cinta parece quieta. Y uno de los tres es más largo: sin eso, tres rayos
+ * parejos se ven iguales cada tercio de vuelta.
  */
 function carrete(cx: number, cy: number): SVGGElement {
   const g = nodo('g', { class: 'casete-carrete' });
@@ -45,56 +47,133 @@ function carrete(cx: number, cy: number): SVGGElement {
     return `M${cx} ${cy} L ${(cx + Math.cos(a) * largo).toFixed(1)} ${(cy + Math.sin(a) * largo).toFixed(1)}`;
   };
   g.append(
-    nodo('circle', { cx: String(cx), cy: String(cy), r: '14', 'stroke-width': '4' }),
-    nodo('path', { d: `${rayo(-90, 13)} ${rayo(30, 13)} ${rayo(150, 13)}`, 'stroke-width': '4' }),
-    nodo('circle', { cx: String(cx), cy: String(cy), r: '3.5', 'stroke-width': '3' }),
+    nodo('circle', { class: 'casete-eje', cx: String(cx), cy: String(cy), r: '13' }),
+    nodo('path', { class: 'casete-rayo', d: `${rayo(-90, 12)} ${rayo(30, 8)} ${rayo(150, 8)}` }),
+    nodo('circle', { class: 'casete-buje', cx: String(cx), cy: String(cy), r: '3' }),
   );
   return g;
 }
 
+let serie = 0;
+
 /**
- * El casete, listo para colgar del reproductor. Es decorativo para el lector de pantalla
- * (`aria-hidden`): la palabra de estado que lo acompaña es la que se lee.
+ * El casete, listo para colgar del reproductor o de la portada.
+ *
+ * Desde la ronda 2 de la pulida (2026-11-18) **es un objeto y no un ícono de línea**: la
+ * carcasa en tinta plana, la etiqueta de papel, la ventana, y adentro la cinta enrollada en
+ * cada carrete —oscura sobre el papel de la ventana, para que se lea de lejos—, que se pasa de
+ * uno al otro con el audio. Abajo, por la boca, se ve la cinta cruzando por el cabezal.
+ *
+ * Devuelve una caja con el dibujo y, encima de la etiqueta, el contador de tres ruedas
+ * (`ponerContador`). Todo es decorativo para el lector de pantalla (`aria-hidden`): la
+ * palabra de estado que lo acompaña y el renglón de "Tenés N s de audio" son los que se leen.
  */
-export function armarCasete(): SVGSVGElement {
-  const svg = nodo('svg', {
-    viewBox: '0 0 200 130',
-    class: 'casete-vivo',
-    'aria-hidden': 'true',
-    focusable: 'false',
-  });
-  const trazo = nodo('g', {
-    fill: 'none',
-    stroke: 'currentColor',
-    'stroke-width': '5',
-    'stroke-linecap': 'round',
-  });
-  trazo.append(
-    // La carcasa, apenas torcida.
-    nodo('path', {
-      d: 'M12 12 C 74 8, 136 10, 190 14 C 192 46, 191 86, 188 118 C 126 122, 66 120, 10 116 C 9 84, 10 44, 12 12 Z',
-    }),
-    // La ventana de la cinta: grande, que es donde pasa todo.
-    nodo('path', {
-      d: 'M32 26 C 78 23, 124 24, 168 27 C 169 44, 169 64, 168 82 C 122 85, 78 84, 32 81 C 31 62, 31 44, 32 26 Z',
-      'stroke-width': '4',
-    }),
-    // La cinta enrollada en cada carrete: llena a la izquierda y casi vacia a la derecha, y
-    // se pasa de un lado al otro mientras suena (`ponerAvance`). Va rellena y translucida,
-    // debajo del carrete.
-    nodo('circle', { class: 'casete-bobina casete-bobina--llena', cx: '66', cy: '54', r: '25', stroke: 'none', fill: 'currentColor' }),
-    nodo('circle', { class: 'casete-bobina casete-bobina--vacia', cx: '134', cy: '54', r: '25', stroke: 'none', fill: 'currentColor' }),
-    carrete(66, 54),
-    carrete(134, 54),
-    // La cinta floja entre los carretes: se tensa cuando corre.
-    nodo('path', { class: 'casete-cinta', d: 'M82 62 C 94 70, 106 70, 118 62', 'stroke-width': '3' }),
-    // La etiqueta escrita: un renglon garabateado.
-    nodo('path', { d: 'M36 100 C 70 98, 104 98, 132 100', 'stroke-width': '3', opacity: '0.7' }),
-    // El piloto de la casetera: un cuadrado de tinta que se prende mientras la cinta corre.
-    nodo('rect', { class: 'casete-piloto', x: '150', y: '93', width: '16', height: '12', 'stroke-width': '3' }),
+export function armarCasete(): HTMLElement {
+  const n = ++serie;
+  const caja = document.createElement('span');
+  caja.className = 'casete-vivo';
+  caja.setAttribute('aria-hidden', 'true');
+
+  const svg = nodo('svg', { viewBox: '0 0 240 152', class: 'casete-dibujo', focusable: 'false' });
+
+  const VENTANA = 'M46 50 C 96 47, 146 48, 194 51 C 195 68, 195 88, 194 105 C 146 108, 96 107, 46 104 C 45 86, 45 68, 46 50 Z';
+  const BOCA = 'M72 120 L 168 120 L 180 150 L 60 150 Z';
+
+  const defs = nodo('defs', {});
+  const recorteVentana = nodo('clipPath', { id: `casete-ventana-${n}` });
+  recorteVentana.append(nodo('path', { d: VENTANA }));
+  const recorteBoca = nodo('clipPath', { id: `casete-boca-${n}` });
+  recorteBoca.append(nodo('path', { d: BOCA }));
+  defs.append(recorteVentana, recorteBoca);
+
+  // La cinta enrollada: se recorta contra la ventana, como en un casete de verdad, donde el
+  // rollo lleno no entra entero en el vidrio.
+  const rollos = nodo('g', { 'clip-path': `url(#casete-ventana-${n})` });
+  rollos.append(
+    nodo('circle', { class: 'casete-bobina casete-bobina--llena', cx: '84', cy: '77', r: '36' }),
+    nodo('circle', { class: 'casete-bobina casete-bobina--vacia', cx: '156', cy: '77', r: '36' }),
   );
-  svg.append(trazo);
-  return svg;
+
+  // Lo que se ve por la boca: la cinta cruzando, con sus marcas, que corren mientras suena.
+  const paso = nodo('g', { 'clip-path': `url(#casete-boca-${n})` });
+  const marcas = nodo('g', { class: 'casete-pasa' });
+  for (let x = 48; x <= 204; x += 12) {
+    marcas.append(nodo('rect', { x: String(x), y: '134', width: '4', height: '7' }));
+  }
+  paso.append(nodo('rect', { class: 'casete-cinta', x: '56', y: '133', width: '128', height: '9' }), marcas);
+
+  svg.append(
+    defs,
+    // La carcasa, apenas torcida: tinta plana.
+    nodo('path', {
+      class: 'casete-carcasa',
+      d: 'M8 8 C 86 3, 158 5, 233 10 C 236 50, 235 104, 231 145 C 158 150, 82 148, 7 143 C 5 100, 6 50, 8 8 Z',
+    }),
+    // La etiqueta de papel, con dos renglones garabateados. Al revelar se tiñe con el disco.
+    nodo('path', {
+      class: 'casete-etiqueta',
+      d: 'M24 18 C 88 15, 152 16, 217 20 C 218 28, 218 36, 217 43 C 152 45, 88 44, 24 41 C 23 34, 23 26, 24 18 Z',
+    }),
+    nodo('path', { class: 'casete-letra', d: 'M34 27 C 62 25, 92 25, 118 27 M34 35 C 54 34, 76 34, 96 35' }),
+    // La ventana: papel claro, y adentro la cinta.
+    nodo('path', { class: 'casete-ventana', d: VENTANA }),
+    rollos,
+    carrete(84, 77),
+    carrete(156, 77),
+    nodo('path', { class: 'casete-marco', d: VENTANA }),
+    // La boca, con la cinta, el cabezal que sube a tocarla y los dos rodillos.
+    nodo('path', { class: 'casete-boca', d: BOCA }),
+    paso,
+    nodo('rect', { class: 'casete-cabezal', x: '110', y: '122', width: '20', height: '10' }),
+    nodo('circle', { class: 'casete-rodillo', cx: '84', cy: '128', r: '4.5' }),
+    nodo('circle', { class: 'casete-rodillo', cx: '156', cy: '128', r: '4.5' }),
+    // Los cuatro tornillos.
+    nodo('circle', { class: 'casete-tornillo', cx: '20', cy: '58', r: '3.5' }),
+    nodo('circle', { class: 'casete-tornillo', cx: '221', cy: '60', r: '3.5' }),
+    nodo('circle', { class: 'casete-tornillo', cx: '22', cy: '132', r: '3.5' }),
+    nodo('circle', { class: 'casete-tornillo', cx: '218', cy: '134', r: '3.5' }),
+    // El piloto: un cuadrado que se llena mientras la cinta corre.
+    nodo('rect', { class: 'casete-piloto', x: '196', y: '118', width: '15', height: '11' }),
+  );
+  caja.append(svg);
+
+  // El contador mecanico, sobre la etiqueta: tres ruedas de cifras, y la coma antes de la ultima.
+  const contador = document.createElement('span');
+  contador.className = 'casete-contador';
+  for (let r = 0; r < 3; r++) {
+    if (r === 2) {
+      const coma = document.createElement('span');
+      coma.className = 'casete-coma';
+      coma.textContent = ',';
+      contador.append(coma);
+    }
+    const rueda = document.createElement('span');
+    rueda.className = 'casete-rueda';
+    const tira = document.createElement('span');
+    tira.className = 'casete-cifras';
+    for (let d = 0; d <= 9; d++) {
+      const cifra = document.createElement('span');
+      cifra.textContent = String(d);
+      tira.append(cifra);
+    }
+    rueda.append(tira);
+    contador.append(rueda);
+  }
+  caja.append(contador);
+  return caja;
+}
+
+/**
+ * Pone el contador en `segundos` (de 0 a 99,9): cada rueda gira hasta su cifra. Lo unico que
+ * cambia es un `transform`; el giro lo hace una transicion de `juego.css`.
+ */
+export function ponerContador(casete: HTMLElement, segundos: number): void {
+  const decimas = Math.min(Math.max(Math.round(segundos * 10), 0), 999);
+  const cifras = [Math.floor(decimas / 100), Math.floor(decimas / 10) % 10, decimas % 10];
+  casete.querySelectorAll<HTMLElement>('.casete-cifras').forEach((tira, i) => {
+    const d = String(cifras[i] ?? 0);
+    if (tira.style.getPropertyValue('--cifra') !== d) tira.style.setProperty('--cifra', d);
+  });
 }
 
 // ---------------------------------------------------------------- el casete se comporta como un casete
@@ -124,7 +203,7 @@ export function armarCasete(): SVGSVGElement {
 /** En cuantos escalones cambia de velocidad el carrete. */
 const ESCALONES_DE_INERCIA = 6;
 
-const relojes = new WeakMap<SVGSVGElement, number>();
+const relojes = new WeakMap<HTMLElement, number>();
 
 function duracion(token: string): number {
   const crudo = getComputedStyle(document.documentElement).getPropertyValue(token).trim();
@@ -133,11 +212,11 @@ function duracion(token: string): number {
   return crudo.endsWith('ms') ? n : n * 1000;
 }
 
-function giros(casete: SVGSVGElement): Animation[] {
+function giros(casete: HTMLElement): Animation[] {
   return [...casete.querySelectorAll('.casete-carrete')].flatMap((c) => c.getAnimations?.() ?? []);
 }
 
-function cortarReloj(casete: SVGSVGElement): void {
+function cortarReloj(casete: HTMLElement): void {
   const previo = relojes.get(casete);
   if (previo !== undefined) window.clearInterval(previo);
   relojes.delete(casete);
@@ -147,7 +226,7 @@ function cortarReloj(casete: SVGSVGElement): void {
  * Lleva la velocidad de los carretes de `desde` a `hasta` en `ms`, y avisa al llegar.
  * La velocidad es la de la animacion: 1 es la de tocar, 0 es quieto, negativo es para atras.
  */
-function llevarVelocidad(casete: SVGSVGElement, desde: number, hasta: number, ms: number, alLlegar?: () => void): void {
+function llevarVelocidad(casete: HTMLElement, desde: number, hasta: number, ms: number, alLlegar?: () => void): void {
   cortarReloj(casete);
   const poner = (v: number): void => {
     for (const g of giros(casete)) g.playbackRate = v;
@@ -174,13 +253,16 @@ function llevarVelocidad(casete: SVGSVGElement, desde: number, hasta: number, ms
 }
 
 /** La cinta arranca: el carrete toma velocidad. */
-export function correrCasete(casete: SVGSVGElement): void {
-  casete.classList.add('casete-vivo--girando');
+export function correrCasete(casete: HTMLElement): void {
+  // `--play` es la tecla apretada: el cabezal sube, el piloto se prende y la cinta corre por
+  // la boca. Se suelta en el acto al frenar; el giro (`--girando`) sigue un momento mas.
+  casete.classList.add('casete-vivo--girando', 'casete-vivo--play');
   llevarVelocidad(casete, 0.25, 1, duracion('--duracion-inercia'));
 }
 
 /** La cinta para: el carrete sigue un poco por inercia y se detiene. */
-export function frenarCasete(casete: SVGSVGElement): void {
+export function frenarCasete(casete: HTMLElement): void {
+  casete.classList.remove('casete-vivo--play');
   if (!casete.classList.contains('casete-vivo--girando')) return;
   const actual = giros(casete)[0]?.playbackRate ?? 1;
   // Llega casi a cero y ahi se pausa, sin tocar mas la velocidad: asi el carrete queda en el
@@ -191,7 +273,7 @@ export function frenarCasete(casete: SVGSVGElement): void {
 }
 
 /** Tema nuevo: los carretes giran para atras, rapido, y la cinta vuelve a la izquierda. */
-export function rebobinarCasete(casete: SVGSVGElement): void {
+export function rebobinarCasete(casete: HTMLElement): void {
   const ms = duracion('--duracion-umbral');
   ponerAvance(casete, 0);
   if (ms <= 0) return;
@@ -202,6 +284,6 @@ export function rebobinarCasete(casete: SVGSVGElement): void {
 }
 
 /** Cuanta cinta paso al carrete de la derecha, de 0 a 1. El dibujo lo lee de `--avance`. */
-export function ponerAvance(casete: SVGSVGElement, fraccion: number): void {
+export function ponerAvance(casete: HTMLElement, fraccion: number): void {
   casete.style.setProperty('--avance', String(Math.min(Math.max(fraccion, 0), 1)));
 }

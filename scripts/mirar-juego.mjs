@@ -106,14 +106,18 @@ async function abrir(nav, ancho, alto, quieto) {
       await cdp.send('Animation.setPlaybackRate', { playbackRate: lento });
       const total = ms / lento;
       const fotos = [];
+      const momentos = [];
       const t0 = Date.now();
       await disparar();
       for (let i = 0; i < cuadros; i++) {
         const cuando = (total * i) / (cuadros - 1);
         const falta = cuando - (Date.now() - t0);
         if (falta > 0) await espera(falta);
-        fotos.push(await pagina.screenshot());
+        fotos.push(await pagina.screenshot({ optimizeForSpeed: true }));
+        momentos.push(Date.now() - t0);
       }
+      // A velocidad real una captura tarda lo suyo: se dice cuándo cayó cada cuadro de verdad.
+      if (lento === 1) console.log(`   (${nombre}: cuadros a ${momentos.join(', ')} ms)`);
       await cdp.send('Animation.setPlaybackRate', { playbackRate: 1 });
       // Lo que quedó a medio camino termina a velocidad real antes de seguir.
       await espera(Math.min(ms * 2, 1500));
@@ -150,6 +154,17 @@ async function adivinarElTema(ctx) {
     await pagina.setRequestInterception(true);
     pagina.on('request', async (pedido) => {
       if (pedido.isInterceptResolutionHandled()) return;
+      // El tema "entero" de mentira: el fragmento de diez segundos, servido en su lugar. Así
+      // el reproductor del tema entero tiene con qué sonar aunque no haya ningún mp3 entero.
+      const entero = pedido.url().match(/\/audio\/temas\/([^/]+)\.mp3/);
+      if (entero) {
+        const fragmento = await fetch(`${base}/audio/fragmentos/${entero[1]}.mp3`);
+        return pedido.respond({
+          status: 200,
+          contentType: 'audio/mpeg',
+          body: Buffer.from(await fragmento.arrayBuffer()),
+        });
+      }
       if (pedido.resourceType() !== 'document') return pedido.continue();
       const respuesta = await fetch(pedido.url());
       const html = (await respuesta.text()).replaceAll('"entero":false', '"entero":true');
@@ -169,8 +184,9 @@ async function adivinarElTema(ctx) {
   await pagina.mouse.down();
   await ctx.espera(150);
   await foto('portada-tecla-apretada');
-  await pagina.mouse.up();
-  await ctx.espera(1200);
+  // Al soltar, el casete de la portada arranca y la pantalla pasa a la partida.
+  await tira('arranca', () => pagina.mouse.up(), { ms: 1000, lento: 1 });
+  await ctx.espera(900);
 
   const catalogo = await pagina.evaluate(() => JSON.parse(document.getElementById('catalogo').textContent));
   const tituloDe = (slug) => catalogo.find((t) => t.slug === slug)?.titulo;
@@ -208,7 +224,7 @@ async function adivinarElTema(ctx) {
   await elegir(otro.titulo);
   await ctx.espera(200);
   await foto('elegido');
-  await tira('error', boton, { ms: 420 });
+  await tira('error', boton, { ms: 440 });
   await ctx.espera(900);
   await foto('tras-el-error');
   await tira('pasar', boton, { ms: 420 });
@@ -233,6 +249,26 @@ async function adivinarElTema(ctx) {
   await ctx.espera(1200);
   await foto('revelacion-acierto');
   await foto('revelacion-acierto-entera', { entera: true });
+  // El tema entero (`--entero`): suena, se avanza con el teclado y se para.
+  if (await pagina.$('.entero-tecla')) {
+    await pagina.click('.entero-tecla');
+    await ctx.espera(1600);
+    await foto('entero-sonando');
+    await pagina.focus('.entero-avance');
+    for (let i = 0; i < 4; i++) await pagina.keyboard.press('ArrowRight');
+    await ctx.espera(400);
+    await foto('entero-avanzado-con-teclado');
+    console.log(
+      'entero:',
+      await pagina.$eval('.entero-avance', (r) =>
+        [r.getAttribute('aria-label'), r.getAttribute('aria-valuetext'), r.value].join(' | '),
+      ),
+      '·',
+      await pagina.$eval('.entero-tecla', (b) => b.textContent),
+    );
+    await pagina.click('.entero-tecla');
+    await ctx.espera(500);
+  }
   if (await pagina.$('.estampa-girar')) {
     await pagina.click('.estampa-girar');
     await ctx.espera(700);

@@ -204,7 +204,12 @@ const ANIMACIONES = [
   // Los dos bucles del casete, atados a que la cinta corra: la aguja que tiembla y el piloto
   // que parpadea. Como el carrete, se apagan con `animation: none`.
   { nombre: 'aguja-tiembla', apaga: 'regla', valor: '.reproductor--sonando .barra-aguja-fiel', hoja: 'src/styles/juego.css' },
-  { nombre: 'piloto', apaga: 'regla', valor: '.reproductor--sonando .casete-piloto', hoja: 'src/styles/juego.css' },
+  { nombre: 'piloto', apaga: 'regla', valor: '.casete-vivo--play .casete-piloto', hoja: 'src/styles/juego.css' },
+  // Ronda 2: la cinta que corre por la boca del casete (otro bucle atado a que suene), y el
+  // error que cae sobre la regla: el sello rojo y el marco, en el tiempo del golpe.
+  { nombre: 'cinta-pasa', apaga: 'regla', valor: '.casete-vivo--rebobina .casete-pasa', hoja: 'src/styles/juego.css' },
+  { nombre: 'sello-error', apaga: 'token', valor: '--duracion-golpe', hoja: 'src/styles/juego.css' },
+  { nombre: 'marco-error', apaga: 'token', valor: '--duracion-golpe', hoja: 'src/styles/juego.css' },
   // El sello del momento de "¿Qué tipo de ricotero sos?" (`UX-36` §4.5): se apoya en la hoja
   // cuando cambia el momento, cinco veces por noche. Es el único movimiento de ese juego.
   { nombre: 'momento-entra', apaga: 'token', valor: '--duracion-paso', hoja: 'src/styles/juego.css' },

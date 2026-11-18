@@ -30,7 +30,8 @@ export function duracionDe(token: string): number {
 
 /** Vuelve a disparar una animación de CSS: la clase sale, el navegador se entera, y vuelve. */
 function redisparar(pieza: Element, clase: string): void {
-  pieza.classList.remove(clase);
+  // Los dos gestos son la misma propiedad (`animation`): una pieza lleva uno solo por vez.
+  pieza.classList.remove('jugo-golpe', 'jugo-sello');
   // Leer una medida obliga al navegador a asentar el estilo sin la clase; sin esto, sacarla y
   // ponerla en el mismo cuadro no reinicia nada.
   void (pieza as HTMLElement).offsetWidth;

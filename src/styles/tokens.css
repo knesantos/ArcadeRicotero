@@ -1913,9 +1913,13 @@
        para o arranca. La lee `casete.ts` con `getComputedStyle`;
      - la cuenta: lo que tarda un número en llegar a su valor cuando suma (el puntaje, el
        reloj del resultado). La lee la isla; sube en escalones, no en un deslizamiento. */
-  --duracion-golpe: 260ms;
+  --duracion-golpe: 400ms;
   --duracion-inercia: 900ms;
   --duracion-cuenta: 600ms;
+  /* INFORMACION, no movimiento (como `--pausa-eleccion`): lo que espera el audio nuevo despues
+     de un error o de un acierto, para que el ruido del golpe o del sello nunca caiga encima
+     de la musica. Por eso el corte de movimiento reducido no lo toca. La lee la isla. */
+  --pausa-error: 380ms;
   /* Lo que tarda el piloto de la casetera en dar un parpadeo entero mientras la cinta corre. */
   --duracion-piloto: 1.2s;
 

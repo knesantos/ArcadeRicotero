@@ -91,6 +91,10 @@ const bajadaCorta = (() => {
           <a class="volver" href="/">← {PORTAL.volverAlArcade}</a>
         </header>
         <p class="marca"><img src="/marca/fichin-ricotero.svg" alt="Fichín Ricotero" width="1540" height="1450" /></p>
+        {/* El heroe: el casete del juego, en reposo. Lo arma la isla (`armarCasete`), que es
+            la misma que lo hace girar en la partida; el hueco ya tiene su medida, asi que
+            nada salta cuando llega. Sin audio no hay juego y tampoco hay casete. */}
+        {hayAudio && <div id="heroe" class="portada-heroe" aria-hidden="true" />}
         <h1 class="jugo-entra" style="--orden:0">{PANTALLA_0.titulo}</h1>
         <p class="donde-estas jugo-entra" style="--orden:1">{LUGARES.tema}</p>
         <p id="subtitulo" class="tenue jugo-entra" style="--orden:2">{bajadaCorta}</p>
@@ -320,9 +324,11 @@ const bajadaCorta = (() => {
       /* El aviso de sonido es registro 3: dice qué mirar y se calla. Va recortado con un
          borde punteado, como una nota agregada a mano, y no pelea con la chapa de arriba. */
       .aviso-sonido {
-        padding: var(--espacio-1) var(--espacio-2);
-        border: 2px dashed var(--borde);
-        border-radius: 3px;
+        /* Una nota chica, sin recuadro (ronda 2): el borde punteado la hacia pesar como un
+           control mas, entre el selector y el boton. */
+        margin: var(--espacio-2) 0 var(--espacio-1);
+        font-size: 0.78rem;
+        line-height: 1.4;
       }
       /* El comando se muestra tal cual se escribe: es para copiarlo, no para leerlo. */
       .comando {

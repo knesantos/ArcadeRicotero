@@ -39,7 +39,15 @@ import { Reproductor, urlDeTema } from '../lib/tema/audio.ts';
 import { sonarAunqueEsteEnSilencio, laLlaveManda } from '../lib/audio/sesion.ts';
 import { PARTIDA, REVELACION, RESULTADO, TARJETA, TRAMOS, PANTALLA_0, SIN_SONIDO } from '../lib/tema/copy.ts';
 import { estampaDe } from '../lib/tapa/pasadas.ts';
-import { armarCasete, correrCasete, frenarCasete, rebobinarCasete, ponerAvance } from '../lib/tema/casete.ts';
+import {
+  armarCasete,
+  correrCasete,
+  frenarCasete,
+  rebobinarCasete,
+  ponerAvance,
+  ponerContador,
+} from '../lib/tema/casete.ts';
+import { sonarEfecto, type Efecto } from '../lib/audio/efectos.ts';
 import { golpear, estampar, contar, duracionDe } from './jugo.ts';
 import { esIOS, esMovil, navegadorIncrustado } from '../lib/sitio/aparato.ts';
 import { tramo } from '../lib/quiz/tramo.ts';
@@ -249,14 +257,44 @@ if (avisoSonido) {
   }
 }
 
+/*
+ * El heroe de la portada (ronda 2 de la pulida, 2026-11-18): el casete del juego, en reposo
+ * y con la cinta al principio. Lo arma la isla porque el dibujo es el mismo objeto de la
+ * partida (`armarCasete`), y asi hay uno solo. Si la pagina no trae el hueco, no pasa nada.
+ */
+const heroe = document.getElementById('heroe');
+const caseteDeLaPortada = heroe ? armarCasete() : null;
+if (heroe && caseteDeLaPortada) heroe.append(caseteDeLaPortada);
+
+/** Si la partida que arranca viene de la portada: el casete de la partida hereda el envion. */
+let vieneDeLaPortada = false;
+let arrancando = false;
+
 $('jugar').addEventListener('click', () => {
+  // Un segundo toque mientras el casete arranca no empieza dos partidas.
+  if (arrancando) return;
+  arrancando = true;
   // `D-66`: la llave de silencio del iPhone no apaga el juego. Se pide **antes** de
   // despertar, para que el primer fragmento ya salga por la sesión de la música.
   sonarAunqueEsteEnSilencio();
   // Este clic es el gesto que los celulares exigen para dejar sonar audio. Despertar el
   // motor acá es lo que hace que el primer "Escuchar" no tenga que esperar nada.
   reproductor.despertar();
-  comenzar();
+  /*
+   * El gesto de arrancar: la tecla baja, el cabezal sube a la cinta y los carretes toman
+   * velocidad. Dura un sub-paso (`--duracion-umbral`) y recien ahi cambia la pantalla, donde
+   * el casete de la partida sigue girando un momento y frena: es el mismo casete. Con
+   * movimiento reducido el sub-paso vale cero y la partida empieza en el acto.
+   */
+  if (caseteDeLaPortada) correrCasete(caseteDeLaPortada);
+  // El clac va un instante despues: el audio se acaba de despertar en este mismo toque.
+  window.setTimeout(() => sonarEfecto('clac'), 90);
+  window.setTimeout(() => {
+    arrancando = false;
+    vieneDeLaPortada = true;
+    if (caseteDeLaPortada) frenarCasete(caseteDeLaPortada);
+    comenzar();
+  }, caseteDeLaPortada ? duracionDe('--duracion-umbral') : 0);
 });
 
 /** Los temas que pueden salir sorteados con lo que el jugador eligió. */
@@ -302,11 +340,21 @@ function comenzar(): void {
   armarPantalla();
   mostrar(zonaPartida);
   arrancarTema();
+  // La continuidad con la portada: el casete llega girando y frena con su inercia.
+  if (vieneDeLaPortada) {
+    vieneDeLaPortada = false;
+    correrCasete(casete);
+    frenarCasete(casete);
+  }
 }
 
 function arrancarTema(): void {
   escuchoEsteTema = false;
   tramoAcertado = -1;
+  cortarLoPendiente();
+  // La etiqueta del casete vuelve a ser papel: el disco anterior ya no es la respuesta.
+  if (discoDelCasete) casete.classList.remove(discoDelCasete);
+  discoDelCasete = '';
   // La sala vuelve a ser Lobo suelto: el disco anterior ya no es la respuesta.
   sacarLaSala();
   pasoActual = 1;
@@ -354,9 +402,29 @@ let barra!: HTMLElement;
  */
 let aguja!: HTMLElement;
 /** El casete que gira: lo arma `casete.ts`, y la isla le dice cuando corre, frena o rebobina. */
-let casete!: SVGSVGElement;
-/** El contador de la casetera: por donde va la aguja, en segundos. */
-let contador!: HTMLElement;
+let casete!: HTMLElement;
+/** La clase de disco que tiene puesta el casete (su etiqueta tenida), o nada. */
+let discoDelCasete = '';
+/** El tema entero que esta a la vista en la revelacion (`D-22`), para poder cortarlo. */
+let audioEntero: HTMLAudioElement | null = null;
+/** Lo que quedo citado para dentro de un momento (el audio despues del golpe o del sello). */
+let relojPendiente = 0;
+
+/** Corta lo que estuviera por sonar o sonando fuera del fragmento: se llama al cambiar de tema. */
+function cortarLoPendiente(): void {
+  window.clearTimeout(relojPendiente);
+  audioEntero?.pause();
+  audioEntero = null;
+}
+
+/**
+ * Un sonido de interfaz (`lib/audio/efectos.ts`). **Nunca encima de un fragmento**: si la
+ * cinta esta sonando, no suena nada. Es la unica puerta por la que esta isla hace ruido que
+ * no sea musica.
+ */
+function efecto(cual: Efecto): void {
+  if (!sonando) sonarEfecto(cual);
+}
 let etiquetaPaso!: HTMLElement;
 /** Lo que vale acertar en el paso en curso, al lado del audio que tenés. */
 let valeEl!: HTMLElement;
@@ -425,7 +493,16 @@ function armarPantalla(): void {
   etiquetaPaso.setAttribute('aria-live', 'polite');
   valeEl = el('span', 'reproductor-vale');
   cabeza.append(etiquetaPaso, valeEl);
-  reproductorCaja.append(cabeza);
+
+  // La cabina: el casete, grande, y al lado lo que tenes y lo que vale. La regla va abajo,
+  // de lado a lado. SONANDO se estampa sobre la esquina del casete: mismo lugar siempre.
+  const cabina = el('div', 'cabina');
+  casete = armarCasete();
+  palabraCinta = el('span', 'casete-estado', REVELACION.sonando);
+  palabraCinta.hidden = true;
+  casete.append(palabraCinta);
+  cabina.append(casete, cabeza);
+  reproductorCaja.append(cabina);
 
   /*
    * La cinta y su regla (`UX-22`, `T-204`).
@@ -447,8 +524,6 @@ function armarPantalla(): void {
    * palabra de sello dice lo mismo (`CNT-14` §2.5).
    */
   const fila = el('div', 'cinta-fila');
-  casete = armarCasete();
-  fila.append(casete);
   const pista = el('div', 'barra-pista');
   barra = el('div', 'barra');
   // La regla dibuja lo que el renglon de arriba ya dice con palabras.
@@ -492,14 +567,6 @@ function armarPantalla(): void {
   pista.append(escala);
 
   fila.append(pista);
-  // SONANDO se estampa sobre el pie del casete: mismo lugar siempre, sin robar renglon.
-  palabraCinta = el('span', 'casete-estado', REVELACION.sonando);
-  palabraCinta.hidden = true;
-  fila.append(palabraCinta);
-  // El contador de la casetera, debajo del casete. Dibuja lo que la aguja ya dice.
-  contador = el('span', 'cinta-contador', '0,0');
-  contador.setAttribute('aria-hidden', 'true');
-  fila.append(contador);
   reproductorCaja.append(fila);
 
   botonEscuchar = el('button', 'escuchar');
@@ -682,8 +749,7 @@ function pintarBarra(transcurrido: number): void {
   // El casete y su contador siguen a la aguja: la cinta se pasa de un carrete al otro en
   // proporcion al fragmento entero, y el contador dice el segundo por donde va.
   ponerAvance(casete, t / DURACION_FRAGMENTO_SEG);
-  const cifra = t.toFixed(1).replace('.', ',');
-  if (contador.textContent !== cifra) contador.textContent = cifra;
+  ponerContador(casete, t);
 
   // La regla de abajo se tine con la barra: el numero del escalon que ya tenes deja de
   // ser una promesa y pasa a ser un dato. Es la misma senal, en la misma columna. El del
@@ -795,6 +861,9 @@ function alternarSonido(): void {
   if (sonando) {
     reproductor.detener();
     frenar();
+    // La tecla que salta: el unico clac de la partida, porque aca la cinta ya paro. Al
+    // arrancar no hay ninguno: la decima de segundo no comparte el oido con nada.
+    efecto('clac');
     return;
   }
   sonar(paso(pasoActual).segundos);
@@ -812,6 +881,8 @@ function alternarSonido(): void {
 function sonar(segundos: number): void {
   const tema = ronda[indice];
   if (!tema) return;
+  // El tema entero y el fragmento no suenan juntos.
+  audioEntero?.pause();
   sonando = true;
   escuchoEsteTema = true;
   textoEscuchar.textContent = PARTIDA.parar;
@@ -846,10 +917,11 @@ function rebobinar(): void {
   window.clearTimeout(relojRebobinado);
   reproductorCaja.classList.add('reproductor--rebobina');
   rebobinarCasete(casete);
-  relojRebobinado = window.setTimeout(
-    () => reproductorCaja.classList.remove('reproductor--rebobina'),
-    duracionDe('--duracion-umbral'),
-  );
+  relojRebobinado = window.setTimeout(() => {
+    reproductorCaja.classList.remove('reproductor--rebobina');
+    // La cinta llego al principio y el mecanismo corta.
+    efecto('clac');
+  }, duracionDe('--duracion-umbral'));
 }
 
 // ---------------------------------------------------------------- el buscador
@@ -858,6 +930,8 @@ function alTipear(): void {
   // Escribir después de haber elegido desarma la elección: lo que vale es lo que se
   // eligió de la lista, nunca lo que quedó escrito a mano en la caja.
   elegido = null;
+  // Cada letra, una tecla de maquina. Bajito, y nunca si la cinta esta sonando.
+  efecto('tic');
   sugerencias = sugerir(buscables(), buscadorInput.value, MAX_SUGERENCIAS);
   marcada = -1;
   pintarLista();
@@ -946,6 +1020,7 @@ function elegirSugerencia(i: number): void {
   const s = sugerencias[i];
   if (!s || yaProbado(s.tema)) return;
   elegido = s.tema as Tema;
+  efecto('tecla');
   buscadorInput.value = s.tema.titulo;
   cerrarLista();
   pintarBotonPrincipal();
@@ -1017,10 +1092,17 @@ function gastarIntento(erro: boolean): void {
   cerrarLista();
 
   if (intentos.length >= INTENTOS) {
+    reproductor.detener();
+    frenar();
+    if (erro) {
+      efecto('golpe');
+      golpear(barra);
+    }
     cerrarTema(false);
     return;
   }
 
+  const tramoGastado = barra.children[intentos.length - 1];
   pasoActual = intentos.length + 1;
   reproductor.detener();
   frenar();
@@ -1034,12 +1116,42 @@ function gastarIntento(erro: boolean): void {
    * los dos numeros que cambiaron se vuelven a estampar: lo que vale ahora, que bajo, y los
    * intentos que te quedan. Pasar no es errar: no hay golpe, solo lo que cambio.
    */
-  if (erro) golpear(barra);
   estampar(valeEl);
-  estampar(restantesEl);
-  // Se escucha solo el paso nuevo: errar tiene que devolver audio en el acto, sin que
-  // haya que ir a buscar el botón otra vez.
-  alternarSonido();
+  if (!erro) {
+    estampar(restantesEl);
+    // Se escucha solo el paso nuevo: pasar tiene que devolver audio en el acto, sin que
+    // haya que ir a buscar el botón otra vez.
+    alternarSonido();
+    return;
+  }
+  /*
+   * Ronda 2: el error cae SOBRE la regla. Un sello rojo con la cruz se estampa en el tramo
+   * que gastaste —grande, y se va: queda la cruz chica—, la regla se sacude con su marco en
+   * rojo, y la cuenta de intentos recibe el mismo golpe. Suena un golpe sordo.
+   *
+   * Y el audio nuevo espera a que el golpe termine (`--pausa-error`): asi el ruido del error
+   * nunca cae encima del fragmento que hay que adivinar. Solo con el motor de Web Audio; el
+   * repuesto de `<audio>` necesita sonar adentro del toque, asi que ahi no hay espera ni ruido.
+   */
+  golpear(barra);
+  golpear(restantesEl);
+  const golpe = duracionDe('--duracion-golpe');
+  if (golpe > 0 && tramoGastado) {
+    const sello = el('span', 'barra-sello-error', '✕︎');
+    sello.setAttribute('aria-hidden', 'true');
+    tramoGastado.append(sello);
+    // Se saca solo cuando su animacion termina (y no con un reloj): asi dura lo que dura.
+    sello.addEventListener('animationend', () => sello.remove(), { once: true });
+  }
+  if (reproductor.enRepuesto) {
+    alternarSonido();
+    return;
+  }
+  efecto('golpe');
+  window.clearTimeout(relojPendiente);
+  relojPendiente = window.setTimeout(() => {
+    if (temaEnCurso && !sonando) alternarSonido();
+  }, duracionDe('--pausa-error'));
 }
 
 function cerrarTema(acerto: boolean): void {
@@ -1139,12 +1251,136 @@ function cerrarTema(acerto: boolean): void {
    * prendido en este tema, el fragmento entero de diez segundos arranca solo y la estampa
    * se imprime con la musica (`T-201`). Quien jugo a ciegas no recibe sonido que no pidio.
    */
+  // El casete se queda con el disco: su etiqueta se tine con la tinta de la tapa revelada.
+  discoDelCasete = claseDisco(tema.disco) ?? '';
+  if (discoDelCasete) casete.classList.add(discoDelCasete);
+
   if (acerto) {
     ponerLaSala(tema);
-    if (vaASonar) sonar(DURACION_FRAGMENTO_SEG);
+    // El sello de goma contra la hoja, y recien despues la musica: el fragmento entero
+    // espera a que el golpe termine (con el repuesto de `<audio>` no hay espera ni ruido).
+    if (vaASonar && reproductor.enRepuesto) {
+      sonar(DURACION_FRAGMENTO_SEG);
+    } else {
+      efecto('sello');
+      if (vaASonar) {
+        const cual = indice;
+        window.clearTimeout(relojPendiente);
+        relojPendiente = window.setTimeout(() => {
+          if (indice === cual && !temaEnCurso && !sonando) sonar(DURACION_FRAGMENTO_SEG);
+        }, duracionDe('--pausa-error'));
+      }
+    }
     // Y el telefono lo siente: un toque corto, solo en el acierto (`sacar-temas.ts`).
     vibrarAcierto();
   }
+}
+
+/** Minutos y segundos, como en la contratapa de un disco: 4:07. */
+function minutos(segundos: number): string {
+  const s = Math.max(0, Math.floor(segundos));
+  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+}
+
+/**
+ * El tema entero, con reproductor propio (`D-22`; ronda 2 de la pulida, 2026-11-18).
+ *
+ * Antes era el `<audio controls>` del navegador: la unica pieza de la pantalla que no hablaba
+ * el idioma del sitio. Ahora es la misma regla, en largo: una tecla que suena o para, la
+ * cinta con su aguja —que se arrastra o se mueve con las flechas— y el tiempo. El casete de
+ * arriba gira con el, porque es la misma cinta.
+ *
+ * **La cinta es un `<input type="range">` vestido**, y es a proposito: el teclado (flechas,
+ * Inicio, Fin) y el lector de pantalla (rol, valor, `aria-valuetext` con los minutos) vienen
+ * del navegador, sin una linea escrita aca. El motor sigue siendo un `<audio>`, sin sus
+ * controles y sin precargar nada: no se baja un byte del tema hasta que alguien lo pide.
+ *
+ * Si el archivo no carga, la caja lo dice y la tecla se apaga: no queda un control mudo.
+ */
+function armarEntero(tema: Tema): HTMLElement {
+  const audio = el('audio', 'revelacion-audio');
+  audio.preload = 'none';
+  audio.src = urlDeTema(tema.slug);
+  audioEntero = audio;
+
+  const caja = el('div', 'revelacion-entero');
+  caja.append(el('p', 'revelacion-escuchar', REVELACION.escucharEntero));
+
+  const fila = el('div', 'entero-fila');
+  const tecla = el('button', 'escuchar entero-tecla');
+  tecla.type = 'button';
+  const rotulo = el('span', 'solo-lector', REVELACION.escucharEntero);
+  tecla.append(rotulo);
+
+  const avance = el('input', 'entero-avance');
+  avance.type = 'range';
+  avance.min = '0';
+  avance.max = '1000';
+  avance.step = '1';
+  avance.value = '0';
+  avance.setAttribute('aria-label', REVELACION.avanceEntero);
+
+  const tiempo = el('span', 'entero-tiempo', minutos(0));
+  fila.append(tecla, avance, tiempo);
+  caja.append(fila, audio);
+
+  const pintar = (): void => {
+    const total = Number.isFinite(audio.duration) ? audio.duration : 0;
+    const f = total > 0 ? audio.currentTime / total : 0;
+    avance.value = String(Math.round(f * 1000));
+    avance.style.setProperty('--lleno', String(f));
+    const dice = total > 0 ? REVELACION.tiempoEntero(minutos(audio.currentTime), minutos(total)) : minutos(audio.currentTime);
+    tiempo.textContent = dice;
+    avance.setAttribute('aria-valuetext', dice);
+    // La cinta del casete se pasa de un carrete al otro con el tema, igual que con el fragmento.
+    if (audioEntero === audio && total > 0) ponerAvance(casete, f);
+  };
+
+  tecla.addEventListener('click', () => {
+    if (!audio.paused) {
+      audio.pause();
+      return;
+    }
+    // El fragmento y el tema no suenan juntos.
+    if (sonando) {
+      reproductor.detener();
+      frenar();
+    }
+    sonarEfecto('clac');
+    void audio.play().catch(() => {
+      // Lo dice el `error` de abajo si fue el archivo; si fue otra cosa, la tecla sigue lista.
+    });
+  });
+  audio.addEventListener('play', () => {
+    tecla.classList.add('escuchar--sonando');
+    rotulo.textContent = PARTIDA.parar;
+    correrCasete(casete);
+    palabraCinta.hidden = false;
+  });
+  for (const fin of ['pause', 'ended'] as const) {
+    audio.addEventListener(fin, () => {
+      tecla.classList.remove('escuchar--sonando');
+      rotulo.textContent = REVELACION.escucharEntero;
+      frenarCasete(casete);
+      if (!sonando) palabraCinta.hidden = true;
+      sonarEfecto('clac');
+    });
+  }
+  audio.addEventListener('timeupdate', pintar);
+  audio.addEventListener('durationchange', pintar);
+  // Arrastrar la aguja o mover las flechas: la cinta salta ahi. Sin duracion todavia —nadie
+  // le dio a sonar— no hay a donde saltar, y la aguja vuelve al principio.
+  avance.addEventListener('input', () => {
+    const total = Number.isFinite(audio.duration) ? audio.duration : 0;
+    if (total > 0) audio.currentTime = (Number(avance.value) / 1000) * total;
+    pintar();
+  });
+  audio.addEventListener('error', () => {
+    tecla.disabled = true;
+    avance.disabled = true;
+    tiempo.textContent = REVELACION.enteroNoCarga;
+  });
+  return caja;
 }
 
 function pintarRevelacion(tema: Tema, acerto: boolean, ganados: number): void {
@@ -1221,26 +1457,7 @@ function pintarRevelacion(tema: Tema, acerto: boolean, ganados: number): void {
   // `D-22`: el tema entero lo sirve el sitio. Si todavía no está el archivo, no se
   // promete nada — la pantalla simplemente no muestra el reproductor.
   if (tema.entero) {
-    const audio = el('audio', 'revelacion-audio');
-    audio.controls = true;
-    audio.preload = 'none';
-    audio.src = urlDeTema(tema.slug);
-    /*
-     * El tema entero tiene su caja y su rotulo, y el casete tambien gira con el: es la misma
-     * cinta. Al darle play se corta el fragmento —no pueden sonar los dos— y los carretes
-     * toman velocidad; al pausar o terminar, frenan.
-     */
-    audio.addEventListener('play', () => {
-      if (sonando) {
-        reproductor.detener();
-        frenar();
-      }
-      correrCasete(casete);
-    });
-    for (const fin of ['pause', 'ended'] as const) audio.addEventListener(fin, () => frenarCasete(casete));
-    const caja = el('div', 'revelacion-entero');
-    caja.append(el('p', 'revelacion-escuchar', REVELACION.escucharEntero), audio);
-    revelacion.append(caja);
+    revelacion.append(armarEntero(tema));
   }
 
   if (tema.letra) {
@@ -1334,6 +1551,8 @@ function avanzar(): void {
    */
   reproductor.detener();
   frenar();
+  cortarLoPendiente();
+  efecto('tecla');
 
   indice += 1;
   if (indice >= ronda.length) {
@@ -1405,8 +1624,17 @@ function pintarResultado(): void {
     return pieza;
   };
   zonaResultado.append(entra(el('p', 'rotulo-desenlace', RESULTADO.titulo)));
-  const encabezado = entra(el('h2', `tramo tramo--${t}`, TRAMOS[t]));
-  zonaResultado.append(encabezado);
+  // La linea que canta, y al lado el sello de la vuelta: la cuenta de temas, en la tinta del
+  // tramo, que cae cuando la pantalla termino de entrar (ronda 2). El renglon de abajo del
+  // reloj dice lo mismo con palabras, asi que el sello va escondido del lector de pantalla.
+  const cabezaDesenlace = entra(el('div', 'desenlace-cabeza'));
+  const encabezado = el('h2', `tramo tramo--${t}`, TRAMOS[t]);
+  const selloVuelta = el('span', `sello-vuelta tramo--${t}`, RESULTADO.selloVuelta(aciertos, ronda.length));
+  selloVuelta.setAttribute('aria-hidden', 'true');
+  cabezaDesenlace.append(encabezado, selloVuelta);
+  zonaResultado.append(cabezaDesenlace);
+  // Y suena cuando cae: el mismo sello de goma del acierto.
+  window.setTimeout(() => efecto('sello'), duracionDe('--escalon-umbral') * 9);
 
   // El reloj: el dato que el jugador cuenta cuando sale de la partida.
   const reloj = el('div', 'cifra');
@@ -1457,6 +1685,34 @@ function pintarResultado(): void {
   const compartir = el('button', 'primario firma', RESULTADO.compartir);
   compartir.type = 'button';
   compartir.addEventListener('click', () => void compartirResultado(compartir));
+
+  /*
+   * La tarjeta asoma (ronda 2): lo que vas a compartir se ve antes de tocar el boton. Se
+   * dibuja una sola vez, aca, y "Comparti" usa esa misma imagen. El hueco existe desde el
+   * primer cuadro para que la pantalla no salte cuando la imagen llega; si el dibujo falla, el
+   * hueco se va y se comparte igual, sin imagen. Tocarla hace lo mismo que el boton, que es
+   * el que tiene nombre para el lector de pantalla.
+   */
+  const asoma = el('div', 'tarjeta-asoma');
+  asoma.setAttribute('aria-hidden', 'true');
+  asoma.addEventListener('click', () => compartir.click());
+  zonaResultado.append(asoma);
+  if (urlDeLaTarjeta) URL.revokeObjectURL(urlDeLaTarjeta);
+  urlDeLaTarjeta = '';
+  const estaTarjeta = dibujarLaTarjeta();
+  tarjetaDeLaVuelta = estaTarjeta;
+  void estaTarjeta.then((imagen) => {
+    if (tarjetaDeLaVuelta !== estaTarjeta || !asoma.isConnected) return;
+    if (!imagen) {
+      asoma.remove();
+      return;
+    }
+    urlDeLaTarjeta = URL.createObjectURL(imagen);
+    const foto = el('img', 'jugo-pega');
+    foto.alt = '';
+    foto.src = urlDeLaTarjeta;
+    asoma.append(foto);
+  });
   zonaResultado.append(compartir);
 
   // La caja donde cae lo que compartir tenga para decir. Existe vacia desde el arranque
@@ -1510,6 +1766,31 @@ function pintarResultado(): void {
  * misma escalera de `D-14` que ya usa el botón de corrección.
  */
 let salidaCompartir: HTMLElement | null = null;
+/** La tarjeta de la vuelta que esta en pantalla: se dibuja al llegar al resultado, una vez. */
+let tarjetaDeLaVuelta: Promise<Blob | null> | null = null;
+let urlDeLaTarjeta = '';
+
+/** Dibuja la tarjeta de la vuelta. Nunca rechaza: si el canvas falla, devuelve `null`. */
+function dibujarLaTarjeta(): Promise<Blob | null> {
+  const maximo = puntajeMaximo(ronda.length);
+  const aciertos = marcador.filter((p) => p > 0).length;
+  const t = tramo(aciertos, ronda.length);
+  return dibujarTarjeta({
+    juego: TARJETA.juego,
+    tinteJuego: '--cat-mitologia',
+    tramo: TRAMOS[t],
+    filas: ronda.map((tema, i) => ({
+      acerto: (marcador[i] ?? 0) > 0,
+      titulo: tema.titulo,
+      pie: pieDeTema(i),
+      disco: tema.disco,
+    })),
+    rotuloHero: TARJETA.rotuloTiempo,
+    hero: duracion(sumarTiempos(tiempos)),
+    puntaje: RESULTADO.puntos(puntaje, maximo),
+    sitio: location.host + location.pathname,
+  }).catch(() => null);
+}
 
 async function compartirResultado(boton: HTMLButtonElement): Promise<void> {
   const maximo = puntajeMaximo(ronda.length);
@@ -1534,27 +1815,9 @@ async function compartirResultado(boton: HTMLButtonElement): Promise<void> {
   boton.disabled = true;
   boton.textContent = RESULTADO.armando;
 
-  let imagen: Blob | null = null;
-  try {
-    imagen = await dibujarTarjeta({
-      juego: TARJETA.juego,
-      tinteJuego: '--cat-mitologia',
-      tramo: TRAMOS[t],
-      filas: ronda.map((tema, i) => ({
-        acerto: (marcador[i] ?? 0) > 0,
-        titulo: tema.titulo,
-        pie: pieDeTema(i),
-        disco: tema.disco,
-      })),
-      rotuloHero: TARJETA.rotuloTiempo,
-      hero: tiempoTotal,
-      puntaje: RESULTADO.puntos(puntaje, maximo),
-      sitio: location.host + location.pathname,
-    });
-  } catch {
-    // La tarjeta es el premio, no el camino: si el canvas falla, se comparte sin ella.
-    imagen = null;
-  }
+  // La tarjeta ya se dibujo al llegar al resultado (es la que asoma arriba del boton): aca
+  // se espera esa misma. Es el premio, no el camino: si el canvas fallo, se comparte sin ella.
+  const imagen = await (tarjetaDeLaVuelta ?? dibujarLaTarjeta());
 
   boton.disabled = false;
   boton.textContent = rotuloOriginal;
