@@ -92,6 +92,11 @@ export const PARTIDA = {
   ruidosApagar: 'Apagá los ruidos',
   ruidosPrender: 'Prendé los ruidos',
   /**
+   * La tecla chica de la cabecera de la partida. Dice siempre lo mismo: el estado va en
+   * `aria-pressed` y en la forma (apagada, tachada). En la portada van las dos frases enteras.
+   */
+  ruidosTecla: 'Ruidos',
+  /**
    * El desenlace cuando el tema no salió.
    *
    * Decía *"No era ese."*, y eso **presupone un acto que puede no haber ocurrido**: quien
@@ -143,8 +148,10 @@ export const RESULTADO = {
   pieAcierto: (disco: string, versos: string) => `${disco} · con ${versos}`,
   /** El de uno que no salió. Lleva "no salió" escrito además de la cruz (`UX-01`). */
   pieFallo: (disco: string) => `${disco} · no salió`,
-  compartir: 'COMPARTÍ',
-  deNuevo: 'JUGÁ DE NUEVO',
+  /** El pie del resultado, escrito como en los otros juegos pulidos: sin versales forzadas. */
+  compartir: 'Compartí',
+  deNuevo: 'Jugá de nuevo',
+  volver: 'Volvé al fichín',
   /** Mientras el canvas dibuja. Un botón mudo se toca dos veces. */
   armando: 'Armando la tarjeta',
   bajarTarjeta: 'Bajá la tarjeta',

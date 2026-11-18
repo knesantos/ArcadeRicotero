@@ -125,3 +125,94 @@ adentro, dos anillos pegados— sin tocar la tinta. Si se quiere otro disco, es 
 | El papel se endereza bajo el dedo | `:active` sobre el papel | igual: es respuesta al toque |
 | "Era …" se escribe y cae el sello | cerrar el tema | puesto |
 | El papel se pliega y apoya | llega la ficha | puesto |
+
+---
+
+# Ronda 3, el cierre (2026-11-18)
+
+## 7. Decisiones del hilo principal, ya aplicadas
+
+- **El respiro del papel salió**, con su token (`--duracion-respiro`), su estado
+  (`.partida--esperando`) y su entrada en `movimiento.test.ts`. No se veía.
+- **El papel plegado conserva el último verso leído**, con la tilde o la cruz. El título va solo
+  en la ficha.
+- **`conPuntero` está en los dos juegos de sacar temas**: el foco que la isla le pone a "Seguí"
+  no dibuja anillo si el tema se cerró con un toque; con teclado se ve siempre.
+
+## 8. Lo que cambió y conviene dejar escrito
+
+1. **Los rótulos van al canto de afuera del papel** (pisan el borde, 3 px) y los dobleces
+   llevan menos margen (0,7 rem). Con eso **el papel de ocho versos entra entero a 430 × 860**
+   cuando los versos son de un renglón. Si no entra, desplaza por dentro y **el canto lleva un
+   rayado impreso** del lado donde queda papel (`.hoja-canto`, la sarga en la tinta del fondo;
+   ni sombra ni degradado). Dos estados nuevos: `.hoja-versos--sigue-arriba` y `--sigue-abajo`.
+2. **La tecla de los ruidos está en la cabecera**: dice "Ruidos" siempre, el estado va en
+   `aria-pressed` y en la forma (apagada: tachada y con el filete cortado). Mide 20 px de alto y
+   su blanco de toque se agranda a 48 con una pieza que no ocupa renglón. Texto nuevo para
+   `contenido`. En la portada sigue el interruptor con la frase entera.
+3. **El primer tiempo del cierre es un sello grande** (7,4 rem) que cae al medio de lo que se
+   ve del papel. **Si el teclado está abierto, se queda abierto durante ese tiempo**: la caja
+   pasa a solo lectura con el foco puesto, y recién al llegar la ficha se suelta todo. No lo
+   pude ver en un teléfono de verdad: en las capturas no hay teclado.
+4. **El pase es una sola historia**: el papel usado baja torcido y se mete bajo el dobladillo
+   (un sub-paso), y recién ahí sale el nuevo del bolsillo (otro).
+5. **El detalle vivo que reemplaza al respiro es la birome** que asoma del bolsillo: cada vez
+   que algo queda anotado en el papel (un error o un pase) baja la punta y vuelve, en saltos.
+   Dos máscaras nuevas (`birome-cuerpo.webp`, `birome-clip.webp`).
+6. **Los quiebres del resultado se leen**: "· pasaste" escrito, y la cruz con un tachón rojo.
+   A 1280 la fila incompleta va al medio.
+7. **La tarjeta compartible habla en papeles** (`DatosTarjeta.papeles`, `FilaTarjeta.recorrido`
+   en `lib/tarjeta/plan.ts`): cada fila es un recorte con su sello y las marcas de lo gastado.
+   La maqueta de `planificar()` no cambió y "Adiviná el tema" sigue con la suya. Se dibuja una
+   vez, asoma arriba de "Compartí" y el botón usa esa misma imagen.
+8. **El pie del resultado es una pieza** (`.pie-resultado`, en `juego.css`) para los tres
+   juegos pulidos: la tarjeta que asoma, "Compartí", lo que compartir tenga para decir, la otra
+   vuelta y, al final, `← Volvé al fichín` en `.salida-resultado`. Cambios por juego:
+   - *Sacalo por la letra*: "COMPARTÍ" → "Compartí", "JUGÁ DE NUEVO" → "Jugá de nuevo",
+     "← Al fichín" → "← Volvé al fichín", y ahora tiene la tarjeta que asoma.
+   - *Adiviná el tema*: "Volvé al fichín" pasa de `.accion-abajo` a `.salida-resultado .volver`
+     (la cinta de papel con la flecha, como los otros dos).
+   - *¿Qué tipo de ricotero sos?*: solo suma la clase; `.ejes-acciones` queda como el nombre
+     viejo de la misma pieza. Su vuelta al fichín sigue al final de la página, debajo del plano.
+   `.accion-abajo` la siguen usando "Completá la letra" y "Adiviná la tapa": cuando les toque,
+   pasan a la misma pieza.
+
+9. **"Pasá" ya no abre el teclado en el teléfono.** Después de cada intento la isla enfocaba
+   la caja de texto, y en un teléfono eso levanta el teclado: tapaba el bolsillo y achicaba el
+   papel justo cuando llegaban los versos nuevos, también al que solo iba pasando. Ahora, sin
+   teclado abierto y con dedo, el foco queda en el botón; con el teclado abierto o con mouse,
+   en la caja como siempre. **Toca `UX-08`** (el foco después de un intento) y conviene que
+   `experiencia` lo mire; "Adiviná el tema" no lo cambié.
+
+## 9. Detalles vivos de la ronda 3
+
+| Detalle | Estado al que está atado | Con movimiento reducido |
+|---|---|---|
+| La birome baja la punta y vuelve | algo queda anotado en el papel | quieta |
+| El sello grande cae sobre el papel | cerrar el tema | puesto, y enseguida la ficha |
+| El papel usado se guarda y sale el nuevo | "Seguí" | el tema nuevo aparece puesto |
+| El canto rayado del papel | queda papel por ver para ese lado | igual: es información |
+
+## 10. Lo aprendido para los juegos que quedan
+
+1. **El objeto sale de la bajada.** La portada ya promete un objeto ("un papel arrugado te pesa
+   en el bolsillo"): ese es el protagonista, y el lugar que nombra es el fondo de la partida.
+2. **Buscar la regla del juego en el objeto**: 1, 2, 4, 8 versos es un papel que se desdobla. Si
+   la mecánica y el objeto coinciden, la animación comunica el estado sin explicarlo.
+3. **Lo que se gasta se anota sobre el objeto**, en el lugar donde se gastó, y el resultado
+   reutiliza esa misma marca. La lista aparte y la escalerita sobran.
+4. **El cierre en dos tiempos**: primero el golpe donde está el ojo, después la ficha. El objeto
+   se achica a un renglón para que la ficha entre en una pantalla, con una puerta para reabrirlo.
+5. **Un detalle vivo se juzga en la tira**: si en seis cuadros no se distingue, se saca.
+6. **Lo que se lee va sobre papel o sobre el fondo, nunca sobre la textura**: es lo que deja usar
+   fondos impresos sin abrir pares de contraste nuevos.
+7. **Antes de culpar al diseño, mirar el foco y el desplazamiento**: el anillo de "Seguí" era
+   `:focus-visible` heredado de la caja de texto, y la hoja que quedaba arriba era el navegador
+   borrando el desplazamiento al pasar de `display: contents` a `flex`.
+8. **Los relojes de JavaScript no se frenan con la tira**: las secuencias con `setTimeout` se
+   capturan a velocidad real; frenar solo el CSS las desarma.
+9. **Cuidado con los reemplazos globales en archivos compartidos** (`mirar-juego.mjs`,
+   `juego.css`): acotar cada parche a la función o al bloque del juego, y mirar el `git diff`
+   por secciones antes de correr.
+10. **La gramática compartida se arma al tercer juego**, no al primero: la ficha, el pie del
+    resultado y el anillo de foco se unificaron recién cuando hubo tres para comparar.

@@ -383,6 +383,9 @@ const JS_TEMA = leer('src/scripts/partida-tema.ts');
 
 /** Las clases de estado que crea la isla del tema y que tienen que verse distinto. */
 const ESTADOS_TEMA = [
+  // "Seguí" sin anillo cuando el tema se cerro con un toque (ronda de pulida, 2026-11-18): el
+  // mismo criterio que "Sacalo por la letra". Con teclado el anillo se ve siempre.
+  '.seguir--sin-anillo',
   // La lista ya no dibuja renglones vacios (ronda de pulida, 2026-11-17): la escalera la
   // dibuja la regla, una sola vez, y aca queda solo lo gastado. Por eso salieron
   // `.intento--libre` y `.intento--actual`, que eran el renglon sin escribir y el que tocaba.
@@ -478,7 +481,16 @@ const ESTADOS_LETRA = [
   '.dobleces--plegado',
   '.buscador--cerrado',
   '.seguir--sin-anillo',
-  '.partida--esperando',
+  // Ronda 3: el sello grande del cierre, el canto rayado del papel que sigue, la birome que
+  // anota y el papel usado que se guarda.
+  '.sello-cae--ok',
+  '.sello-cae--no',
+  '.hoja-canto--arriba',
+  '.hoja-canto--abajo',
+  '.hoja-versos--sigue-arriba',
+  '.hoja-versos--sigue-abajo',
+  '.birome--anota',
+  '.hoja-versos--se-guarda',
   '.resumen--papeles',
   '.papelito-quiebre--fallo',
   '.papelito-quiebre--paso',

@@ -698,7 +698,7 @@ function pintarResultado(): void {
   hoja.append(el('p', 'ejes-bajada', r.bajada));
   zonaResultado.append(hoja);
 
-  const acciones = el('div', 'ejes-acciones jugo-entra');
+  const acciones = el('div', 'ejes-acciones pie-resultado jugo-entra');
   acciones.style.setProperty('--orden', '5');
   // Compartir: viaja **la identidad** —la postal de este cuadrante y su tarjeta— y ningún
   // número (`BR-17`). Es el primario de la pantalla.

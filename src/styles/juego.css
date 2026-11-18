@@ -2786,11 +2786,22 @@ html.incrustado .juego-tema #partida .cabina {
   line-height: 1.45;
 }
 
+/* El pie del resultado (ronda de pulida, 2026-11-18): **una sola pieza para los juegos
+   pulidos** —"Adiviná el tema", "¿Qué tipo de ricotero sos?" y "Sacalo por la letra"—. Mismo
+   orden y mismo peso: la tarjeta que asoma, "Compartí" (el primario, en la letra de la
+   firma), lo que compartir tenga para decir, y la otra vuelta (el secundario, en contorno).
+   La vuelta al fichín va despues, en `.salida-resultado`. Cada juego pone sus textos, escritos
+   sin versales forzadas. `.ejes-acciones` es el nombre viejo de la misma pieza. */
+.pie-resultado,
 .ejes-acciones {
   display: flex;
   flex-direction: column;
   gap: var(--espacio-1);
   margin-top: var(--espacio-3);
+}
+
+.pie-resultado .tarjeta-asoma {
+  margin-top: 0;
 }
 
 /* La linea de contraste: registro 3, entre los botones y la grilla, pegada a lo que la grilla
@@ -7478,8 +7489,10 @@ html.incrustado .juego-tema #partida .cabina-puertas {
   z-index: 2;
   align-self: center;
   width: min(100%, 21.5rem);
-  /* Los dos rotulos pisan el canto de arriba del papel: estan pegados a el. */
-  margin-bottom: -0.45rem;
+  /* Los dos rotulos se apoyan en el canto de arriba del papel, por afuera (ronda 3): pisan
+     el borde y nada mas. En la ronda 2 lo pisaban medio renglon, y cuando la hoja desplazaba
+     por dentro tapaban la letra del primer verso. */
+  margin-bottom: -3px;
   padding-inline: 0.5rem;
 }
 
@@ -7543,7 +7556,9 @@ html.incrustado .juego-tema #partida .cabina-puertas {
 /* Cada doblez abierto es un pedazo del mismo papel. */
 .pliego {
   position: relative;
-  padding: var(--espacio-2);
+  /* 0,7rem arriba y abajo (ronda 3; era 1rem): cuatro dobleces abiertos eran 128 px de puro
+     margen, y con el el papel de ocho versos no entraba entero a 430 x 860. */
+  padding: 0.7rem var(--espacio-2);
   background: var(--papel);
   color: var(--fondo);
   border-inline: 2px solid var(--papel-borde);
@@ -7556,7 +7571,7 @@ html.incrustado .juego-tema #partida .cabina-puertas {
 }
 
 /* El primero es el papel todavia doblado: tiene cuerpo aunque traiga un solo renglon. */
-.pliego:first-child {
+.pliego:first-of-type {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -7742,44 +7757,84 @@ html.incrustado .juego-tema #partida .cabina-puertas {
 
 /* El papel cerrado lleva el borde de arriba mas grueso del lado del sello: sacado, entero;
    escapado, cortado. Forma, ademas del simbolo que escribe la isla. */
-.hoja-versos--sacada .pliego:first-child {
+.hoja-versos--sacada .pliego:first-of-type {
   border-top-style: double;
   border-top-width: 6px;
 }
 
-.hoja-versos--escapada .pliego:first-child {
+.hoja-versos--escapada .pliego:first-of-type {
   border-top-style: dashed;
 }
 
-/* ---- La respuesta, escrita en el papel (ronda 2) ----
-   Debajo del ultimo verso: "Era …", en letra de mano, y al lado el sello. Es donde estaba el
-   ojo cuando se cerro el tema. */
-.hoja-titulo {
+/* ---- El sello grande, que cae sobre el papel (ronda 3) ----
+   El primer tiempo del cierre: un sello de goma del tamano de una mano, al medio de lo que se
+   esta viendo del papel (la isla le dice a que altura), con la tilde o la cruz. Cae grande y
+   torcido y apoya. Despues el papel se pliega y queda la marca chica. Dos anillos pegados
+   —contorno, no sombra— lo recortan de la letra que tapa. */
+.sello-cae {
+  position: absolute;
+  z-index: 3;
+  top: var(--sello-y, 50%);
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 7.4rem;
+  height: 7.4rem;
+  margin: -3.7rem 0 0 -3.7rem;
+  background: var(--fondo);
+  border: 6px solid currentColor;
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 4px var(--fondo),
+    0 0 0 7px currentColor;
+  font-size: 3.5rem;
+  line-height: 1;
+  rotate: -9deg;
+  pointer-events: none;
+  animation: sello-cae var(--duracion-pasada) var(--curva-cinta) both;
+}
+
+.sello-cae--ok {
+  color: var(--acento-3);
+}
+
+.sello-cae--no {
+  color: var(--acento-4);
+}
+
+@keyframes sello-cae {
+  from {
+    scale: 2.2;
+    rotate: -26deg;
+    opacity: 0;
+  }
+
+  45% {
+    opacity: 1;
+  }
+}
+
+/* ---- El ultimo verso leido: lo que queda a la vista con el papel plegado (ronda 3) ----
+   El titulo va solo en la ficha. En la ronda 2 "Era …" salia dos veces. */
+.hoja-ultimo {
   position: relative;
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: space-between;
   gap: 0.6rem;
   margin: 0;
-  padding: 0.5rem 0.7rem 0.5rem var(--espacio-2);
+  padding: 0.55rem 0.7rem 0.55rem var(--espacio-2);
   background: var(--papel);
   color: var(--fondo);
   border-inline: 2px solid var(--papel-borde);
-  border-top: 2px dashed var(--papel-borde);
-  font-size: 1.12rem;
-  font-style: italic;
-  font-weight: 700;
-  line-height: 1.25;
+  font-family: var(--fuente);
+  font-size: 1.1rem;
+  line-height: 1.35;
 }
 
-.hoja-titulo-texto {
+.hoja-ultimo-texto {
   min-width: 0;
-  overflow-wrap: anywhere;
-}
-
-/* El titulo espera a que el sello apoye, y recien ahi se escribe. */
-.hoja-titulo .palabra {
-  animation-delay: calc(var(--duracion-pasada) + var(--escalon-umbral) * var(--orden, 0));
+  text-wrap: pretty;
 }
 
 /* ---- El papel plegado: con la ficha a la vista, queda el renglon de la respuesta ---- */
@@ -7797,17 +7852,18 @@ html.incrustado .juego-tema #partida .cabina-puertas {
   display: block;
 }
 
-.hoja-versos--plegada .hoja-titulo {
+.hoja-versos--plegada .hoja-ultimo {
+  display: flex;
   border-top: 2px solid var(--papel-borde);
   border-radius: 3px 3px 0 0;
 }
 
 /* Sacado, el canto de arriba va doble; escapado, cortado. Forma, ademas del simbolo. */
-.hoja-versos--plegada.hoja-versos--sacada .hoja-titulo {
+.hoja-versos--plegada.hoja-versos--sacada .hoja-ultimo {
   border-top: 6px double var(--papel-borde);
 }
 
-.hoja-versos--plegada.hoja-versos--escapada .hoja-titulo {
+.hoja-versos--plegada.hoja-versos--escapada .hoja-ultimo {
   border-top-style: dashed;
 }
 
@@ -7831,46 +7887,171 @@ html.incrustado .juego-tema #partida .cabina-puertas {
   cursor: pointer;
 }
 
-/* ---- El papel respira mientras espera (ronda 2) ----
-   Con el tema abierto y nada escrito, el canto de los dobleces se hincha apenas cada tanto,
-   como un papel doblado que quiere abrirse. Esta atado al estado "esperando respuesta": en
-   cuanto se escribe algo, para. Es un bucle, asi que con movimiento reducido se apaga con
-   `animation: none` (abajo). */
-.partida--esperando .dobleces {
-  transform-origin: 50% 0;
-  animation: papel-respira var(--duracion-respiro) linear infinite;
+/* ---- El canto del papel que sigue (ronda 3) ----
+   Cuando los versos no entran, la hoja desplaza por dentro. Donde queda papel para ese lado,
+   el borde lleva un rayado: el canto en sombra, impreso (la misma sarga, en el borde del
+   papel), no un `box-shadow` ni un degradado. Son dos piezas pegadas al borde del
+   desplazamiento que no ocupan lugar; la isla las prende segun por donde quede papel. */
+.hoja-canto {
+  position: sticky;
+  z-index: 2;
+  display: block;
+  height: 0;
+  pointer-events: none;
 }
 
-@keyframes papel-respira {
+.hoja-canto--arriba {
+  top: 0;
+}
+
+.hoja-canto--abajo {
+  bottom: 0;
+}
+
+.hoja-canto::before {
+  content: '';
+  position: absolute;
+  inset-inline: 2px;
+  height: 11px;
+  background: var(--fondo);
+  -webkit-mask: url('/arte/por-la-letra/sarga.webp') 0 0 / 104px 104px repeat;
+  mask: url('/arte/por-la-letra/sarga.webp') 0 0 / 104px 104px repeat;
+  opacity: 0;
+}
+
+.hoja-canto--arriba::before {
+  top: 0;
+  border-bottom: 2px solid var(--fondo);
+}
+
+.hoja-canto--abajo::before {
+  bottom: 0;
+  border-top: 2px solid var(--fondo);
+}
+
+.hoja-versos--sigue-arriba .hoja-canto--arriba::before,
+.hoja-versos--sigue-abajo .hoja-canto--abajo::before {
+  opacity: 0.55;
+}
+
+/* ---- La birome que asoma del bolsillo (ronda 3) ----
+   Es con la que se anota. Cada vez que algo queda escrito en el papel —lo que erraste, o que
+   pasaste— baja la punta y vuelve, en saltos. Atada a ese gesto: quieta el resto del tiempo.
+   Dos mascaras impresas: el cuerpo en la plata de la tapa y el clip en el peltre. */
+.birome {
+  position: absolute;
+  top: -11%;
+  left: 13%;
+  width: 9%;
+  aspect-ratio: 120 / 300;
+  rotate: -7deg;
+}
+
+.birome::before,
+.birome::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+.birome::before {
+  background: var(--disco-momo-sampler-tinta);
+  -webkit-mask: url('/arte/por-la-letra/birome-cuerpo.webp') center / 100% 100% no-repeat;
+  mask: url('/arte/por-la-letra/birome-cuerpo.webp') center / 100% 100% no-repeat;
+}
+
+.birome::after {
+  background: var(--disco-momo-sampler-apoyo);
+  -webkit-mask: url('/arte/por-la-letra/birome-clip.webp') center / 100% 100% no-repeat;
+  mask: url('/arte/por-la-letra/birome-clip.webp') center / 100% 100% no-repeat;
+}
+
+.birome--anota {
+  animation: birome-anota var(--duracion-golpe) linear both;
+}
+
+@keyframes birome-anota {
   0%,
-  76%,
+  24% {
+    translate: 1px 9px;
+  }
+
+  25%,
+  54% {
+    translate: 0 4px;
+  }
+
+  55%,
+  79% {
+    translate: 0 -3px;
+  }
+
+  80%,
   100% {
-    transform: none;
+    translate: 0 0;
   }
+}
 
-  84% {
-    transform: translateY(1px) scaleY(1.35);
-  }
+/* ---- El pase (ronda 3): el papel usado se guarda ----
+   Baja torcido y se mete debajo del dobladillo de la banda, que lo recorta. Cuando se fue,
+   sale el nuevo del bolsillo (`.hoja-versos--sale`). */
+.hoja-versos--se-guarda {
+  animation: papel-se-guarda var(--duracion-umbral) var(--curva-cinta) forwards;
+}
 
-  92% {
-    transform: translateY(0) scaleY(1.12);
+@keyframes papel-se-guarda {
+  to {
+    translate: 0 6.5rem;
+    rotate: 6deg;
+    opacity: 0;
   }
+}
+
+.partida--revelada .mesa-papel {
+  overflow: clip;
+}
+
+/* ---- La tecla de los ruidos, en la cabecera (ronda 3) ----
+   Chica, entre la vuelta y los intentos. Prendida, con el filete de la tecla del juego;
+   apagada, tachada y con el filete cortado: forma ademas de tinta. El blanco de toque se
+   agranda con una pieza que no ocupa renglon. */
+.ruidos.ruidos-tecla {
+  position: relative;
+  min-height: 0;
+  margin-left: auto;
+  padding: 0.12rem 0.4rem 0.08rem;
+  border: 2px solid var(--tinte-tecla, var(--borde));
+  border-radius: 3px;
+  color: var(--texto);
+  font-family: var(--fuente-rotulada);
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  line-height: 1.3;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.ruidos.ruidos-tecla::after {
+  content: '';
+  position: absolute;
+  inset: -15px -6px;
+}
+
+.ruidos.ruidos-tecla[aria-pressed='false'] {
+  border: 2px dashed var(--borde);
+  color: var(--texto-tenue);
+  text-decoration: line-through;
+}
+
+/* Con la tecla en el medio, los intentos no se van solos a la derecha. */
+.juego-por-la-letra .cabecera .ruidos-tecla + .restantes {
+  margin-left: 0;
 }
 
 /* Mientras se cierra el tema, el buscador deja su lugar sin irse: asi el papel no salta
    mientras cae el sello. Cuando llega la ficha se va del todo (`hidden`). */
 .buscador--cerrado {
   visibility: hidden;
-}
-
-/* El interruptor de los ruidos en la partida: chico, debajo de la tecla. */
-.buscador-puertas {
-  margin: -0.3rem 0 0;
-  text-align: right;
-}
-
-.partida--tecleando .buscador-puertas {
-  display: none;
 }
 
 /* "Seguí" recibe el foco de la isla; si se llego con el dedo, ese foco no dibuja anillo. */
@@ -7970,39 +8151,70 @@ html.incrustado .juego-tema #partida .cabina-puertas {
   font-size: 1rem;
 }
 
-/* Un quiebre abierto: lo que se gasto para abrirlo, anotado al margen. */
+/* Un quiebre abierto: lo que se gasto para abrirlo, anotado al margen como en el papel de la
+   partida (ronda 3). En la ronda 2 era un punto suelto, que no se veia. */
 .papelito-quiebre {
-  display: block;
-  padding: 0.05rem 0.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.35em;
+  min-height: 1.5rem;
+  padding: 0.1rem 0.6rem;
   background: var(--papel);
   color: var(--papel-tenue);
   border-inline: 2px solid var(--papel-borde);
   border-top: 2px dashed var(--papel-borde);
-  font-size: 0.85rem;
-  line-height: 1.35;
-  text-align: right;
+  font-size: 0.78rem;
+  font-style: italic;
+  line-height: 1.2;
 }
 
-.papelito-quiebre--fallo {
-  color: var(--fondo);
+.papelito-marca {
+  font-style: normal;
   font-weight: 700;
 }
 
+/* Lo que erraste: la cruz en la tinta del papel y, al lado, el tachon de lapiz en el rojo
+   del error. Simbolo ademas de tinta. */
+.papelito-quiebre--fallo {
+  color: var(--fondo);
+}
+
+.papelito-tachon {
+  display: block;
+  width: 3.4rem;
+  height: 0.7rem;
+  background: var(--acento-4);
+  -webkit-mask: url('/arte/por-la-letra/tachon.webp') center / 100% 100% no-repeat;
+  mask: url('/arte/por-la-letra/tachon.webp') center / 100% 100% no-repeat;
+}
+
 .papelito-quiebre--paso {
-  font-size: 1.1rem;
-  line-height: 1.05;
+  letter-spacing: 0.03em;
 }
 
 @media (min-width: 64rem) {
+  /* Tres por fila, sobre seis columnas: asi la fila que queda incompleta va al medio en vez
+     de dejar jean vacio a la derecha (ronda 3). */
   .resumen--papeles {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(6, minmax(0, 1fr));
     margin-inline: 0;
   }
 
+  .papelito,
   .papelito:last-child:nth-child(odd) {
-    grid-column: auto;
+    grid-column: span 2;
     justify-self: stretch;
     width: auto;
+  }
+
+  /* Dos en la ultima fila: arrancan en la segunda columna. Uno solo: en la tercera. */
+  .papelito:nth-child(3n + 1):nth-last-child(2) {
+    grid-column: 2 / span 2;
+  }
+
+  .papelito:nth-child(3n + 1):last-child {
+    grid-column: 3 / span 2;
   }
 }
 
@@ -8067,7 +8279,7 @@ html.incrustado .juego-tema #partida .cabina-puertas {
   padding-block: var(--espacio-1);
 }
 
-.partida--tecleando .pliego:first-child {
+.partida--tecleando .pliego:first-of-type {
   min-height: 0;
 }
 
@@ -8150,12 +8362,6 @@ html.incrustado .juego-tema #partida .cabina-puertas {
     top: calc(100% + 1.4rem);
     right: 2rem;
     width: 14rem;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .partida--esperando .dobleces {
-    animation: none;
   }
 }
 
@@ -9994,6 +10200,7 @@ html.incrustado .juego-tema #partida .cabina-puertas {
 html.incrustado .pantalla > .marca,
 html.incrustado #resultado a.volver,
 html.incrustado #resultado a.accion-abajo,
+html.incrustado .juego-tema #resultado .salida-resultado,
 html.incrustado .pie-imprenta,
 html.incrustado .caratula {
   display: none;

@@ -707,7 +707,12 @@ function armarBuscador(): HTMLElement {
 
   botonPrincipal = el('button', 'arriesgar', PARTIDA.pasar);
   botonPrincipal.type = 'button';
-  botonPrincipal.addEventListener('click', () => (elegido ? arriesgar() : pasar()));
+  botonPrincipal.addEventListener('click', (ev) => {
+    // Un clic de teclado (Enter o espacio sobre el boton) llega con `detail` en cero.
+    conPuntero = ev.detail > 0;
+    if (elegido) arriesgar();
+    else pasar();
+  });
   caja.append(botonPrincipal);
 
   return caja;
@@ -1117,6 +1122,7 @@ function alTeclear(ev: KeyboardEvent): void {
     } else if (sugerencias.length > 0 && primeraElegible() >= 0) {
       elegirSugerencia(primeraElegible());
     } else if (elegido) {
+      conPuntero = false;
       arriesgar();
     }
     return;
@@ -1125,6 +1131,15 @@ function alTeclear(ev: KeyboardEvent): void {
 }
 
 // ---------------------------------------------------------------- responder
+
+/**
+ * Si lo ultimo que cerro el tema fue un toque (dedo o mouse) y no el teclado. Decide si el
+ * foco que la isla le pone a "Seguí" dibuja su anillo. La caja de texto siempre cuenta como
+ * "foco visible" para el navegador, asi que al pasarle el foco desde ahi el boton salia con
+ * el anillo amarillo aunque nadie hubiera tocado una tecla de navegar. Es el mismo criterio
+ * que "Sacalo por la letra" (ronda de pulida, 2026-11-18): con teclado se ve siempre.
+ */
+let conPuntero = false;
 
 function arriesgar(): void {
   const tema = ronda[indice];
@@ -1601,6 +1616,12 @@ function pintarRevelacion(tema: Tema, acerto: boolean, ganados: number): void {
    *     del premio se ve arriba. Esa jerarquia es a proposito: entre ver el premio y que
    *     el boton este, gana el boton.
    */
+  // Solo a este foco, el que pone la isla: al salir del boton la clase se va, y un foco
+  // posterior por teclado dibuja el anillo como siempre.
+  if (conPuntero) {
+    seguir.classList.add('seguir--sin-anillo');
+    seguir.addEventListener('blur', () => seguir.classList.remove('seguir--sin-anillo'), { once: true });
+  }
   if (estampa) {
     seguir.focus({ preventScroll: true });
     revelacion.scrollIntoView({ block: 'end' });
@@ -1804,7 +1825,11 @@ function pintarResultado(): void {
   const asoma = el('div', 'tarjeta-asoma');
   asoma.setAttribute('aria-hidden', 'true');
   asoma.addEventListener('click', () => compartir.click());
-  zonaResultado.append(asoma);
+  // El pie del resultado (`.pie-resultado`, ronda de pulida del 2026-11-18): la misma pieza y
+  // el mismo orden en los juegos pulidos — la tarjeta que asoma, "Compartí", lo que compartir
+  // tenga para decir, la otra vuelta y, al final, la vuelta al fichín.
+  const pie = el('div', 'pie-resultado');
+  pie.append(asoma);
   if (urlDeLaTarjeta) URL.revokeObjectURL(urlDeLaTarjeta);
   urlDeLaTarjeta = '';
   const estaTarjeta = dibujarLaTarjeta();
@@ -1821,23 +1846,26 @@ function pintarResultado(): void {
     foto.src = urlDeLaTarjeta;
     asoma.append(foto);
   });
-  zonaResultado.append(compartir);
+  pie.append(compartir);
 
   // La caja donde cae lo que compartir tenga para decir. Existe vacia desde el arranque
   // para que cada intento REEMPLACE al anterior: antes cada clic apilaba un parrafo
   // nuevo, y a los tres clics la pantalla tenia tres avisos iguales uno abajo del otro.
   salidaCompartir = el('div', 'compartir-salida');
   salidaCompartir.setAttribute('aria-live', 'polite');
-  zonaResultado.append(salidaCompartir);
+  pie.append(salidaCompartir);
 
   const denuevo = el('button', 'secundario', RESULTADO.denuevo);
   denuevo.type = 'button';
   denuevo.addEventListener('click', comenzar);
-  zonaResultado.append(denuevo);
+  pie.append(denuevo);
+  zonaResultado.append(pie);
 
-  const volver = el('a', 'accion-abajo', RESULTADO.volver);
+  const salida = el('p', 'salida-resultado');
+  const volver = el('a', 'volver', `← ${RESULTADO.volver}`);
   volver.href = '/';
-  zonaResultado.append(volver);
+  salida.append(volver);
+  zonaResultado.append(salida);
 
   mostrar(zonaResultado);
   encabezado.tabIndex = -1;

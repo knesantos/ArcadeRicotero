@@ -570,16 +570,6 @@ async function porLaLetra(ctx) {
   await foto('partida');
   await foto('partida-entera', { entera: true });
 
-  // El papel respira mientras espera: el canto de los dobleces se hincha al final de cada
-  // ciclo. El bucle se lleva a ese tramo para que la tira lo agarre.
-  if (!quieto) {
-    await pagina.evaluate(() => {
-      const bucle = document.querySelector('.dobleces')?.getAnimations()[0];
-      if (bucle) bucle.currentTime = 3300;
-    });
-    await tira('papel-respira', async () => {}, { ms: 1000, lento: 1 });
-  }
-
   // ---- tema 1: un error, dos pases (ocho versos) y se saca.
   const uno = await elDeAhora();
   const otro = catalogo.find((t) => t.titulo !== uno.titulo && t.titulo.length > 8 && t.titulo.length < 22);
@@ -605,6 +595,27 @@ async function porLaLetra(ctx) {
   await ctx.espera(quieto ? 200 : 2200);
   await foto('ocho-versos-ultimo-intento');
   await foto('ocho-versos-entera', { entera: true });
+  // En un teléfono más bajo el papel no entra y desplaza por dentro: se mira el canto rayado
+  // que avisa que sigue, abajo del todo y a media altura.
+  if (ctx.ancho < 768) {
+    await pagina.setViewport({ width: ctx.ancho, height: 640, deviceScaleFactor: 1, hasTouch: true, isMobile: true });
+    await ctx.espera(300);
+    await pagina.$eval('.hoja-versos', (h) => {
+      h.scrollTop = h.scrollHeight;
+    });
+    await ctx.espera(200);
+    await foto('telefono-bajo-papel-abajo');
+    await pagina.$eval('.hoja-versos', (h) => {
+      h.scrollTop = Math.round((h.scrollHeight - h.clientHeight) / 2);
+    });
+    await ctx.espera(200);
+    await foto('telefono-bajo-papel-al-medio');
+    await pagina.setViewport({ width: ctx.ancho, height: ctx.alto, deviceScaleFactor: 1, hasTouch: true, isMobile: true });
+    await ctx.espera(300);
+    await pagina.$eval('.hoja-versos', (h) => {
+      h.scrollTop = h.scrollHeight;
+    });
+  }
   await sacar(uno);
   // El acierto tiene dos tiempos que lleva un reloj de JavaScript (el sello y la respuesta
   // sobre el papel; después el papel se pliega y llega la ficha): la tira va a velocidad real.
@@ -622,8 +633,10 @@ async function porLaLetra(ctx) {
   }
 
   // ---- el pase al tema 2: el papel nuevo sale del bolsillo.
-  await tira('tema-siguiente', () => pagina.click('.seguir'), { ms: 900 });
-  await ctx.espera(500);
+  // El pase lo lleva un reloj de JavaScript (el papel usado se guarda, y recién ahí sale el
+  // nuevo): la tira va a velocidad real.
+  await tira('tema-siguiente', () => pagina.click('.seguir'), { ms: 1100, lento: 1 });
+  await ctx.espera(900);
   await foto('tema-2');
   // ---- tema 2: de una, con un renglón. La hazaña, y dos al hilo.
   await sacar(await elDeAhora());

@@ -1922,7 +1922,6 @@
   --pausa-error: 380ms;
   /* Lo que tarda el piloto de la casetera en dar un parpadeo entero mientras la cinta corre. */
   --duracion-piloto: 1.2s;
-  --duracion-respiro: 4.5s; /* cada cuanto se hincha el papel doblado mientras espera, en "Sacalo por la letra" */
   /* Los bucles de la noche de «¿Qué tipo de ricotero sos?»: lo que vive en cada momento y
      dura lo que dura el momento. Como el carrete, se apagan con `animation: none`. */
   --duracion-llama: 720ms; /* el fuego de la previa, en tres cuadros */

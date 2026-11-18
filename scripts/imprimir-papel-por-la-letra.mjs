@@ -14,6 +14,7 @@
  *   · `garabato.webp`  — renglones de letra que no se llega a leer: lo escrito del lado de
  *                        adentro, visto con el papel doblado. No es ninguna letra de ningún tema.
  *   · `tachon.webp`    — el tachón de lápiz, de ida y vuelta, para lo que se arriesgó y no era.
+ *   · `birome-cuerpo.webp`, `birome-clip.webp` — la birome que asoma del bolsillo.
  *   · `sarga.webp`     — la tela del jean, en baldosa que cierra: la banda de la partida y la
  *                        mesa del resultado.
  *   · `bolsillo-tela.webp`, `bolsillo-costura.webp` — el bolsillo de atrás del jean: la sarga y
@@ -179,6 +180,41 @@ async function imprimir(nombre, ancho, alto, cuerpo, defs = '', escala = 1) {
     H,
     `<g filter="url(#m)" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></g>`,
     mano('m', { pulso: 4, grano: 0.7, falta: 0.5, semilla: 4 }),
+  );
+}
+
+// ---------------------------------------------------------------- la birome
+
+{
+  /*
+   * La birome que asoma del bolsillo (ronda 3): la mitad de arriba, que es lo que se ve. El
+   * cuerpo —el pulsador, la virola y el caño facetado— va en una máscara y el clip en otra,
+   * porque llevan tintas distintas (la plata y el peltre de la tapa).
+   */
+  const W = 120;
+  const H = 300;
+  await imprimir(
+    'birome-cuerpo',
+    W,
+    H,
+    `<g filter="url(#m)" fill="#fff">
+       <rect x="36" y="8" width="26" height="40" rx="6"/>
+       <rect x="26" y="46" width="46" height="254" rx="5"/>
+     </g>
+     <g stroke="#000" stroke-width="3" fill="none" opacity="0.55">
+       <path d="M26 76H72M40 84V300M58 84V300"/>
+     </g>`,
+    mano('m', { pulso: 1.6, grano: 0.7, falta: 0.12, semilla: 31 }),
+  );
+  await imprimir(
+    'birome-clip',
+    W,
+    H,
+    `<g filter="url(#m)" fill="#fff">
+       <path d="M68 52H92Q100 52 100 60V214Q100 226 91 226Q82 226 82 214V70H68Z"/>
+       <rect x="24" y="64" width="50" height="10" rx="2"/>
+     </g>`,
+    mano('m', { pulso: 1.4, grano: 0.7, falta: 0.1, semilla: 33 }),
   );
 }
 
