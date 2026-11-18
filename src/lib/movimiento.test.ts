@@ -277,6 +277,12 @@ const ANIMACIONES = [
   // renglón y la marquesina, prendida.
   { nombre: 'creditos-suben', apaga: 'token', valor: '--duracion-creditos', hoja: 'src/styles/skayboy.css' },
   { nombre: 'marquesina-titila', apaga: 'token', valor: '--duracion-golpe', hoja: 'src/styles/skayboy.css' },
+  // "Completá la letra", la pintada (ronda de pulida, 2026-11-18): la palabra que era llega
+  // despues del tachon; la pintura fresca chorrea; el rodillo tapa la pintada vieja y destapa la nueva.
+  { nombre: 'pintada-aparece', apaga: 'token', valor: '--duracion-pasada', hoja: 'src/styles/juego.css' },
+  { nombre: 'chorrea', apaga: 'token', valor: '--duracion-inercia', hoja: 'src/styles/juego.css' },
+  { nombre: 'rodillo-tapa', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  { nombre: 'rodillo-destapa', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
 ] as const;
 
 test('no hay ninguna animacion que esta lista no conozca', () => {

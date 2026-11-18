@@ -700,6 +700,13 @@ const ESTADOS_COMPLETAR = [
   // El hueco que se rellena al contestar: es la recompensa de haber respondido y tiene que
   // distinguirse del resto del verso, que ya estaba ahi.
   '.resuelto',
+  // La pintada (ronda de pulida, 2026-11-18): lo que elegiste y no era queda en la pared con
+  // su cruz y su tachon; el sello del cierre; y la fila de cada verso en la pared del resultado.
+  '.hueco-errada',
+  '.sello-cae--ok',
+  '.sello-cae--no',
+  '.pintada-fila--ok',
+  '.pintada-fila--no',
 ];
 
 /** `US-04`. El quiz, mas lo que le pasa al recorte de tapa cuando se abre. */

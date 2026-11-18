@@ -31,6 +31,21 @@ export const PARTIDA = {
   deQueDisco: (titulo: string, disco: string) => `De "${titulo}", en ${disco}`,
   progreso: (n: number, total: number) => `${n} de ${total}`,
   hueco: '________',
+  /** Lo que escucha quien no ve el hueco de la pared: el dibujo va escondido del lector. */
+  huecoDice: 'falta una palabra',
+  /** La cuenta de la cabecera: cuántos versos completaste en esta vuelta. */
+  llevas: (n: number) => `Llevás ${n}`,
+  /** Lo que suma un acierto: vuela de la ficha a la cuenta. */
+  suma: '+1',
+  /** La racha: dos o más seguidos. Sello en la cabecera, como en los otros juegos. */
+  racha: (n: number) => `${n} al hilo`,
+  /** El último verso de la vuelta no sigue nada: entrega el resultado, y lo dice. */
+  ultimo: 'Mirá cómo te fue',
+  /** El interruptor de los ruidos de interfaz: dice lo que va a hacer el toque. */
+  ruidosApagar: 'Apagá los ruidos',
+  ruidosPrender: 'Prendé los ruidos',
+  /** La tecla chica de la cabecera: dice siempre lo mismo, el estado va en la forma. */
+  ruidosTecla: 'Ruidos',
   /**
    * La fuente del verso, a la vista (`T-145`, `D-25`). Registro 3: rotulo seco, sin
    * decorar. Es el mecanismo de "lo veo jugando" — quien se tope con un verso dudoso ve
@@ -45,6 +60,10 @@ export const RESULTADO = {
   puntaje: (aciertos: number, total: number) => `${aciertos} de ${total}`,
   denuevo: 'Otra vuelta',
   volver: 'Volvé al fichín',
+  /** El título de la pared del resultado: una pintada por verso. Registro 3. */
+  detalle: 'Los versos de esta vuelta',
+  /** El renglón chico de un verso que no salió: lo que elegiste, además de la cruz (`UX-01`). */
+  pusiste: (tema: string, palabra: string) => `${tema} · pusiste “${palabra}”`,
   alCancionero: 'Mirá las letras enteras',
   /** Compartir (`CNT-26`): texto y enlace, sin tarjeta, como "Más o menos". */
   compartir: 'Compartí',

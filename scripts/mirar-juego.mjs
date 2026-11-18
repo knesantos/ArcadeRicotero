@@ -1013,6 +1013,107 @@ async function skayboy(ctx) {
   await foto('final-vuelve-al-primero');
 }
 
+/**
+ * "Completá la letra": la portada, la partida, elegir una plantilla, el error (con su tachón),
+ * el acierto (con la chorreada), el pase con el rodillo, la racha, el resultado y compartir.
+ * Este juego no tiene tarjeta: comparte texto y enlace.
+ */
+async function completarLaLetra(ctx) {
+  const { pagina, foto, tira, rafaga, quieto } = ctx;
+  await pagina.goto(`${base}/juegos/completar-la-letra/`, { waitUntil: 'networkidle0' });
+  await tira('portada-entra', () => pagina.reload({ waitUntil: 'domcontentloaded' }), { ms: 900 });
+  await foto('portada');
+  await foto('portada-entera', { entera: true });
+
+  const banco = await pagina.evaluate(() => JSON.parse(document.getElementById('banco').textContent));
+  /** El verso en curso: se busca en el banco por lo que hay pintado y por sus cuatro opciones. */
+  const elDeAhora = async () => {
+    const opciones = await pagina.$$eval('.plantilla', (bs) => bs.map((b) => b.textContent));
+    const item = banco.find((i) => i.opciones.length === opciones.length && i.opciones.every((o) => opciones.includes(o.texto)));
+    if (!item) throw new Error(`no encuentro en el banco las opciones ${opciones.join(', ')}`);
+    return item;
+  };
+  const plantilla = async (texto) => {
+    for (const b of await pagina.$$('.plantilla:not(:disabled)')) {
+      if ((await b.evaluate((n) => n.textContent)) === texto) return b;
+    }
+    throw new Error(`no hay plantilla "${texto}"`);
+  };
+  const laQueEs = async () => plantilla((await elDeAhora()).hueco.respuesta);
+  const unaQueNoEs = async () => {
+    const item = await elDeAhora();
+    return plantilla(item.opciones.find((o) => o.texto !== item.hueco.respuesta).texto);
+  };
+  const fichaLista = () => pagina.waitForSelector('.ficha-verso .seguir', { timeout: 8000 });
+
+  // Empezá: el rodillo destapa la primera pintada y las plantillas se apoyan.
+  await tira('empieza', () => pagina.click('#jugar'), { ms: 900 });
+  await ctx.espera(500);
+  await foto('partida');
+  await foto('partida-entera', { entera: true });
+
+  // ---- verso 1: el error. La plantilla va al hueco, lo elegido queda tachado y se pinta la que era.
+  const mala = await unaQueNoEs();
+  // A velocidad real: la plantilla y los tiempos del cierre los lleva la isla, no el CSS.
+  await rafaga('error', () => mala.click(), { desde: 0, hasta: 1750, cada: 6, tope: 18 });
+  await fichaLista();
+  await ctx.espera(quieto ? 200 : 1300);
+  await foto('error-ficha');
+  await foto('error-ficha-entera', { entera: true });
+
+  // El pase: el rodillo tapa la pintada vieja y destapa la nueva.
+  await rafaga('pase', () => pagina.click('.ficha-verso .seguir'), { desde: 0, hasta: 900, cada: 4, tope: 12 });
+  await ctx.espera(500);
+  await foto('verso-2');
+
+  // ---- verso 2: el acierto, a velocidad real (la plantilla la mueve la isla, no el CSS).
+  const buena = await laQueEs();
+  await rafaga('acierto-plantilla', () => buena.click(), { desde: 0, hasta: 1000, cada: 4, tope: 12 });
+  await fichaLista();
+  await ctx.espera(quieto ? 200 : 1300);
+  await foto('acierto-ficha');
+  await pagina.click('.ficha-verso .seguir');
+  await ctx.espera(quieto ? 200 : 1000);
+
+  // ---- verso 3: otro acierto, mirando solo la pintada: la palabra, la chorreada y el sello.
+  const otraBuena = await laQueEs();
+  await rafaga('acierto-chorrea', () => otraBuena.click(), { desde: 300, hasta: 1900, sobre: '.pintada', cada: 8, tope: 12, porRenglon: 3 });
+  await fichaLista();
+  await ctx.espera(quieto ? 200 : 1300);
+  await foto('racha');
+  await pagina.click('.ficha-verso .seguir');
+  await ctx.espera(quieto ? 200 : 1000);
+
+  // ---- el resto de la vuelta: uno mal y los demás bien.
+  let n = 3;
+  for (;;) {
+    const quedan = await pagina.$('.plantilla:not(:disabled)');
+    if (!quedan) break;
+    n += 1;
+    const b = n === 5 ? await unaQueNoEs() : await laQueEs();
+    await b.click();
+    await fichaLista();
+    await ctx.espera(quieto ? 150 : 900);
+    const ultimo = await pagina.$eval('.ficha-verso .seguir', (s) => s.textContent);
+    if (n === 8) {
+      await foto('ultimo-verso');
+      await rafaga('resultado-entra', () => pagina.click('.ficha-verso .seguir'), { desde: 300, hasta: 1900, cada: 8, tope: 12 });
+      console.log(`   (el último botón dice "${ultimo}")`);
+      break;
+    }
+    await pagina.click('.ficha-verso .seguir');
+    await ctx.espera(quieto ? 200 : 1000);
+  }
+  await pagina.waitForSelector('#resultado:not([hidden])', { timeout: 8000 });
+  await ctx.espera(1200);
+  await foto('resultado');
+  await foto('resultado-entera', { entera: true });
+  // Compartir: en la compu cae el aviso de copiado; en el teléfono de la captura no hay menú.
+  await pagina.evaluate(() => document.querySelector('#resultado .primario.firma')?.click());
+  await ctx.espera(700);
+  await foto('compartido-entera', { entera: true });
+}
+
 /** Cualquier otra ruta: la portada, y lo que aparece al tocar el botón de empezar. */
 async function generico(ctx, ruta) {
   const { pagina, foto, tira } = ctx;
@@ -1052,6 +1153,7 @@ const RECORRIDOS = {
   'dos-ejes': dosEjes,
   'adivinar-por-la-letra': porLaLetra,
   'skayboy-y-poligirl': skayboy,
+  'completar-la-letra': completarLaLetra,
 };
 
 // ---------------------------------------------------------------- correr

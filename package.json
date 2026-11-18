@@ -22,6 +22,7 @@
     "generar-dos-ejes": "node --experimental-strip-types scripts/generar-dos-ejes.mjs",
     "generar-noche-dos-ejes": "node --experimental-strip-types scripts/generar-noche-dos-ejes.mjs",
     "imprimir-papel-por-la-letra": "node scripts/imprimir-papel-por-la-letra.mjs",
+    "imprimir-pared-completar": "node scripts/imprimir-pared-completar.mjs",
     "imprimir-bestiario": "node --experimental-strip-types scripts/imprimir-bestiario.mjs",
     "recortar-bestiario": "node --experimental-strip-types scripts/recortar-bestiario.mjs",
     "sincronizar-bestiario": "node --experimental-strip-types scripts/sincronizar-bestiario.mjs",
