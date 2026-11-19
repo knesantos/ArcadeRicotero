@@ -705,8 +705,10 @@ const ESTADOS_COMPLETAR = [
   '.hueco-errada',
   '.sello-cae--ok',
   '.sello-cae--no',
-  '.pintada-fila--ok',
-  '.pintada-fila--no',
+  // Ronda 2: el muro del resultado (cada palabra, sacada o no) y la que era, en su renglon.
+  '.muro-palabra--ok',
+  '.muro-palabra--no',
+  '.la-que-era',
 ];
 
 /** `US-04`. El quiz, mas lo que le pasa al recorte de tapa cuando se abre. */
@@ -914,6 +916,7 @@ const ISLAS: Readonly<Record<string, Tablero | SinTablero>> = {
   'rocola.ts': { sinTablero: 'la rocola de los recitales (D-72); un <audio> que suena en fila, no crea nodos' },
   'spotify.ts': { sinTablero: 'un <a> y nada mas, que es literalmente RQ-B2 de ADR-01' },
   'tarjeta.ts': { sinTablero: 'pincel de canvas (US-02 y US-07); dibuja pixeles, no crea nodos con clase' },
+  'tarjeta-pared.ts': { sinTablero: 'pincel de canvas de la tarjeta de US-03 (el muro de la vuelta); dibuja pixeles, no crea nodos con clase' },
 };
 
 const esTablero = (i: Tablero | SinTablero): i is Tablero => 'estados' in i;

@@ -1108,10 +1108,47 @@ async function completarLaLetra(ctx) {
   await ctx.espera(1200);
   await foto('resultado');
   await foto('resultado-entera', { entera: true });
+  // La tarjeta que asoma, mirada entera: se la pone encima de la ventana un momento.
+  await pagina.waitForSelector('.tarjeta-asoma img', { timeout: 8000 }).catch(() => {});
+  const hayTarjeta = await pagina.evaluate(() => {
+    const img = document.querySelector('.tarjeta-asoma img');
+    if (!img) return false;
+    const copia = img.cloneNode();
+    copia.id = 'ver-tarjeta';
+    copia.className = '';
+    copia.style.cssText = 'position:fixed;inset:0;z-index:99;width:100vw;height:100vh;object-fit:contain;background:#000';
+    document.body.append(copia);
+    return true;
+  });
+  if (hayTarjeta) {
+    await ctx.espera(300);
+    await foto('tarjeta');
+    await pagina.evaluate(() => document.getElementById('ver-tarjeta')?.remove());
+  } else console.log('   (no hay tarjeta que mirar)');
   // Compartir: en la compu cae el aviso de copiado; en el teléfono de la captura no hay menú.
   await pagina.evaluate(() => document.querySelector('#resultado .primario.firma')?.click());
   await ctx.espera(700);
   await foto('compartido-entera', { entera: true });
+
+  // ---- otra vuelta, entera: la hazaña. De paso, el sello y el polvo en ráfaga.
+  await pagina.evaluate(() => document.querySelector('#resultado .pie-resultado button.secundario')?.click());
+  await ctx.espera(quieto ? 300 : 1200);
+  for (let v = 1; v <= 8; v++) {
+    const b = await laQueEs();
+    if (v === 1) await rafaga('sello-y-polvo', () => b.click(), { desde: 780, hasta: 1750, cada: 4, tope: 12 });
+    else await b.click();
+    await fichaLista();
+    await ctx.espera(quieto ? 120 : 700);
+    if (v === 8) await rafaga('hazana-entra', () => pagina.click('.ficha-verso .seguir'), { desde: 300, hasta: 2100, cada: 9, tope: 12 });
+    else {
+      await pagina.click('.ficha-verso .seguir');
+      await ctx.espera(quieto ? 200 : 900);
+    }
+  }
+  await pagina.waitForSelector('#resultado:not([hidden])', { timeout: 8000 });
+  await ctx.espera(1200);
+  await foto('hazana');
+  await foto('hazana-entera', { entera: true });
 }
 
 /** Cualquier otra ruta: la portada, y lo que aparece al tocar el botón de empezar. */

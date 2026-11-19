@@ -62,7 +62,7 @@ import {
 const MARCA = 'FICHÍN RICOTERO';
 
 /** El valor de un token, tal como lo resolvió el navegador para esta página. */
-function tinta(nombre: string, repuesto = '#ffffff'): string {
+export function tinta(nombre: string, repuesto = '#ffffff'): string {
   const v = getComputedStyle(document.documentElement).getPropertyValue(nombre).trim();
   return v || repuesto;
 }
@@ -98,7 +98,7 @@ const GRANO_CUADRO = 3;
  * Se piden a un cuerpo cualquiera porque `document.fonts.load` resuelve la familia
  * entera; el cuerpo del pedido no cambia lo que se descarga.
  */
-async function esperarLetras(): Promise<void> {
+export async function esperarLetras(): Promise<void> {
   try {
     await Promise.all([
       document.fonts.load(`400 100px ${ROTULADA.split(',')[0]}`),
@@ -117,7 +117,7 @@ async function esperarLetras(): Promise<void> {
  * `UX-04` lo pide por nombre ("grano, imperfección de borde, nunca vector limpio") y
  * `RES-06` lo ficha como técnica real de Rocambole.
  */
-function granular(ctx: CanvasRenderingContext2D): void {
+export function granular(ctx: CanvasRenderingContext2D): void {
   const mosaico = document.createElement('canvas');
   mosaico.width = GRANO;
   mosaico.height = GRANO;

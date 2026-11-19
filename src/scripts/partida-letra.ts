@@ -17,11 +17,12 @@
  *
  * El verso está **pintado en una pared**, y la palabra que falta se cayó con el revoque: en
  * su lugar asoma el ladrillo ("te falta un diente en la sonrisa", dice la portada). Las cuatro
- * opciones son **plantillas de cartón caladas**. La que elegís va hasta el hueco, se apoya, y
- * al levantarse deja la palabra pintada, que chorrea. Si no era, queda tachada con aerosol y
- * al lado se pinta la que era. Después cae el sello sobre la pared y recién ahí llega la ficha
- * (el cierre en dos tiempos de los otros juegos pulidos). Al seguir, el rodillo tapa la pintada
- * vieja y destapa la nueva.
+ * opciones son **plantillas de cartón caladas**, apoyadas al pie de la pared. La que elegís va
+ * hasta el hueco, se apoya, y al levantarse deja la palabra pintada, que chorrea. Si no era,
+ * queda tachada con aerosol —y se sigue leyendo— y **la que era se pinta en su propio renglón,
+ * debajo**, sin empujar el verso. Después cae el sello a la altura del hueco, salta polvo de
+ * revoque, y recién ahí llega la ficha: un afiche de papel pegado donde estaban las plantillas.
+ * Al seguir, el rodillo tapa la pintada vieja y destapa la nueva.
  *
  * **La cantidad de letra a la vista no cambió**: son los mismos versos de contexto por nivel
  * (`BR-03`) y el mismo hueco. Cambió dónde están escritos.
@@ -32,12 +33,15 @@
  */
 
 import { armarRonda, contarAciertos } from '../lib/quiz/ronda.ts';
+import { tramo } from '../lib/quiz/tramo.ts';
 import { botonCorreccion } from './correccion.ts';
 import type { Item, Opcion } from '../lib/letra/banco.ts';
-import { PANTALLA_0, PARTIDA, RESULTADO } from '../lib/letra/copy.ts';
+import { PANTALLA_0, PARTIDA, RESULTADO, TRAMOS, TARJETA } from '../lib/letra/copy.ts';
 import { armarLink, leerDesafio } from '../lib/desafio.ts';
 import { botonCompartir } from './compartir.ts';
 import { tituloDelDisco } from '../lib/letra/discos.ts';
+import { nombreArchivo } from '../lib/tarjeta/plan.ts';
+import { dibujarMuro } from './tarjeta-pared.ts';
 import { despertarSalida } from '../lib/audio/contexto.ts';
 import { sonarEfecto } from '../lib/audio/efectos.ts';
 import { golpear, estampar, volar, contar, duracionDe, armarInterruptorDeRuidos } from './jugo.ts';
@@ -74,13 +78,20 @@ let racha = 0;
  * que la isla le pone a "Seguí" dibuja su anillo (ver `conPuntero` en los juegos de sacar temas).
  */
 let conPuntero = false;
+/** La tarjeta de la vuelta: se dibuja una vez al llegar al resultado, y "Compartí" usa esa. */
+let tarjetaDeLaVuelta: Promise<Blob | null> | null = null;
+let archivoDeLaTarjeta: File | null = null;
+let urlDeLaTarjeta = '';
 
 /** Las piezas de la pantalla en curso. Se rehacen en cada verso. */
 let cabecera: HTMLElement;
 let llevasEl: HTMLElement;
 let rachaEl: HTMLElement;
+let pared: HTMLElement;
 let pintada: HTMLElement;
 let pano: HTMLElement;
+/** El pie de la pared: donde se apoyan las plantillas y, después, donde se pega la ficha. */
+let pie: HTMLElement;
 let lista: HTMLUListElement;
 
 function el<K extends keyof HTMLElementTagNameMap>(
@@ -106,6 +117,8 @@ function mostrar(seccion: HTMLElement): void {
 }
 
 const aciertosHastaAca = (): number => contarAciertos(ronda.slice(0, elegidas.length), elegidas);
+const curvaDelSitio = (): string =>
+  getComputedStyle(document.documentElement).getPropertyValue('--curva-cinta').trim() || 'linear';
 
 /*
  * Si alguien llegó por un desafío, la bajada de la portada lo dice (`ADR-02`). El juego
@@ -130,7 +143,26 @@ $('jugar')?.addEventListener('click', () => {
   // Este toque es el gesto que los celulares piden para dejar sonar algo: se despierta la
   // salida acá, y los ruidos de la partida (la tecla, el golpe, el sello) ya pueden salir.
   void despertarSalida().then(() => sonarEfecto('clac'));
+  /*
+   * La pared se abre (ronda 2): la de la portada y la de la partida son el mismo objeto. Se
+   * mide dónde estaba la franja de la portada, se arma la partida, y la pared nueva arranca
+   * recortada a esa franja y se abre hasta su tamaño. Es un barrido de `clip-path`, como las
+   * pasadas de la imprenta, y no un cambio de escala: escalar la pared obligaba a volver a
+   * imprimir el ladrillo entero al terminar (un cuadro de ~420 ms con la CPU ×4, medido). Con
+   * movimiento reducido el sub-paso vale cero y no hay viaje.
+   */
+  const desde = portada.querySelector('.pared')?.getBoundingClientRect();
   comenzar();
+  const ms = duracionDe('--duracion-umbral');
+  if (!desde || desde.width === 0 || ms <= 0 || typeof pared.animate !== 'function') return;
+  const hasta = pared.getBoundingClientRect();
+  if (hasta.width === 0 || hasta.height === 0) return;
+  const arriba = Math.max(0, Math.round(desde.top - hasta.top));
+  const abajo = Math.max(0, Math.round(hasta.bottom - desde.bottom));
+  pared.animate([{ clipPath: `inset(${arriba}px 0 ${abajo}px 0)` }, { clipPath: 'inset(0 0 0 0)' }], {
+    duration: ms,
+    easing: curvaDelSitio(),
+  });
 });
 
 function comenzar(): void {
@@ -139,6 +171,7 @@ function comenzar(): void {
   elegidas = [];
   racha = 0;
   mostrar(zonaPartida);
+  zonaPartida.replaceChildren();
   pintarPregunta();
   window.scrollTo(0, 0);
 }
@@ -168,6 +201,29 @@ function armarHueco(): HTMLElement {
   const hueco = el('span', 'hueco');
   hueco.append(dibujo('span', 'hueco-ladrillo'), el('span', 'solo-lector', PARTIDA.huecoDice));
   return hueco;
+}
+
+/** Una palabra recién pintada chorrea: dos gotas que bajan del pie de la letra y se quedan. */
+function chorrear(palabra: HTMLElement, semilla: number): void {
+  const gotas: readonly (readonly [number, number])[] = [
+    [18 + ((semilla * 37) % 22), 6 + ((semilla * 13) % 6)],
+    [58 + ((semilla * 53) % 26), 4 + ((semilla * 29) % 5)],
+  ];
+  gotas.forEach(([x, largo], i) => {
+    const gota = dibujo('span', 'chorreada');
+    gota.style.setProperty('--x', `${x}%`);
+    gota.style.setProperty('--largo', `${largo}px`);
+    gota.style.setProperty('--orden', String(i));
+    palabra.append(gota);
+  });
+}
+
+/** Lo que pusiste y no era: la palabra apagada, con la raya de aerosol y la cruz. Se lee igual. */
+function armarErrada(texto: string): { readonly errada: HTMLElement; readonly palabra: HTMLElement } {
+  const errada = dibujo('span', 'hueco-errada');
+  const palabra = el('span', 'hueco-errada-palabra', texto);
+  errada.append(palabra);
+  return { errada, palabra };
 }
 
 /**
@@ -201,19 +257,33 @@ function armarCabecera(): HTMLElement {
  */
 function pintarPregunta(destapa = true): void {
   const item = ronda[indice]!;
-  zonaPartida.replaceChildren();
   zonaPartida.classList.remove('partida--revelada');
 
-  cabecera = armarCabecera();
-  zonaPartida.append(cabecera);
+  const cabeceraNueva = armarCabecera();
+  if (cabecera?.isConnected) cabecera.replaceWith(cabeceraNueva);
+  else zonaPartida.prepend(cabeceraNueva);
+  cabecera = cabeceraNueva;
 
   /*
-   * La pared: la banda del medio, de ladrillo a la vista, de borde a borde. Es fondo y no
-   * lleva texto encima: lo que se lee va sobre el paño pintado (`--fondo`, el par medido) o
-   * sobre el papel del afiche.
+   * La pared: de ladrillo a la vista, de borde a borde y hasta abajo. Es fondo y no lleva
+   * texto encima: lo que se lee va sobre el paño pintado (`--fondo`, el par medido) o sobre
+   * papel. La componen, además, un caño que la cruza por arriba y una pintada vieja tapada
+   * con rodillo: son dibujo, para que el ladrillo no sea un vacío (ronda 2).
    */
-  const pared = el('div', 'pared');
-  pared.append(dibujo('span', 'pared-ladrillos'));
+  /*
+   * **La pared es la misma de un verso al otro**: se le cambia lo que tiene pegado y pintado,
+   * no el ladrillo. Rehacerla entera en cada verso hacía que el navegador volviera a imprimir
+   * las máscaras del ladrillo cada vez (un cuadro de ~220 ms con la CPU ×4 en cada pase, medido).
+   */
+  if (pared?.isConnected && pared.parentElement === zonaPartida) {
+    for (const hijo of [...pared.children]) {
+      if (!hijo.matches('.pared-ladrillos, .pared-cano, .pared-tapada')) hijo.remove();
+    }
+  } else {
+    pared = el('div', 'pared');
+    pared.append(dibujo('span', 'pared-ladrillos'), dibujo('span', 'pared-cano'), dibujo('span', 'pared-tapada'));
+    zonaPartida.append(pared);
+  }
 
   // BR-03: en dificil no se nombra ni el tema ni el disco. La pista de mas es justamente
   // lo que separa un nivel del otro, asi que se respeta acá y no en el generador.
@@ -227,25 +297,27 @@ function pintarPregunta(destapa = true): void {
     pared.append(afiche);
   }
 
-  pared.append(el('h2', 'enunciado pared-pregunta', PARTIDA.pregunta));
-
   /*
    * La pintada: el paño donde el revoque aguantó, con su canto roto arriba y abajo. Adentro,
-   * los versos; el del hueco es el que grita. El rodillo es la pieza que tapa y destapa al
-   * pasar de un verso a otro.
+   * los versos; el del hueco es el que grita. Debajo del verso del hueco hay **un renglón
+   * guardado para la corrección** (`.verso-correccion`): si errás, ahí se pinta la que era,
+   * sin empujar nada. El rodillo es la pieza que tapa y destapa al pasar de un verso a otro.
    */
+  const cuadro = el('div', 'pared-cuadro');
+  cuadro.append(el('h2', 'enunciado pared-pregunta', PARTIDA.pregunta));
   pintada = el('div', 'verso-bloque pintada');
   pano = el('div', 'pintada-pano');
   for (const verso of item.contexto.antes) pano.append(el('p', 'verso-contexto', verso));
-  pano.append(pintarVerso(armarHueco(), item));
+  pano.append(pintarVerso(armarHueco(), item), dibujo('p', 'verso-correccion'));
   for (const verso of item.contexto.despues) pano.append(el('p', 'verso-contexto', verso));
   pano.append(dibujo('span', 'pintada-rodillo'));
   pintada.append(dibujo('span', 'pintada-canto pintada-canto--arriba'), pano, dibujo('span', 'pintada-canto pintada-canto--abajo'));
   if (destapa) pintada.classList.add('pintada--se-destapa');
-  pared.append(pintada);
-  zonaPartida.append(pared);
+  cuadro.append(pintada);
+  pared.append(cuadro);
 
-  // Las plantillas: cuatro cartones calados, cada uno con su palabra. Se apoyan de a uno.
+  // Las plantillas: cuatro cartones calados, apoyados al pie de la pared. Se apoyan de a uno.
+  pie = el('div', 'pared-pie');
   lista = el('ul', 'opciones plantillas');
   item.opciones.forEach((op, i) => {
     const li = el('li');
@@ -263,7 +335,8 @@ function pintarPregunta(destapa = true): void {
     li.append(b);
     lista.append(li);
   });
-  zonaPartida.append(lista);
+  pie.append(lista);
+  pared.append(pie);
 }
 
 /**
@@ -284,7 +357,7 @@ function llevarPlantilla(boton: HTMLElement, hueco: Element, alApoyar: () => voi
   const dx = hasta.left + hasta.width / 2 - (desde.left + desde.width / 2);
   const dy = hasta.top + hasta.height / 2 - (desde.top + desde.height / 2);
   const puesta = `translate(${Math.round(dx)}px, ${Math.round(dy)}px) scale(${escala.toFixed(3)}) rotate(-2deg)`;
-  const curva = getComputedStyle(document.documentElement).getPropertyValue('--curva-cinta').trim() || 'linear';
+  const curva = curvaDelSitio();
   // Una pieza lleva una sola animación: la de apoyarse al entrar ya terminó o se corta acá.
   boton.classList.remove('jugo-pega');
   boton.classList.add('plantilla--vuela');
@@ -306,18 +379,34 @@ function llevarPlantilla(boton: HTMLElement, hueco: Element, alApoyar: () => voi
   vuelo.addEventListener('cancel', fin, { once: true });
 }
 
-/** Una palabra recién pintada chorrea: dos gotas que bajan del pie de la letra y se quedan. */
-function chorrear(palabra: HTMLElement, semilla: number): void {
-  const gotas: readonly (readonly [number, number])[] = [
-    [18 + ((semilla * 37) % 22), 9 + ((semilla * 13) % 8)],
-    [58 + ((semilla * 53) % 26), 5 + ((semilla * 29) % 7)],
+/**
+ * El sello del cierre cae **a la altura del hueco**, que es donde está el ojo, y al apoyar
+ * salta polvo de revoque: unas motas que caen y se van. Es dibujo, y dura lo que el primer
+ * tiempo del cierre; con movimiento reducido no llega a verse.
+ */
+function sellarLaPared(acerto: boolean): void {
+  const linea = pano.querySelector<HTMLElement>('.verso-hueco');
+  // Justo arriba del renglón del hueco: al lado de lo recién pintado, sin taparlo.
+  const y = linea ? Math.max(36, linea.offsetTop - 50) : pano.offsetHeight / 2;
+  const sello = dibujo('span', `sello-cae sello-cae--${acerto ? 'ok' : 'no'}`, acerto ? '✔︎' : '✕︎');
+  sello.style.setProperty('--sello-y', `${Math.round(y)}px`);
+  pintada.append(sello);
+  const motas: readonly (readonly [number, number])[] = [
+    [-58, 46],
+    [-24, 84],
+    [10, 66],
+    [38, 96],
+    [-80, 22],
+    [64, 40],
+    [-6, 112],
   ];
-  gotas.forEach(([x, largo], i) => {
-    const gota = dibujo('span', 'chorreada');
-    gota.style.setProperty('--x', `${x}%`);
-    gota.style.setProperty('--largo', `${largo}px`);
-    gota.style.setProperty('--orden', String(i));
-    palabra.append(gota);
+  motas.forEach(([dx, dy], i) => {
+    const mota = dibujo('span', 'polvo');
+    mota.style.setProperty('--sello-y', `${Math.round(y)}px`);
+    mota.style.setProperty('--dx', `${dx}px`);
+    mota.style.setProperty('--dy', `${dy}px`);
+    mota.style.setProperty('--orden', String(i % 3));
+    pintada.append(mota);
   });
 }
 
@@ -335,33 +424,26 @@ function responder(texto: string, boton: HTMLButtonElement): void {
   for (const b of botones) b.disabled = true;
 
   const linea = pano.querySelector('.verso-hueco')!;
+  const renglonDeCorreccion = pano.querySelector<HTMLElement>('.verso-correccion')!;
 
   /*
    * El verso se vuelve a pintar con la palabra en su lugar: es la recompensa de haber
-   * contestado, y se ve completo recién ahora. Si no era, lo elegido queda tachado al lado
-   * —con su cruz, no solo en rojo— y la que era se pinta después del tachón.
+   * contestado, y se ve completo recién ahora.
    *
    * **El hueco toma el ancho de lo elegido en el momento del toque** (`.hueco--por-pintar`:
-   * sigue siendo hueco, sin letra a la vista), y la plantilla viaja hasta ahí. Si se midiera el
-   * hueco genérico, una palabra más ancha partiría el renglón al pintarse y aparecería lejos de
-   * donde se apoyó la plantilla.
+   * sigue siendo hueco, sin letra a la vista), y la plantilla viaja hasta ahí. Después de eso
+   * **el verso no se vuelve a mover**: si no era, lo elegido queda donde se pintó, tachado y
+   * legible, y la que era se pinta en el renglón guardado de abajo, a la altura de lo tachado.
    */
   const correcta = el('span', 'hueco resuelto', item.hueco.respuesta);
   const vestir = (palabra: HTMLElement, marca: string, semilla: number): HTMLElement => {
-    const m = dibujo('span', 'hueco-marca', marca);
     chorrear(palabra, semilla);
-    return m;
+    return dibujo('span', 'hueco-marca', marca);
   };
-  const errada = dibujo('span', 'hueco-errada');
-  const palabraErrada = el('span', 'hueco-errada-palabra', texto);
+  const { errada, palabra: palabraErrada } = armarErrada(texto);
   const porPintar = acerto ? correcta : palabraErrada;
   porPintar.classList.add('hueco--por-pintar');
-  if (acerto) {
-    linea.replaceWith(pintarVerso(correcta, item));
-  } else {
-    errada.append(palabraErrada);
-    linea.replaceWith(pintarVerso(errada, item));
-  }
+  linea.replaceWith(pintarVerso(acerto ? correcta : errada, item));
 
   const pintar = (): void => {
     if (!vigente()) return;
@@ -371,16 +453,21 @@ function responder(texto: string, boton: HTMLButtonElement): void {
       estampar(correcta);
       sonarEfecto('sello');
       vibrarAcierto();
-    } else {
-      palabraErrada.append(el('span', 'hueco-tachon'));
-      errada.append(vestir(palabraErrada, '✕︎', texto.length + 3));
-      // La que era llega un golpe después: primero se ve lo que pusiste, tachado.
-      correcta.classList.add('resuelto--despues');
-      correcta.append(vestir(correcta, '✔︎', item.hueco.respuesta.length));
-      errada.after(document.createTextNode(' '), correcta);
-      golpear(pano);
-      sonarEfecto('golpe');
+      return;
     }
+    palabraErrada.append(el('span', 'hueco-tachon'));
+    errada.append(vestir(palabraErrada, '✕︎', texto.length + 3));
+    // La que era, en su renglón: llega un golpe después, cuando el tachón ya pasó. Va debajo
+    // de lo tachado, y si no entra hasta el borde se corre para adentro.
+    correcta.classList.add('la-que-era', 'resuelto--despues');
+    correcta.append(vestir(correcta, '✔︎', item.hueco.respuesta.length));
+    renglonDeCorreccion.append(correcta);
+    const fila = renglonDeCorreccion.getBoundingClientRect();
+    const deseado = errada.getBoundingClientRect().left - fila.left;
+    const tope = Math.max(0, fila.width - correcta.offsetWidth - 4);
+    correcta.style.setProperty('--corre', `${Math.round(Math.max(0, Math.min(deseado, tope)))}px`);
+    golpear(pano);
+    sonarEfecto('golpe');
   };
 
   const cerrar = (): void => {
@@ -406,11 +493,11 @@ function responder(texto: string, boton: HTMLButtonElement): void {
       rachaEl.textContent = PARTIDA.racha(racha);
       estampar(rachaEl);
     }
-    // El primer tiempo del cierre: el sello cae sobre la pared, en la esquina del paño.
-    pintada.append(dibujo('span', `sello-cae sello-cae--${acerto ? 'ok' : 'no'}`, acerto ? '✔︎' : '✕︎'));
-    const espera = duracionDe('--duracion-pasada') + duracionDe('--duracion-paso');
+    // El primer tiempo del cierre: el sello cae sobre la pared, donde está el ojo.
+    sellarLaPared(acerto);
+    const espera = duracionDe('--duracion-pasada') + duracionDe('--duracion-umbral') + duracionDe('--duracion-paso');
     const mostrarLaFicha = (): void => {
-      if (vigente()) pintarFicha(item, texto, acerto);
+      if (vigente()) pintarFicha(item, acerto);
     };
     if (espera > 0) window.setTimeout(mostrarLaFicha, espera);
     else mostrarLaFicha();
@@ -420,41 +507,49 @@ function responder(texto: string, boton: HTMLButtonElement): void {
 }
 
 /**
- * El segundo tiempo del cierre: las plantillas se van y en su lugar queda la ficha del verso,
- * con la gramática de los otros juegos pulidos —el grito estampado y lo que sumaste, de qué
- * tema era, y "Seguí" adentro, cerrando la columna—. Debajo, en un renglón de registro 3, de
- * dónde salió la letra y la puerta para corregirla.
+ * El segundo tiempo del cierre: las plantillas se van y en su lugar se pega **un afiche de
+ * papel**, con cinta, que es la ficha del verso. Tiene la gramática de los otros juegos
+ * pulidos —el grito estampado y lo que sumaste, el dato, y "Seguí" adentro, cerrando la
+ * columna, en la tinta del disco—. La letra va en `--fondo` sobre papel, el par medido; el
+ * estado lo dicen el grito, la marca dibujada y el filete, nunca solo la tinta.
+ *
+ * Debajo, en un zócalo pintado, de dónde salió la letra y la puerta para corregirla.
  */
-function pintarFicha(item: ItemJugable, texto: string, acerto: boolean): void {
+function pintarFicha(item: ItemJugable, acerto: boolean): void {
   zonaPartida.classList.add('partida--revelada');
-  pintada.querySelector('.sello-cae')?.remove();
+  for (const resto of pintada.querySelectorAll('.sello-cae, .polvo')) resto.remove();
   lista.hidden = true;
 
-  const panel = el('div', `feedback revelacion ficha-verso ${acerto ? 'ok' : 'no'}`);
-  panel.setAttribute('role', 'status');
-  const cabeza = el('div', 'revelacion-cabeza');
-  cabeza.append(el('p', 'micro', acerto ? PARTIDA.ok : PARTIDA.no));
-  const sumaEl = acerto ? dibujo('span', 'revelacion-suma', PARTIDA.suma) : null;
+  const afiche = el('div', `feedback ficha-verso jugo-pega ${acerto ? 'ok' : 'no'}`);
+  // Lo que se anuncia es lo que dice el afiche, sin el botón: ese panel se lee solo (`UX-09`).
+  const dice = el('div', 'ficha-verso-dice');
+  dice.setAttribute('role', 'status');
+  const cabeza = el('div', 'ficha-verso-cabeza');
+  cabeza.append(
+    dibujo('span', 'ficha-verso-marca', acerto ? '✔︎' : '✕︎'),
+    el('p', 'micro ficha-verso-grito', acerto ? PARTIDA.ok : PARTIDA.no),
+  );
+  const sumaEl = acerto ? dibujo('span', 'ficha-verso-suma', PARTIDA.suma) : null;
   if (sumaEl) cabeza.append(sumaEl);
-  panel.append(cabeza);
-  if (!acerto) panel.append(el('p', 'respuesta-dato', `${PARTIDA.eraLa} “${item.hueco.respuesta}”.`));
+  dice.append(cabeza);
+  if (!acerto) dice.append(el('p', 'respuesta-dato', `${PARTIDA.eraLa} “${item.hueco.respuesta}”.`));
 
-  // De qué tema era, **solo si la pared no lo dijo**: en difícil no hay afiche (`BR-03` lo
-  // esconde mientras se juega), y con el verso ya contestado dejó de ser una pista y pasó a
-  // ser el dato que te llevás. En los otros dos niveles el afiche sigue a la vista.
+  // De qué tema era, **solo si la pared no lo dijo**: en difícil no hay afiche del tema
+  // (`BR-03` lo esconde mientras se juega), y con el verso ya contestado dejó de ser una pista
+  // y pasó a ser el dato que te llevás. En los otros dos niveles ese afiche sigue a la vista.
   if (item.dificultad === 'dificil') {
     const tema = el('p', 'ficha-verso-tema');
     tema.append(
       el('span', 'ficha-verso-titulo', item.tema.titulo),
       el('span', 'ficha-verso-disco', tituloDelDisco(item.tema.disco)),
     );
-    panel.append(tema);
+    dice.append(tema);
   }
 
-  if (item.explicacion) panel.append(el('p', 'explicacion', item.explicacion));
+  if (item.explicacion) dice.append(el('p', 'explicacion', item.explicacion));
 
   if (item.rotulo) {
-    panel.append(
+    dice.append(
       el(
         'p',
         `sello sello--${item.rotulo.tipo}`,
@@ -462,23 +557,24 @@ function pintarFicha(item: ItemJugable, texto: string, acerto: boolean): void {
       ),
     );
   }
+  afiche.append(dice);
 
   const ultimo = indice + 1 >= ronda.length;
   const seguir = el('button', 'primario seguir', ultimo ? PARTIDA.ultimo : PARTIDA.seguir);
   seguir.type = 'button';
   seguir.addEventListener('click', avanzar, { once: true });
-  panel.append(seguir);
-  zonaPartida.append(panel);
+  afiche.append(seguir);
+  pie.append(afiche);
 
   /*
-   * El pie de la ficha (`UX-09`): **afuera** del panel de respuesta —ese panel se lee solo— y
-   * después de `Seguí` en el orden del DOM, que es el orden en que se lee y se tabula.
+   * El zócalo de la ficha (`UX-09`): **afuera** del panel de respuesta y después de `Seguí` en
+   * el orden del DOM, que es el orden en que se lee y se tabula.
    *
    * `T-145` / `D-25`: la fuente del verso, con su enlace. Bajo fuente única el jugador tiene
    * derecho a saber de dónde salió lo que el juego acaba de darle por bueno. `BR-21`: y el
    * botón de corrección al lado, como control secundario.
    */
-  const pie = el('div', 'ficha-pie');
+  const zocalo = el('div', 'ficha-pie');
   const fuente = item.fuenteLetra?.[0];
   if (fuente) {
     const linea = el('p', 'fuente-verso');
@@ -487,9 +583,9 @@ function pintarFicha(item: ItemJugable, texto: string, acerto: boolean): void {
     enlace.target = '_blank';
     enlace.rel = 'noopener';
     linea.append(enlace);
-    pie.append(linea);
+    zocalo.append(linea);
   }
-  pie.append(
+  zocalo.append(
     botonCorreccion(() => ({
       juego: 'letra',
       itemId: item.id,
@@ -501,7 +597,7 @@ function pintarFicha(item: ItemJugable, texto: string, acerto: boolean): void {
       banco: { contrato: 'CTR-04', version: 2 },
     })),
   );
-  zonaPartida.append(pie);
+  pie.append(zocalo);
 
   const total = aciertosHastaAca();
   if (acerto && sumaEl) {
@@ -518,7 +614,7 @@ function pintarFicha(item: ItemJugable, texto: string, acerto: boolean): void {
           estampar(destino);
         });
       },
-      duracionDe('--duracion-pasada') + duracionDe('--escalon-pasada'),
+      duracionDe('--duracion-umbral') + duracionDe('--escalon-pasada'),
     );
   }
 
@@ -529,7 +625,8 @@ function pintarFicha(item: ItemJugable, texto: string, acerto: boolean): void {
     seguir.addEventListener('blur', () => seguir.classList.remove('seguir--sin-anillo'), { once: true });
   }
   seguir.focus({ preventScroll: true });
-  seguir.scrollIntoView({ block: 'nearest' });
+  // Hasta el zócalo: así "Seguí" queda entero a la vista y no cortado por el borde.
+  zocalo.scrollIntoView({ block: 'nearest' });
 }
 
 /**
@@ -562,9 +659,31 @@ function pasarDeVerso(): void {
   window.scrollTo(0, 0);
 }
 
+/** La tarjeta de la vuelta, en el idioma de la pared. Nunca tira: si no se puede, `null`. */
+async function dibujarLaTarjeta(aciertos: number): Promise<Blob | null> {
+  try {
+    return await dibujarMuro({
+      juego: TARJETA.juego,
+      tramo: TRAMOS[tramo(aciertos, ronda.length)],
+      cuenta: RESULTADO.puntaje(aciertos, ronda.length),
+      palabras: ronda.map((item, i) => ({
+        era: item.hueco.respuesta,
+        acerto: elegidas[i] === item.hueco.respuesta,
+        puso: elegidas[i] ?? '',
+      })),
+      sitio: location.host + location.pathname,
+    });
+  } catch {
+    // La tarjeta es el premio, no el camino.
+    return null;
+  }
+}
+
 function pintarResultado(): void {
   const aciertos = contarAciertos(ronda, elegidas);
   const total = ronda.length;
+  const t = tramo(aciertos, total);
+  const entera = total > 0 && aciertos === total;
   zonaResultado.replaceChildren();
 
   let orden = 0;
@@ -574,50 +693,106 @@ function pintarResultado(): void {
     return pieza;
   };
 
-  const titulo = entra(el('h2', 'rotulo-desenlace', RESULTADO.titulo));
+  zonaResultado.append(entra(el('p', 'rotulo-desenlace', RESULTADO.titulo)));
+  // La línea que canta, y al lado la cuenta: sube en escalones y apoya como un sello.
+  const titulo = entra(el('h2', `tramo tramo--${t}`, TRAMOS[t]));
   zonaResultado.append(titulo);
-  // La cifra de la vuelta: sube en escalones y apoya como un sello.
-  const puntaje = entra(el('p', 'puntaje puntaje--sello'));
+  const cuenta = entra(el('div', 'cuenta-vuelta'));
+  const puntaje = el('p', 'puntaje puntaje--sello');
   contar(puntaje, 0, aciertos, (n) => RESULTADO.puntaje(n, total));
-  zonaResultado.append(puntaje);
+  cuenta.append(puntaje);
   window.setTimeout(() => sonarEfecto('sello'), duracionDe('--duracion-cuenta'));
+  if (entera) {
+    // La hazaña: la vuelta entera. Doble filete en la cuenta, un segundo sello que grita, y
+    // el golpe suena dos veces.
+    puntaje.classList.add('puntaje--hazana');
+    cuenta.append(el('p', 'hazana-sello', RESULTADO.hazana));
+    window.setTimeout(() => sonarEfecto('sello'), duracionDe('--duracion-cuenta') + 160);
+  }
+  zonaResultado.append(cuenta);
 
   /*
-   * La pared de la vuelta: una pintada por verso, con la palabra que era. La que sacaste
-   * lleva la tilde; la que no, la cruz y lo que habías puesto, escrito (`UX-01`: nunca solo
-   * la tinta). No muestra más letra que la que ya se vio: la palabra y el título del tema.
+   * El muro de la vuelta: la pared con las palabras de la noche pintadas. La que sacaste, con
+   * su tilde; la que no, lo que pusiste tachado y debajo la que era (`UX-01`: nunca solo la
+   * tinta). No muestra más letra que la que ya se vio: la palabra y el título del tema. Lo
+   * pintado es dibujo; quien no ve escucha cada una dicha con palabras.
    */
   zonaResultado.append(entra(el('h3', 'resumen-titulo', RESULTADO.detalle)));
-  const detalle = el('ol', 'resumen resumen--pintadas');
+  const muroPared = entra(el('div', 'pared pared--vuelta'));
+  muroPared.append(dibujo('span', 'pared-ladrillos'), dibujo('span', 'pared-cano'));
+  const muroPintada = el('div', 'pintada');
+  const muroPano = el('div', 'pintada-pano');
+  const muro = el('ol', 'muro');
   ronda.forEach((item, i) => {
     const salio = elegidas[i] === item.hueco.respuesta;
-    const li = entra(el('li', `pintada-fila pintada-fila--${salio ? 'ok' : 'no'}`), 'jugo-pega');
-    li.append(dibujo('span', 'pintada-fila-marca', salio ? '✔︎' : '✕︎'));
-    const cuerpo = el('span', 'pintada-fila-cuerpo');
-    cuerpo.append(
-      el('span', 'pintada-fila-palabra', item.hueco.respuesta),
+    const puso = elegidas[i] ?? '';
+    const li = entra(el('li', `muro-palabra muro-palabra--${salio ? 'ok' : 'no'}`), 'jugo-pega');
+    const pintadaDeLaPalabra = dibujo('span', 'muro-pintada');
+    if (salio) {
+      const escrita = el('span', 'muro-escrita', item.hueco.respuesta);
+      escrita.append(el('span', 'hueco-marca', '✔︎'));
+      pintadaDeLaPalabra.append(escrita);
+    } else {
+      const { errada, palabra } = armarErrada(puso);
+      palabra.append(el('span', 'hueco-tachon'));
+      errada.append(el('span', 'hueco-marca', '✕︎'));
+      const era = el('span', 'muro-era', item.hueco.respuesta);
+      era.append(el('span', 'hueco-marca', '✔︎'));
+      pintadaDeLaPalabra.append(errada, era);
+    }
+    li.append(
+      pintadaDeLaPalabra,
+      dibujo('span', 'muro-tema', item.tema.titulo),
       el(
         'span',
-        'pintada-fila-pie',
-        salio ? item.tema.titulo : RESULTADO.pusiste(item.tema.titulo, elegidas[i] ?? ''),
+        'solo-lector',
+        salio
+          ? RESULTADO.salio(item.hueco.respuesta, item.tema.titulo)
+          : RESULTADO.noSalio(item.hueco.respuesta, item.tema.titulo, puso),
       ),
     );
-    li.append(cuerpo);
-    detalle.append(li);
+    muro.append(li);
   });
-  zonaResultado.append(detalle);
+  muroPano.append(muro);
+  muroPintada.append(dibujo('span', 'pintada-canto pintada-canto--arriba'), muroPano, dibujo('span', 'pintada-canto pintada-canto--abajo'));
+  muroPared.append(muroPintada);
+  zonaResultado.append(muroPared);
 
   /*
    * El pie del resultado (`.pie-resultado`): la misma pieza y el mismo orden que los otros
-   * juegos pulidos — "Compartí" (el primario, en la letra de la firma), lo que compartir tenga
-   * para decir y la otra vuelta. Este juego todavía no tiene tarjeta: comparte texto y enlace,
-   * forma `marcador` (`ADR-02`).
+   * juegos pulidos — la tarjeta que asoma, "Compartí" (el primario, en la letra de la firma),
+   * lo que compartir tenga para decir y la otra vuelta. El resultado viaja como desafío, forma
+   * `marcador` (`ADR-02`), y con la tarjeta del muro si el teléfono la acepta.
    */
-  const pie = entra(el('div', 'pie-resultado'));
+  const pieDelResultado = entra(el('div', 'pie-resultado'));
   const { boton: compartir, salida } = botonCompartir(RESULTADO, () => ({
     texto: RESULTADO.paraCompartir(aciertos, total),
     url: armarLink(location.origin + location.pathname, { forma: 'marcador', juego: JUEGO, puntaje: aciertos, total }),
+    archivo: archivoDeLaTarjeta,
   }));
+
+  // La tarjeta asoma: lo que vas a compartir se ve antes de tocar el botón. Se dibuja una vez.
+  const asoma = dibujo('div', 'tarjeta-asoma');
+  asoma.addEventListener('click', () => compartir.click());
+  if (urlDeLaTarjeta) URL.revokeObjectURL(urlDeLaTarjeta);
+  urlDeLaTarjeta = '';
+  archivoDeLaTarjeta = null;
+  const estaTarjeta = dibujarLaTarjeta(aciertos);
+  tarjetaDeLaVuelta = estaTarjeta;
+  void estaTarjeta.then((imagen) => {
+    if (tarjetaDeLaVuelta !== estaTarjeta || !asoma.isConnected) return;
+    if (!imagen) {
+      asoma.remove();
+      return;
+    }
+    archivoDeLaTarjeta = new File([imagen], nombreArchivo('completar-la-letra'), { type: 'image/png' });
+    urlDeLaTarjeta = URL.createObjectURL(imagen);
+    const foto = el('img', 'jugo-pega');
+    foto.alt = '';
+    foto.src = urlDeLaTarjeta;
+    asoma.append(foto);
+  });
+
   const denuevo = el('button', 'secundario', RESULTADO.denuevo);
   denuevo.type = 'button';
   denuevo.addEventListener('click', () => {
@@ -627,8 +802,8 @@ function pintarResultado(): void {
   // El que jugó ya está pensando en el tema: el cancionero es el paso natural.
   const alCancionero = el('a', 'secundario', RESULTADO.alCancionero);
   alCancionero.href = '/letras-y-acordes/';
-  pie.append(compartir, salida, denuevo, alCancionero);
-  zonaResultado.append(pie);
+  pieDelResultado.append(asoma, compartir, salida, denuevo, alCancionero);
+  zonaResultado.append(pieDelResultado);
 
   const salidaAlFichin = el('p', 'salida-resultado');
   const volver = el('a', 'volver', `← ${RESULTADO.volver}`);

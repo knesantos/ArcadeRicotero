@@ -8385,23 +8385,103 @@ body:has(.juego-completar > #partida:not([hidden])) {
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
-  justify-content: center;
   margin-inline: calc(var(--espacio-2) * -1);
-  padding: 2.4rem var(--espacio-2);
+  padding: 2rem var(--espacio-2) 0.9rem;
   background: var(--fondo);
   border-block: var(--linea) solid var(--borde);
   overflow: clip;
 }
 
-.pared > :not(.pared-ladrillos) {
+.pared > :not(.pared-ladrillos, .pared-cano, .pared-tapada) {
   position: relative;
+}
+
+/* El cuadro: la pregunta y la pintada, al medio de lo que quede libre. El relleno es el lugar
+   del canto roto del pano. */
+.pared-cuadro {
+  display: flex;
+  flex-direction: column;
+  margin-block: auto;
+  padding-block: 1.9rem 2rem;
+}
+
+/* El pie de la pared: donde se apoyan las plantillas y, despues, donde se pega la ficha. */
+.pared-pie {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+/* En un telefono bajo la pared se aprieta: menos aire arriba y alrededor del pano, y el afiche
+   un punto mas chico. La letra de los versos no se toca. */
+@media (max-height: 45rem) {
+  .pared {
+    padding-top: 1.7rem;
+    padding-bottom: 0.7rem;
+  }
+
+  .pared-cuadro {
+    padding-block: 1.5rem 1.6rem;
+  }
+
+  .pared-afiche {
+    padding: 0.45rem 0.8rem 0.4rem;
+    font-size: 1rem;
+  }
+
+  .opcion.plantilla {
+    min-height: 3.1rem;
+  }
+}
+
+/* ---- Lo que compone la pared (ronda 2): un cano y una pintada vieja tapada ----
+   Dibujo: tinta plana, sin volumen. El cano cruza por arriba, con sus dos abrazaderas; la
+   pintada vieja es un pano de rodillo, a media fuerza, que asoma detras de las plantillas. */
+.pared-cano {
+  position: absolute;
+  top: 0.55rem;
+  right: 0;
+  left: 0;
+  height: 11px;
+  background: var(--fondo);
+  border-block: 2px solid var(--borde);
+  pointer-events: none;
+}
+
+.pared-cano::before,
+.pared-cano::after {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 17%;
+  width: 12px;
+  height: 19px;
+  background: var(--borde);
+  border: 2px solid var(--fondo);
+}
+
+.pared-cano::after {
+  left: 78%;
+}
+
+.pared-tapada {
+  position: absolute;
+  right: -1.6rem;
+  bottom: 8.6rem;
+  width: 15rem;
+  height: 7rem;
+  background: var(--fondo);
+  -webkit-mask: url('/arte/completar/tapada.webp') center / 100% 100% no-repeat;
+  mask: url('/arte/completar/tapada.webp') center / 100% 100% no-repeat;
+  opacity: 0.55;
+  rotate: -2deg;
+  pointer-events: none;
 }
 
 /* El ladrillo: la tinta del borde, a media fuerza, con la junta en la del fondo. La capa
    entera baja de fuerza junta, asi la junta sigue siendo `--fondo` puro. */
 .pared-ladrillos,
-.hueco-ladrillo,
-.resumen--pintadas::before {
+.hueco-ladrillo {
   content: '';
   position: absolute;
   inset: 0;
@@ -8411,8 +8491,7 @@ body:has(.juego-completar > #partida:not([hidden])) {
 }
 
 .pared-ladrillos::after,
-.hueco-ladrillo::after,
-.resumen--pintadas::after {
+.hueco-ladrillo::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -8427,17 +8506,17 @@ body:has(.juego-completar > #partida:not([hidden])) {
   display: flex;
   flex-direction: column;
   align-self: flex-start;
-  max-width: 86%;
-  margin: 0 0 2.6rem 0.3rem;
-  padding: 0.5rem 0.75rem 0.42rem;
+  max-width: 88%;
+  margin: 0 0 0 0.2rem;
+  padding: 0.65rem 0.95rem 0.55rem;
   background: var(--papel);
   color: var(--fondo);
   border: 2px solid var(--papel-borde);
   border-radius: 2px;
   font-family: var(--fuente);
-  font-size: 0.95rem;
+  font-size: 1.12rem;
   font-weight: 700;
-  line-height: 1.25;
+  line-height: 1.22;
   text-wrap: balance;
   rotate: -1.6deg;
 }
@@ -8456,7 +8535,8 @@ body:has(.juego-completar > #partida:not([hidden])) {
 }
 
 .pared-afiche-disco {
-  font-size: 0.82rem;
+  margin-top: 0.1rem;
+  font-size: 0.92rem;
   font-weight: 400;
   color: var(--papel-tenue);
 }
@@ -8519,11 +8599,11 @@ body:has(.juego-completar > #partida:not([hidden])) {
 /* Los versos, pintados: la letra rotulada, en mayusculas, cada renglon con su pulso. El
    contexto va mas chico y apagado (`BR-03`: es ayuda, no la pregunta); el del hueco grita. */
 .pintada .verso-contexto {
-  margin: 0 0 0.32rem;
+  margin: 0 0 0.3rem;
   font-family: var(--fuente-rotulada);
-  font-size: 0.8rem;
-  line-height: 1.4;
-  letter-spacing: 0.04em;
+  font-size: 1rem;
+  line-height: 1.32;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   text-wrap: balance;
   color: var(--texto-tenue);
@@ -8538,14 +8618,36 @@ body:has(.juego-completar > #partida:not([hidden])) {
 }
 
 .pintada .verso-hueco {
-  margin: 0.6rem 0 1.05rem;
+  margin: 0.55rem 0 0;
   font-family: var(--fuente-rotulada);
-  font-size: clamp(1.15rem, 5.4vw, 1.4rem);
-  line-height: 1.5;
+  font-size: clamp(1.25rem, 5.6vw, 1.5rem);
+  line-height: 1.45;
   letter-spacing: 0.02em;
   text-transform: uppercase;
   color: var(--texto);
   rotate: -0.8deg;
+}
+
+/* El renglon guardado para la correccion (ronda 2): existe siempre, vacio, debajo del verso
+   del hueco. Si erras, ahi se pinta la que era, a la altura de lo tachado, **sin empujar el
+   verso**: en la ronda 1 la que era iba en el mismo renglon y el pano saltaba. */
+.pintada .verso-correccion {
+  position: relative;
+  height: 2.05rem;
+  margin: 0 0 0.35rem;
+}
+
+.hueco.resuelto.la-que-era {
+  position: absolute;
+  top: 0.12rem;
+  left: var(--corre, 0);
+  font-family: var(--fuente-rotulada);
+  font-size: clamp(1.15rem, 5vw, 1.35rem);
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  rotate: -1.6deg;
 }
 
 /* El hueco: el ladrillo que asoma donde se cayo la palabra, con el filete punteado de "aca
@@ -8590,6 +8692,7 @@ body:has(.juego-completar > #partida:not([hidden])) {
 /* Elegida y todavia sin pintar: el hueco toma el ancho de la palabra que viene, sin mostrarla.
    Dura lo que tarda la plantilla en llegar. */
 .hueco--por-pintar,
+.hueco-errada .hueco-errada-palabra.hueco--por-pintar,
 .hueco.resuelto.hueco--por-pintar {
   color: transparent;
   background: var(--borde);
@@ -8630,7 +8733,7 @@ body:has(.juego-completar > #partida:not([hidden])) {
 
 .hueco-tachon {
   position: absolute;
-  inset: 0.05em -0.28em;
+  inset: 30% -0.24em 26%;
   background: var(--acento-4);
   -webkit-mask: url('/arte/completar/tachon.webp') center / 100% 100% no-repeat;
   mask: url('/arte/completar/tachon.webp') center / 100% 100% no-repeat;
@@ -8646,7 +8749,7 @@ body:has(.juego-completar > #partida:not([hidden])) {
   top: calc(100% - 0.3em);
   left: var(--x, 30%);
   width: 4px;
-  height: calc(var(--largo, 10px) * 1.7);
+  height: var(--largo, 8px);
   background: currentColor;
   border-radius: 0 0 2px 2px;
   transform-origin: 50% 0;
@@ -8707,20 +8810,50 @@ body:has(.juego-completar > #partida:not([hidden])) {
 
 /* El sello del cierre cae en la esquina del pano, pisando el canto: no tapa lo recien pintado. */
 .pintada > .sello-cae {
-  top: 0;
-  right: 0.7rem;
+  right: 0.6rem;
   left: auto;
-  width: 5.6rem;
-  height: 5.6rem;
-  margin: -2.6rem 0 0;
-  font-size: 2.7rem;
+  width: 6.2rem;
+  height: 6.2rem;
+  margin: -3.1rem 0 0;
+  font-size: 3rem;
+}
+
+/* El polvo de revoque: unas motas que saltan cuando el sello apoya, caen y se van. Detalle
+   vivo de la ronda 2, atado a "se cerro el verso". Solo `transform` y `opacity`. */
+.polvo {
+  position: absolute;
+  z-index: 3;
+  top: calc(var(--sello-y, 50%) + 2.6rem);
+  right: 3.4rem;
+  width: 7px;
+  height: 7px;
+  background: var(--papel);
+  opacity: 0;
+  animation: polvo-cae var(--duracion-cuenta) linear
+    calc(var(--duracion-toque) + var(--escalon-umbral) * var(--orden, 0)) both;
+  pointer-events: none;
+}
+
+@keyframes polvo-cae {
+  from {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+
+  70% {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+    transform: translate(var(--dx, 0), var(--dy, 40px));
+  }
 }
 
 /* ---- Las plantillas: cuatro cartones calados ---- */
 .opciones.plantillas {
   grid-template-columns: 1fr 1fr;
   gap: 0.65rem 0.7rem;
-  padding-bottom: var(--espacio-2);
 }
 
 .plantillas[hidden] {
@@ -8790,57 +8923,171 @@ body:has(.juego-completar > #partida:not([hidden])) {
   text-decoration-thickness: 3px;
 }
 
-/* ---- La ficha del verso ---- */
+/* ---- La ficha del verso: un afiche de papel, pegado donde estaban las plantillas ----
+   Papel, cinta en las dos puntas, apenas torcido. La letra va en `--fondo`, el par medido
+   sobre papel; el estado lo dicen el grito, la marca dibujada (tilde o cruz sobre su tinta) y
+   el filete. "Segui" es el primario del disco, con el filete de chapa por adentro. */
 .juego-completar #partida .ficha-verso {
-  margin-top: 0;
+  position: relative;
+  margin: 0.5rem 0.15rem 0;
+  padding: 0.95rem 0.9rem 0.85rem;
+  background: var(--papel);
+  color: var(--fondo);
+  border: var(--linea) solid var(--papel-borde);
+  border-radius: 2px;
+  rotate: -0.7deg;
 }
 
-.ficha-verso .respuesta-dato {
-  margin: var(--espacio-1) 0 0;
+.juego-completar #partida .ficha-verso.ok {
+  border-color: var(--acento-3);
+}
+
+.juego-completar #partida .ficha-verso.no {
+  border-color: var(--acento-4);
+}
+
+.ficha-verso::before,
+.ficha-verso::after {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: 9%;
+  width: 4.2rem;
+  height: 20px;
+  background: color-mix(in srgb, var(--papel) 32%, transparent);
+  border-radius: 2px;
+  rotate: -5deg;
+}
+
+.ficha-verso::after {
+  right: 8%;
+  left: auto;
+  rotate: 4deg;
+}
+
+.ficha-verso-cabeza {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-height: 2.7rem;
+}
+
+/* La marca: la tilde o la cruz, en la tinta del fondo sobre el verde o el rojo. Forma y
+   tinta: el simbolo es el que dice. */
+.ficha-verso-marca {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 3px;
+  color: var(--fondo);
+  font-size: 1.6rem;
+  line-height: 1;
+  rotate: -6deg;
+  animation: sello-golpe var(--duracion-pasada) var(--curva-cinta) both;
+}
+
+.ficha-verso.ok .ficha-verso-marca {
+  background: var(--acento-3);
+}
+
+.ficha-verso.no .ficha-verso-marca {
+  background: var(--acento-4);
+}
+
+.juego-completar .ficha-verso .ficha-verso-grito {
+  width: fit-content;
+  margin: 0;
+  padding: 0.12rem 0.6rem 0.06rem;
+  border: var(--linea) solid var(--fondo);
+  border-radius: 3px;
+  color: var(--fondo);
+  font-family: var(--fuente-rotulada);
+  font-size: clamp(1.05rem, 5vw, 1.3rem);
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  line-height: 1.3;
+  text-transform: uppercase;
+  white-space: nowrap;
+  rotate: -2deg;
+  animation: sello-golpe var(--duracion-pasada) var(--curva-cinta) var(--escalon-umbral) both;
+}
+
+.ficha-verso-suma {
+  flex: none;
+  margin-left: auto;
+  padding: 0 0.5rem;
+  background: var(--acento-3);
+  border-radius: 3px;
+  color: var(--fondo);
+  font-family: var(--fuente-rotulada);
+  font-size: 1.7rem;
+  line-height: 1.35;
+  rotate: 5deg;
+  animation: sello-golpe var(--duracion-pasada) var(--curva-cinta) var(--escalon-pasada) both;
+}
+
+.juego-completar .ficha-verso .respuesta-dato {
+  margin: 0.6rem 0 0;
+  color: var(--fondo);
+  font-size: 1.3rem;
 }
 
 .ficha-verso-tema {
   display: flex;
   flex-direction: column;
   gap: 0.1rem;
-  margin: var(--espacio-1) 0 0;
+  margin: 0.6rem 0 0;
 }
 
 .ficha-verso-titulo {
   font-family: var(--fuente-rotulada);
   font-size: 1.08rem;
   line-height: 1.2;
-  color: var(--texto);
+  color: var(--fondo);
 }
 
 .ficha-verso-disco {
-  font-size: 0.9rem;
-  color: var(--texto-tenue);
+  font-size: 0.92rem;
+  color: var(--papel-tenue);
+}
+
+.juego-completar .ficha-verso .explicacion {
+  margin-top: 0.5rem;
+  color: var(--fondo);
 }
 
 .ficha-verso .seguir {
-  margin-top: var(--espacio-2);
+  margin-top: 0.85rem;
+  box-shadow:
+    inset 0 0 0 3px var(--cat-letras),
+    inset 0 0 0 5px var(--fondo);
 }
 
+/* El zocalo: de donde salio la letra y la puerta para corregirla, sobre una franja pintada
+   (`--fondo`), no sobre el ladrillo. */
 .juego-completar .ficha-pie {
-  padding-bottom: var(--espacio-2);
+  margin: 0;
+  padding: 0.3rem 0.7rem 0.4rem;
+  background: var(--fondo);
 }
 
 /* ---- La pared de la portada ---- */
 .pared--portada {
   flex: none;
   margin-block: var(--espacio-1) var(--espacio-2);
-  padding-block: 2.9rem 2.7rem;
+  padding-block: 4.4rem 3.6rem;
 }
 
 .pared--portada .pintada-pano {
-  padding-block: 0.9rem 0.8rem;
+  padding-block: 1.1rem 1rem;
 }
 
 .pared--portada .donde-estas {
   display: inline;
   max-width: none;
-  margin: 0 0.5rem 0 0;
+  margin: 0 0.4rem 0 0;
   font-family: var(--fuente-rotulada);
   font-size: 1.02rem;
   letter-spacing: 0.03em;
@@ -8849,9 +9096,9 @@ body:has(.juego-completar > #partida:not([hidden])) {
 }
 
 .hueco--muestra {
-  width: 4.2rem;
-  height: 1.4rem;
-  vertical-align: -0.3rem;
+  width: 2.9rem;
+  height: 1.35rem;
+  vertical-align: -0.32rem;
 }
 
 /* ---- El resultado: la pared de la vuelta ---- */
@@ -8865,72 +9112,116 @@ body:has(.juego-completar > #partida:not([hidden])) {
   rotate: -2deg;
 }
 
-.resumen--pintadas {
-  position: relative;
-  display: grid;
-  gap: 10px;
-  margin-inline: calc(var(--espacio-2) * -1);
-  padding: 14px var(--espacio-2);
-  background: var(--fondo);
-  border-block: var(--linea) solid var(--borde);
+.cuenta-vuelta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
 }
 
-.pintada-fila {
-  position: relative;
-  z-index: 1;
+/* La hazana: la vuelta entera. La cuenta lleva doble filete (un segundo marco pegado por
+   afuera, no una sombra) y al lado cae un segundo sello, verde, que grita. */
+.puntaje.puntaje--hazana {
+  border-color: var(--acento-3);
+  outline: var(--linea) solid var(--acento-3);
+  outline-offset: 4px;
+}
+
+.hazana-sello {
+  margin: 0;
+  padding: 0.15rem 0.6rem 0.08rem;
+  border: var(--linea) solid currentColor;
+  border-radius: 3px;
+  color: var(--acento-3);
+  font-family: var(--fuente-rotulada);
+  font-size: 1.1rem;
+  letter-spacing: 0.04em;
+  line-height: 1.3;
+  text-transform: uppercase;
+  rotate: 4deg;
+  animation: sello-golpe var(--duracion-pasada) var(--curva-cinta) var(--duracion-cuenta) backwards;
+}
+
+/* El muro: la pared de la vuelta, con las palabras de la noche pintadas en el pano. Dos
+   columnas, cada una con su pulso y su tamano; el titulo del tema, chico, debajo. */
+.pared--vuelta {
+  flex: none;
+  padding-block: 4rem 3.4rem;
+}
+
+.pared--vuelta .pintada-pano {
+  padding-block: 1.1rem 1rem;
+}
+
+.muro {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.15rem 0.9rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.muro-palabra {
   display: flex;
-  align-items: center;
-  gap: 0.7rem;
-  padding: 0.5rem 0.75rem;
-  background: var(--fondo);
+  flex-direction: column;
+  justify-content: flex-end;
+  min-width: 0;
+  rotate: -1.4deg;
+}
+
+.muro-palabra:nth-child(3n + 2) {
+  rotate: 1.1deg;
+}
+
+.muro-palabra:nth-child(4n + 3) {
   rotate: -0.4deg;
 }
 
-.pintada-fila:nth-child(even) {
-  rotate: 0.5deg;
-}
-
-.pintada-fila-marca {
-  flex: none;
-  width: 1.5rem;
-  font-size: 1.3rem;
-  line-height: 1;
-  text-align: center;
-}
-
-.pintada-fila--ok .pintada-fila-marca {
-  color: var(--acento-3);
-}
-
-.pintada-fila--no .pintada-fila-marca {
-  color: var(--acento-4);
-}
-
-.pintada-fila-cuerpo {
+.muro-pintada {
   display: flex;
   flex-direction: column;
-  min-width: 0;
+  align-items: flex-start;
+  font-family: var(--fuente-rotulada);
+  font-size: clamp(1rem, 4.6vw, 1.4rem);
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  text-transform: uppercase;
 }
 
-.pintada-fila-palabra {
-  font-family: var(--fuente-rotulada);
-  font-size: 1.08rem;
-  letter-spacing: 0.04em;
-  line-height: 1.25;
-  text-transform: uppercase;
+.muro-palabra:nth-child(3n + 1) .muro-pintada {
+  font-size: clamp(1.05rem, 5vw, 1.55rem);
+}
+
+.muro-escrita {
   color: var(--texto);
 }
 
-.pintada-fila-pie {
-  font-size: 0.85rem;
-  line-height: 1.3;
+.muro-palabra--ok .hueco-marca,
+.muro-era {
+  color: var(--acento-3);
+}
+
+.muro-palabra--no .hueco-errada {
+  font-size: 0.8em;
+}
+
+/* En el muro nada se esta pintando: el tachon ya esta puesto. */
+.muro .hueco-tachon {
+  animation: none;
+}
+
+.muro-tema {
+  margin-top: 0.15rem;
+  font-family: var(--fuente);
+  font-size: 0.8rem;
+  line-height: 1.25;
   color: var(--texto-tenue);
 }
 
-@media (min-width: 46rem) {
-  .resumen--pintadas {
-    grid-template-columns: 1fr 1fr;
-  }
+/* Lo tachado y su cruz no se separan. */
+.muro .hueco-errada {
+  white-space: nowrap;
 }
 
 /* =====================================================================

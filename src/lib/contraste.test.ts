@@ -107,6 +107,11 @@ const PARES: Array<[string, string, string]> = [
   // fondo —el contraste no tiene dirección—, pero la lista dice dónde se usa cada par.
   ['boton primario de adivinar-el-tema', 'fondo', 'cat-mitologia'],
   ['boton primario de mas-o-menos', 'fondo', 'disco-un-baion-para-el-ojo-idiota-tinta'],
+  // "Completá la letra", la ficha de papel (ronda de pulida, 2026-11-18): la tilde y el "+1"
+  // van en la tinta del fondo sobre el verde del acierto, y la cruz sobre el rojo del error.
+  // Invertidos, como los botones: el token es el relleno.
+  ['marca de acierto en la ficha de completar-la-letra', 'fondo', 'acento-3'],
+  ['marca de error en la ficha de completar-la-letra', 'fondo', 'acento-4'],
 ];
 
 /**

@@ -14,6 +14,8 @@
  *   · `revoque-canto.webp` — el canto roto del paño pintado, donde el revoque se terminó. Baldosa
  *                            que cierra de costado; se usa arriba y, dada vuelta, abajo.
  *   · `tachon.webp`        — la raya de aerosol que tacha la palabra que no era.
+ *   · `tapada.webp`        — una pintada vieja tapada a rodillo: cuatro pasadas que no llegan
+ *                            parejas a los costados. Compone la pared; no lleva texto.
  *
  * La mano se imprime acá, una vez; el teléfono no filtra nada, solo mueve
  * (`bestiario-inmersion.md` §1). Es dibujo propio. El azar tiene semilla: correrlo dos veces da
@@ -157,4 +159,28 @@ const comida = (id, { grano = 0.5, falta = 0.3, semilla = 4 } = {}) => `
     `<g filter="url(#a)"><path d="${d}" fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><g fill="#fff">${gotas.join('')}</g></g>`,
     defs,
   );
+}
+
+// ---------------------------------------------------------------- la pintada vieja, tapada
+
+{
+  // Cuatro pasadas de rodillo, una debajo de la otra, que no arrancan ni terminan parejas: lo
+  // que queda cuando alguien tapó una pintada apurado. Los cantos cortos van a mordiscones.
+  const rnd = azar(303);
+  const ANCHO = 300;
+  const ALTO = 140;
+  const pasadas = [];
+  const alto = ALTO / 4;
+  for (let i = 0; i < 4; i++) {
+    const x0 = 6 + rnd() * 34;
+    const x1 = ANCHO - 6 - rnd() * 40;
+    const y = i * alto;
+    pasadas.push(`<rect x="${r1(x0)}" y="${r1(y)}" width="${r1(x1 - x0)}" height="${r1(alto + 1)}"/>`);
+    for (let k = 0; k < 5; k++) {
+      const h = alto / 5;
+      pasadas.push(`<rect x="${r1(x0 - rnd() * 7)}" y="${r1(y + k * h)}" width="9" height="${r1(h * 0.7)}"/>`);
+      pasadas.push(`<rect x="${r1(x1 - 2)}" y="${r1(y + k * h)}" width="${r1(3 + rnd() * 7)}" height="${r1(h * 0.7)}"/>`);
+    }
+  }
+  await imprimir('tapada', ANCHO, ALTO, `<g fill="#fff" filter="url(#c)">${pasadas.join('')}</g>`, comida('c', { grano: 0.3, falta: 0.12, semilla: 21 }));
 }

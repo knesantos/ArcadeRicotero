@@ -283,6 +283,8 @@ const ANIMACIONES = [
   { nombre: 'chorrea', apaga: 'token', valor: '--duracion-inercia', hoja: 'src/styles/juego.css' },
   { nombre: 'rodillo-tapa', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
   { nombre: 'rodillo-destapa', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  // Ronda 2: el polvo de revoque que salta cuando el sello apoya en la pared, cae y se va.
+  { nombre: 'polvo-cae', apaga: 'token', valor: '--duracion-cuenta', hoja: 'src/styles/juego.css' },
 ] as const;
 
 test('no hay ninguna animacion que esta lista no conozca', () => {

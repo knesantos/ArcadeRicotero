@@ -69,3 +69,87 @@ pregunta, el canto del rodillo, la tecla de ruidos y el botón.
 - Las tiras lentas no sirven para elegir ni para el pase (los tiempos los lleva la isla): en
   `mirar-juego.mjs` van como ráfagas a velocidad real.
 - Sin tarjeta compartible: comparte texto y enlace, como antes.
+
+---
+
+# Ronda 2 (2026-11-18)
+
+## 5. Decisiones del hilo principal, ya aplicadas
+
+- **Excepción declarada: los versos van en `--fuente-rotulada`, en mayúsculas.** `UX-01` y
+  `diseno-marca.md` piden `--fuente` para el texto largo. Acá son renglones cortos pintados en
+  una pared (cinco como mucho, de hasta 49 caracteres), no texto de lectura: la letra pintada es
+  el objeto. Condiciones: el contexto va a **16 px** (`1rem`) y el del hueco a 20–24 px; los
+  pares son `--texto` y `--texto-tenue` sobre `--fondo`, los dos en `contraste.test.ts`. No se
+  copia a otra pantalla: es de este juego. Conviene sumarla a la tabla de `diseno-marca.md`.
+- **`BR-03`, para `producto`:** en difícil la ficha nombra tema y disco **después** de contestar.
+  Queda como está; falta que `producto` lo escriba en la regla.
+
+## 6. Lo que cambió y conviene dejar escrito
+
+1. **La que era se pinta en su propio renglón.** Debajo del verso del hueco hay un renglón
+   guardado (`.verso-correccion`, vacío mientras se juega). Si errás, lo elegido queda donde se
+   pintó, apagado, con la raya de aerosol (ahora fina: se sigue leyendo) y la cruz; la que era
+   aparece debajo, en verde y con tilde, a la altura de lo tachado, y se corre para adentro si
+   no entra. **El verso ya no se mueve** después del toque. El costo: ese renglón vacío (33 px)
+   está siempre.
+2. **La ficha es un afiche de papel**, pegado con dos cintas donde estaban las plantillas: la
+   marca (tilde o cruz en `--fondo` sobre el verde o el rojo), el grito como sello, "+1", y
+   "Seguí" en la tinta del disco con filete de chapa. Dos pares nuevos en `contraste.test.ts`
+   (`fondo` sobre `acento-3` y sobre `acento-4`). La fuente y "Corregí esto" van en un zócalo
+   pintado debajo. Lo que se anuncia (`role="status"`) es el texto del afiche, sin el botón.
+3. **La pared llega hasta abajo**: las plantillas y la ficha están apoyadas en ella. La componen
+   un caño con dos abrazaderas, arriba, y una pintada vieja tapada a rodillo (`tapada.webp`).
+   El afiche del tema es más grande y va arriba.
+4. **El sello cae justo arriba del renglón del hueco**, al costado, y al apoyar salta polvo de
+   revoque (siete motas que caen y se van).
+5. **El resultado es el muro de la vuelta**: la pared con las ocho palabras pintadas en dos
+   columnas (cuatro en la compu). La errada, tachada, y debajo la que era. Arriba, la línea que
+   canta y la cuenta en su sello.
+6. **Textos nuevos para `contenido`** (`letra/copy.ts`): los tres tramos —"Te falta escuchar
+   disco.", "La cantás, pero masticando.", "La tenés tatuada."—, la hazaña "¡Vuelta entera!", y
+   dos frases solo para lector de pantalla ("X, de Y: la sacaste" / "…: pusiste Z"). El tramo
+   usa los cortes de `lib/quiz/tramo.ts`: con 6 de 8 ya dice "La tenés tatuada", que puede ser
+   mucho. Lo decide `contenido` o `producto`.
+7. **La tarjeta compartible es el muro** (`src/scripts/tarjeta-pared.ts`, pincel propio; reusa
+   de `tarjeta.ts` el grano, la espera de las letras y la lectura de tokens, que ahora se
+   exportan). Asoma sobre "Compartí" y viaja con el enlace si el teléfono acepta archivos.
+   Cambia `CNT-26`, que decía "sin tarjeta, como Más o menos".
+8. **La pared de la portada es más alta, con su caño, y viaja**: al tocar "Empezá" crece hasta
+   ser la de la partida.
+9. **La hazaña**: con la vuelta entera, la cuenta lleva doble filete verde, cae el sello
+   "¡Vuelta entera!" y el golpe suena dos veces.
+
+## 7. Detalles vivos de la ronda 2
+
+| Detalle | Estado al que está atado | Con movimiento reducido |
+|---|---|---|
+| La pared de la portada crece hasta la de la partida | "Empezá" | aparece puesta |
+| La que era se pinta en su renglón, después del tachón | error | puesta |
+| El polvo de revoque salta y cae | el sello apoya | no está |
+| El afiche de la ficha se pega | segundo tiempo del cierre | puesto |
+| El sello "¡Vuelta entera!" | 8 de 8 | puesto |
+
+## 8. Lo medido y lo aprendido
+
+- **La pared no se rehace de un verso al otro.** Rehacerla hacía que el navegador volviera a
+  imprimir las máscaras del ladrillo en cada pase: un cuadro de ~220 ms con la CPU ×4. Ahora se
+  le cambia lo pegado y lo pintado, y el ladrillo queda. Lo mismo vale para cualquier fondo de
+  máscara de pantalla entera: **el fondo impreso se arma una vez por partida**.
+- **La pared de la portada se abre con `clip-path`, no cambiando de escala.** Escalarla dejaba un
+  cuadro de ~420 ms al terminar (volver a imprimir el ladrillo a su tamaño final). Es un barrido
+  como los de la imprenta (`pasada`); va por `animate()`, así que `movimiento.test.ts` no lo ve:
+  lo apaga `duracionDe()`, que con movimiento reducido da cero.
+- CPU ×4 a 430 × 860, dos tandas, control en la misma tanda (el hermano quieto: 17,8 ms, p95
+  18,3): la pared quieta 17,8 / 18,3; elegir 18,5 / 18,6 (peor 55); el pase 17,8 / 18,3 (peor
+  36). "Empezá" deja un cuadro de ~130 ms, que es armar la partida.
+- La medición de la ronda 1 se colgaba en la segunda tanda. Con la página traída al frente y el
+  freno de CPU soltado antes de cerrarla no volvió a pasar en tres corridas; no aislé cuál de
+  las dos cosas era.
+
+## 9. Lo que queda abierto
+
+- En un teléfono bajo (375 × 667) un verso fácil con cinco renglones no entra con las cuatro
+  plantillas: la segunda fila queda abajo del borde y hay que desplazar.
+- El renglón guardado para la corrección está siempre, también cuando acertás.
+- La tarjeta se dibuja con ocho palabras; con rondas de otro largo no se probó.

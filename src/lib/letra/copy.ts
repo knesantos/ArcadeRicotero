@@ -62,15 +62,38 @@ export const RESULTADO = {
   volver: 'Volvé al fichín',
   /** El título de la pared del resultado: una pintada por verso. Registro 3. */
   detalle: 'Los versos de esta vuelta',
-  /** El renglón chico de un verso que no salió: lo que elegiste, además de la cruz (`UX-01`). */
-  pusiste: (tema: string, palabra: string) => `${tema} · pusiste “${palabra}”`,
+  /**
+   * La hazaña: la vuelta entera sin errar. Grita porque es un acierto (el único lugar donde
+   * el sitio grita), y va como segundo sello al lado de la cuenta.
+   */
+  hazana: '¡Vuelta entera!',
+  /** Lo que escucha quien no ve el muro: cómo salió cada palabra. Registro 3. */
+  salio: (palabra: string, tema: string) => `${palabra}, de ${tema}: la sacaste`,
+  noSalio: (palabra: string, tema: string, puso: string) => `${palabra}, de ${tema}: pusiste ${puso}`,
   alCancionero: 'Mirá las letras enteras',
-  /** Compartir (`CNT-26`): texto y enlace, sin tarjeta, como "Más o menos". */
+  /** Compartir (`CNT-26`): texto y enlace, y desde la ronda de pulida la tarjeta del muro (`tarjeta-pared.ts`). */
   compartir: 'Compartí',
   paraCompartir: (aciertos: number, total: number) =>
     `Completé ${aciertos} de ${total} versos en el fichín ricotero. ¿Vos cuántos completás?`,
   copiado: 'Se copió el enlace.',
   aManoTitulo: 'Copiá esto y mandalo',
+} as const;
+
+/**
+ * Los tres tramos del resultado: la línea que canta (ronda de pulida, 2026-11-18). Registro 1:
+ * segunda persona, una imagen física, ocho palabras como techo. La puso el constructor de la
+ * ronda siguiendo `voz-ricotera.md`; queda pedido a `contenido` el pase fino. La del medio no
+ * repite "en la punta de la lengua", que ya usa la bajada y el tramo medio del hermano.
+ */
+export const TRAMOS = {
+  bajo: 'Te falta escuchar disco.',
+  medio: 'La cantás, pero masticando.',
+  alto: 'La tenés tatuada.',
+} as const;
+
+/** Lo que se lee adentro de la imagen que se comparte. Registro 3, salvo el tramo. */
+export const TARJETA = {
+  juego: 'Completá la letra',
 } as const;
 
 /**
