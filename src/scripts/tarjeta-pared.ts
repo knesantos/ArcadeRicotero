@@ -148,52 +148,53 @@ export async function dibujarMuro(datos: DatosDelMuro): Promise<Blob | null> {
   escribir(datos.juego.toUpperCase(), MARGEN, 168, 64, ROTULADA, c.juego, W - MARGEN * 2);
   escribir(datos.tramo, MARGEN, 262, 46, ROTULADA, c.texto, W - MARGEN * 2);
 
-  // ---- El muro de la vuelta: las palabras, en dos columnas.
+  // ---- El muro de la vuelta: las palabras, en dos columnas. Cada una se achica hasta entrar
+  // en su columna (con su marca al lado), así vale para palabras de cualquier largo.
   const filas = Math.ceil(datos.palabras.length / 2);
-  const ALTO_CELDA = filas > 0 ? Math.min(176, 700 / filas) : 176;
-  const Y_MURO = 420;
-  pano(Y_MURO, filas * ALTO_CELDA + 36);
-  const ANCHO_COL = (W - MARGEN * 2) / 2;
+  const ALTO_CELDA = filas > 0 ? Math.min(150, 600 / filas) : 150;
+  const Y_MURO = 414;
+  pano(Y_MURO, filas * ALTO_CELDA + 30);
+  const HUECO_COL = 36;
+  const ANCHO_COL = (W - MARGEN * 2 - HUECO_COL) / 2;
   datos.palabras.forEach((p, i) => {
-    const x = MARGEN + (i % 2) * ANCHO_COL;
-    const y = Y_MURO + 24 + Math.floor(i / 2) * ALTO_CELDA;
-    const anchoMax = ANCHO_COL - 110;
+    const x = MARGEN + (i % 2) * (ANCHO_COL + HUECO_COL);
+    const y = Y_MURO + 20 + Math.floor(i / 2) * ALTO_CELDA;
+    const anchoMax = ANCHO_COL - 64;
     ctx.save();
     // Cada pintada con su pulso: gira apenas alrededor de su esquina.
     ctx.translate(x, y);
     ctx.rotate(((i % 3) - 1) * 0.012);
     if (p.acerto) {
       const ancho = escribir(p.era.toUpperCase(), 0, ALTO_CELDA * 0.24, 62, ROTULADA, c.texto, anchoMax);
-      marca(true, ancho + 16, ALTO_CELDA * 0.24 + 8, 44);
+      marca(true, ancho + 14, ALTO_CELDA * 0.24 + 8, 42);
     } else {
       // Lo que pusiste, apagado y con la raya de aerosol; debajo, la que era.
-      const ancho = escribir(p.puso.toUpperCase(), 0, ALTO_CELDA * 0.06, 44, ROTULADA, c.tenue, anchoMax);
+      const ancho = escribir(p.puso.toUpperCase(), 0, ALTO_CELDA * 0.04, 44, ROTULADA, c.tenue, anchoMax);
       ctx.fillStyle = c.no;
-      ctx.fillRect(-10, ALTO_CELDA * 0.06 + 19, ancho + 20, 7);
-      marca(false, ancho + 22, ALTO_CELDA * 0.06 + 6, 32);
-      const anchoEra = escribir(p.era.toUpperCase(), 0, ALTO_CELDA * 0.06 + 56, 56, ROTULADA, c.ok, anchoMax);
-      marca(true, anchoEra + 16, ALTO_CELDA * 0.06 + 64, 40);
+      ctx.fillRect(-10, ALTO_CELDA * 0.04 + 19, ancho + 20, 7);
+      marca(false, ancho + 20, ALTO_CELDA * 0.04 + 6, 32);
+      const anchoEra = escribir(p.era.toUpperCase(), 0, ALTO_CELDA * 0.04 + 54, 56, ROTULADA, c.ok, anchoMax);
+      marca(true, anchoEra + 14, ALTO_CELDA * 0.04 + 62, 40);
     }
     ctx.restore();
   });
 
-  // ---- Abajo: la cuenta en un sello, y dónde se juega.
-  const Y_PIE = Y_MURO + filas * ALTO_CELDA + 36 + 62;
-  const altoPie = Math.max(120, H - Y_PIE - 56);
+  // ---- Abajo: la cuenta en un sello, y dónde se juega, de lado a lado y grande: es la única
+  // forma de volver que tiene una imagen suelta.
+  const Y_PIE = Y_MURO + filas * ALTO_CELDA + 30 + 56;
+  const altoPie = Math.max(150, H - Y_PIE - 48);
   pano(Y_PIE, altoPie);
-  ctx.font = `400 96px ${ROTULADA}`;
+  ctx.font = `400 84px ${ROTULADA}`;
   const anchoCuenta = ctx.measureText(datos.cuenta).width;
-  const xSello = W - MARGEN - anchoCuenta - 56;
-  const ySello = Y_PIE + (altoPie - 132) / 2;
   ctx.save();
-  ctx.translate(xSello, ySello);
-  ctx.rotate(-0.035);
+  ctx.translate(MARGEN, Y_PIE + 18);
+  ctx.rotate(-0.03);
   ctx.strokeStyle = c.juego;
   ctx.lineWidth = 8;
-  ctx.strokeRect(0, 0, anchoCuenta + 56, 132);
-  escribir(datos.cuenta, 28, 16, 96, ROTULADA, c.texto, anchoCuenta + 1);
+  ctx.strokeRect(0, 0, anchoCuenta + 52, 112);
+  escribir(datos.cuenta, 26, 12, 84, ROTULADA, c.texto, anchoCuenta + 1);
   ctx.restore();
-  escribir(datos.sitio, MARGEN, Y_PIE + altoPie / 2 - 18, 32, ROTULADA, c.tenue, xSello - MARGEN - 40);
+  escribir(datos.sitio, MARGEN, Y_PIE + altoPie - 62, 44, ROTULADA, c.texto, W - MARGEN * 2);
 
   granular(ctx);
 

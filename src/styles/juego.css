@@ -8412,28 +8412,6 @@ body:has(.juego-completar > #partida:not([hidden])) {
   gap: 0.6rem;
 }
 
-/* En un telefono bajo la pared se aprieta: menos aire arriba y alrededor del pano, y el afiche
-   un punto mas chico. La letra de los versos no se toca. */
-@media (max-height: 45rem) {
-  .pared {
-    padding-top: 1.7rem;
-    padding-bottom: 0.7rem;
-  }
-
-  .pared-cuadro {
-    padding-block: 1.5rem 1.6rem;
-  }
-
-  .pared-afiche {
-    padding: 0.45rem 0.8rem 0.4rem;
-    font-size: 1rem;
-  }
-
-  .opcion.plantilla {
-    min-height: 3.1rem;
-  }
-}
-
 /* ---- Lo que compone la pared (ronda 2): un cano y una pintada vieja tapada ----
    Dibujo: tinta plana, sin volumen. El cano cruza por arriba, con sus dos abrazaderas; la
    pintada vieja es un pano de rodillo, a media fuerza, que asoma detras de las plantillas. */
@@ -8467,14 +8445,19 @@ body:has(.juego-completar > #partida:not([hidden])) {
 .pared-tapada {
   position: absolute;
   right: -1.6rem;
-  bottom: 8.6rem;
+  bottom: 6.4rem;
   width: 15rem;
   height: 7rem;
   background: var(--fondo);
   -webkit-mask: url('/arte/completar/tapada.webp') center / 100% 100% no-repeat;
   mask: url('/arte/completar/tapada.webp') center / 100% 100% no-repeat;
-  opacity: 0.55;
-  rotate: -2deg;
+  opacity: 0.78;
+  /* Cambia de lugar con cada verso, y solo con `transform`: en su propia capa, moverla no
+     obliga a volver a imprimir el ladrillo de atras. */
+  translate: var(--tapada-x, 0) var(--tapada-y, 0);
+  rotate: var(--tapada-giro, -2deg);
+  scale: var(--tapada-lado, 1) 1;
+  will-change: transform;
   pointer-events: none;
 }
 
@@ -8499,6 +8482,13 @@ body:has(.juego-completar > #partida:not([hidden])) {
   -webkit-mask: url('/arte/completar/ladrillos.webp') 0 0 / 256px 208px repeat;
   mask: url('/arte/completar/ladrillos.webp') 0 0 / 256px 208px repeat;
   pointer-events: none;
+}
+
+/* El ladrillo va en su propia capa (ronda 3, medido): todo lo que se pega, se sella o se mueve
+   encima suyo —el sello, la marca, el afiche de la ficha, la pintada vieja— le pasaba por
+   arriba a la mascara y la hacia imprimir de nuevo: cuadros de 200 a 300 ms con la CPU x4. */
+.pared > .pared-ladrillos {
+  will-change: transform;
 }
 
 /* ---- El afiche: de que tema es el verso, en un papel pegado con cinta ---- */
@@ -8618,7 +8608,7 @@ body:has(.juego-completar > #partida:not([hidden])) {
 }
 
 .pintada .verso-hueco {
-  margin: 0.55rem 0 0;
+  margin: 0.7rem 0 0;
   font-family: var(--fuente-rotulada);
   font-size: clamp(1.25rem, 5.6vw, 1.5rem);
   line-height: 1.45;
@@ -8628,26 +8618,60 @@ body:has(.juego-completar > #partida:not([hidden])) {
   rotate: -0.8deg;
 }
 
-/* El renglon guardado para la correccion (ronda 2): existe siempre, vacio, debajo del verso
-   del hueco. Si erras, ahi se pinta la que era, a la altura de lo tachado, **sin empujar el
-   verso**: en la ronda 1 la que era iba en el mismo renglon y el pano saltaba. */
+/* El aire de abajo del verso del hueco (ronda 3: 21 px, eran 33). Es la separacion entre el
+   verso que grita y el contexto, y es donde cae la que era cuando lo tachado esta en el ultimo
+   renglon del verso: la que era cuelga de lo tachado (`.la-que-era`), no de este renglon. */
 .pintada .verso-correccion {
   position: relative;
-  height: 2.05rem;
-  margin: 0 0 0.35rem;
+  height: 1.3rem;
+  margin: 0 0 0.25rem;
 }
 
 .hueco.resuelto.la-que-era {
   position: absolute;
-  top: 0.12rem;
-  left: var(--corre, 0);
+  top: calc(100% - 0.28rem);
+  left: var(--corre, 1.2em);
   font-family: var(--fuente-rotulada);
-  font-size: clamp(1.15rem, 5vw, 1.35rem);
-  line-height: 1.3;
+  font-size: 1.12rem;
+  line-height: 1.2;
   letter-spacing: 0.02em;
   text-transform: uppercase;
   white-space: nowrap;
-  rotate: -1.6deg;
+  rotate: -1.2deg;
+}
+
+/* Lo tachado le hace lugar a la que era cuando el verso sigue en otro renglon. */
+.hueco-errada--con-lugar {
+  padding-bottom: 1.3rem;
+}
+
+/* El codo: un trazo en la misma pintura que baja de lo tachado y dobla hacia la que era. Es lo
+   que la ata a su palabra: sin el, cuando lo tachado arranca el renglon, se leia como un verso
+   suelto. Son dos trazos de tinta plana: el que baja y el que dobla. */
+.hueco.resuelto.la-que-era::before,
+.hueco.resuelto.la-que-era::after {
+  content: '';
+  position: absolute;
+  left: -0.95em;
+  background: currentColor;
+}
+
+.hueco.resuelto.la-que-era::before {
+  top: -0.2em;
+  width: 3px;
+  height: 0.78em;
+}
+
+.hueco.resuelto.la-que-era::after {
+  top: calc(0.58em - 3px);
+  width: 0.62em;
+  height: 3px;
+}
+
+/* La que era no chorrea: el renglon es corto y las gotas pisaban el verso de abajo. */
+.la-que-era .chorreada,
+.hueco-errada .chorreada {
+  display: none;
 }
 
 /* El hueco: el ladrillo que asoma donde se cayo la palabra, con el filete punteado de "aca
@@ -8721,6 +8745,7 @@ body:has(.juego-completar > #partida:not([hidden])) {
 /* Lo que pusiste y no era: en la tinta apagada, con la cruz y el tachon de aerosol en el rojo
    del error. Forma ademas de tinta. */
 .hueco-errada {
+  position: relative;
   display: inline-block;
   color: var(--acento-4);
 }
@@ -8768,6 +8793,12 @@ body:has(.juego-completar > #partida:not([hidden])) {
   }
 }
 
+/* El cierre adelantado con un toque: lo que se estaba pintando queda en su forma final, que
+   es la de reposo de cada pieza. */
+.pintada--ya :is(.hueco-tachon, .resuelto--despues, .chorreada, .jugo-sello) {
+  animation: none;
+}
+
 /* El rodillo: tapa la pintada vieja y destapa la nueva. Una pieza del ancho del pano, en su
    tinta, con el canto del rodillo en la del disco. Quieto, queda afuera. */
 .pintada-rodillo {
@@ -8810,12 +8841,42 @@ body:has(.juego-completar > #partida:not([hidden])) {
 
 /* El sello del cierre cae en la esquina del pano, pisando el canto: no tapa lo recien pintado. */
 .pintada > .sello-cae {
-  right: 0.6rem;
+  right: 0.7rem;
   left: auto;
-  width: 6.2rem;
-  height: 6.2rem;
-  margin: -3.1rem 0 0;
-  font-size: 3rem;
+  width: 5rem;
+  height: 5rem;
+  margin: -2.5rem 0 0;
+  border-width: 5px;
+  font-size: 2.5rem;
+}
+
+/* La marca que deja el sello al irse: chica, en el mismo lugar, hasta el verso siguiente. La
+   tilde o la cruz ademas de la tinta. */
+.sello-marca {
+  position: absolute;
+  z-index: 2;
+  top: var(--sello-y, 0);
+  right: 1.55rem;
+  display: grid;
+  place-items: center;
+  width: 2.3rem;
+  height: 2.3rem;
+  margin: -1.15rem 0 0;
+  background: var(--fondo);
+  border: 3px solid currentColor;
+  border-radius: 50%;
+  font-size: 1.15rem;
+  line-height: 1;
+  rotate: -9deg;
+  pointer-events: none;
+}
+
+.sello-marca--ok {
+  color: var(--acento-3);
+}
+
+.sello-marca--no {
+  color: var(--acento-4);
 }
 
 /* El polvo de revoque: unas motas que saltan cuando el sello apoya, caen y se van. Detalle
@@ -8823,8 +8884,8 @@ body:has(.juego-completar > #partida:not([hidden])) {
 .polvo {
   position: absolute;
   z-index: 3;
-  top: calc(var(--sello-y, 50%) + 2.6rem);
-  right: 3.4rem;
+  top: calc(var(--sello-y, 0px) + 2.1rem);
+  right: 2.9rem;
   width: 7px;
   height: 7px;
   background: var(--papel);
@@ -9077,7 +9138,7 @@ body:has(.juego-completar > #partida:not([hidden])) {
 .pared--portada {
   flex: none;
   margin-block: var(--espacio-1) var(--espacio-2);
-  padding-block: 4.4rem 3.6rem;
+  padding-block: 4.4rem 5.4rem;
 }
 
 .pared--portada .pintada-pano {
@@ -9089,7 +9150,7 @@ body:has(.juego-completar > #partida:not([hidden])) {
   max-width: none;
   margin: 0 0.4rem 0 0;
   font-family: var(--fuente-rotulada);
-  font-size: 1.02rem;
+  font-size: clamp(0.8rem, 3.1vw, 1.02rem);
   letter-spacing: 0.03em;
   line-height: 1.7;
   text-transform: uppercase;
@@ -9099,6 +9160,23 @@ body:has(.juego-completar > #partida:not([hidden])) {
   width: 2.9rem;
   height: 1.35rem;
   vertical-align: -0.32rem;
+}
+
+/* En la pared la acotacion va sin la raya de apertura: es una pintada, no un aparte. Con eso
+   y un cuerpo que sigue al ancho, el hueco entra en el mismo renglon desde 375 px. */
+.pared--portada .donde-estas::before {
+  content: none;
+}
+
+/* La plantilla de la portada: un carton apoyado al pie de la pared, torcido, con la palabra
+   del boton. Tocarla la lleva al hueco y arranca la partida. */
+.opcion.plantilla.plantilla--portada {
+  position: absolute;
+  right: 1.4rem;
+  bottom: 0.7rem;
+  width: 8.6rem;
+  min-height: 3.1rem;
+  rotate: 5deg;
 }
 
 /* ---- El resultado: la pared de la vuelta ---- */
@@ -9222,6 +9300,87 @@ body:has(.juego-completar > #partida:not([hidden])) {
 /* Lo tachado y su cruz no se separan. */
 .muro .hueco-errada {
   white-space: nowrap;
+}
+
+
+/* ---- Telefonos bajos (ronda 3) ----
+   Medido con script en diez tamanos, con los versos mas largos del banco. De 720 px de alto
+   para abajo la pared se aprieta: menos aire, el afiche en un renglon, el cano y la pintada
+   vieja se van. De 600 para abajo (el telefono de 320 x 568), ademas, el contexto baja a 14 px:
+   es el unico caso donde baja de 16, y solo para que las cuatro plantillas queden a la vista.
+   El verso del hueco no se achica nunca. **Va al final del bloque a proposito**: pisa reglas
+   de igual peso, y puesto antes que ellas no pisaba nada. */
+@media (max-height: 45rem) {
+  .juego-completar #partida:not([hidden]) {
+    gap: 0.6rem;
+  }
+
+  .pared {
+    padding-top: 0.9rem;
+    padding-bottom: 0.6rem;
+  }
+
+  .pared-cano,
+  .pared-tapada {
+    display: none;
+  }
+
+  .pared-cuadro {
+    padding-block: 1.45rem 1.5rem;
+  }
+
+  .pared-afiche {
+    flex-flow: row wrap;
+    align-items: baseline;
+    gap: 0 0.5rem;
+    padding: 0.38rem 0.75rem 0.32rem;
+    font-size: 0.95rem;
+  }
+
+  .pintada-pano {
+    padding-block: 0.85rem 0.7rem;
+  }
+
+  .pintada .verso-contexto {
+    margin-bottom: 0.2rem;
+    line-height: 1.25;
+  }
+
+  .pintada .verso-hueco {
+    margin-top: 0.45rem;
+    line-height: 1.32;
+  }
+
+  .opciones.plantillas {
+    gap: 0.5rem 0.6rem;
+  }
+
+  .opcion.plantilla {
+    min-height: 3rem;
+    padding-block: 0.4rem;
+  }
+}
+
+@media (max-height: 37.5rem) {
+  .pintada .verso-contexto {
+    font-size: 0.875rem;
+  }
+
+  .pared-pregunta {
+    font-size: 0.66rem;
+  }
+}
+
+/* Las dos salidas del resultado, en la pieza compartida: la vuelta al fichin y el cancionero. */
+.salida-resultado--doble {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem 0.9rem;
+}
+
+.salida-resultado--doble .volver + .volver {
+  transform: rotate(1.4deg);
 }
 
 /* =====================================================================

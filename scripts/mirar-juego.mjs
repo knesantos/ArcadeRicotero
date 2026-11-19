@@ -1028,13 +1028,13 @@ async function completarLaLetra(ctx) {
   const banco = await pagina.evaluate(() => JSON.parse(document.getElementById('banco').textContent));
   /** El verso en curso: se busca en el banco por lo que hay pintado y por sus cuatro opciones. */
   const elDeAhora = async () => {
-    const opciones = await pagina.$$eval('.plantilla', (bs) => bs.map((b) => b.textContent));
+    const opciones = await pagina.$$eval('#partida .plantilla', (bs) => bs.map((b) => b.textContent));
     const item = banco.find((i) => i.opciones.length === opciones.length && i.opciones.every((o) => opciones.includes(o.texto)));
     if (!item) throw new Error(`no encuentro en el banco las opciones ${opciones.join(', ')}`);
     return item;
   };
   const plantilla = async (texto) => {
-    for (const b of await pagina.$$('.plantilla:not(:disabled)')) {
+    for (const b of await pagina.$$('#partida .plantilla:not(:disabled)')) {
       if ((await b.evaluate((n) => n.textContent)) === texto) return b;
     }
     throw new Error(`no hay plantilla "${texto}"`);
@@ -1046,9 +1046,11 @@ async function completarLaLetra(ctx) {
   };
   const fichaLista = () => pagina.waitForSelector('.ficha-verso .seguir', { timeout: 8000 });
 
-  // Empezá: el rodillo destapa la primera pintada y las plantillas se apoyan.
-  await tira('empieza', () => pagina.click('#jugar'), { ms: 900 });
-  await ctx.espera(500);
+  // Empezá, por la plantilla apoyada en la pared de la portada: va al hueco, se apoya, la
+  // pared se abre, el rodillo destapa la primera pintada y las plantillas se apoyan. A
+  // velocidad real (el arranque lo dispara la isla a mitad del vuelo).
+  await rafaga('empieza-por-la-plantilla', () => pagina.click('#plantilla-portada'), { desde: 0, hasta: 1300, cada: 5, tope: 12 });
+  await ctx.espera(700);
   await foto('partida');
   await foto('partida-entera', { entera: true });
 
@@ -1084,13 +1086,36 @@ async function completarLaLetra(ctx) {
   await pagina.click('.ficha-verso .seguir');
   await ctx.espera(quieto ? 200 : 1000);
 
-  // ---- el resto de la vuelta: uno mal y los demás bien.
+  // ---- el resto de la vuelta: uno mal y los demás bien. En el 4 y en el 5 el cierre se
+  // adelanta con un toque en la pared: tiene que llegar la ficha con todo en su lugar.
   let n = 3;
   for (;;) {
-    const quedan = await pagina.$('.plantilla:not(:disabled)');
+    const quedan = await pagina.$('#partida .plantilla:not(:disabled)');
     if (!quedan) break;
     n += 1;
     const b = n === 5 ? await unaQueNoEs() : await laQueEs();
+    if (n === 4 || n === 5) {
+      const tocarLaPared = async () => {
+        await b.click();
+        await ctx.espera(140);
+        const caja = await (await pagina.$('#partida .pared-ladrillos')).boundingBox();
+        await pagina.touchscreen.tap(caja.x + caja.width / 2, caja.y + 30).catch(() => pagina.mouse.click(caja.x + caja.width / 2, caja.y + 30));
+      };
+      await rafaga(n === 4 ? 'adelantar-acierto' : 'adelantar-error', tocarLaPared, { desde: 0, hasta: 700, cada: 3, tope: 12 });
+      await fichaLista();
+      await ctx.espera(quieto ? 150 : 700);
+      await foto(n === 4 ? 'adelantado-acierto' : 'adelantado-error');
+      const estado = await pagina.evaluate(() => ({
+        casillas: document.querySelectorAll('.vuelta-casilla--ok, .vuelta-casilla--no').length,
+        marca: !!document.querySelector('.sello-marca'),
+        pintada: !!document.querySelector('#partida .hueco.resuelto'),
+        llevas: document.querySelector('.restantes--llevas')?.textContent,
+      }));
+      console.log(`   (adelantado, verso ${n}: ${JSON.stringify(estado)})`);
+      await pagina.click('.ficha-verso .seguir');
+      await ctx.espera(quieto ? 200 : 1000);
+      continue;
+    }
     await b.click();
     await fichaLista();
     await ctx.espera(quieto ? 150 : 900);

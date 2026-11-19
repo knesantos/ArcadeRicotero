@@ -709,6 +709,9 @@ const ESTADOS_COMPLETAR = [
   '.muro-palabra--ok',
   '.muro-palabra--no',
   '.la-que-era',
+  // Ronda 3: la marca chica que deja el sello en la pared cuando llega la ficha.
+  '.sello-marca--ok',
+  '.sello-marca--no',
 ];
 
 /** `US-04`. El quiz, mas lo que le pasa al recorte de tapa cuando se abre. */

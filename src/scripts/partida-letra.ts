@@ -139,7 +139,11 @@ document
   .getElementById('ruidos')
   ?.append(armarInterruptorDeRuidos({ apagar: PARTIDA.ruidosApagar, prender: PARTIDA.ruidosPrender }));
 
-$('jugar')?.addEventListener('click', () => {
+/**
+ * Arranca la partida desde la portada. Lo llaman el botón "Empezá" y la plantilla apoyada en
+ * la pared de la portada, que es el mismo gesto dicho con el objeto del juego.
+ */
+function arrancar(): void {
   // Este toque es el gesto que los celulares piden para dejar sonar algo: se despierta la
   // salida acá, y los ruidos de la partida (la tecla, el golpe, el sello) ya pueden salir.
   void despertarSalida().then(() => sonarEfecto('clac'));
@@ -163,7 +167,34 @@ $('jugar')?.addEventListener('click', () => {
     duration: ms,
     easing: curvaDelSitio(),
   });
-});
+}
+
+$('jugar')?.addEventListener('click', arrancar);
+
+/*
+ * La plantilla de la portada (ronda 3): un cartón apoyado en la pared, con la palabra del
+ * botón. Si la tocás, va hasta el hueco como en la partida, se queda apoyada y la partida arranca.
+ * Es un atajo del mismo botón: va escondida del lector de pantalla y fuera del orden de
+ * tabulación, porque "Empezá" ya está ahí y dice lo mismo.
+ */
+{
+  const plantillaDeLaPortada = document.getElementById('plantilla-portada');
+  const huecoDeLaPortada = portada.querySelector('.hueco--muestra');
+  let yendo = false;
+  plantillaDeLaPortada?.addEventListener('click', () => {
+    if (yendo) return;
+    yendo = true;
+    sonarEfecto('tecla');
+    const soltar = (): void => {
+      yendo = false;
+    };
+    if (huecoDeLaPortada) llevarPlantilla(plantillaDeLaPortada, huecoDeLaPortada, arrancar, soltar, true);
+    else {
+      arrancar();
+      soltar();
+    }
+  });
+}
 
 function comenzar(): void {
   ronda = armarRonda(banco, Math.min(LARGO_RONDA, banco.length));
@@ -252,6 +283,22 @@ function armarCabecera(): HTMLElement {
 }
 
 /**
+ * La pintada vieja, tapada a rodillo, no está siempre en el mismo lugar: cada verso es otra
+ * pared de la misma cuadra. La semilla es el verso, así que el mismo verso la encuentra siempre
+ * donde estaba. Es dibujo: cambia corrida, altura, giro y lado, nada más.
+ */
+function moverLaTapada(semillaTexto: string): void {
+  const tapada = pared.querySelector<HTMLElement>('.pared-tapada');
+  if (!tapada) return;
+  let s = 7;
+  for (const letra of semillaTexto) s = (s * 31 + letra.charCodeAt(0)) % 9973;
+  tapada.style.setProperty('--tapada-x', `${0.6 - (s % 7) * 1.1}rem`);
+  tapada.style.setProperty('--tapada-y', `${-((s >> 3) % 5) * 0.9}rem`);
+  tapada.style.setProperty('--tapada-giro', `${-4 + ((s >> 5) % 8)}deg`);
+  tapada.style.setProperty('--tapada-lado', (s >> 2) % 2 ? '1' : '-1');
+}
+
+/**
  * La pantalla de un verso. `destapa` es si llega detrás del rodillo (al pasar de un verso al
  * otro y al arrancar): el paño nace tapado y el rodillo se va, dejando la pintada a la vista.
  */
@@ -284,6 +331,7 @@ function pintarPregunta(destapa = true): void {
     pared.append(dibujo('span', 'pared-ladrillos'), dibujo('span', 'pared-cano'), dibujo('span', 'pared-tapada'));
     zonaPartida.append(pared);
   }
+  moverLaTapada(item.id);
 
   // BR-03: en dificil no se nombra ni el tema ni el disco. La pista de mas es justamente
   // lo que separa un nivel del otro, asi que se respeta acá y no en el generador.
@@ -344,14 +392,20 @@ function pintarPregunta(destapa = true): void {
  * encima: es cuando se pinta. Con movimiento reducido (o sin `animate`) no hay viaje y se
  * pinta en el acto. Solo se anima `transform`.
  */
-function llevarPlantilla(boton: HTMLElement, hueco: Element, alApoyar: () => void, alVolver: () => void): void {
+function llevarPlantilla(
+  boton: HTMLElement,
+  hueco: Element,
+  alApoyar: () => void,
+  alVolver: () => void,
+  seQueda = false,
+): Animation | null {
   const ms = duracionDe('--duracion-umbral') * 2.2;
   const desde = boton.getBoundingClientRect();
   const hasta = hueco.getBoundingClientRect();
   if (ms <= 0 || typeof boton.animate !== 'function' || desde.width === 0 || hasta.width === 0) {
     alApoyar();
     alVolver();
-    return;
+    return null;
   }
   const escala = Math.max(0.6, Math.min(1, (hasta.width + 52) / desde.width));
   const dx = hasta.left + hasta.width / 2 - (desde.left + desde.width / 2);
@@ -361,6 +415,20 @@ function llevarPlantilla(boton: HTMLElement, hueco: Element, alApoyar: () => voi
   // Una pieza lleva una sola animación: la de apoyarse al entrar ya terminó o se corta acá.
   boton.classList.remove('jugo-pega');
   boton.classList.add('plantilla--vuela');
+  if (seQueda) {
+    // La de la portada no vuelve: llega, se queda apoyada y ahí arranca la partida. Armar la
+    // partida le lleva un rato al teléfono, y con la plantilla volviendo a su lugar se la veía
+    // irse y la pantalla seguía quieta.
+    const ida = boton.animate([{ transform: 'none' }, { transform: puesta }], { duration: ms * 0.4, easing: curva, fill: 'forwards' });
+    const llegar = (): void => {
+      alApoyar();
+      ida.cancel();
+      boton.classList.remove('plantilla--vuela');
+      alVolver();
+    };
+    ida.addEventListener('finish', llegar, { once: true });
+    return ida;
+  }
   const vuelo = boton.animate(
     [
       { transform: 'none', easing: curva },
@@ -377,17 +445,20 @@ function llevarPlantilla(boton: HTMLElement, hueco: Element, alApoyar: () => voi
   };
   vuelo.addEventListener('finish', fin, { once: true });
   vuelo.addEventListener('cancel', fin, { once: true });
+  return vuelo;
 }
 
 /**
- * El sello del cierre cae **a la altura del hueco**, que es donde está el ojo, y al apoyar
- * salta polvo de revoque: unas motas que caen y se van. Es dibujo, y dura lo que el primer
- * tiempo del cierre; con movimiento reducido no llega a verse.
+ * El sello del cierre cae **sobre el canto de arriba del paño**, a la derecha: pisa ladrillo y
+ * revoque, nunca lo pintado (en la ronda 2 caía a la altura del hueco y tapaba la punta del
+ * renglón). Al apoyar salta polvo de revoque: unas motas que caen y se van. Cuando el sello se
+ * va deja su marca chica en ese lugar (`dejarLaMarca`), que dura hasta el verso siguiente.
  */
+/** Dónde cae el sello, medido desde arriba del paño: un poco por encima de su borde. */
+const ALTURA_DEL_SELLO = -32;
+
 function sellarLaPared(acerto: boolean): void {
-  const linea = pano.querySelector<HTMLElement>('.verso-hueco');
-  // Justo arriba del renglón del hueco: al lado de lo recién pintado, sin taparlo.
-  const y = linea ? Math.max(36, linea.offsetTop - 50) : pano.offsetHeight / 2;
+  const y = ALTURA_DEL_SELLO;
   const sello = dibujo('span', `sello-cae sello-cae--${acerto ? 'ok' : 'no'}`, acerto ? '✔︎' : '✕︎');
   sello.style.setProperty('--sello-y', `${Math.round(y)}px`);
   pintada.append(sello);
@@ -410,6 +481,15 @@ function sellarLaPared(acerto: boolean): void {
   });
 }
 
+/** Lo que queda del sello cuando llega la ficha: la marca chica, en el mismo lugar. */
+function dejarLaMarca(acerto: boolean): void {
+  for (const resto of pintada.querySelectorAll('.sello-cae, .polvo')) resto.remove();
+  if (pintada.querySelector('.sello-marca')) return;
+  const marca = dibujo('span', `sello-marca sello-marca--${acerto ? 'ok' : 'no'}`, acerto ? '✔︎' : '✕︎');
+  marca.style.setProperty('--sello-y', `${ALTURA_DEL_SELLO}px`);
+  pintada.append(marca);
+}
+
 function responder(texto: string, boton: HTMLButtonElement): void {
   const item = ronda[indice]!;
   if (elegidas.length > indice) return;
@@ -424,7 +504,6 @@ function responder(texto: string, boton: HTMLButtonElement): void {
   for (const b of botones) b.disabled = true;
 
   const linea = pano.querySelector('.verso-hueco')!;
-  const renglonDeCorreccion = pano.querySelector<HTMLElement>('.verso-correccion')!;
 
   /*
    * El verso se vuelve a pintar con la palabra en su lugar: es la recompensa de haber
@@ -443,10 +522,46 @@ function responder(texto: string, boton: HTMLButtonElement): void {
   const { errada, palabra: palabraErrada } = armarErrada(texto);
   const porPintar = acerto ? correcta : palabraErrada;
   porPintar.classList.add('hueco--por-pintar');
-  linea.replaceWith(pintarVerso(acerto ? correcta : errada, item));
+  const lineaNueva = pintarVerso(acerto ? correcta : errada, item);
+  linea.replaceWith(lineaNueva);
+  /*
+   * La que era va **colgada de lo tachado**, justo debajo. Si lo tachado quedó en el último
+   * renglón del verso, cae en el aire que el verso ya tiene abajo y nada se mueve. Si el verso
+   * sigue en otro renglón, lo tachado le hace lugar ahora, en el mismo toque en que el hueco
+   * tomó su ancho (`hueco-errada--con-lugar`): es el único momento en que el verso se acomoda.
+   */
+  if (!acerto && errada.getBoundingClientRect().bottom < lineaNueva.getBoundingClientRect().bottom - 8) {
+    errada.classList.add('hueco-errada--con-lugar');
+  }
+
+  /*
+   * El cierre dura 1,7 s y **se puede adelantar con un toque** en la pared (o con Enter o la
+   * barra): lo que falte pasa en el acto y llega la ficha. No se pierde ningún estado, porque
+   * adelantar no saltea pasos: los corre. Cada paso se hace una sola vez (`pintado`,
+   * `cerrado`, `conFicha`), venga de su reloj o del toque, y `pintada--ya` lleva a cero los
+   * tiempos de lo que se estaba pintando, así queda en su forma final.
+   */
+  let pintado = false;
+  let cerrado = false;
+  let conFicha = false;
+  let apurado = false;
+  let relojDeLaFicha = 0;
+  let vuelo: Animation | null = null;
+  const laPared = pared;
+  const alTeclear = (ev: KeyboardEvent): void => {
+    if (ev.key !== 'Enter' && ev.key !== ' ') return;
+    ev.preventDefault();
+    conPuntero = false;
+    apurar();
+  };
+  const soltarElApuro = (): void => {
+    laPared.removeEventListener('pointerdown', apurar);
+    document.removeEventListener('keydown', alTeclear);
+  };
 
   const pintar = (): void => {
-    if (!vigente()) return;
+    if (pintado || !vigente()) return;
+    pintado = true;
     porPintar.classList.remove('hueco--por-pintar');
     if (acerto) {
       correcta.append(vestir(correcta, '✔︎', item.hueco.respuesta.length));
@@ -457,21 +572,33 @@ function responder(texto: string, boton: HTMLButtonElement): void {
     }
     palabraErrada.append(el('span', 'hueco-tachon'));
     errada.append(vestir(palabraErrada, '✕︎', texto.length + 3));
-    // La que era, en su renglón: llega un golpe después, cuando el tachón ya pasó. Va debajo
-    // de lo tachado, y si no entra hasta el borde se corre para adentro.
+    // La que era llega un golpe después, cuando el tachón ya pasó: debajo de lo tachado,
+    // corrida un codo para adentro. El codo (un trazo en la misma pintura) baja de lo tachado
+    // y la señala, así no se lee como un verso suelto. Si no entra hasta el borde del paño,
+    // se corre para atrás lo que haga falta.
     correcta.classList.add('la-que-era', 'resuelto--despues');
     correcta.append(vestir(correcta, '✔︎', item.hueco.respuesta.length));
-    renglonDeCorreccion.append(correcta);
-    const fila = renglonDeCorreccion.getBoundingClientRect();
-    const deseado = errada.getBoundingClientRect().left - fila.left;
-    const tope = Math.max(0, fila.width - correcta.offsetWidth - 4);
-    correcta.style.setProperty('--corre', `${Math.round(Math.max(0, Math.min(deseado, tope)))}px`);
+    errada.append(correcta);
+    const codo = parseFloat(getComputedStyle(correcta).fontSize) * 1.15;
+    const borde = pano.getBoundingClientRect();
+    const desde = errada.getBoundingClientRect().left;
+    const sobra = desde + codo + correcta.offsetWidth - (borde.right - 10);
+    const corre = Math.max(borde.left + 10 + codo - desde, codo - Math.max(0, sobra));
+    correcta.style.setProperty('--corre', `${Math.round(corre)}px`);
     golpear(pano);
     sonarEfecto('golpe');
   };
 
+  const mostrarLaFicha = (): void => {
+    if (conFicha) return;
+    conFicha = true;
+    soltarElApuro();
+    if (vigente()) pintarFicha(item, acerto);
+  };
+
   const cerrar = (): void => {
-    if (!vigente()) return;
+    if (cerrado || !vigente()) return;
+    cerrado = true;
     // Las plantillas dicen cuál era y cuál elegiste, con símbolo además de tinta.
     for (const b of botones) {
       if (b.textContent === item.hueco.respuesta) b.classList.add('es-correcta');
@@ -496,14 +623,33 @@ function responder(texto: string, boton: HTMLButtonElement): void {
     // El primer tiempo del cierre: el sello cae sobre la pared, donde está el ojo.
     sellarLaPared(acerto);
     const espera = duracionDe('--duracion-pasada') + duracionDe('--duracion-umbral') + duracionDe('--duracion-paso');
-    const mostrarLaFicha = (): void => {
-      if (vigente()) pintarFicha(item, acerto);
-    };
-    if (espera > 0) window.setTimeout(mostrarLaFicha, espera);
+    if (espera > 0 && !apurado) relojDeLaFicha = window.setTimeout(mostrarLaFicha, espera);
     else mostrarLaFicha();
   };
 
-  llevarPlantilla(boton, porPintar, pintar, cerrar);
+  function apurar(): void {
+    if (conFicha || !vigente()) return;
+    apurado = true;
+    estaPared.classList.add('pintada--ya');
+    pintar();
+    if (cerrado) {
+      window.clearTimeout(relojDeLaFicha);
+      mostrarLaFicha();
+    } else if (vuelo && vuelo.playState !== 'finished') {
+      // Terminar el vuelo dispara su final, que cierra; y cerrar, apurado, trae la ficha.
+      vuelo.finish();
+    } else {
+      cerrar();
+    }
+  }
+
+  vuelo = llevarPlantilla(boton, porPintar, pintar, cerrar);
+  // El toque que eligió la plantilla no cuenta: se empieza a escuchar en la vuelta siguiente.
+  window.setTimeout(() => {
+    if (conFicha || !vigente()) return;
+    laPared.addEventListener('pointerdown', apurar);
+    document.addEventListener('keydown', alTeclear);
+  }, 0);
 }
 
 /**
@@ -517,7 +663,7 @@ function responder(texto: string, boton: HTMLButtonElement): void {
  */
 function pintarFicha(item: ItemJugable, acerto: boolean): void {
   zonaPartida.classList.add('partida--revelada');
-  for (const resto of pintada.querySelectorAll('.sello-cae, .polvo')) resto.remove();
+  dejarLaMarca(acerto);
   lista.hidden = true;
 
   const afiche = el('div', `feedback ficha-verso jugo-pega ${acerto ? 'ok' : 'no'}`);
@@ -799,17 +945,21 @@ function pintarResultado(): void {
     sonarEfecto('clac');
     comenzar();
   });
-  // El que jugó ya está pensando en el tema: el cancionero es el paso natural.
-  const alCancionero = el('a', 'secundario', RESULTADO.alCancionero);
-  alCancionero.href = '/letras-y-acordes/';
-  pieDelResultado.append(asoma, compartir, salida, denuevo, alCancionero);
+  pieDelResultado.append(asoma, compartir, salida, denuevo);
   zonaResultado.append(pieDelResultado);
 
-  const salidaAlFichin = el('p', 'salida-resultado');
+  /*
+   * Las salidas (`.salida-resultado`, la pieza compartida): la vuelta al fichín y, al lado, el
+   * cancionero —el que jugó ya está pensando en el tema—. Las dos son la cinta de papel del
+   * sitio, con su flecha; el pie queda con tres piezas, como en los otros juegos pulidos.
+   */
+  const salidas = el('p', 'salida-resultado salida-resultado--doble');
   const volver = el('a', 'volver', `← ${RESULTADO.volver}`);
   volver.href = '/';
-  salidaAlFichin.append(volver);
-  zonaResultado.append(salidaAlFichin);
+  const alCancionero = el('a', 'volver', `${RESULTADO.alCancionero} →`);
+  alCancionero.href = '/letras-y-acordes/';
+  salidas.append(volver, alCancionero);
+  zonaResultado.append(salidas);
 
   mostrar(zonaResultado);
   window.scrollTo(0, 0);

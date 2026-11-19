@@ -153,3 +153,74 @@ pregunta, el canto del rodillo, la tecla de ruidos y el botón.
   plantillas: la segunda fila queda abajo del borde y hay que desplazar.
 - El renglón guardado para la corrección está siempre, también cuando acertás.
 - La tarjeta se dibuja con ocho palabras; con rondas de otro largo no se probó.
+
+---
+
+# Ronda 3, el cierre (2026-11-19)
+
+## 10. Lo que cambió y conviene dejar escrito
+
+1. **La que era cuelga de lo tachado.** Va justo debajo, corrida un codo para adentro, y el
+   codo (dos trazos en la misma pintura) baja de lo tachado y la señala. En la ronda 2 iba en un
+   renglón aparte: cuando lo tachado arrancaba el renglón se leía como un verso suelto, y
+   cuando el verso seguía en otro renglón quedaba 30 px más abajo. Ahora, si el verso sigue,
+   lo tachado le hace lugar **en el mismo toque** en que el hueco toma su ancho; después de
+   eso nada se mueve. Medido en diez tamaños: 21 px a la derecha de lo tachado, pegada debajo,
+   siempre adentro del paño.
+2. **El renglón guardado ya no es un vacío**: pasó de 33 a 21 px y es el aire entre el verso
+   del hueco y el contexto. Ni lo tachado ni la que era chorrean (las gotas pisaban el renglón
+   de abajo); chorrea lo que se pinta bien.
+3. **El sello cae sobre el canto de arriba del paño**, a la derecha, y nunca sobre lo pintado.
+   Al irse deja su marca chica ahí, hasta el verso siguiente.
+4. **El cierre se adelanta con un toque** en la pared (o con Enter o la barra). No saltea
+   pasos: corre los que falten, cada uno una sola vez, y llega la ficha con la casilla, la
+   racha, la marca y la cuenta en su lugar.
+5. **Teléfonos bajos**, medido en diez tamaños con los ocho versos fáciles más largos: de 720
+   px de alto para abajo la pared se aprieta (menos aire, el afiche en un renglón, sin caño ni
+   pintada vieja). **De 600 para abajo (320 × 568) el contexto baja a 14 px**: es el único caso
+   donde baja de los 16 que pidió el hilo principal, y solo para que entren las cuatro
+   plantillas. Si no se acepta, en ese teléfono la segunda fila queda 88 px bajo el borde.
+6. **La portada**: el hueco va en el mismo renglón (la acotación pierde la raya de apertura y
+   su cuerpo sigue al ancho, 13 px a 430) y hay una plantilla apoyada con la palabra del botón.
+   Tocarla la lleva al hueco y arranca. Es un atajo de "Empezá": va fuera del orden de
+   tabulación y escondida del lector, porque el botón dice lo mismo.
+7. **Las dos salidas del resultado van en `.salida-resultado`**: "← Volvé al fichín" y "Mirá las
+   letras enteras →", las dos como cinta. El pie queda con tres piezas.
+8. **La tarjeta**: la dirección va de lado a lado y grande, y cada palabra se achica hasta
+   entrar en su columna. Probada con palabras de 16 letras.
+9. **La pintada vieja tapada cambia de lugar con cada verso** (corrida, altura, giro y lado,
+   con el verso como semilla) y se ve más (0,78).
+
+## 11. Lo aprendido para los juegos que quedan
+
+1. **El objeto contrario al del hermano.** Dos juegos parientes se distinguen por material y
+   por luz (papel claro contra pared oscura), no por un color.
+2. **El fondo impreso se arma una vez por partida.** Rehacer por pregunta un fondo de máscara
+   de pantalla entera cuesta un cuadro de ~220 ms con la CPU ×4; escalarlo, ~420. Se persiste
+   el contenedor y se abre con recorte.
+3. **Lo que corrige cuelga de lo corregido**, no de un renglón aparte: así queda al lado en
+   cualquier quiebre de línea. Y si hay que hacerle lugar, se hace en el toque, nunca después.
+4. **Las reglas de pantalla chica van al final del bloque.** Con el mismo peso de selector,
+   una media query puesta antes de la regla base no pisa nada (así se "arregló" 375 × 667 dos
+   veces sin que cambiara un píxel).
+5. **Medir en diez tamaños con los datos peores**, cambiando el banco que recibe el navegador:
+   dos capturas con un verso al azar no encuentran el caso largo.
+6. **Adelantar no es saltear.** Un cierre por tiempos se vuelve salteable si cada paso se
+   corre una sola vez, venga de su reloj o del toque.
+7. **Un selector sin `#partida` agarra la portada**: al sumar una plantilla y un paño a la
+   portada, los guiones de captura y de medición midieron piezas escondidas.
+8. **Los tests de estilo también dibujan**: el codo no puede ser un `border-left` (barra
+   lateral) ni un tiempo puede ir escrito (`0s`); se resuelven con dos trazos y `animation: none`.
+
+## 12. Lo medido en la ronda 3, y lo que no quedó resuelto
+
+- El ladrillo va en su propia capa (`will-change: transform`) y la pintada vieja se mueve solo
+  con `transform`. En la misma tanda, antes y después: elegir bajó de cuadros de 217–300 ms a
+  133–167, y el pase de 117–183 a 67–133 (CPU ×4, control 16,7 ms).
+- **Quedan uno o dos cuadros de 130 a 170 ms al elegir** (al pintar y al cerrar), con la CPU ×4.
+  No son el ladrillo: escondiéndolo siguen ahí. Son armar el DOM y medir. En la ronda 2 el peor
+  cuadro de elegir era de 55 ms; ese día el control daba 17,8 y no 16,7, así que los dos
+  números no se comparan directo, y no pude aislar qué parte es de la ronda 3 y qué parte es la
+  máquina. Varía mucho de corrida a corrida (de 133 a 267 en el mismo estado).
+- "Empezá" deja un cuadro de ~330 ms con la CPU ×4, que es armar la partida. Por eso la
+  plantilla de la portada no vuelve a su lugar: llega al hueco, se queda apoyada y ahí arranca.
