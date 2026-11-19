@@ -35,14 +35,15 @@
  */
 import Base from '../../../layouts/Base.astro';
 import FichaBestia from '../../../components/bestiario/FichaBestia.astro';
+import VeloDeLlegada from '../../../components/bestiario/VeloDeLlegada.astro';
 import { BESTIARIO, CAMINO } from '../../../lib/bestiario/copy.ts';
 import { lugarDelRotulo, simbolos, tintaDe, type Bestiario, type Bestia } from '../../../lib/bestiario/mapa.ts';
 import { ALTO, CAMINOS, CON_CAMINO, hrefDeRegion } from '../../../lib/bestiario/camino.ts';
 import { destinosDelCruce, HORIZONTE, PIEZAS_CAMINO } from '../../../lib/bestiario/arte-camino.ts';
 import { rutaDePieza } from '../../../lib/bestiario/aerografo.ts';
-import { ACECHOS, LUCES, VIDAS, aireDe, altoDeBaldosa, type CapaDeAire, type Plano } from '../../../lib/bestiario/aire.ts';
+import { ACECHOS, FRENTE_QUE_SE_CORRE, HUIDIZOS, LUCES, PLANOS, VIDAS, VISITAS, aireDe, altoDeBaldosa, type CapaDeAire, type Plano } from '../../../lib/bestiario/aire.ts';
 import { pisoDelCamino } from '../../../lib/bestiario/escenas-camino.ts';
-import { EL_PLANO, SOBRA, VELOS, rutaDelVelo } from '../../../lib/bestiario/velos.ts';
+import { EL_PLANO, VELOS, rutaDelVelo } from '../../../lib/bestiario/velos.ts';
 import { conAudio, loQueDice } from '../../../lib/bestiario/fichas.ts';
 import { fondoDe } from '../../../lib/bestiario/sonido.ts';
 import { tituloDelDisco } from '../../../lib/letra/discos.ts';
@@ -92,6 +93,7 @@ const aire = (plano: Plano) =>
     pieza: c.pieza,
     plano,
     cae: altoDeBaldosa(c) > 0,
+    firme: !!c.firme,
     estilo:
       `--baldosa: url(${rutaDePieza(c.pieza)}); --tw: ${c.ancho}; --th: ${c.alto}; --alfa: ${c.alfa}` +
       (altoDeBaldosa(c) > 0 ? '' : `; ${enLaAltura([0, c.y, c.ancho, c.alto])}`),
@@ -113,6 +115,34 @@ const filos = (LUCES[id] ?? []).flatMap((l) => (l.filo ? Array.from({ length: l.
 const acecho = ACECHOS[id] ?? null;
 /** Lo que cruza lejos, muy cada tanto (`VIDAS`): tampoco se ve hasta que la isla lo suelta. */
 const vida = VIDAS[id] ?? null;
+
+/**
+ * Lo que asoma lejos (`VISITAS`): una imagen chica clavada en lo lejano. Es una capa más (se corre con
+ * `data-f`), puesta en su lugar; el origen de su transformación es la esquina de la escena, como el de
+ * todas las capas, así la cámara y la lupa la mueven igual. No se ve hasta que la isla la trae.
+ */
+const visita = VISITAS[id] ?? null;
+const enSuLugar = (caja: readonly number[], alfa: number): string =>
+  `--px: calc(var(--alto-escena) / var(--alto)); left: calc(var(--px) * ${caja[0]}); top: calc(var(--px) * ${caja[1]}); width: calc(var(--px) * ${caja[2]}); height: calc(var(--px) * ${caja[3]}); transform-origin: calc(var(--px) * ${-caja[0]!}) calc(var(--px) * ${-caja[1]!}); opacity: ${alfa}; pointer-events: none`;
+const estiloDeVisita = visita ? enSuLugar(visita.caja, 0) : '';
+/** Lo que se va si lo mirás de cerca (`HUIDIZOS`): igual que la visita, pero a la vista hasta que se saca la lupa. */
+const huidizo = HUIDIZOS[id] ?? null;
+
+/**
+ * Lo que la luz le prende a lo impreso (`Luz.cantos`): cada zona es una capa chica puesta en su lugar,
+ * como la visita. Apagadas hasta que la isla les sube el alfa cuando el haz les apunta.
+ */
+const cantos = (LUCES[id] ?? []).flatMap((l) =>
+  (l.cantos ?? []).map((c, i) => ({
+    luz: l.pieza,
+    i,
+    f: c.f,
+    pieza: c.pieza,
+    ancho: c.caja[2],
+    alto: c.caja[3],
+    estilo: `--px: calc(var(--alto-escena) / var(--alto)); left: calc(var(--px) * ${c.caja[0]}); top: calc(var(--px) * ${c.caja[1]}); width: calc(var(--px) * ${c.caja[2]}); height: calc(var(--px) * ${c.caja[3]}); transform-origin: calc(var(--px) * ${-c.caja[0]}) calc(var(--px) * ${-c.caja[1]}); opacity: 0; pointer-events: none`,
+  })),
+);
 
 /** El piso, que es la capa de los bichos (`escenas-camino.ts`). */
 const pisoSvg = pisoDelCamino(tramo, nombres);
@@ -189,7 +219,7 @@ const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín
     <link rel="preload" as="image" href={rutaDelVelo(id)} fetchpriority="high" />
     {[...region.vecinas, EL_PLANO].filter((v) => VELOS[v]).map((v) => <link rel="prefetch" as="image" href={rutaDelVelo(v)} />)}
   </Fragment>
-  <div class="velo-de-llegada" aria-hidden="true" data-rumbo={VELOS[id]!.rumbo} style={`--velo: url(${rutaDelVelo(id)}); --sobra: ${SOBRA / 100}`}></div>
+  <VeloDeLlegada destino={id} />
   <section
     class="camino"
     id="camino"
@@ -240,7 +270,15 @@ const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín
               />
             )
           }
-          {aire('fondo').map((a) => <div class:list={['aire', `aire--${a.plano}`, { 'aire--cae': a.cae }]} data-aire={a.pieza} style={a.estilo} />)}
+          {visita && <img class="capa asoma" data-f={visita.f} data-espera={visita.espera} src={rutaDePieza(visita.pieza)} width={visita.caja[2]} height={visita.caja[3]} style={estiloDeVisita} alt="" decoding="async" loading="lazy" />}
+          {huidizo && <img class="capa huye" data-f={huidizo.f} src={rutaDePieza(huidizo.pieza)} width={huidizo.caja[2]} height={huidizo.caja[3]} style={enSuLugar(huidizo.caja, 1)} alt="" decoding="async" />}
+          {aire('fondo').map((a) => <div class:list={['aire', `aire--${a.plano}`, { 'aire--cae': a.cae, 'aire--firme': a.firme }]} data-aire={a.pieza} style={a.estilo} />)}
+          {/* Lo que está parado entre lo lejano y el piso (`PLANOS`): el carguero de los astilleros, a su velocidad. Va después del aire de atrás: el río no le corre por el casco. */}
+          {(PLANOS[id] ?? []).map((p) => <img class="capa plano" data-f={p.f} src={rutaDePieza(p.pieza)} width={p.caja[2]} height={p.caja[3]} style={enSuLugar(p.caja, 1)} alt="" decoding="async" />)}
+          {/* Lo que cruza por detrás del piso (`Vida.atras`): el tren de la ruta, detrás de los postes. */}
+          {vida?.atras && (
+            <img class="vida" id="vida" src={rutaDePieza(vida.pieza)} width={vida.ancho} height={vida.alto} style={`--lw: ${vida.ancho}; --lh: ${vida.alto}`} alt="" decoding="async" loading="lazy" />
+          )}
           <svg
             class="capa capa--piso bestiario-svg"
             data-f="1"
@@ -255,6 +293,7 @@ const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín
               <img
                 class="capa capa--frente"
                 data-f={tramo.velocidad.frente}
+                data-se-corre={FRENTE_QUE_SE_CORRE.includes(id) ? '' : undefined}
                 src={rutaDePieza(frente.nombre)}
                 width={frente.caja[2]}
                 height={frente.caja[3]}
@@ -265,9 +304,10 @@ const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín
             )
           }
 
+          {cantos.map((c) => <img class="capa canto-de-luz" data-f={c.f} data-luz={c.luz} data-canto={c.i} src={rutaDePieza(c.pieza)} width={c.ancho} height={c.alto} style={c.estilo} alt="" decoding="async" loading="lazy" />)}
           {aire('cerca').map((a) => <div class:list={['aire', `aire--${a.plano}`, { 'aire--cae': a.cae }]} data-aire={a.pieza} style={a.estilo} />)}
           {filos.map((fl) => <img class="filo" data-filo={fl.luz} src={rutaDePieza(fl.pieza)} width="100" height="50" style="--lw: 100; --lh: 50" alt="" decoding="async" loading="lazy" />)}
-          {vida && (
+          {vida && !vida.atras && (
             <img class="vida" id="vida" src={rutaDePieza(vida.pieza)} width={vida.ancho} height={vida.alto} style={`--lw: ${vida.ancho}; --lh: ${vida.alto}`} alt="" decoding="async" loading="lazy" />
           )}
           {acecho && (

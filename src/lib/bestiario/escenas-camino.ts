@@ -15,7 +15,12 @@
  */
 
 import { rutaDePieza, type Pieza } from './aerografo.ts';
-import { PIEZAS_CAMINO, cajaDelCruce } from './arte-camino.ts';
+import { FINAS_DE, PIEZAS_CAMINO, cajaDelCruce } from './arte-camino.ts';
+import { LENGUAS } from './arte-salon.ts';
+import { VAPOR } from './arte-sobremesa.ts';
+import { COLGANTES } from './arte-bonete.ts';
+import { FLOTAN } from './arte-anegado.ts';
+import { CADENA } from './arte-carceles.ts';
 import { K_ENTORNO, RECINTO, type Tramo } from './camino.ts';
 import { escenaBajo, escenaBaldio, escenaInfierno, escenaPrision, escenaTemplo, ojos, type Tinta } from './escenas.ts';
 import { cosa, VELOCIDAD_DE_CARRIL } from './escenas-entornos.ts';
@@ -85,8 +90,11 @@ const titereLobo = (x: number, nombres: Nombres): string =>
  * corrido `dx` y adentro valen las coordenadas del recinto: la isla mueve al lobo y al cordero
  * con la misma lógica que en el bestiario.
  */
+/** Lo que premia a la lupa, impreso fino, encima del piso y en su mismo lugar (`FINAS_DE`, `D-91`). */
+const finasDe = (t: Tramo): string => (FINAS_DE[t.region] ?? []).map((n) => imagenDePieza(piezaDelCamino(n))).join('');
+
 function pisoLargo(t: Tramo, nombres: Nombres): string {
-  const piso = imagenDePieza(piezaDelCamino(t.piezas.piso!));
+  const piso = imagenDePieza(piezaDelCamino(t.piezas.piso!)) + finasDe(t);
   const claro = t.claro;
   if (!claro) {
     // Los del elenco que viven en el tramo (tu animal, en el monte) van donde estaban sus ojos, corridos enteros.
@@ -174,7 +182,12 @@ function pisoDeEntorno(t: Tramo, nombres: Nombres): string {
   // obligaba a repintar el piso entero en cada cuadro. Es una capa de aire (`aire.ts`), que nieva igual.
   return (
     capasDe(t.region, 'atras', nombres, K_ENTORNO) +
+    // Tanda 3 de `D-91`, tercera vuelta: lo que cuelga de las ramas del árbol. La isla lo gira desde el nudo; va detrás del piso impreso.
+    (t.region === 'el-arbol' ? COLGANTES.map((c) => `<g class="pendula" data-x="${c.x}" data-y="${c.y}" data-largo="${c.largo}" pointer-events="none">${imagenDePieza(piezaDelCamino(c.pieza), true)}</g>`).join('') : '') +
     imagenDePieza(piezaDelCamino(t.piezas.piso!)) +
+    finasDe(t) +
+    // El vapor de la olla de la mesa (`arte-sobremesa.ts`): la isla lo estira desde la boca de la olla.
+    (t.region === 'la-mesa' ? `<g class="respira" data-base="${VAPOR.base}" data-fase="1.3" pointer-events="none">${imagenDePieza(piezaDelCamino('camino-mesa-vapor'), true)}</g>` : '') +
     cruce(t) +
     `<g class="ojos-del-recinto">${quietas ? ojosDelEntorno.replaceAll('class="bestia bestia--ojos"', 'class="bestia bestia--ojos" data-quieto=""') : ojosDelEntorno}${lasCosas}</g>` +
     extra +
@@ -188,9 +201,97 @@ function pisoDeEntorno(t: Tramo, nombres: Nombres): string {
    ------------------------------------------------------------------ */
 
 /** La escena de cada recinto de títeres: la misma del bestiario (`escenas.ts`). */
+/**
+ * Lo que el camino le suma al salón del infierno (`arte-salon.ts`, `D-91`, tanda 2), de atrás para adelante:
+ * el que asoma (no se ve: la isla lo trae si te quedás quieto), la fila alta de lenguas, la arcada con los
+ * que bailan, y la fila baja. Las lenguas van en un grupo que la isla estira desde su base (`data-base`).
+ */
+function salonEnElCamino(): { entre: string; cerca: string } {
+  const quieta = (n: string): string => imagenDePieza(piezaDelCamino(n), true);
+  const lenguas = (n: string, fase: number): string => `<g class="respira" data-base="${LENGUAS.base}" data-fase="${fase}" pointer-events="none">${quieta(n)}</g>`;
+  return {
+    entre:
+      `<g class="asoma" data-espera="4.5" opacity="0" pointer-events="none">${quieta('camino-infierno-gigante')}</g>` +
+      lenguas('camino-infierno-lenguas-a', 0) +
+      quieta('camino-infierno-salon') +
+      lenguas('camino-infierno-lenguas-b', 2.2),
+    cerca: imagenDePieza(piezaDelCamino('camino-infierno-piso')),
+  };
+}
+
+/* ------------------------------------------------------------------
+   Lo que el camino le suma a un recinto entero, sin editarlo (`D-91`, tanda 4)
+   ------------------------------------------------------------------
+   Los techos, el bajo y el templo no tienen capas: su escena es una sola tira (`escenas.ts`), con el telón
+   primero y los bichos después, y esas funciones las está tocando otra sesión (`T-529`). Acá no se editan:
+   el camino toma la escena ya armada y **mete su mano justo después del telón** (`tras`), así queda arriba
+   del fondo y debajo de todos. Si el telón cambia de nombre, esto avisa en vez de pintar en cualquier lado.
+   `sobre` va encima de todo, en coordenadas del piso (recibe cuánto se corrió el recinto): lo que flota.
+*/
+
+const quieta = (n: string): string => imagenDePieza(piezaDelCamino(n), true);
+/** Lo que no se ve hasta que quien mira se queda quieto `espera` segundos (la isla lo trae, como al que asoma en el infierno). */
+const loQueAsoma = (n: string, espera: number): string => `<g class="asoma" data-espera="${espera}" opacity="0" pointer-events="none">${quieta(n)}</g>`;
+
+/**
+ * `luego`: una segunda mano, más adelante en la escena. En el bajo la escena repinta el agua de la línea de Pierre para
+ * abajo (el mismo `bajo-agua`, recortado): lo que el camino pinta en el agua de adelante entra después de ese repintado.
+ */
+export const EN_EL_RECINTO: Readonly<Record<string, { tras: string; bajo: () => string; luego?: { tras: (telon: string) => string; mano: () => string }; sobre?: (corre: number) => string }>> = {
+  // Los techos: el potrero (la senda al boquete, el arco, los charcos, las ventanas) y el que espía por el boquete.
+  'los-techos': { tras: 'baldio-lejos', bajo: () => quieta('camino-techos-bajo') + loQueAsoma('camino-techos-vecino', 6) },
+  // El bajo: va después del agua de atrás. El pasillo, la marca de la crecida y la línea de flote; y encima de todo, lo que flota,
+  // que la isla hamaca desde abajo de la línea del agua (`.pendula`, como lo que cuelga del árbol, pero al revés).
+  'el-bajo': {
+    tras: 'bajo-agua',
+    bajo: () => quieta('camino-bajo-fondo') + loQueAsoma('camino-bajo-figura', 6),
+    luego: { tras: (agua) => `<g clip-path="url(#bajo-adelante)" pointer-events="none">${agua}</g>`, mano: () => quieta('camino-bajo-cerca') },
+    sobre: (corre) =>
+      FLOTAN.map((fl) => `<g class="pendula" data-x="${fl.x + corre}" data-y="${fl.y}" data-largo="460" data-flota="${fl.sube}" pointer-events="none"><g transform="translate(${corre} 0)">${quieta(fl.pieza)}</g></g>`).join(''),
+  },
+  // La prisión (tanda 5): la puerta de la escalera que baja, con el que sube si te quedás quieto, y el arco de las cárceles,
+  // con la cadena que cuelga del puente.
+  'la-prision': {
+    tras: 'prision-lejos',
+    bajo: () => {
+      return (
+        // Segunda vuelta: las galerías altas sobre las dos paredes del pasillo, el haz de la ventana, y el del puente (que tarda más en salir).
+        quieta('camino-prision-galeria-izq') +
+        quieta('camino-prision-galeria-der') +
+        quieta('camino-prision-haz') +
+        quieta('camino-prision-puerta') +
+        loQueAsoma('camino-prision-sube', 6) +
+        quieta('camino-prision-arco') +
+        loQueAsoma('camino-prision-vigia', 9) +
+        // La cadena del puente se hamacó como péndulo en la primera vuelta. En la tira de seis cuadros no se leía (mide 66 y
+        // se mueve cuatro unidades), así que en la segunda quedó quieta: cuelga, y la isla no la toca.
+        quieta(CADENA.pieza)
+      );
+    },
+  },
+  // El templo: la nave (el damero que fuga, las columnas de atrás, los cabezudos) y los ojos que se le prenden al de la entrada.
+  'el-templo': { tras: 'templo-lejos', bajo: () => quieta('camino-templo-nave') + loQueAsoma('camino-templo-ojos', 6) },
+};
+
+/** La escena de un recinto con la mano del camino adentro, después de su telón. La escena original queda entera, partida en dos. */
+export function conLoDelCamino(region: string, escena: string): string {
+  const suma = EN_EL_RECINTO[region];
+  if (!suma) return escena;
+  const telon = imagen(suma.tras);
+  const en = escena.indexOf(telon);
+  if (en < 0) throw new Error(`${region}: la escena ya no arranca con "${suma.tras}" (escenas-camino.ts)`);
+  const corte = en + telon.length;
+  const sumada = escena.slice(0, corte) + suma.bajo() + escena.slice(corte);
+  if (!suma.luego) return sumada;
+  const marca = suma.luego.tras(telon);
+  const donde = sumada.indexOf(marca);
+  if (donde < 0) throw new Error(`${region}: la escena ya no repinta "${suma.tras}" donde se esperaba (escenas-camino.ts)`);
+  return sumada.slice(0, donde + marca.length) + suma.luego.mano() + sumada.slice(donde + marca.length);
+}
+
 export const ESCENA_DEL_RECINTO: Readonly<Record<string, (n: Nombres) => string>> = {
   'los-techos': escenaBaldio,
-  'el-infierno': escenaInfierno,
+  'el-infierno': (n) => escenaInfierno(n, salonEnElCamino()),
   'el-templo': escenaTemplo,
   'el-bajo': escenaBajo,
   'la-prision': escenaPrision,
@@ -204,7 +305,8 @@ export const ESCENA_DEL_RECINTO: Readonly<Record<string, (n: Nombres) => string>
 function pisoDeRecinto(t: Tramo, nombres: Nombres): string {
   const { x } = marcoDelRecinto(t.region);
   const corre = x ? ` transform="translate(${-x} 0)"` : '';
-  return `<g class="recinto-en-camino" data-recinto="${t.region}"${corre}>${ESCENA_DEL_RECINTO[t.region]!(nombres)}</g>` + cruce(t);
+  const escena = conLoDelCamino(t.region, ESCENA_DEL_RECINTO[t.region]!(nombres));
+  return `<g class="recinto-en-camino" data-recinto="${t.region}"${corre}>${escena}${finasDe(t)}</g>` + (EN_EL_RECINTO[t.region]?.sobre?.(-x) ?? '') + cruce(t);
 }
 
 /** El piso de un tramo, con todos los que viven en él. */

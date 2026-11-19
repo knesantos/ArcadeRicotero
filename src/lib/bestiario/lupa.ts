@@ -90,3 +90,26 @@ export function entreLentes(a: Lente, b: Lente, u: number): Lente {
 
 /** Si la lupa está puesta: con menos que esto, es como si no estuviera. */
 export const conLupa = (l: Lente): boolean => l.z > 1.001;
+
+/**
+ * La cámara que ve una capa con paralaje cuando la lupa está puesta (`D-91`, cuarta vuelta).
+ *
+ * Sin lupa, una capa de velocidad `f` se corre `f · cam`: lo lejano va más despacio que el piso. Pero
+ * agrandar es mover la cámara (`enfocar` corre la lente para dejar quieto el punto que se mira **en el
+ * piso**), y entonces todo lo que no va a la velocidad del piso se escapa de abajo del dedo: lo tallado
+ * en un tronco de la capa de atrás no se podía agrandar apuntándole.
+ *
+ * Con la lupa, el paralaje se **ancla** donde estaba la cámara al sacarla (`camSinLupa`): desde ahí, las
+ * capas se mueven con el piso, y lo que se apunta queda donde se apunta. Entra de a poco (`LUPA_ANCLA`
+ * de zoom), así no pega un salto al empezar ni al volver. Devuelve la cámara que hay que pasarle a la
+ * cuenta de siempre para que la capa se corra eso. `suelta`: si la capa se corre entera (`f · cam`) o
+ * viaja con la tira y solo le falta la diferencia (`(f − 1) · cam`).
+ */
+export const LUPA_ANCLA = 0.3;
+export function camConLupa(f: number, cam: number, camSinLupa: number, z: number, suelta = true): number {
+  if (f === 1 || z <= 1) return cam;
+  const b = Math.min(1, (z - 1) / LUPA_ANCLA);
+  // Suelta: f·camSinLupa + (cam − camSinLupa)·(f + (1 − f)·b). Con la tira: (f − 1)·camSinLupa + (cam − camSinLupa)·(f − 1)·(1 − b).
+  return suelta ? camSinLupa + (cam - camSinLupa) * (1 + ((1 - f) / f) * b) : camSinLupa + (cam - camSinLupa) * (1 - b);
+}
+

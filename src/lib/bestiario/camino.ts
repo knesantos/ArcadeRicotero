@@ -193,7 +193,7 @@ export const CAMINOS: Readonly<Record<string, Tramo>> = {
     escena: 2400,
     velocidad: { lejos: VELOCIDAD.lejos, frente: VELOCIDAD.frente },
     foco: 0,
-    piezas: { lejos: 'camino-monte-lejos', piso: 'camino-pastura-piso', frente: 'camino-monte-frente', cruce: null },
+    piezas: { lejos: 'camino-pastura-lejos', piso: 'camino-pastura-piso', frente: 'camino-pastura-frente', cruce: null },
     ojos: {},
     claro: {
       dx: 720,

@@ -182,7 +182,7 @@
 /* El alivio (D-90, tercera ronda): si los cuadros vienen lentos, la isla saca peso de a un escalón.
    Primero lo de atrás del piso, que es lo que menos se extraña; después la luz y lo que cruza lejos.
    La niebla del medio y lo pegado a la cámara se quedan: son las que hacen la escena. */
-.camino--liviano .aire--fondo,
+.camino--liviano .aire--fondo:not(.aire--firme),
 .camino--muy-liviano .luz,
 .camino--muy-liviano .filo,
 .camino--muy-liviano .vida { display: none; }

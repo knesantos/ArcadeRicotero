@@ -206,6 +206,15 @@ const ANIMACIONES = [
   { nombre: 'velo-sube', apaga: 'token', valor: '--duracion-velo', hoja: 'src/styles/sitio.css' },
   { nombre: 'velo-baja', apaga: 'token', valor: '--duracion-velo', hoja: 'src/styles/sitio.css' },
   { nombre: 'velo-corre', apaga: 'token', valor: '--duracion-velo', hoja: 'src/styles/sitio.css' },
+  // `D-91`: la tinta de abajo del velo, su respaldo y lo que avisa que está cargando. No se mueven:
+  // cambian `visibility` u `opacity` una vez. El mismo token los deja en un corte.
+  { nombre: 'velo-tinta', apaga: 'token', valor: '--duracion-velo', hoja: 'src/styles/sitio.css' },
+  { nombre: 'velo-respaldo', apaga: 'token', valor: '--duracion-velo', hoja: 'src/styles/sitio.css' },
+  { nombre: 'velo-asoma', apaga: 'token', valor: '--duracion-velo', hoja: 'src/styles/sitio.css' },
+  // Segunda vuelta: los signos de espera. Los faros de la ruta se agrandan una vez (el token los deja
+  // en su tamaño final); la rueda del molino de la pastura gira en bucle y se apaga con su regla.
+  { nombre: 'velo-acerca', apaga: 'token', valor: '--duracion-velo', hoja: 'src/styles/sitio.css' },
+  { nombre: 'velo-gira', apaga: 'regla', valor: '.velo-signo--molino', hoja: 'src/styles/sitio.css' },
 ] as const;
 
 test('no hay ninguna animacion que esta lista no conozca', () => {
