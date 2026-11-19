@@ -29,6 +29,28 @@
 > - **Falta** (`T-529`): mirarlas vivas y en un teléfono, que `contenido` lea las diez estampas, las tintas al lienzo, el roce del tren
 >   del gato con el Atila, los nenes chicos en el bajo. `prision-jaula.webp` y `prision-puerta.webp`, sin uso, se borraron con el OK del usuario.
 
+> ## 🧨 DOS REELS DE TÍTERES QUE JUEGAN (2026-11-16) — `D-81`
+>
+> **Sin integrar**: rama `difusion/reels-titeres`, sobre `main` en `57bdae8`. Pedido del usuario: *"videos de difusion que utilicen
+> las marionetas y fondos del bestiario pero con una historia [...] mostrar el juego de adivinar el tema con alguna marioneta jugando,
+> errando y festejando"*, *"sin mostrar los nombres se entiendan que bestias son"* y *"armar un video de 0 con esos diseños"*.
+>
+> - **`DIF-16`, La mecha corta** (`public/redes/DIF-16.mp4`, 21 s): el perro de la mecha juega a Adiviná el tema en el baldío; cada
+>   error le quema un pedazo de cola, acierta *Juguetes perdidos* a los 2 s, explota de contento, vuelve tiznado y aúlla.
+> - **`DIF-17`, El duelo** (`public/redes/DIF-17.mp4`, 20,5 s): el lobo se asoma detrás del monte y erra dos veces de apurado; el
+>   cordero cierra los ojos, saca *Todo un palo* a los 2 s, se le corta la soga y se va saltando. Los intentos llevan la cara de cada uno.
+> - **Cómo**: no se graba el sitio. `npm run reels -- mecha|duelo DIF-XX` compone de cero con las piezas impresas (`public/bestiario/`)
+>   y las poses de los propios rigs (`marcas()` de `rig-dinamita.ts`, `explosion()` de la conducta, `lobo()`/`cordero()` de
+>   `titeres.ts`). La pantalla del juego es `scripts/reels/juego.mjs`; los ruidos (teclas, "no era", acierto, estallido, soga) los hace
+>   ffmpeg. `grabar({ local: true })` sirve todo desde `public/`: **no hace falta `astro dev`**, solo `NAVEGADOR` y `FFMPEG`.
+> - Ningún cartel nombra a los bichos; el rótulo DINAMITA de los cartuchos es del dibujo y queda.
+> - **Pulida** (pedido del usuario: *"al final el perro dinamita cambia de modelo raro"*, *"que parezca de un celular"*): al terminar la
+>   explosión la pose ya no vuelve de golpe a la de antes (la mecha corta y prendida y el tizne que se borraba en un cuadro); queda
+>   entera, apagada y con el tizne yéndose. El tipeo es de teléfono: ritmo con tropiezos, unas letras y el toque en la sugerencia
+>   que se abre arriba de la caja, y un tic de teclado por letra en tres alturas, más el de la sugerencia y el del botón.
+> - **Calendario**: `DIF-16` (19/11) y `DIF-17` (21/11) en borrador; `redes validar` OK. **Verde:** `npm test` 2470, `npm run check`.
+> - **Falta**: el visto bueno del usuario a los videos y los textos, y subirlos a mano (la cola no sube video).
+
 > ## 🐑 DIEZ BESTIAS MÁS EN EL ELENCO (2026-11-13) — `D-73` enmienda 28, `T-528`
 >
 > **Integrada en `main` el 2026-11-14** (PR #112, commit de fusión `3f2f872`), desde la rama `claude/bestiario-diez-ffa47e`, sobre `main` en `8b0d80a`. Pedido del usuario: *"Volve a
