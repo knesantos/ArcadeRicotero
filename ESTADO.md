@@ -31,7 +31,7 @@
 
 > ## 🧨 DOS REELS DE TÍTERES QUE JUEGAN (2026-11-16) — `D-81`
 >
-> **Sin integrar**: rama `difusion/reels-titeres`, sobre `main` en `57bdae8`. Pedido del usuario: *"videos de difusion que utilicen
+> **Integrada en `main` el 2026-11-16** (PR #115, commit de fusión `bea8712`), desde la rama `difusion/reels-titeres`, sobre `main` en `57bdae8`. Pedido del usuario: *"videos de difusion que utilicen
 > las marionetas y fondos del bestiario pero con una historia [...] mostrar el juego de adivinar el tema con alguna marioneta jugando,
 > errando y festejando"*, *"sin mostrar los nombres se entiendan que bestias son"* y *"armar un video de 0 con esos diseños"*.
 >
