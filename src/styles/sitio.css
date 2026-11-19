@@ -5469,6 +5469,30 @@ body:has(> .lugar) .marca-chica {
 .titere--rana [data-parte="mosca"], .titere--rana [data-parte="lengua"] { pointer-events: none; }
 /* ⟨/la rana rubia⟩ */
 
+/* ⟨la fiera mas fiera⟩ */
+/* La jaula se toca entera. Los tajos y el aliento no: son aire. */
+.titere--fiera { cursor: pointer; }
+.titere--fiera [data-parte="tajos"], .titere--fiera [data-parte="aliento"] { pointer-events: none; }
+/* ⟨/la fiera mas fiera⟩ */
+
+/* ⟨el pajarito del lavi-rap⟩ */
+/* El papelito y la pluma que se le caen no se tocan: el toque es de la jaula y de su etiqueta. */
+.titere--pajarito { cursor: pointer; }
+.titere--pajarito [data-parte="suelto"], .titere--pajarito [data-parte="pluma"] { pointer-events: none; }
+/* ⟨/el pajarito del lavi-rap⟩ */
+
+/* ⟨el perro manso⟩ */
+/* La burbuja de sopa y el piolín no se tocan: el toque es del perro, de su olla y del palo. */
+.titere--manso { cursor: pointer; }
+.titere--manso [data-parte="burbuja"], .titere--manso [data-parte="piolin"] { pointer-events: none; }
+/* ⟨/el perro manso⟩ */
+
+/* ⟨el gato que llamas con silbidos⟩ */
+/* El tren que pasa lejos y el silbido que vuela no se tocan: el toque es del gato y de su señal. */
+.titere--silbido { cursor: pointer; }
+.titere--silbido [data-parte="tren"], .titere--silbido [data-parte="silbido"] { pointer-events: none; }
+/* ⟨/el gato que llamas con silbidos⟩ */
+
 /* ⟨el heroe del whisky⟩ */
 /* El humo del escape, el haz y los arcos del ladrido no se tocan: el toque es del fierro, que viaja con todo adentro. */
 .heroe-del-whisky [data-parte="humo-1"], .heroe-del-whisky [data-parte="humo-2"], .heroe-del-whisky [data-parte="ladrido"] { pointer-events: none; }
@@ -5504,6 +5528,24 @@ body:has(> .lugar) .marca-chica {
 .titere--nau [data-parte="ondas"], .titere--nau [data-parte="rayo"], .titere--nau [data-parte="gotas"], .titere--nau [data-parte="burbuja"], .titere--nau [data-parte="humo"] { pointer-events: none; }
 /* ⟨/los naufragos⟩ */
 
+/* ⟨el sheriff⟩ */
+/* El fogonazo, el vaho, la gota de miel y el brillo de la estrella no se tocan: el toque es del quiosco entero. */
+.titere--sheriff { cursor: pointer; }
+.titere--sheriff [data-parte^="fogonazo"], .titere--sheriff [data-parte="vaho"], .titere--sheriff [data-parte="gota"], .titere--sheriff [data-parte="brillo"] { pointer-events: none; }
+/* ⟨/el sheriff⟩ */
+
+/* ⟨los nenes de oro⟩ */
+/* La espuma, la marea, los aros, las salpicaduras y las burbujas no se tocan: el toque es del podio, de los dos trofeos y de los barquitos. */
+.titere--nenes { cursor: pointer; }
+.titere--nenes [data-parte="espuma"], .titere--nenes [data-parte="marea"], .titere--nenes [data-parte^="aro"], .titere--nenes [data-parte^="salpica"], .titere--nenes [data-parte^="burbujas"] { pointer-events: none; }
+/* ⟨/los nenes de oro⟩ */
+
+/* ⟨el animal que no late⟩ */
+/* La lluvia, la chispa y el rayo no se tocan: el toque es del bicho y de su peana. La nube va atrás y tampoco. */
+.titere--nolate { cursor: pointer; }
+.titere--nolate [data-parte="lluvia"], .titere--nolate [data-parte="chispa"], .titere--nolate [data-parte="rayo"] { pointer-events: none; }
+/* ⟨/el animal que no late⟩ */
+
 /* ⟨mister ed y huesito⟩ */
 /* Las burbujas de jabón no se tocan: el toque es del caballo, del tambor, del esqueleto y de la red. */
 .titere--ed { cursor: pointer; }
@@ -5515,3 +5557,21 @@ body:has(> .lugar) .marca-chica {
 .titere--almejas { cursor: pointer; }
 .titere--almejas [data-parte^="chorro"], .titere--almejas [data-parte^="vapor"], .titere--almejas [data-parte="perla"] { pointer-events: none; }
 /* ⟨/las almejas⟩ */
+
+/* ⟨el angel guardian⟩ */
+/* El nido que le cae, la llama de la vela y la aureola no se tocan: el toque es del ángel y de su lona. */
+.titere--guardian { cursor: pointer; }
+.titere--guardian [data-parte="nido"], .titere--guardian [data-parte="llama"], .titere--guardian [data-parte="aureola"] { pointer-events: none; }
+/* ⟨/el angel guardian⟩ */
+
+/* ⟨los camellos prestigiosos⟩ */
+/* La polvareda, el copo y los sobres no se tocan, ni la pose que no se ve: el toque es de los camellos y del cajón. */
+.titere--camellos { cursor: pointer; }
+.titere--camellos [data-parte="polvo"], .titere--camellos [data-parte="copo"], .titere--camellos [data-parte="sobre"], .titere--camellos [data-parte="suelto"], .titere--camellos [data-parte][opacity="0"] { pointer-events: none; }
+/* ⟨/los camellos prestigiosos⟩ */
+
+/* ⟨el as del club paris⟩ */
+/* La moneda y el matasuegras no se tocan: el toque es del naipe, de la galera y de la valija. */
+.titere--asparis { cursor: pointer; }
+.titere--asparis [data-parte="moneda"], .titere--asparis [data-parte="mata"], .titere--asparis [data-parte][opacity="0"] { pointer-events: none; }
+/* ⟨/el as del club paris⟩ */

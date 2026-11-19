@@ -33,7 +33,8 @@ export const VECINOS_DEL_MONTE: Readonly<Record<string, readonly [number, number
   // El joven lobo se subió más arriba en el bosque: abajo, en el borde, ahora está tu animal.
   'el-joven-lobo': [846, 166, 'oro'],
   'las-antiguas-lobas': [104, 282, 'oro'],
-  'el-animal-que-no-late': [300, 232, 'papel'],
+  // El animal que no late ya es un títere (`arte-nolate.ts`), montado en su peana: los ojos van donde tiene el ojo de vidrio.
+  'el-animal-que-no-late': [349, 159, 'papel'],
   'el-rey-de-esta-jungla': [566, 222, 'papel'],
   'tu-animal': [846, 352, 'oro'],
   'el-lobo-caido': [92, 486, 'oro'],

@@ -294,7 +294,7 @@
       "dibujo": { "f": "persona", "con": ["alas", "aureola"], "ropa": "tunica" },
       "tema": "la-dicha-no-es-una-cosa-alegre",
       "verso": ["tu ángel guardian es de todos el más tonto que hay"],
-      "estampa": "Mira para el lado equivocado, con la aureola torcida.",
+      "estampa": "Tiene tendida la lona de rescate, con su diana, justo al lado del que duerme colgado. Mira para arriba, a una percha vacía, donde no cuelga nadie. Lleva casco de bombero con un cabo de vela prendido. Lo que cae, le cae a él: un nido entero, en el casco. Recién ahí se tapa con la lona.",
       "cerca": ["el-angel-de-la-soledad"]
     },
     {
@@ -497,7 +497,7 @@
       "dibujo": { "f": "cuadrupedo", "orejas": "chicas", "hocico": "largo", "cola": "fina", "cuello": "largo", "joroba": true },
       "tema": "estas-frito-angelito",
       "verso": ["camellos prestigiosos"],
-      "estampa": "Un camello en la nieve, que es el peor lugar para un camello.",
+      "estampa": "Son dos, de sobretodo de pelo de camello y cucarda de gran campeón. Uno pesa copos con lupa de joyero y los ensobra; el otro vigila. Venden nieve en la nieve, que es lo que sobra. Si alguien mira, se tiran a cuatro patas y rumian, con el cajón tapado como una joroba más.",
       "tambien": [{ "tema": "el-pibe-de-los-astilleros", "verso": ["Ciertos reyes no viajan en camellos"] }],
       "cerca": ["los-buitres-de-la-tele"]
     },
@@ -690,7 +690,7 @@
       "dibujo": { "f": "persona", "con": ["estrella", "sombrero"], "ropa": "saco" },
       "tema": "sheriff",
       "verso": ["sheriff! sheriff! sheriff!", "que limpio el templo esta!", "si ali baba se va!"],
-      "estampa": "Con la estrella en el pecho, cuidando que el templo quede limpio. Alí Babá ya se fue.",
+      "estampa": "Atiende un puestito de tiro al blanco en el ala del templo: tres tiros, un peso. La caja es un frasco de miel. En la fila de ladroncitos de chapa hay un lugar vacío, con su cartelito: Alí Babá se fue. Si el tercer tiro erra, lo tumba él con el dedo, sin mirar. Todo en su sitio, así…",
       "cerca": ["drogocop", "momo"]
     },
     {
@@ -827,7 +827,7 @@
       "dibujo": { "f": "persona", "con": ["valija", "sombrero"], "ropa": "saco" },
       "tema": "blues-de-la-artilleria",
       "verso": ["Sos el as del Club París", "Pero cabe todo lo tuyo en una maldita valija"],
-      "estampa": "Esperando un barco con todo lo suyo en una valija.",
+      "estampa": "Es un naipe: el as de corazones, con galera de cartón, monóculo y un bigote que se le despega. Revolea una moneda que no ataja. De canto casi no está. Y cabe: se dobla al medio, se mete en la valija y la tapa se cierra con todo lo suyo adentro. La galera queda afuera.",
       "cerca": ["la-gran-lady"]
     },
     {
@@ -913,7 +913,7 @@
       "dibujo": { "f": "persona", "con": ["gorra-nado"], "ropa": "malla", "pose": "nada" },
       "tema": "nuotatori-professionisti",
       "verso": ["Cuando la marea los quiere tapar en el corazón de la noche", "Pagan con promesas los nenes de oro."],
-      "estampa": "Nadan de malla y gorra entre los muebles que flotan, como si fuera una pileta.",
+      "estampa": "Dos trofeos de natación, de oro, en un podio con dos primeros puestos. Cuando la marea les tapa la plaquita, pagan con un pagaré doblado en barquito, y el agua baja. Entre los dos cuelga un suero de gaseosa. Si los tocás se tiran: quedan clavados de cabeza, con las piernas afuera. Vuelven solos al pedestal.",
       "cerca": ["el-polizon-del-remolque", "las-sirenas"]
     },
     {
@@ -1113,7 +1113,7 @@
       "dibujo": { "f": "cosa", "que": "jaula-vacia" },
       "tema": "toxi-taxi",
       "verso": ["preso como un animal", "como un animal feroz", "así las cosas, la fiera más fiera ¿dónde está?"],
-      "estampa": "La jaula está abierta y vacía. La fiera más fiera no aparece en la estampa: la estás buscando vos.",
+      "estampa": "La jaula está abierta y a la fiera no se la ve. Pero hay un collar de púas flotando a la altura de un cogote, una cadena que va del piso al collar, un hueso recién mordido y dos huellas en la paja. Algo respira ahí. La pregunta de la letra sigue sin respuesta. Tocá la jaula y mirá los barrotes.",
       "cerca": ["el-toxi-taxi", "mi-perro-dinamita"]
     },
     {
@@ -1190,7 +1190,7 @@
       "dibujo": { "f": "ave", "tipo": "pajarito", "con": ["jaula"] },
       "tema": "lavi-rap",
       "verso": ["Al comprar el 'pajarito'", "debieron preguntar, tal vez,", "cuanto costaba"],
-      "estampa": "En una jaula linda. Nadie preguntó cuánto costaba.",
+      "estampa": "Es el pajarito de la suerte, el que saca papelitos con el pico. Vive en una jaula linda, con el precio colgando en una etiqueta más grande que él: nadie lo preguntó. Está flaco y medio pelado; lo caro era la jaula. Casi siempre saca uno en blanco. Tocalo: da la buena, y la etiqueta se da vuelta. Del otro lado sigue…",
       "cerca": ["el-pichon", "la-fiera-mas-fiera"]
     },
     {
@@ -1334,7 +1334,7 @@
       "dibujo": { "f": "cuadrupedo", "orejas": "punta", "hocico": "corto", "cola": "larga", "pose": "de-espaldas" },
       "tema": "todo-un-palo",
       "verso": ["Estás llamando a un gato con silbidos"],
-      "estampa": "De espaldas, en la punta del techo. Un gato no viene por silbidos.",
+      "estampa": "Sentado de espaldas en una señal de tren, con el atadito al hombro: va en trenes y no tiene dónde ir. Los silbidos con que lo llaman le rebotan en el lomo y se le juntan al lado, como fósforos usados. No viene. Al único silbido que le hace caso es al del tren, y cuando se para, el tren ya pasó…",
       "cerca": ["el-gato-de-susanita", "ese-perro-que-sigue-alli"]
     },
     {
@@ -1401,7 +1401,7 @@
       "dibujo": { "f": "cuadrupedo", "orejas": "caidas", "hocico": "largo", "cola": "corta", "pose": "come", "con": ["plato"] },
       "tema": "cruz-diablo",
       "verso": ["Si el perro es manso come", "la basofia y no dice nada,"],
-      "estampa": "Con la cabeza metida en el plato. Come lo que le dan y no dice nada.",
+      "estampa": "Flaco, con las costillas afuera y numeradas con tiza, como teclas. Come de una olla donde metieron el cucharón seis cocineros, y no dice nada. El palo lo lleva él, colgado de la cola con un piolín. Los moretones son verdes, de los viejos. Tocalo: mueve la cola, el palo le cuenta las costillas y los cucharones se ríen.",
       "cerca": ["mi-perro-dinamita", "zippo"]
     },
     {
@@ -1526,7 +1526,7 @@
       "dibujo": { "f": "cosa", "que": "nube-quieta" },
       "tema": "lobo-estas",
       "verso": ["Por donde esas nubes van,", "ya no late el animal,"],
-      "estampa": "Echado debajo de una nube negra, quieto. Es el tema que le pregunta al lobo si está.",
+      "estampa": "No late porque está relleno: un bicho embalsamado, de especie dudosa, montado en su peana y en puntas de pie. La paja se le sale por la cintura. Arriba tiene su nube, que le llueve a él solo. Donde iba el corazón hay una puertita y, adentro, una radio. Si lo tocás, cae el rayo y suena. Creo que baila…",
       "cerca": ["el-lobo-suelto", "el-cordero-atado"]
     },
     {

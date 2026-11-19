@@ -39,9 +39,9 @@ const ESCENA: Readonly<Record<string, (n: ReadonlyMap<string, string>) => string
 /** Los diez de la decimoquinta vuelta, uno por entorno; después vienen los de la decimosexta, la decimoséptima y la decimoctava. */
 const DIEZ = Object.keys(LUGAR_EN_EL_ELENCO).slice(0, 10);
 
-test('el elenco son los diez, uno por entorno, los tres de la decimosexta, la decimoséptima y la decimoctava, el de la decimonovena, los cinco de la vigésima, el de la vigesimoprimera, los cinco de la vigesimosegunda, los siete de la vigesimotercera, los siete de la vigesimocuarta, los cinco de la vigesimoquinta, los cinco de la vigesimosexta, los cinco de la vigesimoséptima y los diez de la vigesimoctava; cada uno es una bestia de esa región', () => {
+test('el elenco son los diez, uno por entorno, los tres de la decimosexta, la decimoséptima y la decimoctava, el de la decimonovena, los cinco de la vigésima, el de la vigesimoprimera, los cinco de la vigesimosegunda, los siete de la vigesimotercera, los siete de la vigesimocuarta, los cinco de la vigesimoquinta, los cinco de la vigesimosexta, los cinco de la vigesimoséptima, los diez de la vigesimoctava y los diez de la vigesimonovena; cada uno es una bestia de esa región', () => {
   const lugares = Object.entries(LUGAR_EN_EL_ELENCO);
-  assert.equal(lugares.length, 70);
+  assert.equal(lugares.length, 80);
   assert.equal(new Set(DIEZ.map((id) => LUGAR_EN_EL_ELENCO[id])).size, 10, 'dos de los diez en el mismo entorno');
   assert.deepEqual(lugares.slice(10, 13).map(([id]) => id), ['la-hija-del-fletero', 'el-buen-psicopata', 'porco-rex']);
   assert.deepEqual(lugares.slice(13, 16).map(([id]) => id), ['el-angel-de-la-soledad', 'el-pac-man', 'la-mosca']);
@@ -66,8 +66,11 @@ test('el elenco son los diez, uno por entorno, los tres de la decimosexta, la de
   // La vigesimoséptima: cinco que seguían siendo ojos o una silueta pintada, cada uno en una región distinta.
   assert.deepEqual(lugares.slice(55, 60).map(([id]) => id), ['la-rana-rubia', 'el-borrego', 'la-liebre-muerta', 'el-taxi-paranormal', 'el-polizon-del-remolque']);
   // La vigesimoctava: diez que seguían siendo ojos o una cosa pintada, cada una en una región distinta.
-  assert.deepEqual(lugares.slice(60).map(([id]) => id), ['redonditos-de-ricota', 'el-heroe-del-whisky', 'el-rebano', 'el-angelito-frito', 'las-almejas', 'el-lobo-caido', 'mister-ed-y-huesito', 'los-buitres-de-la-tele', 'la-hormiga-dormida', 'los-naufragos']);
-  assert.equal(new Set(lugares.slice(60).map(([, r]) => r)).size, 10, 'dos de la vigesimoctava en la misma región');
+  assert.deepEqual(lugares.slice(60, 70).map(([id]) => id), ['redonditos-de-ricota', 'el-heroe-del-whisky', 'el-rebano', 'el-angelito-frito', 'las-almejas', 'el-lobo-caido', 'mister-ed-y-huesito', 'los-buitres-de-la-tele', 'la-hormiga-dormida', 'los-naufragos']);
+  assert.equal(new Set(lugares.slice(60, 70).map(([, r]) => r)).size, 10, 'dos de la vigesimoctava en la misma región');
+  // La vigesimonovena: diez rocambolescas, planificadas y criticadas por el hilo principal (Opus) y dibujadas por tres diseñadores (Fable); dos en la prisión y dos en los techos, que no tenían más candidatos en las regiones flacas.
+  assert.deepEqual(lugares.slice(70).map(([id]) => id), ['la-fiera-mas-fiera', 'el-pajarito-del-lavi-rap', 'el-perro-manso', 'el-gato-que-llamas-con-silbidos', 'el-angel-guardian', 'el-as-del-club-paris', 'los-camellos-prestigiosos', 'el-animal-que-no-late', 'el-sheriff', 'los-nenes-de-oro']);
+  assert.equal(new Set(lugares.slice(70).map(([, r]) => r)).size, 8, 'la vigesimonovena cubre ocho regiones');
   for (const [id, region] of lugares) {
     const b = datos.bestias.find((x) => x.id === id);
     assert.ok(b, `${id} no está en el bestiario`);
