@@ -6383,6 +6383,94 @@ techos (ocho títeres cada una).
   `scripts/bestiario/mirada.ts`, y siguen sin hacerse los vecinos que reaccionan al toque ajeno (que el perro del héroe le ladre a la
   Pontiac, que el lobo de plata se pare ante el lobo caído).
 
+### Enmienda del 2026-11-16 (29): diez rocambolescas, planificadas y criticadas por Opus, dibujadas por Fable
+
+Pedido del usuario, textual: *"Hace otra sesion de diseño de bestias con opus como planificador y criticdor y fable como
+diseñador. Que sea bien creativo y rocambolesco."* Lo hizo el hilo principal en la rama `claude/bestiario-rocambole-3238c6`,
+sobre `main` en `57bdae8`, con `T-529`.
+
+**El reparto.** El hilo principal, en Opus, eligió las bestias, escribió el encargo de cada una, miró cada entrega a PNG,
+devolvió los arreglos y dio el visto bueno; no dibujó. Las dibujaron, animaron, midieron e imprimieron **tres subagentes Fable a
+la vez en el mismo worktree** (A: prisión y techos; B: los tres pisos de `arte-entornos.ts`; C: templo, bajo y monte). Lo
+compartido lo integró el hilo principal: las estampas de `bestiario.json`, `elenco.test.ts`, el pliegue final de `elenco.ts` y
+`vivos.ts`, y esta documentación. Para que no se pisaran, `elenco.ts` y `vivos.ts` llevaron un andamio con una tanda por
+diseñador (`TANDA_29_A`…`C` y marcas `[T-529 X]`), que se plegó en `LUGARES` al cerrar.
+
+**Cómo se trabajó**, en cuatro fases: (1) cada diseñador leyó las cuatro reglas del bestiario, la letra entera y la tapa, y
+propuso **dos o tres ideas distintas por bestia**; el hilo principal eligió la más fuerte y la ajustó. (2) Construyeron y
+miraron a PNG de cerca, en el recinto, en el camino y en la tira de seis del toque. (3 y 4) **Dos vueltas de crítica** sobre esas
+capturas. El encargo común quedó en las notas de la sesión (`encargo-bestias-vuelta-29.md`).
+
+#### Cuáles
+
+Las regiones flacas de títeres no tenían candidatos libres: a la pastura y al galpón no les queda nadie (la silla de Patricio Rey
+no se toca), a la ruta solo el zumba y el toxi-taxi, que pisan a los fierros, y al infierno solo Luzbelito, que ya es títere
+grande. Por eso hay dos en la prisión y dos en los techos.
+
+- **La fiera más fiera** (la prisión, *Toxi taxi*): *"¿dónde está?"*. **No se dibuja nunca.** En la jaula abierta flota un collar
+  de púas a la altura de un cogote que no está, con la chapita girando, la cadena del piso al collar, un hueso recién mordido y
+  huellas en la paja. Sola roe y se le cae el hueso, encara la puerta y la puerta se le cierra en el hocico, da tres vueltas y se
+  echa. Tocada se tira contra los barrotes, que se comban, y deja cuatro tajos tallados a gubia. Reemplaza al caso de la jaula
+  vacía de `recintos.ts`; la jaula y la puerta salieron de `prisionFrente()`.
+- **El pajarito del Lavi-rap** (la prisión, *Lavi-rap*): *"debieron preguntar cuánto costaba"*. El pajarito de la suerte que
+  saca papelitos, flaco y medio pelado, en una jaula linda con una etiqueta de precio más grande que él. Casi siempre saca uno en
+  blanco. Tocado da la buena, y la etiqueta se da vuelta: del otro lado los ceros siguen en una tira abrochada que cuelga. Salió la
+  `JAULITA` de `prisionLejos()`.
+- **El perro manso** (los techos, *Cruz diablo*): *"come la basofia y no dice nada"*. Un perro xilofón: las costillas afuera,
+  numeradas con tiza, una olla con seis cucharones (*"tantos cocineros"*), moretones viejos. El palo lo lleva él, colgado de la
+  cola. Tocado mueve la cola, el palo le cuenta las costillas y los cucharones se ríen; él no levanta la cabeza de la olla.
+- **El gato que llamás con silbidos** (los techos, *Todo un palo*): gato linyera sentado de espaldas en una señal de tren, con el
+  atadito a cuadros, la oreja mordida y nudos en la cola. Los silbidos que no le hacen caso se le apilan al lado como fósforos
+  usados (hasta tres, y persisten). Tocado gira una oreja, baja la señal, pasa el tren lejos y se para tarde: *"el futuro llegó
+  hace rato"*. Después barre la pila con la cola.
+- **El ángel guardián** (el árbol, *La dicha no es una cosa alegre*): *"de todos el más tonto"*. Cara larga de yeso del busto de
+  *Luzbelito*, casco de bombero con un cabo de vela, la lona de rescate tendida con su diana, atada a una estaca, mirando una
+  percha vacía donde no cuelga nadie, al lado del colgado. Tocado le cae un nido entero en el casco, y recién ahí se tapa con la
+  lona. Salió de `arbolPiso` y se corrió un huevo de `arbolLejos`.
+- **Los camellos prestigiosos** (Cybersiberia, *Estás frito angelito*): *camello* en los dos sentidos. Dos camellos de sobretodo
+  de pelo de camello y cucarda; uno pesa copos con lupa de joyero y los ensobra, el otro vigila. Venden nieve en la nieve. Tocados
+  se hacen los camellos: a cuatro patas, rumiando, con el cajón tapado como una joroba más. Drogocop quedó pintado.
+- **El as del Club París** (los astilleros, *Blues de la artillería*): *"cabe todo lo tuyo en una maldita valija"*, al pie de la
+  letra. Es un naipe, el as de corazones, con galera de cartón, monóculo y bigote postizo. De canto casi desaparece. Tocado se
+  pliega y se mete en la valija; queda la galera arriba.
+- **El Sheriff** (el templo, *Sheriff*): atiende un tiro al blanco de feria en el ala del templo: *"tres tiros a un peso"*, la caja
+  es un frasco de miel (*"la guita es miel"*) y en la fila de ladroncitos de chapa hay un lugar vacío con su cartelito: Alí Babá se
+  fue. Tocado caen dos, el tercero erra y él lo tumba con el dedo sin mirar. Ninguna vela le cae encima (lo afirma el test).
+- **Los nenes de oro** (el bajo, *Nuotatori professionisti*): dos trofeos de natación en un podio con dos primeros puestos, un
+  suero de gaseosa sin marca. Cuando la marea les tapa la plaquita pagan con un pagaré doblado en barquito y el agua baja. Tocados
+  se tiran y quedan clavados de cabeza, con las piernas doradas afuera.
+- **El animal que no late** (el monte, *Lobo estás*): no late porque está relleno. Un bicho embalsamado de especie dudosa, en
+  puntas de pezuña sobre su peana, con paja por la cintura, ojos de vidrio desparejos y su nube quieta que le llueve a él solo.
+  Tocado cae el rayo, se abre la puertita del pecho y adentro hay una radio que hace rata-ta-ta: baila tieso tres compases. No
+  se reimprimió nada del monte: otra sesión lo estaba rehaciendo (`D-91`).
+
+#### Qué se devolvió en cada vuelta
+
+- **Primera vuelta**: los tajos de la fiera, los fogonazos del Sheriff, el rayo del animal y la aureola del ángel eran haces con
+  halo, es decir un glow, y pasaron a tinta plana con canto; las ondas "((( )))" de la radio eran un ícono de interfaz y se
+  cambiaron por lo que tiembla. El precio del pajarito se salía del cartón como un error de diagramación. Los cucharones parecían
+  bastones; los ladroncitos, teteras con cuernos; los trofeos, bolos. El ángel tenía cara de muñeco infantil y sostenía la lona
+  como una mesa; el pajarito era un pájaro azul lustroso de libro de cuentos; el gato, un gato rosa prolijo, con el atadito como
+  una fruta. Los camellos parados parecían llevar mochila, y la carta del as era un malvavisco.
+- **Segunda vuelta**: el hocico del perro se leía como trompa de elefante; el casco del ángel seguía siendo gorra; un huevo del
+  piso le asomaba detrás de la frente; el as salía de la valija con una sola pierna; el brazo del Sheriff era un palo; la marea de
+  los nenes dejaba un manchón; el ojo ámbar del animal se perdía.
+
+#### Cómo se hizo, y lo que se tocó alrededor
+
+- El molde es el de la vigesimoctava. Los slugs de archivo son `fiera`, `pajarito`, `manso`, `silbido`, `guardian`, `camellos`,
+  `asparis`, `sheriff`, `nenes` y `nolate`. Las piezas: 10, 15, 17, 13, 12, 16, 16, 22, 14 y 20. Las tintas: 9, 10, 14, 14, 17,
+  13, 10, 16, 14 y 17, medidas en la tapa de cada disco; donde la tapa no tenía el color se anotó el píxel usado (los moretones del
+  perro, la diana del ángel, el ojo verde del animal).
+- Se reimprimieron `prision-lejos`, `arbol-piso`, `arbol-lejos`, `cyber-piso`, `astillero-piso` y sus versiones del camino.
+  `elenco.test.ts` pasa de 70 a 80. Un diseñador sumó `juguete-tanda.ts`, el DOM de juguete común a sus cuatro tests.
+
+- `T-529`: verlas en un teléfono de verdad y en el sitio armado, que `contenido` lea las diez estampas, y pasar sus tintas al
+  lienzo. Quedó flojo, según los diseñadores y la crítica: el tren del gato le roza el sobretodo al Atila en su punta derecha; los
+  nenes se ven chicos en el recinto del bajo; la aureola del ángel queda pegada al saco del colgado; el joyero de los camellos
+  muestra la joroba menos que el campana; el pliegue del as todavía achica la carta a 0,84. Las piezas `prision-jaula.webp` y
+  `prision-puerta.webp` quedaron sin uso y se borraron con el OK del usuario. Ninguna se sumó a `mirada.ts`.
+
 ## D-74 — El sitio se muda a una cuenta Hobby de Vercel
 
 - **Fecha:** 2026-10-17

@@ -27,6 +27,7 @@
 
 import { enmascarado, forma, nube, soplo, trazo, type Pieza } from './aerografo.ts';
 import { azar } from './pincel.ts';
+import { GUARDIAN } from './rig-guardian.ts';
 import {
   ALTO, ANCHO, ARBOL, ASTILLERO, COSAS_DE_CYBERSIBERIA, COSAS_DE_LOS_ASTILLEROS, CYBER, GALPON, OJOS_DE_CYBERSIBERIA,
   COSAS_DE_LA_MESA, FIERROS, MESA, OJOS_DE_LA_MESA, OJOS_DE_LOS_ASTILLEROS, OJOS_DEL_ARBOL, RUTA,
@@ -474,7 +475,10 @@ function arbolLejos(ancho = ANCHO, alto = ALTO): string {
   let huevos = '';
   for (let i = 0; i < 9; i++) {
     const y = h + 8 + Math.pow(rnd(), 1.8) * 120;
-    huevos += huevo(rnd() * ancho, y, 2 + (y - h) * 0.07);
+    // Ninguno queda detrás de la cabeza del ángel guardián (`T-529`): el que cae ahí se corre al costado.
+    const hx = rnd() * ancho;
+    const enLaCabeza = Math.abs(hx - GUARDIAN.x * (ancho / ANCHO)) < 36 && y > GUARDIAN.piso - 160 && y < GUARDIAN.piso - 70;
+    huevos += huevo(enLaCabeza ? hx + 64 : hx, y, 2 + (y - h) * 0.07);
   }
   let nubes = '';
   for (let x = 120, n = 0; x < ancho + 100; x += 300 + rnd() * 120, n++) nubes += nubarron(x, 70 + rnd() * 160, 260 + rnd() * 140, 60 + rnd() * 40, 7 + n);
@@ -609,13 +613,13 @@ function arbolPiso(ancho = ANCHO, alto = ALTO): string {
     raices += soplo(`M${f(tx + lado * 30)} ${pie - 6} Q${f(tx + lado * (40 + largo * 0.5))} ${f(pie - 2 + rnd() * 8)} ${f(tx + lado * (40 + largo))} ${f(pie + 4 + rnd() * 18)} L${f(tx + lado * (40 + largo))} ${f(pie + 10 + rnd() * 18)} Q${f(tx + lado * (40 + largo * 0.5))} ${f(pie + 8)} ${f(tx + lado * 20)} ${pie + 6} Z`, A.hondo, 'xs', 0.95);
   }
   let huevosCerca = '';
-  for (const [x, p, r] of [[170, 470, 9], [560, 512, 12], [820, 494, 10], [80, 560, 16]] as const) huevosCerca += huevo(X(x), p, r);
+  // El de 600 está debajo del que duerme colgado: se corrió de atrás del ángel guardián, que le tapaba medio (`T-529`).
+  for (const [x, p, r] of [[170, 470, 9], [600, 520, 11], [820, 494, 10], [80, 560, 16]] as const) huevosCerca += huevo(X(x), p, r);
 
   const [mx, my] = [X(ARBOL.marco.x), ARBOL.marco.y];
   const o = OJOS_DEL_ARBOL;
   const at = (id: string): readonly [number, number] => [X(o[id]![0]), o[id]![1]];
   const [scx, scy] = at('el-senor-de-los-cielos');
-  const [a2x, a2y] = at('el-angel-guardian');
   const [a3x, a3y] = at('los-angelitos-profesionales');
   const [bgx, bgy] = at('el-bicho-del-gran-bonete');
 
@@ -637,9 +641,7 @@ function arbolPiso(ancho = ANCHO, alto = ALTO): string {
     // La lechuza que circula ya no se pinta acá: es un títere del elenco (`arte-lechuza.ts`), en su rama seca.
     // Los ángeles, al pie del árbol: las alas cerradas y pálidas, el cuerpo en sombra.
     // El ángel de la soledad ya no se pinta acá: es un títere del elenco (`arte-angel.ts`), en este mismo pie.
-    alas(a2x, a2y, 60) + figura(a2x, a2y, 60, A.negro) +
-    `<ellipse cx="${f(a2x + 9)}" cy="${f(a2y - 15)}" rx="13" ry="4" fill="none" stroke="${A.oro}" stroke-width="2.6" transform="rotate(24 ${f(a2x + 9)} ${f(a2y - 15)})"/>` +
-    nube(a2x + 9, a2y - 15, 16, 8, A.oro, 's', 0.35) +
+    // El ángel guardián tampoco: es un títere del elenco (`arte-guardian.ts`), con su lona, entre el tronco y el colgado.
     // Los angelitos profesionales: dos, de sombrero, con alas chicas. Van al grano.
     alas(a3x, a3y, 40, 0.75) + figura(a3x, a3y, 40, A.negro) + sombrero(a3x, a3y - 6) +
     alas(a3x + 42, a3y + 2, 40, 0.75) + figura(a3x + 42, a3y + 2, 40, A.negro) + sombrero(a3x + 42, a3y - 4) +
@@ -942,7 +944,6 @@ function cyberPiso(ancho = ANCHO, alto = ALTO): string {
   const at = (id: string): [number, number] => [X(o[id]![0]), o[id]![1]];
   const [wx, wy] = at('super-walter');
   const [cbx, cby] = at('comboman');
-  const [cmx, cmy] = at('los-camellos-prestigiosos');
   const [dx, dy] = at('drogocop');
   const [spx, spy] = at('el-super-boca');
   const [gvx, gvy] = [X(COSAS_DE_CYBERSIBERIA['el-gavilan']![0]), COSAS_DE_CYBERSIBERIA['el-gavilan']![1]];
@@ -953,9 +954,7 @@ function cyberPiso(ancho = ANCHO, alto = ALTO): string {
   // siguiendo sus huellas.
   // La princesita sapito ya no se pinta acá: es un títere del elenco (`arte-sapito.ts`), en su trono de nieve.
   // Porco Rex ya no se pinta acá: es un títere del elenco (`arte-porco.ts`), que trota en esta nieve.
-  const camello = elipse(cmx - 3, cmy + 1, 10, 6) +
-    ` M${f(cmx + 2)} ${f(cmy - 2)} C${f(cmx + 14)} ${f(cmy)} ${f(cmx + 10)} ${f(cmy + 22)} ${f(cmx + 20)} ${f(cmy + 30)} Q${f(cmx + 30)} ${f(cmy + 4)} ${f(cmx + 42)} ${f(cmy + 24)} Q${f(cmx + 54)} ${f(cmy + 2)} ${f(cmx + 66)} ${f(cmy + 26)} Q${f(cmx + 76)} ${f(cmy + 34)} ${f(cmx + 72)} ${f(cmy + 46)} L${f(cmx + 18)} ${f(cmy + 48)} Q${f(cmx + 4)} ${f(cmy + 30)} ${f(cmx - 2)} ${f(cmy + 4)} Z` +
-    [cmx + 22, cmx + 32, cmx + 58, cmx + 68].map((lx) => ` ${caja(lx - 2.5, cmy + 44, 5, 34)}`).join('');
+  // Los camellos prestigiosos tampoco: son un títere del elenco (`arte-camellos.ts`), parados en esta nieve con su cajón.
   const robot = parado(dx, dy, 84, 1.35) + ` ${caja(dx - 11, dy - 10, 22, 6)}`;
   const pilar = parado(spx, spy, 96, 1.6);
   const walter = circulo(wx, wy, 9) + ` M${f(wx - 10)} ${f(wy + 6)} L${f(wx + 10)} ${f(wy + 6)} L${f(wx + 18)} ${f(wy + 52)} L${f(wx + 4)} ${f(wy + 54)} L${f(wx)} ${f(wy + 34)} L${f(wx - 6)} ${f(wy + 56)} L${f(wx - 18)} ${f(wy + 52)} Z M${f(wx - 10)} ${f(wy + 10)} L${f(wx - 30)} ${f(wy - 6)} L${f(wx - 28)} ${f(wy - 12)} L${f(wx - 6)} ${f(wy + 4)} Z M${f(wx + 10)} ${f(wy + 10)} L${f(wx + 32)} ${f(wy + 2)} L${f(wx + 30)} ${f(wy - 4)} L${f(wx + 6)} ${f(wy + 4)} Z`;
@@ -975,7 +974,6 @@ function cyberPiso(ancho = ANCHO, alto = ALTO): string {
     tele(tx) +
     teleChica(X(CYBER.teleChica.x)) +
     // Los de la nieve, recortados contra la luz de la tele, con el canto prendido.
-    sombraEnLaNieve(cmx + 46, cmy + 78, 46) + canto(camello, 2, -2, 0.5) + forma(camello, C.hondo) +
     sombraEnLaNieve(dx, dy + 84, 30) + canto(robot, -2.5, -2) + forma(robot, C.negro) +
     `<g transform="rotate(-8 ${f(dx + 30)} ${f(dy + 40)})">` + forma(caja(dx + 22, dy - 6, 12, 62), C.hondo) + forma(caja(dx + 25, dy - 22, 6, 18), C.hondo) + trazo(`M${f(dx + 25)} ${f(dy + 2)} L${f(dx + 25)} ${f(dy + 52)}`, C.lente, 1.6, 0.7) + `</g>` +
     `<mask id="c-mordidas"><rect x="${f(cbx - 60)}" y="${f(cby - 30)}" width="120" height="140" fill="white"/>${mordidas.map(([mx, my, r]) => `<circle cx="${f(mx)}" cy="${f(my)}" r="${r}" fill="black"/>`).join('')}</mask>` +
@@ -1173,7 +1171,7 @@ function ferry(k: number): string {
 function astilleroPiso(ancho = ANCHO, alto = ALTO): string {
   const k = ancho / ANCHO;
   const X = (x: number): number => x * k;
-  const { muelle, pila, farol, hamaca, planchada, cania, lanchon, valija } = ASTILLERO;
+  const { muelle, pila, farol, hamaca, planchada, cania, lanchon } = ASTILLERO;
   const rnd = azar(331);
 
   // El muelle: tablones cada vez más anchos, con la tiza en las juntas.
@@ -1219,7 +1217,6 @@ function astilleroPiso(ancho = ANCHO, alto = ALTO): string {
   const at = (id: string): [number, number] => [X(o[id]![0]), o[id]![1]];
   const [lyx, lyy] = at('la-gran-lady');
   const [lnx, lny] = at('la-del-lanchon');
-  const [asx, asy] = at('el-as-del-club-paris');
   const [nvx, nvy] = [X(COSAS_DE_LOS_ASTILLEROS['la-pequena-novia-del-carioca']![0]), COSAS_DE_LOS_ASTILLEROS['la-pequena-novia-del-carioca']![1]];
 
   // El pibe ya no se pinta acá: es un títere del elenco (`arte-pibe.ts`), sentado en esta pila.
@@ -1268,14 +1265,7 @@ function astilleroPiso(ancho = ANCHO, alto = ALTO): string {
     bita(cx, cpy) +
     trazo(`M${f(cx - 4)} ${f(cpy - 6)} L${f(ptx)} ${f(pty)}`, T.negro, 3) + trazo(`M${f(cx - 4)} ${f(cpy - 7)} L${f(ptx)} ${f(pty - 1)}`, T.clara, 0.9, 0.5);
 
-  // El as del Club París, esperando con todo lo suyo en una valija.
-  const [vx, vy] = [X(valija.x), valija.piso];
-  const as =
-    forma(circulo(asx, asy, 9), T.negro) +
-    forma(`M${f(asx - 12)} ${f(asy + 8)} L${f(asx + 12)} ${f(asy + 8)} L${f(asx + 14)} ${f(asy + 44)} L${f(asx + 8)} ${f(vy)} L${f(asx + 1)} ${f(vy)} L${f(asx)} ${f(asy + 46)} L${f(asx - 2)} ${f(vy)} L${f(asx - 9)} ${f(vy)} L${f(asx - 14)} ${f(asy + 44)} Z`, T.negro) +
-    forma(`M${f(asx - 12)} ${f(asy - 6)} L${f(asx + 12)} ${f(asy - 6)} L${f(asx + 8)} ${f(asy - 14)} L${f(asx - 8)} ${f(asy - 14)} Z`, T.negro) + forma(elipse(asx, asy - 6, 16, 3), T.negro) +
-    enmascarado('t-valija', caja(vx - 22, vy - 30, 44, 30), forma(caja(vx - 22, vy - 30, 44, 30), T.naranjaHonda) + nube(vx + 14, vy - 6, 20, 16, T.negro, 'm', 0.6) + trazo(`M${f(vx - 10)} ${f(vy - 30)} l0 30 M${f(vx + 10)} ${f(vy - 30)} l0 30`, T.negro, 2.4, 0.7)) +
-    trazo(`M${f(vx - 7)} ${f(vy - 30)} q7 -9 14 0`, T.negro, 2.6);
+  // El as del Club París ya no se pinta acá, ni su valija: es un títere del elenco (`arte-asparis.ts`), parado en este muelle.
 
   // El balde de las almejas ya no se pinta acá: es un títere del elenco (`arte-almejas.ts`), que apoya en la tabla del muelle.
 
@@ -1294,7 +1284,7 @@ function astilleroPiso(ancho = ANCHO, alto = ALTO): string {
     `<g filter="url(#rociado)">${pilaDeContainers}</g>` +
     poste +
     hamacaEntera +
-    rana + novia + pesca + as
+    rana + novia + pesca
   );
 }
 
