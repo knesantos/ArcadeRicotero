@@ -214,6 +214,14 @@ export const PARTIDA = {
   deshiciste: 'La última jugada, deshecha.',
   /** El renglón chico de una ficha de tema en la carta: el disco y la pista. */
   pieDeTema: (disco: string, pista: string) => `${disco} · pista ${pista}`,
+  /**
+   * El interruptor de los ruidos de interfaz (ronda 2 de la pulida): el golpe de cartón de la
+   * funda al apoyar. No toca lo que suena de la banda, que tiene su tecla. Dice lo que va a
+   * hacer el toque; la tecla chica del tablero lleva una palabra sola.
+   */
+  ruidosApagar: 'Apagá los ruidos',
+  ruidosPrender: 'Prendé los ruidos',
+  ruidosTecla: 'Ruidos',
 
   /* ---- Las filas propias (`D-69`) ---- */
 

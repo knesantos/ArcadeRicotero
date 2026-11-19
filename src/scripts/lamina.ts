@@ -223,6 +223,8 @@ export async function dibujarLamina(datos: DatosLamina): Promise<Blob | null> {
     // "Ponelos en fila" viste ¡Bang! ¡Bang!… Estás liquidado (mezcla `D-19`); otro juego que
     // imprima la misma hoja pide la suya (`D-72`).
     juego: tinta(datos.tintaJuego ?? '--disco-bang-bang-estas-liquidado-tinta', tinta('--texto')),
+    // El cajón de la batea: el ocre de apoyo del mismo disco, que es para bordes y nunca para letra.
+    cajon: tinta('--disco-bang-bang-estas-liquidado-apoyo', tinta('--borde')),
   };
 
   // Las tapas se bajan antes de planificar: una banda de tapas pide alto en función de
@@ -276,13 +278,51 @@ export async function dibujarLamina(datos: DatosLamina): Promise<Blob | null> {
     // premio (`BR-22`).
     // En mayúsculas, como el sello del tablero: las filas propias llegan escritas como las
     // escribió cada uno, y en la lámina se leen todas con la misma voz.
-    escribirAjustado(
-      ctx, banda.nombre.toLocaleUpperCase('es-AR'), MARGEN, slot.y,
-      ANCHO_UTIL, ROTULADA, CUERPOS_LAMINA.rotuloFila, colores.tenue,
-    );
+    const nombreDeBanda = banda.nombre.toLocaleUpperCase('es-AR');
+    if (datos.batea) {
+      /*
+       * El idioma de la batea: la banda es un cajón de borde grueso, del ocre de apoyo, y
+       * arriba, pisando el borde, las dos pestañas de cartón —el nombre y cuántas hay—, apenas
+       * torcidas. Es lo mismo que se ve en el tablero. Una fila vacía sale apagada: trazo
+       * cortado y letra tenue. Ningún cajón lleva tinta propia (`BR-22`).
+       */
+      const altoPestana = 40;
+      const cajon = { x: MARGEN - 24, y: slot.y + altoPestana / 2, ancho: ANCHO_UTIL + 48, alto: slot.alto - altoPestana / 2 - 8 };
+      ctx.save();
+      ctx.strokeStyle = banda.vacia ? colores.borde : colores.cajon;
+      ctx.lineWidth = 4;
+      if (banda.vacia) ctx.setLineDash([14, 10]);
+      ctx.strokeRect(cajon.x, cajon.y, cajon.ancho, cajon.alto);
+      ctx.restore();
 
-    const yFichas = slot.y + CUERPOS_LAMINA.rotuloFila.base * INTERLINEA + 6;
-    const contenido = contenidoDeBanda(slot.alto);
+      const pestana = (texto: string, x: number, desdeLaDerecha: boolean, giro: number, tintaTexto: string): void => {
+        const { base, piso } = CUERPOS_LAMINA.rotuloFila;
+        const cuerpo = cuerpoQueEntra(medir(ctx, texto, base - 4, ROTULADA), ANCHO_UTIL - 200, base - 4, piso - 4);
+        const ancho = medir(ctx, texto, cuerpo, ROTULADA) + 36;
+        const izquierda = desdeLaDerecha ? x - ancho : x;
+        ctx.save();
+        ctx.translate(izquierda + ancho / 2, slot.y + altoPestana / 2);
+        ctx.rotate((giro * Math.PI) / 180);
+        ctx.fillStyle = colores.fondo;
+        ctx.fillRect(-ancho / 2, -altoPestana / 2, ancho, altoPestana);
+        ctx.strokeStyle = banda.vacia ? colores.borde : colores.cajon;
+        ctx.lineWidth = 3;
+        ctx.strokeRect(-ancho / 2, -altoPestana / 2, ancho, altoPestana);
+        escribir(ctx, texto, -ancho / 2 + 18, -cuerpo * 0.52, cuerpo, ROTULADA, tintaTexto);
+        ctx.restore();
+      };
+      pestana(nombreDeBanda, MARGEN - 6, false, -1.2, banda.vacia ? colores.tenue : colores.texto);
+      if (banda.cuenta !== undefined) {
+        pestana(String(banda.cuenta), MARGEN + ANCHO_UTIL + 6, true, 1.4, banda.vacia ? colores.tenue : colores.texto);
+      }
+    } else {
+      escribirAjustado(ctx, nombreDeBanda, MARGEN, slot.y, ANCHO_UTIL, ROTULADA, CUERPOS_LAMINA.rotuloFila, colores.tenue);
+    }
+
+    // En la batea, lo de adentro arranca un poco más abajo: las pestañas no pisan las tapas.
+    const bajoLaPestana = datos.batea ? 10 : 0;
+    const yFichas = slot.y + CUERPOS_LAMINA.rotuloFila.base * INTERLINEA + 6 + bajoLaPestana;
+    const contenido = contenidoDeBanda(slot.alto) - bajoLaPestana;
 
     if (tapas[i]!.length > 0) {
       /*
@@ -301,7 +341,9 @@ export async function dibujarLamina(datos: DatosLamina): Promise<Blob | null> {
         const y = yFichas + ren * (lado + TAPA_LAMINA.aire);
         ctx.save();
         ctx.translate(x + lado / 2, y + lado / 2);
-        ctx.rotate(((n % 2 === 0 ? -1 : 1) * 1.2 * Math.PI) / 180);
+        // En la batea van más torcidas, y ninguna igual que la de al lado.
+        const giro = datos.batea ? [-2.6, 1.8, -1.1, 2.9][n % 4]! : (n % 2 === 0 ? -1 : 1) * 1.2;
+        ctx.rotate((giro * Math.PI) / 180);
         ctx.drawImage(img, -lado / 2, -lado / 2, lado, lado);
         ctx.strokeStyle = colores.borde;
         ctx.lineWidth = 3;
@@ -317,14 +359,16 @@ export async function dibujarLamina(datos: DatosLamina): Promise<Blob | null> {
       const masAncha = Math.max(...lineas.map((l) => medir(ctx, l, cuerpo, ROTULADA)));
       cuerpo = cuerpoQueEntra(masAncha, ANCHO_UTIL, cuerpo, CUERPOS_LAMINA.ficha.piso);
       lineas.forEach((linea, n) => {
-        escribir(ctx, linea, MARGEN, yFichas + n * cuerpo * INTERLINEA, cuerpo, ROTULADA, colores.texto);
+        escribir(ctx, linea, MARGEN, yFichas + n * cuerpo * INTERLINEA, cuerpo, ROTULADA, banda.vacia ? colores.tenue : colores.texto);
       });
     }
 
     // La raya que cierra la banda. Del color del borde y de ningún disco: acá la tinta
-    // diría cuál fila vale más.
-    ctx.fillStyle = colores.borde;
-    ctx.fillRect(MARGEN, slot.y + slot.alto - 3, ANCHO_UTIL, 2);
+    // diría cuál fila vale más. (En la batea la cierra el cajón.)
+    if (!datos.batea) {
+      ctx.fillStyle = colores.borde;
+      ctx.fillRect(MARGEN, slot.y + slot.alto - 3, ANCHO_UTIL, 2);
+    }
   });
 
   // El pie: cuántas se repartieron, el crédito de `D-21`, y dónde se juega.

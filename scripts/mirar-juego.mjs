@@ -1302,7 +1302,8 @@ async function ponelosEnFila(ctx) {
   await pagina.evaluate(() => document.querySelector('#tablero .filas-edicion .secundario')?.click());
   await pausa(500);
   await foto('fila-nombrada-y-sumada', { entera: true });
-  await herramienta(0);
+  await arriba();
+  await rafaga('pestanas-estampadas', () => herramienta(0), { desde: 0, hasta: 520, cada: 3, tope: 12 });
   await pausa(600);
   await arriba();
   await foto('filas-propias');
@@ -1313,7 +1314,7 @@ async function ponelosEnFila(ctx) {
     if (!quedan) break;
     const ultima = await pagina.evaluate(() => /\b1 de\b/.test(document.querySelector('#tablero .bandeja-rotulo .fila-cuenta')?.textContent ?? ''));
     const n = (k % 5) + 1;
-    if (ultima) await rafaga('cierre', () => tocar(fila(n)), { desde: 0, hasta: 1500, cada: 6, tope: 12 });
+    if (ultima) await rafaga('cierre', () => pagina.click(fila(n)), { desde: 0, hasta: 1500, cada: 6, tope: 12 });
     else await tocar(fila(n));
     await pausa(380);
   }
@@ -1352,7 +1353,7 @@ async function ponelosEnFila(ctx) {
   });
   await pagina.waitForSelector('#eleccion:not([hidden])', { timeout: 8000 });
   await pausa(600);
-  await elegir('todos', 'Todos los temas');
+  await rafaga('tapa-viaja', () => elegir('todos', 'Todos los temas'), { desde: 0, hasta: 700, cada: 3, tope: 12 });
   await pausa(600);
   const filas = await pagina.evaluate(() => document.querySelectorAll('#tablero .mazo .reparto-boton').length);
   for (let k = 0; k < 34; k++) {

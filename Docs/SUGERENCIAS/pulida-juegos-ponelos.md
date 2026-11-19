@@ -126,3 +126,79 @@ resolvieron las tres pantallas:
    recorrido lo borra para poder mirar la lámina.
 5. **Un clic "de verdad" del guion desplaza la hoja** si el blanco está pegado abajo; para las
    fotos se toca con `element.click()`.
+
+---
+
+## Ronda 2 (2026-11-19): el cierre, las teclas y el golpe de cartón
+
+### 1. Decisiones del hilo principal, ya aplicadas
+
+- La batea se elige por tapa y año, sin el nombre a la vista. Queda.
+- El botón primario sigue en la ceniza de *¡Bang! ¡Bang!* (`D-19`).
+- **Ruidos: sí.** Lo que diría la enmienda a `D-69` (la escribe el hilo principal):
+  > `D-69` punto 5 deja de decir "lo único que suena es la banda". Suena además **un** ruido de
+  > interfaz, el golpe sordo de cartón de la funda al apoyar en su fila (`carton`, en `efectos.ts`),
+  > igual en todas las filas, detrás del interruptor de ruidos y con el audio del sitio despertado en
+  > el primer toque. Sigue sin haber festejo (`BR-22` punto 5, `D-33`): es peso, no premio.
+
+### 2. Qué se hizo
+
+1. **El cierre es la pieza compartida.** `.pie-resultado` con la lámina que asoma
+   (`.tarjeta-asoma`), "Compartí", lo que compartir diga y "Armá otra"; abajo, en
+   `.salida-resultado`, la cinta "← Volvé al fichín" y "Desarmala", chica. La caja "SIN NADA EN
+   EL MAZO" salió: con el mazo vacío no se dibuja, y queda la región viva para el lector de
+   pantalla. La lámina se dibuja una vez por lista (se guarda con su dirección) y es la misma que
+   se comparte. El foco que la isla le pone a "Compartí" no dibuja anillo si se llegó con el dedo.
+2. **La lámina habla el idioma de la batea** (`batea: true` en `DatosLamina`): cada banda es un
+   cajón de borde ocre con las dos pestañas, y las tapas van torcidas. "Armá tu recital" imprime
+   la hoja de siempre.
+3. **La fila vacía sale apagada**, en pantalla (con la lista cerrada) y en la lámina: trazo
+   cortado y letra tenue. **No la saqué**: el encabezado de `lamina.ts` ya decía que una fila que
+   desaparece por estar vacía hace que la lámina mienta por omisión.
+4. **Las herramientas son un renglón de teclas** del mismo ancho, con la leyenda en dos renglones
+   si hace falta. La bajada del conjunto salió del tablero (ya se leyó en la elección).
+5. **El mazo mide menos**: sus dos pestañas pisan el borde, como las de las filas. Las tapas
+   puestas bajaron a 52 px.
+6. **El vinilo es más grande y sale tres cuartos de la funda**, con **la veta impresa**: dos arcos
+   enfrentados de tinta plana (un anillo con dos de sus cuatro lados pintados), que dan la vuelta
+   con el disco. Sin degradado y sin resplandor.
+7. **Los temas llevan la tapita de su disco** en los conjuntos que cruzan discos.
+8. **Nombrar una fila tiene jugo**: el campo se pega al cambiar, el cajón nuevo llega torcido, y
+   al tocar "Listo" todas las pestañas caen como sello (y suena el sello si algo cambió).
+9. **De la batea al tablero**: la tapa que se tocó viaja a ser la funda de la primera carta.
+10. **El golpe de cartón** (`carton`) al apoyar, la tecla "RUIDOS" en la cabecera del tablero y
+    "Apagá los ruidos" en la portada.
+
+### 3. Tests y copy
+
+- `estilos.test.ts`: un estado más en `ESTADOS_PONELOS` (`.fila--vacia`). `efectos.ts`: un efecto
+  más, que cumple el tope y los niveles que mira `efectos.test.ts` sin tocarlo.
+- Copy nuevo en `ponelos/copy.ts`: `ruidosApagar`, `ruidosPrender`, `ruidosTecla`.
+  `PARTIDA.mazoVacio` quedó sin uso.
+
+### 4. Lo que queda abierto
+
+- **No hice los lomos ni el plegado de las filas largas.** Un lomo no puede llevar un título que
+  se lea y además medir la zona de pulgar. Con los 105, una fila de cuarenta temas sigue siendo
+  una lista larga de sellos, ahora con tapita.
+- **El golpe de cartón suena encima del recorte que arranca en ese mismo toque.** Es lo pedido;
+  si molesta, la salida es bajarle el nivel o atrasar el recorte lo que dura el golpe.
+- **La veta, quieta, se lee como una "C" gruesa.** Girando se entiende; parada es un dibujo de
+  vinilo bastante esquemático.
+
+### 5. Lo medido en la ronda 2
+
+- **A 430 × 860 se ven tres filas mientras se reparte** (con cuatro tapas puestas): el mazo pasó
+  de 350 a 329 px y arriba se ganaron unos 75 (las herramientas en un renglón, la bajada afuera).
+  A 375 × 667 el mazo mide 348 (era 383).
+- **320 × 568, medido**: el botón de la portada termina en 560 de 568 (en la ronda 1 daba 617 y
+  el arreglo había quedado sin medir). El mazo ahí ocupaba 408 px; con la carta ajustada para ese
+  ancho quedó en 331 (medido).
+- **Rendimiento** (CPU ×4, 430 × 860 a ×2, dos tandas, control 16,7 ms). Quieto, con el disco
+  girando o con 60 de 105 puestas: 16,7 ms, ningún cuadro sobre 34. **Repartir una ficha dejó un
+  cuadro más largo que en la ronda 1**: de 83 a 150 ms en las tapas (era de 67 a 117) y de 117 a
+  183 en los 105 (era de 83 a 117). Es el tablero que se rehace entero, ahora con las tapitas y
+  una tecla más. Sigue siendo un solo cuadro por toque.
+- **Armar el audio en el toque de "Elegí qué repartir" costaba un cuadro de 280 a 320 ms** justo
+  cuando arranca el vuelo de la pila. Ahora se arma 1,2 s después, dormido, y lo despierta el
+  toque siguiente: la pila volvió a 133–167 ms (ronda 1: 117–150).

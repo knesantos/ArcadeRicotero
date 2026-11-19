@@ -126,6 +126,14 @@ export interface DatosLamina {
     readonly nombre: string;
     readonly fichas: readonly string[];
     readonly imagenes?: readonly string[];
+    /** Cuántas fichas tiene, para la pestaña de la cuenta (solo con `batea`). */
+    readonly cuenta?: number;
+    /**
+     * La fila quedó vacía. **Sale igual, apagada**: cajón de trazo cortado y letra tenue. Sacarla
+     * haría que la lámina mienta por omisión (ver el encabezado); entera y al mismo peso que las
+     * otras, una fila de nombre por defecto se veía como algo sin terminar.
+     */
+    readonly vacia?: boolean;
   }[];
   /** Cuántas se repartieron de cuántas. Registro 3, ya formateado por el juego. */
   readonly repartidas: string;
@@ -145,6 +153,13 @@ export interface DatosLamina {
    * en el escenario, y no como un párrafo.
    */
   readonly renglonPorFicha?: boolean;
+  /**
+   * La lámina en el idioma de la batea (ronda 2 de la pulida, 2026-11-19): cada banda es un
+   * cajón de borde ocre con dos pestañas de cartón —el nombre y cuántas hay—, como las filas del
+   * tablero, y las tapas van torcidas. Lo pide "Ponelos en fila"; "Armá tu recital" imprime la
+   * hoja de siempre.
+   */
+  readonly batea?: boolean;
 }
 
 export class LaminaImposible extends Error {}

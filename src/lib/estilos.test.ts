@@ -561,6 +561,8 @@ const ESTADOS_PONELOS = [
   '.pieza--tapa',
   '.fila--recibe',
   '.batea--llega',
+  // Ronda 2: la fila que quedó vacía con la lista cerrada, apagada.
+  '.fila--vacia',
 ];
 
 test('US-08: lo que tenes en la mano no se comunica solo con color', () => {

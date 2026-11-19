@@ -9,6 +9,8 @@
  * - `clac`: el mecanismo que engancha o suelta la cinta.
  * - `golpe`: el error. Sordo y grave.
  * - `sello`: el acierto. El golpe del sello de goma contra la hoja.
+ * - `carton`: una funda de disco que apoya en la batea ("Ponelos en fila", 2026-11-19). Sordo,
+ *   corto y sin brillo: no es un acierto ni un festejo, es peso.
  *
  * ## Las tres reglas
  *
@@ -28,7 +30,7 @@
 
 import { contextoVivo } from './contexto.ts';
 
-export type Efecto = 'tecla' | 'clac' | 'golpe' | 'sello';
+export type Efecto = 'tecla' | 'clac' | 'golpe' | 'sello' | 'carton';
 
 /* ---------------------------------------------------------------- el interruptor
  *
@@ -118,6 +120,11 @@ export const EFECTOS: Readonly<Record<Efecto, FichaDeEfecto>> = {
       { desde: 0.005, largoSeg: 0.07, filtro: 'lowpass', hz: 700, nivel: 0.6 },
     ],
     caidas: [{ desde: 0, largoSeg: 0.12, desdeHz: 120, hastaHz: 64, nivel: 0.9 }],
+  },
+  carton: {
+    // El roce del cartón, apagado, y el cuerpo del golpe contra la madera de la batea.
+    soplidos: [{ desde: 0, largoSeg: 0.045, filtro: 'lowpass', hz: 340, nivel: 0.7 }],
+    caidas: [{ desde: 0, largoSeg: 0.09, desdeHz: 105, hastaHz: 58, nivel: 0.8 }],
   },
 };
 
