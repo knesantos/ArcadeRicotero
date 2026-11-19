@@ -285,6 +285,15 @@ const ANIMACIONES = [
   { nombre: 'rodillo-destapa', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
   // Ronda 2: el polvo de revoque que salta cuando el sello apoya en la pared, cae y se va.
   { nombre: 'polvo-cae', apaga: 'token', valor: '--duracion-cuenta', hoja: 'src/styles/juego.css' },
+  // "Ponelos en fila", la batea (ronda de pulida, 2026-11-19). Lo que pasa una vez: la pila de la
+  // portada que cae tapa por tapa, la carta que sube del mazo, la ficha que apoya en su fila y la
+  // fila que acusa el peso. Y un bucle atado a que suene el recorte: el vinilo que gira afuera de
+  // la funda; como el carrete, se apaga con `animation: none`.
+  { nombre: 'pila-cae', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  { nombre: 'carta-llega', apaga: 'token', valor: '--duracion-paso', hoja: 'src/styles/juego.css' },
+  { nombre: 'pieza-apoya', apaga: 'token', valor: '--duracion-sello', hoja: 'src/styles/juego.css' },
+  { nombre: 'fila-recibe', apaga: 'token', valor: '--duracion-sello', hoja: 'src/styles/juego.css' },
+  { nombre: 'disco-gira', apaga: 'regla', valor: '.carta--suena .carta-vinilo-cara', hoja: 'src/styles/juego.css' },
 ] as const;
 
 test('no hay ninguna animacion que esta lista no conozca', () => {

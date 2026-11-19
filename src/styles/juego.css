@@ -9556,7 +9556,7 @@ body:has(.juego-completar > #partida:not([hidden])) {
    | La ficha que se levanta al agarrarla | Cambia el borde y aparece el rótulo `EN LA MANO`. Nada se infla |
    | La pastilla cápsula del rótulo de fila | 3 px de estampa. `999px` rompe el build |
    | La tarjeta gris sobre fondo gris | La fila se recorta por borde grueso, y la tinta queda sobre `--fondo`, que es el par testeado |
-   | La animación de reacomodo al soltar | Nada. Acá no hay un solo `@keyframes` — solo transiciones de borde, con `--duracion-toque`, que es la respuesta al toque y el corte de movimiento reducido no la apaga |
+   | La animación de reacomodo al soltar | Las que ya estaban no se reacomodan. Desde la ronda de pulida (2026-11-19) la que llega sí se mueve: viaja de la carta a su fila y apoya, igual en cualquier fila y sin festejo (propuesta en `Docs/SUGERENCIAS/pulida-juegos-ponelos.md`) |
 
    Y una prohibición más, que no es de forma: **ninguna de las cuatro filas se distingue
    por tinte**. Se distinguen por nombre, por posición y por su contador. Es lo único que
@@ -9571,7 +9571,87 @@ body:has(.juego-completar > #partida:not([hidden])) {
   --tinte-accion: var(--tinte-juego);
 }
 
-/* ---- Pantalla 1: qué repartís ---- */
+/* ---- La portada: la pila de discos (ronda de pulida, 2026-11-19) ----
+
+   La acotación dice "se te desordenó la pila de discos", y la pila está ahí: las diez tapas
+   tiradas una arriba de la otra, cada una torcida a su manera. Caen de a una al entrar y, al
+   tocar, la isla las reparte en la batea de la elección. Tinta plana y borde: son las fichas
+   de 320 px de siempre, y las diez se acreditan en el pie (`D-21`).
+
+   La pose de reposo va en `rotate`, no en `transform`: así la caída (que anima `translate`,
+   `rotate` y `scale`) termina sola en la pose, sin repetirla en los cuadros clave. */
+
+.pila {
+  --lado: clamp(4.4rem, 23vw, 6rem);
+  position: relative;
+  display: block;
+  width: 100%;
+  height: calc(var(--lado) * 1.98);
+  margin: 0 0 var(--espacio-2);
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.pila-disco {
+  position: absolute;
+  left: calc(var(--x) * (100% - var(--lado)));
+  top: calc(var(--y) * var(--lado));
+  width: var(--lado);
+  height: var(--lado);
+  object-fit: cover;
+  background: var(--fondo);
+  border: 2px solid var(--borde);
+  border-radius: 3px;
+  rotate: var(--giro);
+  transition: border-color var(--duracion-toque) var(--curva-cinta);
+  animation: pila-cae var(--duracion-umbral) var(--curva-cinta) calc(var(--escalon-umbral) * (var(--orden, 0) + 2)) backwards;
+}
+
+/* Cada una llega de arriba, más grande y torcida para el otro lado, y apoya. Antes de su
+   turno no está: `visibility` no se funde, salta. */
+@keyframes pila-cae {
+  from {
+    translate: 0 calc(var(--lado) * -0.55);
+    rotate: calc(var(--giro) * -0.6);
+    scale: 1.18;
+    visibility: hidden;
+  }
+}
+
+.pila-disco:nth-child(1) { --x: 0; --y: 0.3; --giro: -13deg; }
+.pila-disco:nth-child(2) { --x: 0.17; --y: 0.03; --giro: 8deg; }
+.pila-disco:nth-child(3) { --x: 0.29; --y: 0.66; --giro: -5deg; }
+.pila-disco:nth-child(4) { --x: 0.45; --y: 0.02; --giro: 17deg; }
+.pila-disco:nth-child(5) { --x: 0.57; --y: 0.7; --giro: -10deg; }
+.pila-disco:nth-child(6) { --x: 0.71; --y: 0.1; --giro: 6deg; }
+.pila-disco:nth-child(7) { --x: 0.96; --y: 0.6; --giro: 19deg; }
+.pila-disco:nth-child(8) { --x: 0.08; --y: 0.9; --giro: 11deg; }
+.pila-disco:nth-child(9) { --x: 0.36; --y: 0.3; --giro: -21deg; }
+.pila-disco:nth-child(10) { --x: 0.8; --y: 0.4; --giro: 3deg; }
+
+/* Adentro de X (`T-518`) la pila entra solo donde sobra alto: en el cuadrado de la compu el
+   título y el botón son toda la pantalla. */
+html.incrustado .pila {
+  display: none;
+}
+
+@media (min-height: 33rem) {
+  html.incrustado .pila {
+    --lado: 4rem;
+    display: block;
+  }
+}
+
+/* ---- Pantalla 1: qué repartís ----
+
+   Era una lista de dieciséis tarjetas de texto, una abajo de la otra: 2500 px de formulario.
+   Desde la ronda de pulida es una disquería. Arriba, los conjuntos que cruzan discos, cada uno
+   con un dibujo hecho de lo que trae adentro; abajo, **la batea**: los diez discos tapa por
+   tapa, para repartir el tracklist de uno. Entra en una pantalla de teléfono. */
 
 .eleccion-titulo {
   font-family: var(--fuente-rotulada);
@@ -9584,19 +9664,24 @@ body:has(.juego-completar > #partida:not([hidden])) {
 
 .conjuntos {
   display: grid;
-  gap: var(--espacio-2);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--espacio-2) var(--espacio-1);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
+/* "Todos los temas", lo sorteado y la partida a medias van a lo ancho. */
+.conjuntos-todos,
+.conjuntos-sorteo,
+.conjuntos-retomar {
+  grid-column: 1 / -1;
+}
+
 /*
- * Cada conjunto es una tarjeta recortada, con la tinta de su disco cuando lo tiene, y desde
- * `D-69` con su tapa al costado: el disco se reconoce antes de leerlo.
- *
- * Los que cruzan discos —los diez discos, las tapas, los que abren, los que cierran, los
- * sorteados y "Todos los temas"— no llevan ninguna tinta de disco: teñirlos con uno
- * cualquiera sería decir que ese conjunto es de ese disco, y no lo es.
+ * Cada conjunto es una tarjeta recortada. Los que cruzan discos —los diez discos, las tapas,
+ * los que abren, los que cierran, los sorteados y "Todos los temas"— no llevan ninguna tinta
+ * de disco: teñirlos con uno cualquiera sería decir que ese conjunto es de ese disco, y no lo es.
  */
 .conjunto {
   display: flex;
@@ -9604,13 +9689,14 @@ body:has(.juego-completar > #partida:not([hidden])) {
   gap: var(--espacio-2);
   width: 100%;
   min-height: var(--toque-min);
-  padding: var(--espacio-2);
+  padding: var(--espacio-1) var(--espacio-2);
   text-align: start;
   background: var(--fondo);
   color: var(--texto);
-  border: var(--linea) solid color-mix(in srgb, var(--tinta-disco, var(--tinte-juego)) 45%, var(--borde));
+  border: var(--linea) solid color-mix(in srgb, var(--tinte-juego) 45%, var(--borde));
   border-radius: var(--radio);
   transition: border-color var(--duracion-toque) var(--curva-cinta);
+  touch-action: manipulation;
 }
 
 /* Pegadas a mano: ninguna queda derecha, y ninguna se tuerce igual que la de al lado. */
@@ -9622,6 +9708,25 @@ body:has(.juego-completar > #partida:not([hidden])) {
   transform: rotate(0.3deg);
 }
 
+/* De a dos por renglón: el dibujo arriba y el nombre abajo, y las dos del renglón miden lo mismo. */
+.conjunto--media {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--espacio-1);
+  height: 100%;
+  padding: var(--espacio-2) var(--espacio-1) var(--espacio-1) var(--espacio-2);
+}
+
+.conjunto--media .conjunto-baja {
+  font-size: 0.82rem;
+}
+
+/* El nombre, en un renglón: a la mitad del ancho, el tamaño de las de arriba lo partía en dos. */
+.conjunto--media .conjunto-titulo {
+  font-size: 0.92rem;
+  letter-spacing: 0.02em;
+}
+
 .conjunto-texto {
   display: grid;
   gap: 0.2em;
@@ -9629,22 +9734,13 @@ body:has(.juego-completar > #partida:not([hidden])) {
   min-width: 0;
 }
 
-.conjunto-tapa {
-  flex: none;
-  width: 56px;
-  height: 56px;
-  object-fit: cover;
-  border: 2px solid var(--borde);
-  border-radius: 3px;
-  transform: rotate(-2deg);
-}
-
 .conjunto-titulo {
   font-family: var(--fuente-rotulada);
   font-size: 1.05rem;
   letter-spacing: 0.04em;
+  line-height: 1.15;
   text-transform: uppercase;
-  color: var(--tinta-disco, var(--tinte-juego));
+  color: var(--tinte-juego);
 }
 
 .conjunto-baja {
@@ -9663,12 +9759,13 @@ body:has(.juego-completar > #partida:not([hidden])) {
 
 /*
  * "Todos los temas" (`D-69`): el conjunto entero, y el que se pidió por nombre. Va primero,
- * más grande, con la tinta del juego en el borde y las diez tapas en tira — las diez, una
- * al lado de la otra, porque adentro están los diez discos.
+ * más grande, con la tinta del juego en el borde y los diez discos parados uno contra el
+ * otro, como en la batea: de cada uno se ve el canto que deja el de adelante.
  */
 .conjunto--todos {
   flex-wrap: wrap;
-  padding: var(--espacio-3) var(--espacio-2);
+  row-gap: var(--espacio-1);
+  padding: var(--espacio-2);
   border-color: var(--tinte-juego);
 }
 
@@ -9676,31 +9773,199 @@ body:has(.juego-completar > #partida:not([hidden])) {
   font-size: 1.45rem;
 }
 
-/* Diez columnas iguales y no una fila flexible: una imagen con su `width` puesto no se
-   achica en una fila flexible, y la tira se salía por el costado de la tarjeta. */
 .conjunto-tira {
-  display: grid;
-  grid-template-columns: repeat(10, minmax(0, 1fr));
-  gap: 4px;
+  display: flex;
   flex: 1 0 100%;
   min-width: 0;
+  padding: 0.25rem 0 0.1rem;
 }
 
+/* Diez tapas de 15 % que se pisan lo justo para que las diez sumen el ancho entero. El ancho
+   va escrito: una imagen con su `width` de atributo no se achica sola en una fila flexible. */
 .conjunto-tira-tapa {
-  width: 100%;
+  flex: none;
+  width: 15%;
   height: auto;
   aspect-ratio: 1;
+  margin-inline-end: -5.556%;
   object-fit: cover;
+  background: var(--fondo);
   border: 2px solid var(--borde);
   border-radius: 3px;
 }
 
+.conjunto-tira-tapa:last-child {
+  margin-inline-end: 0;
+}
+
 .conjunto-tira-tapa:nth-child(odd) {
-  transform: rotate(-3deg);
+  rotate: -3deg;
 }
 
 .conjunto-tira-tapa:nth-child(even) {
-  transform: rotate(2deg);
+  rotate: 2deg;
+}
+
+.conjunto-tira-tapa:nth-child(3n) {
+  rotate: 5deg;
+}
+
+/* "Los diez discos" se juega sin tapas: diez lomos parados, cada uno con la tinta de su disco. */
+.conjunto-lomos {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 3.1rem;
+}
+
+.conjunto-lomo {
+  width: 0.5rem;
+  height: 100%;
+  background: var(--tinta-disco);
+  border-radius: 1px;
+  transform-origin: 50% 100%;
+}
+
+.conjunto-lomo:nth-child(3n) {
+  height: 90%;
+}
+
+.conjunto-lomo:nth-child(4n + 2) {
+  height: 95%;
+}
+
+.conjunto-lomo:nth-child(7) {
+  rotate: 7deg;
+}
+
+.conjunto-lomo:nth-child(8) {
+  margin-inline-start: 5px;
+}
+
+/* "Las diez tapas" se mira: tres en abanico. */
+.conjunto-abanico,
+.conjunto-sorteo {
+  position: relative;
+  display: block;
+  flex: none;
+  width: 6rem;
+  height: 3.1rem;
+}
+
+.conjunto-abanico-tapa,
+.conjunto-sorteo-tapa {
+  position: absolute;
+  width: 2.9rem;
+  height: 2.9rem;
+  object-fit: cover;
+  background: var(--fondo);
+  border: 2px solid var(--borde);
+  border-radius: 3px;
+}
+
+.conjunto-abanico-tapa:nth-child(1) {
+  left: 0;
+  top: 0.2rem;
+  rotate: -9deg;
+}
+
+.conjunto-abanico-tapa:nth-child(2) {
+  left: 1.5rem;
+  top: 0;
+  rotate: 2deg;
+}
+
+.conjunto-abanico-tapa:nth-child(3) {
+  left: 3rem;
+  top: 0.25rem;
+  rotate: 11deg;
+}
+
+/* Lo sorteado: las tres primeras tapas de lo que salió, como cayeron. */
+.conjunto-sorteo-tapa {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.conjunto-sorteo-tapa:nth-child(1) {
+  left: 0;
+  top: 0.55rem;
+  rotate: -24deg;
+}
+
+.conjunto-sorteo-tapa:nth-child(2) {
+  left: 1.7rem;
+  top: 0;
+  rotate: 13deg;
+}
+
+.conjunto-sorteo-tapa:nth-child(3) {
+  left: 3.3rem;
+  top: 0.6rem;
+  rotate: 38deg;
+}
+
+/* "Los que abren" y "Los que cierran": un disco con la púa en el primer surco, o en el último.
+   Dos anillos y una galleta, de trazo: ni un degradado. */
+.conjunto-surco {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 3.1rem;
+  height: 3.1rem;
+  border: 2px solid var(--texto-tenue);
+  border-radius: 50%;
+}
+
+.conjunto-surco::before {
+  content: '';
+  position: absolute;
+  inset: 17%;
+  border: 1px solid var(--borde);
+  border-radius: 50%;
+}
+
+.conjunto-surco-galleta {
+  width: 34%;
+  height: 34%;
+  background: var(--tinte-juego);
+  border-radius: 50%;
+}
+
+/* La púa: un rombo de oro, apoyado afuera o pegado a la galleta. */
+.conjunto-surco-pua {
+  position: absolute;
+  left: 50%;
+  width: 0.5rem;
+  height: 0.5rem;
+  background: var(--acento-2);
+  translate: -50% -50%;
+  rotate: 45deg;
+}
+
+.conjunto-surco--abren .conjunto-surco-pua {
+  top: 7%;
+}
+
+.conjunto-surco--cierran .conjunto-surco-pua {
+  top: 28%;
+}
+
+/* Y el surco que se está por tocar va de trazo grueso: el de afuera, o el de adentro. */
+.conjunto-surco--abren {
+  border-width: var(--linea);
+}
+
+.conjunto-surco--cierran::before {
+  inset: 24%;
+  border-width: var(--linea);
+  border-color: var(--texto-tenue);
+}
+
+/* Lo sorteado va a lo ancho y bajito: el dibujo al costado. */
+.conjunto--sorteo {
+  gap: var(--espacio-2);
 }
 
 /* La partida a medias: arriba de todo, con el sello que lo dice en palabras. */
@@ -9721,6 +9986,99 @@ body:has(.juego-completar > #partida:not([hidden])) {
   border: 2px solid var(--acento-2);
   border-radius: 3px;
   transform: rotate(-1.5deg);
+}
+
+/*
+ * La batea: un cajón de borde grueso, del ocre de apoyo del disco que viste el juego —que es
+ * para bordes y divisores, nunca para letra—, con su pestaña de cartón asomando arriba. Adentro,
+ * los diez discos tapa por tapa, cinco por renglón. La tapa es el botón entero y mide más que
+ * la zona de pulgar hasta en un teléfono de 320 px.
+ */
+.batea {
+  position: relative;
+  margin-top: calc(var(--espacio-3) + 0.4rem);
+  padding: calc(var(--espacio-2) + 0.35rem) var(--espacio-1) var(--espacio-1);
+  border: var(--linea) solid var(--apoyo-juego);
+  border-radius: var(--radio);
+  rotate: 0.25deg;
+}
+
+/* Mientras la pila de la portada vuela hasta acá, pasa por encima de las tarjetas de arriba. */
+.batea--llega {
+  z-index: 2;
+}
+
+.batea-rotulo {
+  position: absolute;
+  top: 0;
+  left: var(--espacio-2);
+  margin: 0;
+  padding: 0.2em 0.7em;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--fondo);
+  color: var(--texto);
+  border: 2px solid var(--apoyo-juego);
+  border-radius: 3px;
+  translate: 0 -60%;
+  rotate: -1.2deg;
+}
+
+.batea-discos {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--espacio-1) 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.batea-disco {
+  display: grid;
+  justify-items: center;
+  gap: 0.2em;
+  width: 100%;
+  min-height: var(--toque-min);
+  padding: 0;
+  background: transparent;
+  color: var(--texto-tenue);
+  border: 0;
+  border-radius: 3px;
+  touch-action: manipulation;
+}
+
+.batea-tapa {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  background: var(--fondo);
+  border: 2px solid color-mix(in srgb, var(--tinta-disco, var(--borde)) 65%, var(--borde));
+  border-radius: 3px;
+  transition: border-color var(--duracion-toque) var(--curva-cinta);
+}
+
+.batea-discos > li:nth-child(odd) .batea-tapa {
+  rotate: -1.6deg;
+}
+
+.batea-discos > li:nth-child(even) .batea-tapa {
+  rotate: 1.2deg;
+}
+
+.batea-discos > li:nth-child(3n) .batea-tapa {
+  rotate: 2.4deg;
+}
+
+/* El año, en la tinta del disco: ordena la batea y es lo que se lee de cada tapa. */
+.batea-anio {
+  font-family: var(--fuente-rotulada);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  color: var(--tinta-disco, var(--texto-tenue));
 }
 
 /* ---- Pantalla 2: el tablero ---- */
@@ -9847,17 +10205,20 @@ body:has(.juego-completar > #partida:not([hidden])) {
 
 .filas {
   display: grid;
-  gap: var(--espacio-2);
+  gap: var(--espacio-1);
   margin-bottom: var(--espacio-2);
 }
 
 /*
- * Una fila es un recorte pegado, no una superficie elevada: fondo igual al del sitio,
- * borde grueso, y apenas torcida. Ninguna cambia de tinte respecto de las otras — el borde
- * sale del disco del juego, que es el mismo para todas, sean las de siempre o las propias.
+ * Una fila es un cajón de la batea: fondo igual al del sitio, borde grueso, apenas torcido, y
+ * arriba, pisando el borde, las dos pestañas de cartón —el nombre y cuántas hay— como los
+ * separadores de una disquería (ronda de pulida, 2026-11-19). Ninguna cambia de tinte respecto
+ * de las otras: el borde sale del disco del juego, que es el mismo para todas, sean las de
+ * siempre o las propias.
  */
 .fila {
-  padding: var(--espacio-1);
+  margin-top: 0.8rem;
+  padding: 0 var(--espacio-1) var(--espacio-1);
   background: var(--fondo);
   border: var(--linea) solid color-mix(in srgb, var(--tinte-juego) 40%, var(--borde));
   border-radius: var(--radio);
@@ -9882,14 +10243,30 @@ body:has(.juego-completar > #partida:not([hidden])) {
   gap: var(--espacio-1);
   width: 100%;
   min-height: var(--toque-min);
-  padding: 0.3em var(--espacio-1);
+  /* Sube hasta pisar el borde de arriba del cajón: las pestañas asoman, y la banda sigue
+     midiendo la zona de pulgar entera. */
+  margin-top: -0.95rem;
+  padding: 0 var(--espacio-1) 0.3em;
+  align-items: flex-start;
   background: transparent;
   color: var(--texto);
   border: 0;
-  border-bottom: 2px dashed var(--borde);
+  border-bottom: 2px dashed transparent;
   border-radius: 0;
   text-align: start;
   transition: border-color var(--duracion-toque) var(--curva-cinta);
+}
+
+/* La cuenta de la fila, en su pestaña. (La del mazo y la de los botones van sin caja.) */
+.fila-destino .fila-cuenta {
+  min-width: 1.2em;
+  padding: 0.15em 0.55em;
+  text-align: center;
+  background: var(--fondo);
+  color: var(--texto);
+  border: 2px solid var(--borde);
+  border-radius: 3px;
+  rotate: 1.4deg;
 }
 
 /* El sello de goma con el nombre de la fila. Registro 3, apenas torcido, esquina de 3 px:
@@ -9901,8 +10278,9 @@ body:has(.juego-completar > #partida:not([hidden])) {
   font-size: 0.8rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  background: var(--fondo);
   color: var(--texto);
-  border: 2px solid var(--borde);
+  border: 2px solid color-mix(in srgb, var(--tinte-juego) 55%, var(--borde));
   border-radius: 3px;
   padding: 0.2em 0.7em;
   transform: rotate(-1.2deg);
@@ -9931,7 +10309,7 @@ body:has(.juego-completar > #partida:not([hidden])) {
   display: flex;
   flex-wrap: wrap;
   gap: var(--espacio-1);
-  margin: var(--espacio-1) 0 0;
+  margin: 0;
   padding: 0;
   list-style: none;
   /* El navegador re-ancla el desplazamiento cuando el árbol cambia arriba de la vista, y
@@ -10062,6 +10440,31 @@ body:has(.juego-completar > #partida:not([hidden])) {
   border-color: var(--tinta-disco, var(--texto));
 }
 
+/* En el conjunto que se mira, la pieza puesta es la tapa y nada más: el nombre lo dice el
+   botón a quien no la ve, y la carta lo escribió grande cuando tocó. Así una fila de tapas
+   es una fila de tapas, como en la batea, y no una lista con miniaturas. */
+.pieza--tapa.pieza--puesta {
+  flex-direction: column;
+  gap: 2px;
+  padding: 3px;
+}
+
+.pieza--tapa.pieza--puesta .pieza-cuerpo {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.pieza--tapa.pieza--puesta .pieza-tapa {
+  width: 3.75rem;
+  height: 3.75rem;
+  border: 0;
+  transform: none;
+}
+
 .pieza-tapa {
   width: 56px;
   height: 56px;
@@ -10101,6 +10504,74 @@ body:has(.juego-completar > #partida:not([hidden])) {
   padding: 0.1em 0.4em;
   transform: rotate(-2deg);
   flex: none;
+}
+
+/* ---- La ficha que llega a su fila (ronda de pulida, 2026-11-19) ----
+
+   Al repartir, una copia suelta de la funda viaja de la carta a la fila (la arma la isla y
+   solo mueve `transform`). Mientras viaja, la pieza de verdad espera; cuando llega, **apoya**:
+   cae torcida y se endereza, la fila acusa el peso un cuadro y su cuenta cae como sello.
+   Nada depende de esto: la pieza ya está puesta, lleva su borde de recién llegada y la mano
+   lo dice en palabras. Con movimiento reducido no hay viaje y los dos gestos duran cero. */
+
+.pieza--viene {
+  visibility: hidden;
+}
+
+.pieza--apoya {
+  animation: pieza-apoya var(--duracion-sello) var(--curva-cinta) backwards;
+}
+
+@keyframes pieza-apoya {
+  from {
+    translate: 0 -9px;
+    rotate: 4deg;
+    scale: 1.1;
+  }
+}
+
+/* El peso: la fila baja tres píxeles, rebota uno y queda. En saltos duros, sin curva. */
+.fila--recibe {
+  animation: fila-recibe var(--duracion-sello) linear both;
+}
+
+@keyframes fila-recibe {
+  0%,
+  34% {
+    translate: 0 3px;
+  }
+
+  35%,
+  69% {
+    translate: 0 -1px;
+  }
+
+  70%,
+  100% {
+    translate: 0 0;
+  }
+}
+
+/* La funda que viaja. Va por encima de todo, no toma toques y se borra al llegar. */
+.pieza-vuelo {
+  position: fixed;
+  z-index: 40;
+  display: block;
+  box-sizing: border-box;
+  overflow: hidden;
+  pointer-events: none;
+  background: var(--fondo);
+  border: 2px solid var(--tinta-disco, var(--borde));
+  border-radius: 3px;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+.pieza-vuelo > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 /* ---- El mazo (`D-69`): la que te toca, en la zona del pulgar ----
@@ -10174,8 +10645,49 @@ body:has(.juego-completar > #partida:not([hidden])) {
   color: var(--texto-tenue);
 }
 
-/* La carta: la ficha que te toca, grande, con la tinta de su disco en el borde entero. */
+/* La carta: el disco que tenés en la mano (ronda de pulida, 2026-11-19). Una funda con su
+   tapa, el vinilo que asoma por el costado, y abajo lo que queda del mazo. Lleva la tinta de
+   su disco en el borde entero. */
+
+/* Lo que queda del mazo: hasta tres fundas más que asoman por abajo y a la derecha de la
+   carta. Son trazo, no sombra: cada una tiene su borde y su fondo. La pila se achica sola
+   cuando quedan dos, una, ninguna. */
+.mazo-carta {
+  position: relative;
+  margin: 0 7px 7px 0;
+}
+
+.carta-resto {
+  position: absolute;
+  inset: 0;
+  background: var(--fondo);
+  border: 2px solid var(--borde);
+  border-radius: var(--radio);
+}
+
+.carta-resto:nth-child(1) {
+  translate: 7px 7px;
+  rotate: 0.9deg;
+}
+
+.carta-resto:nth-child(2) {
+  translate: 5px 4px;
+  rotate: -0.8deg;
+}
+
+.carta-resto:nth-child(3) {
+  translate: 2px 2px;
+  rotate: 0.3deg;
+}
+
+.mazo-carta[data-resto='0'] .carta-resto,
+.mazo-carta[data-resto='1'] .carta-resto:nth-child(-n + 2),
+.mazo-carta[data-resto='2'] .carta-resto:nth-child(1) {
+  display: none;
+}
+
 .carta {
+  position: relative;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
@@ -10188,21 +10700,124 @@ body:has(.juego-completar > #partida:not([hidden])) {
   transform: rotate(-0.6deg);
 }
 
-.carta:not(:has(.carta-tapa)) {
-  grid-template-columns: minmax(0, 1fr);
+/* La que llega sube desde la pila de abajo y se endereza. */
+.carta--llega {
+  animation: carta-llega var(--duracion-paso) var(--curva-cinta) backwards;
+}
+
+@keyframes carta-llega {
+  from {
+    translate: 6px 7px;
+    rotate: 1.5deg;
+  }
 }
 
 .carta--moviendo {
   border-style: dashed;
 }
 
-.carta-tapa {
-  width: 60px;
-  height: 60px;
+/* La funda, con lugar a la derecha para el disco que sale. */
+.carta-funda {
+  position: relative;
+  display: block;
+  width: 4.5rem;
+  height: 4.5rem;
+  margin-inline-end: 2.6rem;
+}
+
+.carta-tapa,
+.carta-ciega {
+  position: relative;
+  z-index: 1;
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+  background: var(--fondo);
   border: 2px solid var(--borde);
   border-radius: 3px;
-  transform: rotate(2deg);
+  rotate: -2deg;
+}
+
+/* La funda ciega del conjunto que se juega sin tapas: cartón liso con la ventana redonda. */
+.carta-ciega {
+  border-color: var(--tinta-disco, var(--borde));
+}
+
+.carta-ciega::after {
+  content: '';
+  position: absolute;
+  inset: 30%;
+  border: 2px solid var(--borde);
+  border-radius: 50%;
+}
+
+/*
+ * El vinilo. Quieto asoma apenas; **mientras suena el recorte sale de la funda y gira**, a 33
+ * vueltas por minuto, y cuando se corta vuelve a entrar. Es de trazo: un disco del color del
+ * fondo con su canto, un surco, una raya de luz y la galleta en la tinta del disco con un
+ * cuarto en papel, que es lo que deja ver que gira. Con movimiento reducido sale pero no gira:
+ * que suena lo dice el botón.
+ */
+.carta-vinilo {
+  position: absolute;
+  inset: 4%;
+  translate: 19% 0;
+  transition: translate var(--duracion-paso) var(--curva-cinta);
+}
+
+/* Sale hasta que la galleta queda entera afuera de la funda: es lo que deja ver el giro. */
+.carta--suena .carta-vinilo {
+  translate: 64% 0;
+}
+
+.carta-vinilo-cara {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: var(--fondo);
+  border: 2px solid var(--texto-tenue);
+  border-radius: 50%;
+}
+
+.carta-vinilo-cara::before {
+  content: '';
+  position: absolute;
+  inset: 13%;
+  border: 1px solid var(--borde);
+  border-radius: 50%;
+}
+
+.carta-vinilo-cara::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: calc(50% - 1px);
+  width: 46%;
+  height: 2px;
+  background: var(--texto-tenue);
+}
+
+.carta-vinilo-galleta {
+  position: relative;
+  z-index: 1;
+  width: 0;
+  height: 0;
+  border: 0.66rem solid var(--tinta-disco, var(--tinte-juego));
+  border-top-color: var(--papel);
+  border-radius: 50%;
+}
+
+.carta--suena .carta-vinilo-cara {
+  animation: disco-gira var(--duracion-surco) linear infinite;
+}
+
+@keyframes disco-gira {
+  to {
+    rotate: 360deg;
+  }
 }
 
 .carta-cuerpo {
@@ -10391,14 +11006,17 @@ body:has(.juego-completar > #partida:not([hidden])) {
     max-width: 46rem;
   }
 
+  /* En la mesa los cuatro de a dos van en un renglón, y la batea muestra los diez de corrido. */
   .conjuntos {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
-  /* "Todos los temas" y la partida a medias ocupan el ancho entero. */
-  .conjuntos-todos,
-  .conjuntos-retomar {
-    grid-column: 1 / -1;
+  .batea-discos {
+    grid-template-columns: repeat(10, minmax(0, 1fr));
+  }
+
+  .pila {
+    --lado: 6.5rem;
   }
 
   .reparto {
@@ -10420,10 +11038,6 @@ body:has(.juego-completar > #partida:not([hidden])) {
 @media (min-width: 80rem) {
   .ponelos {
     --ancho-tablero: var(--ancho-tablero-amplio);
-  }
-
-  .conjuntos {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .ponelos > .pantalla:has(> .filas) {
@@ -10463,6 +11077,8 @@ body:has(.juego-completar > #partida:not([hidden])) {
 
 @media (hover: hover) and (pointer: fine) {
   .conjunto:hover,
+  .batea-disco:hover .batea-tapa,
+  .pila:hover .pila-disco,
   .pieza:hover,
   .reparto-boton:hover,
   .carta-accion:hover,
@@ -10473,6 +11089,59 @@ body:has(.juego-completar > #partida:not([hidden])) {
 
   .fila-destino:hover {
     border-bottom-color: var(--acento-2);
+  }
+}
+
+/*
+ * El mazo, contra el pie de la ventana desde la primera ficha (ronda de pulida, 2026-11-19).
+ *
+ * `position: sticky` lo pega abajo solo cuando la hoja ya es más alta que la ventana. Con las
+ * filas vacías no lo era: el mazo quedaba a media pantalla y **bajaba un escalón con cada ficha
+ * que llegaba**, con los botones de fila corriéndose debajo del pulgar. Ahora el tablero mide
+ * por lo menos la ventana y el mazo se va al fondo: las filas crecen hacia el aire que queda
+ * entre ellas y el mazo, y los botones no se mueven. Solo en el teléfono: en la mesa el tablero
+ * va en dos paños.
+ */
+@media (max-width: 79.99rem) {
+  html:not(.incrustado) .ponelos > .pantalla:has(> .filas):not([hidden]) {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100svh;
+  }
+
+  html:not(.incrustado) .ponelos > .pantalla:has(> .filas) > .mazo:not(.bandeja--vacia) {
+    margin-top: auto;
+  }
+
+  html:not(.incrustado) .ponelos > .pantalla:has(> .filas--editando) > .mazo {
+    margin-top: var(--espacio-2);
+  }
+}
+
+/* En un teléfono angosto la funda se achica, para que el nombre del tema tenga dónde escribirse. */
+@media (max-width: 22rem) {
+  .carta-funda {
+    width: 3.6rem;
+    height: 3.6rem;
+    margin-inline-end: 2.1rem;
+  }
+}
+
+/* En una ventana baja (320 × 568) la pila se achica: el botón de empezar no puede quedar abajo
+   del pliegue por culpa del dibujo. Medido en diez tamaños. */
+@media (max-height: 37rem) {
+  .pila {
+    --lado: 2.8rem;
+    margin-bottom: var(--espacio-1);
+  }
+}
+
+/* El vinilo es un bucle: con movimiento reducido no se acelera, se apaga. Sale de la funda
+   igual (el corrimiento dura cero) y queda quieto; que suena lo dice el botón. */
+@media (prefers-reduced-motion: reduce) {
+  .carta--suena .carta-vinilo-cara {
+    animation: none;
   }
 }
 

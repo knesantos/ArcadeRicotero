@@ -54,6 +54,7 @@ import { FICHAS } from '../../lib/cancionero/banco.ts';
 import { DISCOS } from '../../lib/letra/discos.ts';
 import { indexarFragmentos, type Manifiesto } from '../../lib/tema/catalogo.ts';
 import manifiesto from '../../data/adivinar-tema.json';
+import { rutaFicha } from '../../lib/tapa/pasadas.ts';
 
 /**
  * El catálogo que viaja al navegador (`CTR-13`).
@@ -107,10 +108,28 @@ const TITULO = `${PANTALLA_0.titulo} — Fichín Ricotero`;
           <a class="volver" href="/">← {PORTAL.volverAlArcade}</a>
         </header>
         <p class="marca"><img src="/marca/fichin-ricotero.svg" alt="Fichín Ricotero" width="1540" height="1450" /></p>
-        <h1>{PANTALLA_0.titulo}</h1>
-        <p class="donde-estas">{LUGARES.ponelos}</p>
-        <p class="tenue">{PANTALLA_0.subtitulo}</p>
-        <button id="empezar" class="primario" type="button">{PANTALLA_0.boton}</button>
+        <h1 class="jugo-entra" style="--orden:0">{PANTALLA_0.titulo}</h1>
+        <p class="donde-estas jugo-entra" style="--orden:1">{LUGARES.ponelos}</p>
+        {/* La pila de discos (ronda de pulida, 2026-11-19): el objeto que nombra la acotación,
+            con las diez tapas tiradas una arriba de la otra. Es un atajo del botón de abajo dicho
+            con el objeto del juego: al tocarla, la isla la reparte en la batea de la elección.
+            El botón dice lo mismo para quien no la ve. Las diez se acreditan en el pie. */}
+        <button id="pila" class="pila" type="button" tabindex="-1" aria-hidden="true">
+          {DISCOS.map((d, i) => (
+            <img
+              class="pila-disco"
+              style={`--orden:${i}`}
+              data-disco={d}
+              src={rutaFicha(d)}
+              alt=""
+              width="160"
+              height="160"
+              decoding="async"
+            />
+          ))}
+        </button>
+        <p class="tenue jugo-entra" style="--orden:2">{PANTALLA_0.subtitulo}</p>
+        <button id="empezar" class="primario jugo-entra" style="--orden:3" type="button">{PANTALLA_0.boton}</button>
       </section>
 
       <section id="eleccion" class="pantalla" hidden></section>

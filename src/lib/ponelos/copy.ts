@@ -50,6 +50,16 @@ export const ELECCION = {
   /** El renglón chico de cada conjunto. Se invoca con un número. */
   cuantas: (n: number) => `${n} fichas`,
   /**
+   * La batea (ronda de pulida, 2026-11-19): los diez discos, tapa por tapa, para repartir el
+   * tracklist de uno. Registro 3: el rótulo de la pestaña dice qué hay adentro y se calla.
+   */
+  batea: 'Disco por disco',
+  /**
+   * El nombre accesible de cada disco de la batea. La tapa se mira, pero el nombre se dice:
+   * quien no la ve, o no la reconoce, tiene que saber qué va a repartir antes de tocar.
+   */
+  discoDeLaBatea: (conjunto: string, anio: number, n: number) => `${conjunto}, de ${anio}: ${n} fichas`,
+  /**
    * La partida que quedó a medias (`D-69`). Con los ciento cinco temas, repartir de un saque
    * no es la regla: se sigue otro día, y la elección lo ofrece arriba de todo.
    */

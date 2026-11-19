@@ -551,6 +551,16 @@ const ESTADOS_PONELOS = [
   '.carta--moviendo',
   '.mazo--moviendo',
   '.filas--editando',
+  // Ronda de pulida (2026-11-19): el disco que suena, la carta que llega, la ficha que viaja y
+  // apoya, la fila que la recibe, la tapa sola en el conjunto que se mira, y la batea mientras
+  // le llega la pila de la portada.
+  '.carta--suena',
+  '.carta--llega',
+  '.pieza--viene',
+  '.pieza--apoya',
+  '.pieza--tapa',
+  '.fila--recibe',
+  '.batea--llega',
 ];
 
 test('US-08: lo que tenes en la mano no se comunica solo con color', () => {

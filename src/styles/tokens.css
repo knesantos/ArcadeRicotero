@@ -1929,6 +1929,9 @@
   --duracion-ruta: 2.4s; /* lo que tarda un poste en cruzar la ventanilla, en la ida */
   --duracion-pogo: 560ms; /* un salto de la gente, cuando suena */
   --duracion-haz: 2.2s; /* la ida y vuelta de un haz del escenario */
+  /* Una vuelta del vinilo de "Ponelos en fila" mientras suena el recorte: 33 vueltas por
+     minuto. Es un bucle atado a que suene; se apaga con `animation: none` en juego.css. */
+  --duracion-surco: 1.8s;
 
   /* El registro imperfecto: cuanto se corren las pasadas de la estampa una respecto de la
      otra (`UX-22` §2.3), como una imprenta a mano que no calzo el segundo color. NO es

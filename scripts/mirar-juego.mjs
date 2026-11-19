@@ -1176,6 +1176,203 @@ async function completarLaLetra(ctx) {
   await foto('hazana-entera', { entera: true });
 }
 
+/**
+ * "Ponelos en fila": la portada con la pila, la batea de elegir, una partida entera de las diez
+ * tapas (poner fichas, mover una, abrir el mazo, nombrar una fila y sumar otra), el cierre con la
+ * lámina, y los ciento cinco a medio repartir.
+ */
+async function ponelosEnFila(ctx) {
+  const { pagina, foto, tira, rafaga, quieto } = ctx;
+  const url = `${base}/juegos/ponelos-en-fila/`;
+  const pausa = (ms) => ctx.espera(quieto ? Math.min(ms, 200) : ms);
+
+  // Sin menú del sistema para compartir (en Windows el navegador lo tiene y se queda esperando):
+  // así "Compartí" cae en la dirección copiada y la lámina para bajar, que es lo que se mira.
+  await pagina.evaluateOnNewDocument(() => {
+    try {
+      delete Navigator.prototype.share;
+      delete Navigator.prototype.canShare;
+    } catch {
+      /* queda el del navegador */
+    }
+  });
+  /** Un toque que no desplaza la hoja: el mazo va pegado abajo y un clic "de verdad" la corre. */
+  const tocar = (selector) => pagina.evaluate((s) => document.querySelector(s)?.click(), selector);
+  /** La hoja, arriba de todo: una captura entera o recortada la deja corrida, y quien juega no lo está. */
+  const arriba = async () => {
+    await pagina.evaluate(() => window.scrollTo(0, 0));
+    await ctx.espera(120);
+  };
+
+  await pagina.goto(url, { waitUntil: 'networkidle0' });
+  // De cero: sin partidas a medias ni filas propias de otra corrida.
+  await pagina.evaluate(() => {
+    try {
+      for (const k of Object.keys(localStorage)) if (k.startsWith('ponelos:')) localStorage.removeItem(k);
+    } catch {
+      /* sin almacenamiento */
+    }
+  });
+  await tira('portada-entra', () => pagina.reload({ waitUntil: 'domcontentloaded' }), { ms: 900 });
+  await foto('portada');
+  await foto('portada-entera', { entera: true });
+
+  // La pila se reparte: de la portada a la batea.
+  await rafaga('se-reparte', () => tocar('#empezar'), { desde: 0, hasta: 900, cada: 4, tope: 12 });
+  await pagina.waitForSelector('#eleccion:not([hidden])', { timeout: 8000 });
+  await pausa(900);
+  await foto('eleccion');
+  await foto('eleccion-entera', { entera: true });
+
+  /** Toca un conjunto por su id (o, en una versión vieja del sitio, por su título). */
+  const elegir = async (id, titulo) => {
+    const ok = await pagina.evaluate(
+      (id, titulo) => {
+        const porId = document.querySelector(`#eleccion [data-conjunto="${id}"]`);
+        const porTitulo = [...document.querySelectorAll('#eleccion .conjunto')].find(
+          (b) => b.querySelector('.conjunto-titulo')?.textContent?.trim().toLowerCase() === titulo.toLowerCase(),
+        );
+        const b = porId ?? porTitulo;
+        b?.scrollIntoView({ block: 'center' });
+        b?.click();
+        return Boolean(b);
+      },
+      id,
+      titulo,
+    );
+    if (!ok) throw new Error(`no encontré el conjunto «${titulo}»`);
+    await pagina.waitForSelector('#tablero:not([hidden]) .reparto-boton', { timeout: 8000 });
+  };
+  const fila = (n) => `#tablero .reparto-boton[data-fila="${n}"]`;
+  const herramienta = (i) => pagina.evaluate((i) => document.querySelectorAll('#tablero .tablero-herramientas .herramienta')[i]?.click(), i);
+
+  // ---- una partida de las diez tapas
+  await elegir('tapas', 'Las diez tapas');
+  await pausa(900);
+  await foto('partida');
+  await foto('partida-entera', { entera: true });
+  // El disco de la carta mientras suena el recorte (a velocidad real: lo mueve el audio).
+  if (await pagina.$('#tablero .carta')) {
+    await tira('disco-suena', async () => {}, { ms: 900, lento: 1, sobre: '#tablero .carta' });
+  }
+  // La ficha que llega a su fila: entera en ráfaga, y frenada en tira.
+  await arriba();
+  await rafaga('ficha-llega', () => tocar(fila(1)), { desde: 0, hasta: 760, cada: 3, tope: 12 });
+  await pausa(500);
+  await arriba();
+  await tira('ficha-llega', () => tocar(fila(2)), { ms: 700 });
+  await pausa(300);
+  await tocar(fila(3));
+  await pausa(450);
+  await tocar(fila(1));
+  await pausa(700);
+  await arriba();
+  await foto('cuatro-puestas');
+
+  // Mover una que ya estaba puesta.
+  await pagina.evaluate(() => document.querySelector('#tablero .pieza--puesta')?.click());
+  await pausa(500);
+  await foto('moviendo');
+  await tocar(fila(4));
+  await pausa(600);
+  await foto('movida');
+
+  // El mazo abierto, para elegir cuál sigue.
+  const abrio = await pagina.evaluate(() => {
+    const b = [...document.querySelectorAll('#tablero .carta-accion')].at(-1);
+    b?.click();
+    return Boolean(document.querySelector('#tablero .mazo-abierto'));
+  });
+  if (abrio) {
+    await pausa(500);
+    await foto('mazo-abierto');
+    await pagina.evaluate(() => document.querySelector('#tablero .mazo-abierto > .secundario')?.click());
+    await pausa(300);
+  }
+
+  // Nombrar una fila y sumar otra.
+  await herramienta(0);
+  await pagina.waitForSelector('#tablero .fila-nombre', { timeout: 4000 });
+  await pausa(500);
+  await foto('filas-editando');
+  await pagina.click('#tablero .fila-nombre', { clickCount: 3 });
+  await pagina.keyboard.type('de cabecera');
+  await pagina.keyboard.press('Enter');
+  await pausa(400);
+  await pagina.evaluate(() => document.querySelector('#tablero .filas-edicion .secundario')?.click());
+  await pausa(500);
+  await foto('fila-nombrada-y-sumada', { entera: true });
+  await herramienta(0);
+  await pausa(600);
+  await arriba();
+  await foto('filas-propias');
+
+  // Lo que falta, hasta el cierre. La última, en ráfaga.
+  for (let k = 0; k < 20; k++) {
+    const quedan = await pagina.evaluate(() => document.querySelectorAll('#tablero .mazo .reparto-boton').length > 0);
+    if (!quedan) break;
+    const ultima = await pagina.evaluate(() => /\b1 de\b/.test(document.querySelector('#tablero .bandeja-rotulo .fila-cuenta')?.textContent ?? ''));
+    const n = (k % 5) + 1;
+    if (ultima) await rafaga('cierre', () => tocar(fila(n)), { desde: 0, hasta: 1500, cada: 6, tope: 12 });
+    else await tocar(fila(n));
+    await pausa(380);
+  }
+  await pausa(1200);
+  await foto('resultado-donde-quedo');
+  await pagina.evaluate(() => window.scrollTo(0, 0));
+  await foto('resultado');
+  await foto('resultado-entera', { entera: true });
+
+  // Compartir: sin menú del sistema cae la dirección copiada y la lámina para bajar. Se la mira entera.
+  await pagina.evaluate(() => document.querySelector('#tablero .lamina .firma')?.click());
+  const hayLamina = await pagina
+    .waitForSelector('#tablero .compartir-bajar', { timeout: 15000 })
+    .then(() => true)
+    .catch(() => false);
+  if (hayLamina) {
+    await pagina.evaluate(() => {
+      const a = document.querySelector('#tablero .compartir-bajar');
+      const img = document.createElement('img');
+      img.id = 'ver-tarjeta';
+      img.src = a.href;
+      img.style.cssText = 'position:fixed;inset:0;z-index:99;width:100vw;height:100vh;object-fit:contain;background:#000';
+      document.body.append(img);
+      return img.decode().catch(() => {});
+    });
+    await ctx.espera(300);
+    await foto('tarjeta');
+    await pagina.evaluate(() => document.getElementById('ver-tarjeta')?.remove());
+  } else console.log('   (no hubo lámina que mirar)');
+  await foto('compartido-entera', { entera: true });
+
+  // ---- los ciento cinco, a medio repartir: el caso pesado
+  await pagina.evaluate(() => {
+    const b = [...document.querySelectorAll('#tablero .lamina button.secundario')].at(-1);
+    b?.click();
+  });
+  await pagina.waitForSelector('#eleccion:not([hidden])', { timeout: 8000 });
+  await pausa(600);
+  await elegir('todos', 'Todos los temas');
+  await pausa(600);
+  const filas = await pagina.evaluate(() => document.querySelectorAll('#tablero .mazo .reparto-boton').length);
+  for (let k = 0; k < 34; k++) {
+    await tocar(fila(((k * 3) % filas) + 1));
+    await ctx.espera(quieto ? 30 : 90);
+  }
+  await pausa(900);
+  await foto('todos-a-medias-donde-quedo');
+  await arriba();
+  await foto('todos-a-medias');
+  await foto('todos-a-medias-entera', { entera: true });
+
+  // Y al volver, la batea ofrece seguir.
+  await pagina.goto(url, { waitUntil: 'networkidle0' });
+  await pagina.click('#empezar');
+  await pagina.waitForSelector('#eleccion:not([hidden])', { timeout: 8000 });
+  await pausa(1000);
+  await foto('eleccion-con-una-a-medias');
+}
+
 /** Cualquier otra ruta: la portada, y lo que aparece al tocar el botón de empezar. */
 async function generico(ctx, ruta) {
   const { pagina, foto, tira } = ctx;
@@ -1216,6 +1413,7 @@ const RECORRIDOS = {
   'adivinar-por-la-letra': porLaLetra,
   'skayboy-y-poligirl': skayboy,
   'completar-la-letra': completarLaLetra,
+  'ponelos-en-fila': ponelosEnFila,
 };
 
 // ---------------------------------------------------------------- correr
