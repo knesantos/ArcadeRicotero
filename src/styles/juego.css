@@ -10130,28 +10130,30 @@ html.incrustado .pila {
 }
 
 /*
- * Las herramientas (`D-69`): cambiar las filas, el sonido, deshacer, mezclar. Desde la ronda 2
- * de la pulida van en **un renglón de teclas**, todas del mismo ancho, con el canto de abajo
- * más grueso —el de una tecla de casetera vista de frente— y la leyenda partida en dos
- * renglones si hace falta. Eran sellos sueltos que ocupaban dos renglones arriba de las filas.
- * Cada una mide la zona de pulgar de alto.
+ * Las herramientas (`D-69`): cambiar las filas, deshacer, mezclar, y al final la tecla de los
+ * ruidos. Desde la ronda 3 de la pulida son **teclas bajas en un renglón**, cada una del ancho
+ * de su leyenda, con el canto de abajo más grueso —una tecla de casetera vista de frente—. Eran
+ * cuatro cajas con el texto partido en dos. La tecla se ve baja, pero el blanco de toque mide
+ * la zona de pulgar: lo agranda una pieza que no ocupa renglón, como en la tecla de los ruidos.
+ * (La música tiene su tecla en el mazo, pegada al disco.)
  */
 .tablero-herramientas {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(0, 1fr);
-  gap: 0.35rem;
-  margin: 0 0 var(--espacio-1);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem 0.35rem;
+  margin: 0.15rem 0 var(--espacio-1);
 }
 
 .herramienta {
-  min-height: var(--toque-min);
-  padding: 0.15em 0.3em;
+  position: relative;
+  min-height: 0;
+  padding: 0.42rem 0.5rem 0.32rem;
   font-family: var(--fuente-rotulada);
-  font-size: 0.66rem;
+  font-size: 0.6rem;
   letter-spacing: 0.04em;
   line-height: 1.2;
-  text-align: center;
+  white-space: nowrap;
   text-transform: uppercase;
   background: var(--fondo);
   color: var(--texto);
@@ -10162,6 +10164,12 @@ html.incrustado .pila {
     translate var(--duracion-toque) var(--curva-cinta),
     border-color var(--duracion-toque) var(--curva-cinta);
   touch-action: manipulation;
+}
+
+.herramienta::after {
+  content: '';
+  position: absolute;
+  inset: -10px -2px;
 }
 
 /* La tecla baja al apretarla. */
@@ -10178,6 +10186,16 @@ html.incrustado .pila {
 .herramienta:disabled {
   color: var(--texto-tenue);
   border-style: dashed;
+}
+
+/* En los teléfonos angostos, la leyenda sin aire entre letras: las tres siguen entrando en
+   un renglón hasta los 360 px. Más angosto, bajan a dos. */
+@media (max-width: 25rem) {
+  .herramienta {
+    padding-inline: 0.4rem;
+    letter-spacing: 0;
+  }
+
 }
 
 /*
@@ -10334,6 +10352,25 @@ html.incrustado .pila {
   color: var(--texto-tenue);
   border-style: dashed;
   border-color: var(--borde);
+}
+
+/* Una fila larga, plegada (ronda 3): la pestaña que dice cuántas no se ven, o que la pliega.
+   De trazo cortado, como todo lo que no es una ficha. */
+.pliegue {
+  min-width: var(--toque-min);
+  min-height: var(--toque-min);
+  padding: 0.3em 0.8em;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--fondo);
+  color: var(--texto);
+  border: 2px dashed var(--borde);
+  border-radius: 3px;
+  rotate: 1.2deg;
+  transition: border-color var(--duracion-toque) var(--curva-cinta);
+  touch-action: manipulation;
 }
 
 .fila-piezas {
@@ -10675,6 +10712,48 @@ html.incrustado .pila {
   transform: rotate(0.9deg);
 }
 
+/* La tecla de la música (ronda 3), pisando el borde de abajo de la carta, pegada al disco que
+   suena. Misma forma que las teclas de arriba; apagada va de trazo cortado y tachada: forma
+   además de tinta. */
+.musica-tecla {
+  position: absolute;
+  z-index: 2;
+  left: 0.9rem;
+  bottom: -0.7rem;
+  min-width: 0;
+  min-height: 0;
+  padding: 0.3em 0.6em 0.2em;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  text-transform: uppercase;
+  background: var(--fondo);
+  color: var(--texto);
+  border: 2px solid var(--borde);
+  border-bottom-width: 4px;
+  border-radius: 3px;
+  transition: border-color var(--duracion-toque) var(--curva-cinta);
+  touch-action: manipulation;
+}
+
+.musica-tecla::after {
+  content: '';
+  position: absolute;
+  inset: -14px -4px;
+}
+
+.musica-tecla[aria-pressed='false'] {
+  color: var(--texto-tenue);
+  border-style: dashed;
+  text-decoration: line-through;
+}
+
+/* Moviendo una que ya estaba puesta, la cuenta del mazo no dice nada y le saca lugar al sello. */
+.mazo--moviendo .bandeja-rotulo .fila-cuenta {
+  display: none;
+}
+
 .bandeja-rotulo .fila-cuenta {
   padding: 0.2em 0.6em;
   font-size: 0.72rem;
@@ -10844,26 +10923,53 @@ html.incrustado .pila {
   border-radius: 50%;
 }
 
-/* La veta (ronda 2): el brillo del surco, **impreso**. Dos arcos enfrentados de tinta plana
-   —un anillo con dos de sus cuatro lados pintados—, sin degradado y sin resplandor. Quieto es
-   la luz de siempre sobre un vinilo; cuando el disco gira, la veta da la vuelta con él, y eso
-   es lo que se ve desde lejos. */
+/* La veta: el brillo del surco, **impreso**. Dos cuñas finas de tinta plana que salen del
+   centro, enfrentadas —como la luz de una lámpara sobre un vinilo—, sin degradado y sin
+   resplandor. Cada una es un triángulo de borde. Quieta es la luz de siempre; cuando el disco
+   gira, la veta da la vuelta con él. (En la ronda 2 eran dos cuartos de anillo: quietos se
+   leían como una letra.) */
 .carta-vinilo-veta {
+  --radio-disco: 2.36rem;
   position: absolute;
-  inset: 8%;
-  box-sizing: border-box;
-  border: 0.7rem solid transparent;
-  border-top-color: color-mix(in srgb, var(--texto) 26%, var(--fondo));
-  border-bottom-color: color-mix(in srgb, var(--texto) 26%, var(--fondo));
+  inset: 0;
+  overflow: hidden;
   border-radius: 50%;
 }
 
-/* Un surco fino, por encima de la veta. */
+.carta-vinilo-veta::before,
+.carta-vinilo-veta::after {
+  content: '';
+  position: absolute;
+  left: calc(50% - var(--radio-disco) * 0.19);
+  top: calc(50% - var(--radio-disco));
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: var(--radio-disco) calc(var(--radio-disco) * 0.19) 0;
+  border-color: color-mix(in srgb, var(--texto) 32%, var(--fondo)) transparent transparent;
+  transform-origin: 50% 100%;
+  rotate: 24deg;
+}
+
+.carta-vinilo-veta::after {
+  rotate: 204deg;
+}
+
+/* Dos surcos: uno debajo de la veta y otro que la corta. */
 .carta-vinilo-cara::before {
   content: '';
   position: absolute;
-  inset: 17%;
-  border: 1px solid var(--fondo);
+  inset: 9%;
+  border: 1px solid var(--borde);
+  border-radius: 50%;
+}
+
+.carta-vinilo-cara::after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  inset: 21%;
+  border: 2px solid var(--fondo);
   border-radius: 50%;
 }
 
@@ -10940,48 +11046,80 @@ html.incrustado .pila {
   touch-action: manipulation;
 }
 
-/* Sonando: borde y letra de destaque, y el botón dice "Pará". */
+/* Sonando: la tecla queda **apretada** —papel y tinta invertidos— y dice "Pará". Antes era
+   borde y letra de oro, que es el color del foco: se leía como un anillo que nadie había pedido. */
 .carta-accion--sonando {
-  color: var(--acento-2);
-  border-color: var(--acento-2);
+  background: var(--papel);
+  color: var(--fondo);
+  border-color: var(--papel);
 }
 
-/* Un botón por fila, debajo de la carta. Todos con la misma tinta, la del juego: ninguno
-   es el bueno (`BR-22`). */
+/*
+ * Un botón por fila, debajo de la carta. Desde la ronda 3 cada uno **es el cajón en chico**: el
+ * mismo borde, y arriba, pisándolo, las mismas dos pestañas de las filas —el nombre y cuántas
+ * hay—. Tocás la pestaña y la funda va a ese cajón: la relación se ve. Todos con la misma tinta,
+ * la del juego: ninguno es el bueno (`BR-22`).
+ */
 .reparto {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.4rem;
+  gap: 0.35rem 0.5rem;
 }
 
 .reparto-boton {
+  position: relative;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 0.4em;
+  gap: 0.3em;
   min-height: var(--toque-min);
-  padding: 0.3em 0.7em;
+  padding: 0 0.4rem 0.5rem;
   text-align: start;
   font-family: var(--fuente-rotulada);
-  font-size: 0.8rem;
-  letter-spacing: 0.05em;
+  font-size: 0.76rem;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  background: var(--fondo);
+  background: transparent;
   color: var(--texto);
-  border: var(--linea) solid color-mix(in srgb, var(--tinte-juego) 60%, var(--borde));
-  border-radius: var(--radio);
-  transition:
-    translate var(--duracion-toque) var(--curva-cinta),
-    border-color var(--duracion-toque) var(--curva-cinta);
+  border: 0;
+  border-radius: 0;
+  transition: translate var(--duracion-toque) var(--curva-cinta);
   touch-action: manipulation;
 }
 
-.reparto-boton:nth-child(odd) {
-  transform: rotate(-0.5deg);
+/* El cajón: arranca a media pestaña, como el de arriba. */
+.reparto-boton::before {
+  content: '';
+  position: absolute;
+  inset: 0.75rem 0 0;
+  border: var(--linea) solid color-mix(in srgb, var(--tinte-juego) 40%, var(--borde));
+  border-radius: var(--radio);
+  transition: border-color var(--duracion-toque) var(--curva-cinta);
 }
 
-.reparto-boton:nth-child(even) {
-  transform: rotate(0.4deg);
+.reparto-nombre {
+  position: relative;
+  max-width: calc(100% - 2.3rem);
+  padding: 0.2em 0.6em;
+  line-height: 1.15;
+  overflow-wrap: break-word;
+  background: var(--fondo);
+  border: 2px solid color-mix(in srgb, var(--tinte-juego) 55%, var(--borde));
+  border-radius: 3px;
+  rotate: -1.2deg;
+}
+
+.reparto-boton .fila-cuenta {
+  position: relative;
+  min-width: 1.2em;
+  padding: 0.15em 0.5em;
+  font-size: 0.8rem;
+  text-align: center;
+  background: var(--fondo);
+  color: var(--texto);
+  border: 2px solid var(--borde);
+  border-radius: 3px;
+  rotate: 1.4deg;
 }
 
 /* Una fila sola en el último renglón ocupa el ancho entero: un hueco al lado parece un
@@ -10990,15 +11128,13 @@ html.incrustado .pila {
   grid-column: 1 / -1;
 }
 
-/* La tecla se hunde al apretar, como el botón principal del sitio (`D-54`). */
+/* El cajón se hunde al apretar, como el botón principal del sitio (`D-54`), y se marca. */
 .reparto-boton:active {
   translate: 0 2px;
-  border-color: var(--acento-2);
 }
 
-.reparto-nombre {
-  line-height: 1.15;
-  overflow-wrap: anywhere;
+.reparto-boton:active::before {
+  border-color: var(--acento-2);
 }
 
 /* ---- El mazo abierto: elegir cuál sigue, con un filtro por disco ---- */
@@ -11057,13 +11193,38 @@ html.incrustado .pila {
   margin-top: var(--espacio-3);
 }
 
+/* El título del cierre, en la letra del título del juego (ronda 3): es el momento, y lo dice
+   la misma mano que escribió "Ponelos en fila" en la portada, con su misma sal. La firma se
+   lee desde 29 px; acá va a 32. */
 .lamina-titulo {
-  font-family: var(--fuente-rotulada);
-  font-size: 1.15rem;
-  letter-spacing: 0.04em;
+  font-family: var(--fuente-disco, var(--fuente-marca-firma));
+  font-weight: 400;
+  font-size: 2rem;
+  line-height: 1.08;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
+  text-wrap: balance;
   color: var(--tinte-juego);
   margin: 0;
+  -webkit-mask-image: var(--sal-del-titulo, var(--textura-tinta-sal));
+  mask-image: var(--sal-del-titulo, var(--textura-tinta-sal));
+  -webkit-mask-size: 480px 480px;
+  mask-size: 480px 480px;
+}
+
+/* La lámina asoma grande: es lo que te llevás, y se tiene que poder mirar antes de tocar
+   "Compartí". Se ven la marca, el nombre y los dos primeros cajones; el resto sale del sobre. */
+.lamina .tarjeta-asoma {
+  width: min(100%, 17rem);
+  height: 14.5rem;
+  margin: var(--espacio-2) auto calc(-1 * var(--espacio-2));
+}
+
+.lamina .tarjeta-asoma img {
+  width: min(92%, 15.5rem);
+  margin-top: 0.7rem;
+  border-width: var(--linea);
+  rotate: -2.5deg;
 }
 
 /* El pie es `.pie-resultado`, la pieza de los juegos pulidos; con el título arriba no hace
@@ -11184,7 +11345,9 @@ html.incrustado .pila {
   .batea-disco:hover .batea-tapa,
   .pila:hover .pila-disco,
   .pieza:hover,
-  .reparto-boton:hover,
+  .reparto-boton:hover::before,
+  .musica-tecla:hover,
+  .pliegue:hover,
   .carta-accion:hover,
   .filtro:hover,
   .herramienta:hover:not(:disabled) {
@@ -11237,7 +11400,7 @@ html.incrustado .pila {
   }
 
   .carta-vinilo-veta {
-    border-width: 0.5rem;
+    --radio-disco: 1.8rem;
   }
 
   /* Con tan poco ancho el disco sale la mitad, la carta no pasa de dos renglones de título y
@@ -11266,6 +11429,19 @@ html.incrustado .pila {
   }
 }
 
+/* En los teléfonos angostos las pestañas de los botones de fila se achican, para que
+   "CABECEANDO" no se parta. (Va acá, al final del bloque: antes de la regla base no pisaba nada.) */
+@media (max-width: 25rem) {
+  .reparto-boton {
+    font-size: 0.66rem;
+    letter-spacing: 0.02em;
+  }
+
+  .reparto-nombre {
+    padding-inline: 0.45em;
+  }
+}
+
 /* En una ventana baja (320 × 568) la pila se achica: el botón de empezar no puede quedar abajo
    del pliegue por culpa del dibujo. Medido en diez tamaños. */
 @media (max-height: 37rem) {
@@ -11287,6 +11463,7 @@ html.incrustado .pila {
    text-shadow solo, pero NO mask-image: si nadie lo hace a mano, la máscara sigue. */
 @media (forced-colors: active), (prefers-contrast: more) {
   .pantalla h1,
+  .lamina-titulo,
   .caratula-titulo {
     -webkit-mask-image: none;
     mask-image: none;

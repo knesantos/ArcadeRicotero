@@ -202,3 +202,62 @@ resolvieron las tres pantallas:
 - **Armar el audio en el toque de "Elegí qué repartir" costaba un cuadro de 280 a 320 ms** justo
   cuando arranca el vuelo de la pila. Ahora se arma 1,2 s después, dormido, y lo despierta el
   toque siguiente: la pila volvió a 133–167 ms (ronda 1: 117–150).
+
+---
+
+## Ronda 3 (2026-11-19): el cierre de la pulida
+
+### 1. Qué se hizo
+
+1. **Al repartir se rehace solo lo que cambió** (`parcharFilas`): las piezas de la fila que
+   recibe y, si es otra, las de la fila donde estaba la recién llegada anterior. Mover, deshacer,
+   editar y cerrar siguen rehaciendo todo, que es lo que impide que pantalla y reparto se
+   desincronicen. Si el parche no encuentra lo que espera, también.
+2. **Las filas largas se pliegan**: desde nueve fichas muestran seis y una pestaña "+N"; abierta,
+   ofrece "Plegala". La recién llegada y la que está en la mano no se esconden. Las de tapas no
+   se pliegan, y la lámina lleva todas.
+3. **Las herramientas son teclas bajas en un renglón** ("Cambiá las filas", "Deshacé", "Mezclá
+   el mazo"), del ancho de su leyenda. Se ven de 29 px y el blanco de toque mide 49.
+4. **Dos interruptores, dos lugares y dos nombres.** "MÚSICA" pisa el borde de la carta, del lado
+   del disco (prendida, cada ficha suena sola). "RUIDOS" quedó arriba, en la cabecera.
+5. **"Pará" es una tecla apretada** (papel y tinta invertidos), no borde de oro: el oro es el
+   color del foco y se leía como un anillo. Además, el foco que pone la isla no dibuja anillo
+   si se llegó con el dedo o el mouse, en ninguna tecla.
+6. **Los botones de fila son el cajón en chico**: el mismo borde y las dos pestañas pisándolo.
+7. **El cierre**: "Así te quedó la fila" va en la letra del título del juego (la firma, a 32 px,
+   con su sal) y la lámina asoma grande (se ven la marca, el nombre y dos cajones).
+8. **La veta del vinilo son dos cuñas finas** que salen del centro, de tinta plana, y **el disco
+   frena con inercia** al parar: seis escalones en `--duracion-inercia`, y recién ahí vuelve a
+   la funda.
+9. **El recorte arranca mudo y se abre cuando el golpe de cartón ya pasó** (`muted`, no el
+   volumen: el iPhone no deja tocarlo). Sigue arrancando adentro del toque.
+
+### 2. Lo medido (CPU ×4, 430 × 860 a ×2, dos tandas, control 16,7 ms en las dos)
+
+El peor cuadro al repartir una ficha, en milisegundos:
+
+| | Ronda 1 | Ronda 2 | Ronda 3 |
+|---|---|---|---|
+| Las diez tapas, la primera | 67–117 | 133–150 | 100–133 |
+| Las diez tapas, la siguiente | 67–117 | 83–100 | 50 |
+| Los 105 con 60 puestas | 83–117 | 117–183 | 50–100 |
+
+La primera ficha de una partida carga el golpe de cartón por primera vez; por eso no bajó tanto.
+Con movimiento reducido en la misma tanda dio de 83 a 133 en los 105: a esa escala manda el
+ruido de la máquina, no el vuelo. Lo que queda en ese cuadro es rehacer el mazo y el pie, y
+guardar la partida y la dirección. **Se comprobó aparte que las filas no se rehacen**: el nodo
+marcado sigue ahí después de repartir, y deshacer sí lo cambia.
+
+### 3. Copy y tests
+
+- Copy nuevo: `musicaTecla`, `masEnLaFila`, `verLasQueFaltan`, `plegala`. Quedaron sin uso
+  `apagaSonido`, `prendeSonido` y `mazoVacio`.
+- Ningún test cambió en esta ronda.
+
+### 4. Lo que queda abierto
+
+- Probar con dedo, teclado y lector de pantalla de verdad: el anillo, el golpe contra el recorte
+  y el frenado se miraron en el navegador de las capturas, que va mudo y sin dedo.
+- El modo incrustado (`?incrustado`) no se miró en ninguna de las tres rondas.
+- `UX-23`, `PRD-ponelos-en-fila.md` y `D-69` describen el juego de antes de la pulida.
+- El token `--duracion-surco` falta en la hoja 12 del lienzo.

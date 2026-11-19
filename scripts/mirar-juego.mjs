@@ -1254,6 +1254,10 @@ async function ponelosEnFila(ctx) {
   // El disco de la carta mientras suena el recorte (a velocidad real: lo mueve el audio).
   if (await pagina.$('#tablero .carta')) {
     await tira('disco-suena', async () => {}, { ms: 900, lento: 1, sobre: '#tablero .carta' });
+    // "Pará": el disco no clava, frena en escalones y recién ahí vuelve a la funda.
+    await tira('disco-frena', () => tocar('#tablero .carta-escuchar'), { ms: 1150, lento: 1, sobre: '#tablero .carta' });
+    await tocar('#tablero .carta-escuchar');
+    await pausa(400);
   }
   // La ficha que llega a su fila: entera en ráfaga, y frenada en tira.
   await arriba();
@@ -1357,7 +1361,8 @@ async function ponelosEnFila(ctx) {
   await pausa(600);
   const filas = await pagina.evaluate(() => document.querySelectorAll('#tablero .mazo .reparto-boton').length);
   for (let k = 0; k < 34; k++) {
-    await tocar(fila(((k * 3) % filas) + 1));
+    // De a tres filas, para que alguna pase de las nueve y se pliegue.
+    await tocar(fila((k % Math.min(3, filas)) + 1));
     await ctx.espera(quieto ? 30 : 90);
   }
   await pausa(900);
@@ -1365,6 +1370,14 @@ async function ponelosEnFila(ctx) {
   await arriba();
   await foto('todos-a-medias');
   await foto('todos-a-medias-entera', { entera: true });
+  // Una fila larga, abierta entera y vuelta a plegar.
+  if (await pagina.$('#tablero .pliegue')) {
+    await tocar('#tablero .pliegue');
+    await pausa(500);
+    await foto('fila-desplegada', { entera: true });
+    await tocar('#tablero .pliegue');
+    await pausa(400);
+  }
 
   // Y al volver, la batea ofrece seguir.
   await pagina.goto(url, { waitUntil: 'networkidle0' });

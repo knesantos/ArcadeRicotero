@@ -222,6 +222,20 @@ export const PARTIDA = {
   ruidosApagar: 'Apagá los ruidos',
   ruidosPrender: 'Prendé los ruidos',
   ruidosTecla: 'Ruidos',
+  /**
+   * La tecla de lo que suena de la banda (ronda 3), en el mazo, pegada al disco. Prendida, cada
+   * ficha que te toca suena sola. Una palabra, distinta de la de los ruidos: son dos cosas.
+   */
+  musicaTecla: 'Música',
+  /**
+   * Una fila larga, plegada (ronda 3): la pestaña dice cuántas no se ven. El número solo se
+   * lee de un vistazo; quien no lo ve escucha la frase entera.
+   */
+  masEnLaFila: (n: number) => `+${n}`,
+  verLasQueFaltan: (n: number, fila: string) =>
+    n === 1 ? `Mostrá la que no se ve de ${fila}` : `Mostrá las ${n} que no se ven de ${fila}`,
+  /** La misma pestaña con la fila abierta entera. (El nombre de la fila se lo suma la isla, para el lector.) */
+  plegala: 'Plegala',
 
   /* ---- Las filas propias (`D-69`) ---- */
 

@@ -71,7 +71,7 @@ import { armarLink, leerReparto, limpiarNombreFila, LARGO_MAX_NOMBRE_FILA } from
 import { dibujarLamina } from './lamina.ts';
 import { nombreArchivoLamina } from '../lib/ponelos/lamina.ts';
 import { duracionDe, estampar, pegar, armarInterruptorDeRuidos } from './jugo.ts';
-import { sonarEfecto } from '../lib/audio/efectos.ts';
+import { ruidosPrendidos, sonarEfecto } from '../lib/audio/efectos.ts';
 import { contextoDeAudio, despertarSalida } from '../lib/audio/contexto.ts';
 import type { DatosLamina } from '../lib/ponelos/lamina.ts';
 
@@ -574,6 +574,7 @@ function abrir(
   recien = null;
   historia = [];
   cartaAnterior = null;
+  desplegadas = new Set();
   pintarTablero();
   mostrar(zonaTablero);
   zonaTablero.scrollIntoView({ block: 'start' });
@@ -733,6 +734,12 @@ function ubicar(indice: number, fila: number): void {
   const origen = funda?.getBoundingClientRect() ?? null;
   const imagenDeOrigen = funda?.querySelector('img')?.getAttribute('src') ?? null;
 
+  // ¿Es una ficha del mazo que llega a una fila, sin nada raro alrededor? Entonces alcanza con
+  // rehacer lo que cambió (`parcharFilas`). Se anota además dónde estaba la recién llegada
+  // anterior, que deja de estar marcada.
+  const vieneDelMazo = reparto[indice] === SIN_UBICAR && enMano === null && !viendoMazo && fila !== SIN_UBICAR;
+  const filaDeLaAnterior = recien !== null ? (reparto[recien] ?? null) : null;
+
   anotar();
   reparto = moverFicha(reparto, indice, fila, nombres.length);
   enMano = null;
@@ -753,9 +760,12 @@ function ubicar(indice: number, fila: number): void {
 
   // La última: las filas se terminan de pegar, una atrás de la otra, una sola vez.
   cerrando = listo;
-  pintarTablero();
+  pintarTablero(vieneDelMazo && !listo ? { fila, otra: filaDeLaAnterior } : null);
   cerrando = false;
   guardar();
+  // El recorte de la ficha nueva arranca mudo y se abre cuando ya apoyó la anterior: el golpe
+  // de cartón no cae encima del primer compás (ver `escuchar`).
+  if (fila !== SIN_UBICAR && !listo) callarHasta = performance.now() + duracionDe('--duracion-umbral') + LARGO_DEL_GOLPE_MS;
   seguirEscuchando();
 
   if (fila !== SIN_UBICAR) {
@@ -910,7 +920,9 @@ function devolverElFoco(veniaDeAdentro: boolean): void {
     zonaTablero.querySelector<HTMLElement>('.tablero-herramientas .herramienta');
   // "Compartí" recibe el foco al cerrar la lista. Si se llegó con el dedo o el mouse, ese foco
   // no dibuja anillo (la misma regla y la misma clase de los otros juegos pulidos).
-  if (blanco && conPuntero && blanco.matches('.firma')) {
+  // (Desde la ronda 3 vale para cualquier foco que ponga la isla: tocando con el dedo, ninguna
+  // tecla del tablero queda con el anillo de oro puesto.)
+  if (blanco && conPuntero) {
     blanco.classList.add('seguir--sin-anillo');
     blanco.addEventListener('blur', () => blanco.classList.remove('seguir--sin-anillo'), { once: true });
   }
@@ -947,10 +959,8 @@ function pintarHerramientas(): HTMLElement {
   });
   zona.append(editar);
 
-  const sonido = boton('herramienta', sonidoPrendido ? PARTIDA.apagaSonido : PARTIDA.prendeSonido, alternarSonido);
-  sonido.dataset.herramienta = 'sonido';
-  zona.append(sonido);
-
+  // (La tecla de la música se fue al mazo, pegada al disco que suena: ronda 3. La de los
+  // ruidos de interfaz queda arriba, en la cabecera. Dos interruptores juntos se confundían.)
   const deshacer = boton('herramienta', PARTIDA.deshace, deshacerJugada);
   deshacer.dataset.herramienta = 'deshacer';
   deshacer.disabled = historia.length === 0;
@@ -1044,6 +1054,7 @@ function sacarFilaDe(id: number): void {
   const vuelven = reparto.filter((v) => v === id).length;
   reparto = sacarFila(reparto, id, nombres.length);
   nombres.splice(id - 1, 1);
+  desplegadas.clear();
   mazo = sincronizar(mazo, reparto);
   enMano = null;
   recien = null;
@@ -1070,6 +1081,96 @@ function volverASiempre(): void {
 }
 
 /* ---- Las filas ---- */
+
+/**
+ * Las filas largas se pliegan (ronda 3 de la pulida, 2026-11-19).
+ *
+ * Con los ciento cinco temas, una fila de cuarenta era una lista de cuarenta sellos: el tablero
+ * dejaba de parecer una batea y, de paso, cada toque rehacía cuarenta botones. Desde
+ * `PLEGADA_DESDE` fichas una fila muestra las primeras `PLEGADA_MUESTRA` y una pestaña con las
+ * que no se ven ("+34"); tocarla la abre entera, y abierta ofrece plegarla. **La recién
+ * llegada y la que está en la mano no se esconden nunca**: es la que el ojo busca.
+ *
+ * Las filas de tapas no se pliegan: son diez como mucho y se miran. Y la lámina lleva todas,
+ * plegadas o no: plegar es de la pantalla, no de la lista.
+ */
+const PLEGADA_DESDE = 9;
+const PLEGADA_MUESTRA = 6;
+/** Las filas que el jugador abrió enteras, por su número. Se olvida al abrir otro conjunto. */
+let desplegadas = new Set<number>();
+
+/** Las piezas de una fila, plegadas si son muchas. Es lo que se rehace cuando llega una ficha. */
+function pintarPiezasDe(c: Conjunto, id: number, fichas: readonly Ficha[]): HTMLUListElement {
+  const lista = el('ul', 'fila-piezas');
+  const sePliega = c.formato !== 'tapa' && !editando && fichas.length >= PLEGADA_DESDE;
+  const plegada = sePliega && !desplegadas.has(id);
+  let ocultas = 0;
+  fichas.forEach((ficha, n) => {
+    const i = c.fichas.indexOf(ficha);
+    if (plegada && n >= PLEGADA_MUESTRA && i !== recien && i !== enMano) {
+      ocultas += 1;
+      return;
+    }
+    const li = el('li');
+    li.append(pintarFicha(i, ficha, id, () => tocarPuesta(i, id)));
+    lista.append(li);
+  });
+  if (sePliega && (ocultas > 0 || !plegada)) {
+    const li = el('li', 'fila-pliegue');
+    const b = boton('pliegue', plegada ? PARTIDA.masEnLaFila(ocultas) : PARTIDA.plegala, () => {
+      if (plegada) desplegadas.add(id);
+      else desplegadas.delete(id);
+      focoSelector = `.fila[data-cajon="${id}"] .pliegue`;
+      pintarTablero();
+    });
+    b.setAttribute('aria-expanded', String(!plegada));
+    // "+34" solo no dice nada a quien no ve la fila: lleva la frase entera. "Plegala" se llama
+    // como se lee, con el nombre de la fila sumado para el lector de pantalla.
+    if (plegada) b.setAttribute('aria-label', PARTIDA.verLasQueFaltan(ocultas, nombreDeFila(id)));
+    else b.append(el('span', 'solo-lector', `, ${nombreDeFila(id)}`));
+    li.append(b);
+    lista.append(li);
+  }
+  return lista;
+}
+
+/**
+ * Llegó una ficha del mazo: **se rehace solo lo que cambió** (ronda 3).
+ *
+ * Rehacer el tablero entero en cada toque es lo que hace imposible que la pantalla y el reparto
+ * se desincronicen, y sigue siendo el camino de todo lo demás (mover, deshacer, editar, cerrar).
+ * Pero repartir es el gesto de este juego, y con sesenta fichas puestas rehacerlas todas dejaba
+ * un cuadro de 120 a 180 ms con la CPU ×4. Acá se rehacen las piezas de la fila que recibe y,
+ * si es otra, las de la fila donde estaba la recién llegada anterior (que deja de estar
+ * marcada); se corrige la cuenta de la que recibe, y nada más. Lo que rodea a las filas —las
+ * teclas, el mazo, el pie— se rehace siempre: es chico.
+ *
+ * Devuelve `false` si no encontró lo que esperaba: entonces el tablero se rehace entero.
+ */
+function parcharFilas(c: Conjunto, filasEl: HTMLElement, llega: { readonly fila: number; readonly otra: number | null }): boolean {
+  const armadas = porFila(c, reparto, nombres);
+  const cuenta = cuentas(reparto, nombres.length);
+  const tocadas = new Set<number>([llega.fila]);
+  if (llega.otra !== null && llega.otra !== SIN_UBICAR) tocadas.add(llega.otra);
+  const piezas: Array<{ readonly viejo: Element; readonly nuevo: HTMLElement; readonly seccion: HTMLElement; readonly id: number }> = [];
+  for (const id of tocadas) {
+    const seccion = filasEl.querySelector<HTMLElement>(`:scope > .fila[data-cajon="${id}"]`);
+    const viejo = seccion?.querySelector(':scope > .fila-piezas');
+    const armada = armadas.find((a) => a.fila.id === id);
+    if (!seccion || !viejo || !armada) return false;
+    piezas.push({ viejo, nuevo: pintarPiezasDe(c, id, armada.fichas), seccion, id });
+  }
+  for (const p of piezas) {
+    p.viejo.replaceWith(p.nuevo);
+    p.seccion.classList.remove('fila--recibe');
+    const destino = p.seccion.querySelector<HTMLElement>(':scope > .fila-destino');
+    const n = cuenta[p.id] ?? 0;
+    destino?.setAttribute('aria-label', PARTIDA.ponerEn(nombreDeFila(p.id), n));
+    const numero = destino?.querySelector('.fila-cuenta');
+    if (numero) numero.textContent = String(n);
+  }
+  return true;
+}
 
 function pintarFilas(c: Conjunto): HTMLElement {
   const cuenta = cuentas(reparto, nombres.length);
@@ -1142,14 +1243,8 @@ function pintarFilas(c: Conjunto): HTMLElement {
       seccion.append(destino);
     }
 
-    const lista = el('ul', 'fila-piezas');
-    for (const ficha of armada.fichas) {
-      const i = c.fichas.indexOf(ficha);
-      const li = el('li');
-      li.append(pintarFicha(i, ficha, id, () => tocarPuesta(i, id)));
-      lista.append(li);
-    }
-    seccion.append(lista);
+    seccion.dataset.cajon = String(id);
+    seccion.append(pintarPiezasDe(c, id, armada.fichas));
     filas.append(seccion);
   }
 
@@ -1405,6 +1500,15 @@ function pintarMazo(): HTMLElement {
 
   const rotulo = el('h2', 'bandeja-rotulo');
   rotulo.append(el('span', 'bandeja-sello', enMano !== null ? PARTIDA.laEstasMoviendo : PARTIDA.laQueSigue));
+  /*
+   * La tecla de la música, pegada al disco (ronda 3): prendida, cada ficha que te toca suena
+   * sola; apagada, suena solo si lo pedís con "Escuchala". Es de la banda y vive en el mazo;
+   * la de los ruidos de interfaz se llama distinto y vive arriba, con las herramientas. Lleva
+   * `aria-pressed` y, apagada, va tachada: forma además de tinta.
+   */
+  const musica = boton('musica-tecla', PARTIDA.musicaTecla, alternarSonido);
+  musica.dataset.herramienta = 'sonido';
+  musica.setAttribute('aria-pressed', String(sonidoPrendido));
   rotulo.append(el('span', 'fila-cuenta', PARTIDA.quedan(mazo.length, c.fichas.length)));
   seccion.append(rotulo);
 
@@ -1427,29 +1531,44 @@ function pintarMazo(): HTMLElement {
     pila.append(resto);
   }
   pila.append(pintarCarta(i));
+  // La tecla de la música va pisando el borde de la carta, abajo, del lado del disco.
+  pila.append(musica);
   seccion.append(pila);
   seccion.append(pintarAccionesDeCarta(i));
   seccion.append(pintarBotonesDeFila(i));
   return seccion;
 }
 
-function pintarTablero(): void {
+function pintarTablero(llega: { readonly fila: number; readonly otra: number | null } | null = null): void {
   const c = conjunto!;
   const veniaDeAdentro = zonaTablero.contains(document.activeElement);
-  zonaTablero.replaceChildren();
 
-  // La cabecera, en un renglón: el nombre de lo que se reparte y la tecla de los ruidos. (La
-  // bajada del conjunto ya se leyó en la elección; acá le sacaba un renglón a las filas.)
+  // Si solo llegó una ficha del mazo, las filas se quedan y se les corrige lo que cambió
+  // (`parcharFilas`). En cualquier otro caso, o si algo no cierra, se rehace todo.
+  const filasDeAntes = llega && !editando ? zonaTablero.querySelector<HTMLElement>(':scope > .filas:not(.filas--editando)') : null;
+  const filasQueQuedan = filasDeAntes && llega && parcharFilas(c, filasDeAntes, llega) ? filasDeAntes : null;
+  if (filasQueQuedan) {
+    for (const n of [...zonaTablero.children]) if (n !== filasQueQuedan) n.remove();
+  } else {
+    zonaTablero.replaceChildren();
+  }
+
+  // La cabecera: el nombre de lo que se reparte. (La bajada del conjunto ya se leyó en la
+  // elección; acá le sacaba un renglón a las filas.)
   const cab = el('header', 'tablero-cabecera');
   cab.append(el('h2', 'tablero-titulo', c.nombre));
   const ruidos = armarInterruptorDeRuidos({ apagar: PARTIDA.ruidosTecla, prender: PARTIDA.ruidosTecla });
   ruidos.classList.add('ruidos-tecla');
   cab.append(ruidos);
   if (compartida) cab.append(el('p', 'lista--compartida', PARTIDA.llegoCompartida));
-  zonaTablero.append(cab);
+  const herramientas = pintarHerramientas();
 
-  zonaTablero.append(pintarHerramientas());
-  zonaTablero.append(pintarFilas(c));
+  if (filasQueQuedan) {
+    filasQueQuedan.before(cab, herramientas);
+  } else {
+    zonaTablero.append(cab, herramientas);
+    zonaTablero.append(pintarFilas(c));
+  }
   zonaTablero.append(pintarMazo());
 
   zonaTablero.append(pintarAcciones());
@@ -1539,8 +1658,9 @@ function marcarEscucha(): void {
   const b = zonaTablero.querySelector<HTMLButtonElement>('.carta-escuchar');
   const fb = i !== null ? conjunto?.fichas[i] : undefined;
   if (b && fb) rotularEscucha(b, fb, suena);
-  // El disco de la carta sale de la funda y gira mientras suena; cuando se corta, vuelve.
-  zonaTablero.querySelector('.carta')?.classList.toggle('carta--suena', suena);
+  // El disco de la carta sale de la funda y gira mientras suena; cuando se corta, frena y vuelve.
+  const carta = zonaTablero.querySelector<HTMLElement>('.carta');
+  if (carta) girarElDisco(carta, suena);
   const renglon = zonaTablero.querySelector<HTMLElement>('.carta-suena');
   if (renglon) {
     const f = i !== null ? conjunto?.fichas[i] : undefined;
@@ -1548,6 +1668,64 @@ function marcarEscucha(): void {
     renglon.textContent = suena && temaSonando && f && !esTema(f) ? PARTIDA.suena(temaSonando.titulo) : '';
   }
 }
+
+/** En cuántos escalones frena el disco. Pocos y parejos, como los carretes del casete. */
+const ESCALONES_DE_FRENADO = [0.72, 0.5, 0.34, 0.2, 0.1, 0.04] as const;
+const frenadas = new WeakMap<HTMLElement, number>();
+
+/**
+ * Prende o frena el giro del disco de una carta (ronda 3 de la pulida).
+ *
+ * Prender es poner `.carta--suena`. Parar **no es sacarla de golpe**: un plato no clava. El
+ * giro pierde velocidad en escalones durante `--duracion-inercia`, y recién ahí se va la clase
+ * y el disco vuelve a la funda. Con movimiento reducido el token vale cero y se saca en el
+ * acto (ahí el disco ni giraba). Si vuelve a sonar mientras frena, retoma a su velocidad.
+ * No es un segundo cuadro de animación: es la misma animación de CSS, a la que se le cambia
+ * `playbackRate` seis veces con un reloj.
+ */
+function girarElDisco(carta: HTMLElement, suena: boolean): void {
+  const cara = carta.querySelector<HTMLElement>('.carta-vinilo-cara');
+  const giro = (): Animation | undefined => cara?.getAnimations?.()[0];
+  const pendiente = frenadas.get(carta);
+  if (pendiente !== undefined) window.clearInterval(pendiente);
+  frenadas.delete(carta);
+  if (suena) {
+    carta.classList.add('carta--suena');
+    const g = giro();
+    if (g) g.playbackRate = 1;
+    return;
+  }
+  if (!carta.classList.contains('carta--suena')) return;
+  const total = duracionDe('--duracion-inercia');
+  const g = giro();
+  if (total <= 0 || !g) {
+    carta.classList.remove('carta--suena');
+    return;
+  }
+  let paso = 0;
+  const reloj = window.setInterval(() => {
+    const ritmo = ESCALONES_DE_FRENADO[paso++];
+    if (ritmo === undefined) {
+      window.clearInterval(reloj);
+      frenadas.delete(carta);
+      carta.classList.remove('carta--suena');
+      return;
+    }
+    g.playbackRate = ritmo;
+  }, total / (ESCALONES_DE_FRENADO.length + 1));
+  frenadas.set(carta, reloj);
+}
+
+/**
+ * Hasta cuándo el recorte que arranca va mudo (ronda 3). Al repartir, el recorte de la ficha
+ * nueva empieza en el mismo toque en que la anterior sale volando, y el golpe de cartón cae
+ * cuando esa apoya: encima del primer compás. El recorte **arranca igual adentro del toque**
+ * —que es lo que el navegador pide para dejarlo sonar— pero mudo, y se abre cuando el golpe ya
+ * pasó. `muted` y no el volumen: el iPhone no deja tocar el volumen de un `<audio>`.
+ */
+let callarHasta = 0;
+/** Lo que dura el golpe de cartón, con un respiro. Es un reloj de sonido, no de animación. */
+const LARGO_DEL_GOLPE_MS = 140;
 
 function escuchar(i: number): void {
   const f = conjunto?.fichas[i];
@@ -1574,6 +1752,17 @@ function escuchar(i: number): void {
   audio.src = urlDeFragmento(tema.slug);
   sonando = i;
   temaSonando = tema;
+  // Mudo mientras apoya la ficha anterior, si los ruidos están prendidos (si no, no hay golpe
+  // que cuidar). Se abre solo, salvo que para entonces ya esté sonando otra cosa.
+  const falta = callarHasta - performance.now();
+  const espera = falta > 0 && ruidosPrendidos();
+  audio.muted = espera;
+  if (espera) {
+    const esteAudio = audio;
+    window.setTimeout(() => {
+      if (vuelta === vueltaAudio) esteAudio.muted = false;
+    }, falta);
+  }
   void audio.play().catch(() => {
     // El navegador no lo dejó sonar (sin gesto, sin red): el juego sigue mudo, y el botón
     // queda para pedirlo a mano.
