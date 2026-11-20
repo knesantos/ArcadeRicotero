@@ -1,580 +1,783 @@
 {
   "contrato": "CTR-03",
-  "contratoVersion": 2,
+  "contratoVersion": 3,
   "juego": "adivinar-tema",
   "modoRespuesta": "buscador",
-  "actualizado": "2026-08-27",
+  "actualizado": "2026-11-20",
   "nota": "Lista de archivos de audio que EXISTEN, no de temas. La escriben scripts/generar-fragmentos.mjs (desde los masters, con ffmpeg) o scripts/ingerir-fragmentos.mjs (desde fragmentos ya recortados, PR #8). Vacia significa que el juego todavia no tiene con que sonar, y la pantalla lo dice sin romperse.",
   "fragmentos": [
     {
       "slug": "alien-duce",
       "titulo": "Alien duce",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.03,
+      "sorteo": true
     },
     {
       "slug": "aquella-solitaria-vaca-cubana",
       "titulo": "Aquella solitaria vaca cubana",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.02,
+      "sorteo": true
     },
     {
       "slug": "barbazul-versus-el-amor-letal",
       "titulo": "Barbazul versus el amor letal",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.02,
+      "sorteo": true
     },
     {
       "slug": "blues-de-la-artilleria",
       "titulo": "Blues de la artillería",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.01,
+      "sorteo": true
     },
     {
       "slug": "blues-de-la-libertad",
       "titulo": "Blues de la libertad",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.11,
+      "sorteo": true
     },
     {
       "slug": "buenas-noticias",
       "titulo": "Buenas noticias",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.07,
+      "sorteo": true
     },
     {
       "slug": "cancion-para-naufragios",
       "titulo": "Canción para naufragios",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.01,
+      "sorteo": true
     },
     {
       "slug": "capricho-magyar",
       "titulo": "Capricho Magyar",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.01,
+      "sorteo": true
     },
     {
       "slug": "criminal-mambo",
       "titulo": "Criminal Mambo",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 5.84,
+      "sorteo": false,
+      "motivo": "arranque-tardio"
     },
     {
       "slug": "cruz-diablo",
       "titulo": "Cruz diablo!",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.06,
+      "sorteo": true
     },
     {
       "slug": "divina-tv-fuhrer",
       "titulo": "Divina TV. Führer",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.02,
+      "sorteo": true
     },
     {
       "slug": "dr-saturno",
       "titulo": "Dr. Saturno",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": null,
+      "sorteo": false,
+      "motivo": "sin-arranque"
     },
     {
       "slug": "drogocop",
       "titulo": "Drogocop",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.59,
+      "sorteo": true
     },
     {
       "slug": "el-arbol-del-gran-bonete",
       "titulo": "El árbol del gran bonete",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.79,
+      "sorteo": true
     },
     {
       "slug": "el-infierno-esta-encantador-esta-noche",
       "titulo": "El infierno está encantador esta noche",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0,
+      "sorteo": true
     },
     {
       "slug": "el-lobo-caido",
       "titulo": "El lobo caído",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 2.6,
+      "sorteo": false,
+      "motivo": "arranque-tardio"
     },
     {
       "slug": "el-pibe-de-los-astilleros",
       "titulo": "El pibe de los astilleros",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.03,
+      "sorteo": true
     },
     {
       "slug": "ella-baila-con-todos",
       "titulo": "Ella baila con todos",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.03,
+      "sorteo": true
     },
     {
       "slug": "ella-debe-estar-tan-linda",
       "titulo": "Ella debe estar tan linda",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.14,
+      "sorteo": true
     },
     {
       "slug": "esa-estrella-era-mi-lujo",
       "titulo": "Esa estrella era mi lujo",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.02,
+      "sorteo": true
     },
     {
       "slug": "espejismo",
       "titulo": "Espejismo",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.13,
+      "sorteo": true
     },
     {
       "slug": "estas-frito-angelito",
       "titulo": "Estás frito angelito",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.02,
+      "sorteo": true
     },
     {
       "slug": "esto-es-to-to-todo-amigos",
       "titulo": "¡Esto es to-to-todo amigos!",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.03,
+      "sorteo": true
     },
     {
       "slug": "fanfarria-del-cabrio",
       "titulo": "Fanfarria del cabrío",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.08,
+      "sorteo": true
     },
     {
       "slug": "fuegos-de-octubre",
       "titulo": "Fuegos de octubre",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.01,
+      "sorteo": true
     },
     {
       "slug": "fusilados-por-la-cruz-roja",
       "titulo": "Fusilados por la cruz roja",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.18,
+      "sorteo": true
     },
     {
       "slug": "gran-lady",
       "titulo": "Gran Lady",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.03,
+      "sorteo": true
     },
     {
       "slug": "gualicho",
       "titulo": "Gualicho",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 2.94,
+      "sorteo": false,
+      "motivo": "arranque-tardio"
     },
     {
       "slug": "heroe-del-whisky",
       "titulo": "Héroe del whisky",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.02,
+      "sorteo": true
     },
     {
       "slug": "invocacion",
       "titulo": "Invocación",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 1.64,
+      "sorteo": true
     },
     {
       "slug": "jijiji",
       "titulo": "Jijiji",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0,
+      "sorteo": true
     },
     {
       "slug": "juguetes-perdidos",
       "titulo": "Juguetes perdidos",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.04,
+      "sorteo": true
     },
     {
       "slug": "la-bestia-pop",
       "titulo": "La bestia pop",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.01,
+      "sorteo": true
     },
     {
       "slug": "la-dicha-no-es-una-cosa-alegre",
       "titulo": "La dicha no es una cosa alegre",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.04,
+      "sorteo": true
     },
     {
       "slug": "la-hija-del-fletero",
       "titulo": "La hija del fletero",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.08,
+      "sorteo": true
     },
     {
       "slug": "la-murga-de-los-renegados",
       "titulo": "La murga de los renegados",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.07,
+      "sorteo": true
     },
     {
       "slug": "la-parabellum-del-buen-psicopata",
       "titulo": "La parabellum del buen psicópata",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.04,
+      "sorteo": true
     },
     {
       "slug": "la-pequena-novia-del-carioca",
       "titulo": "La pequeña novia del carioca",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.03,
+      "sorteo": true
     },
     {
       "slug": "ladron-de-mi-cerebro",
       "titulo": "Ladrón de mi cerebro",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.01,
+      "sorteo": true
     },
     {
       "slug": "las-increibles-andanzas-del-capitan-buscapina-en-cybersiberia",
       "titulo": "Las increíbles andanzas del Capitán Buscapina en Cybersiberia",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.01,
+      "sorteo": true
     },
     {
       "slug": "luzbelito-y-las-sirenas",
       "titulo": "Luzbelito y las sirenas",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 1.13,
+      "sorteo": true
     },
     {
       "slug": "maldicion-va-a-ser-un-dia-hermoso",
       "titulo": "Maldición, va a ser un día hermoso",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.04,
+      "sorteo": true
     },
     {
       "slug": "mariposa-pontiac-rock-del-pais",
       "titulo": "Mariposa Pontiac - Rock del país",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.08,
+      "sorteo": true
     },
     {
       "slug": "masacre-en-el-puticlub",
       "titulo": "Masacre en el puticlub",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.01,
+      "sorteo": true
     },
     {
       "slug": "me-matan-limon",
       "titulo": "Me matan, Limón!",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.04,
+      "sorteo": true
     },
     {
       "slug": "mi-perro-dinamita",
       "titulo": "Mi perro dinamita",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.01,
+      "sorteo": true
     },
     {
       "slug": "morta-punto-com",
       "titulo": "Morta punto com",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.01,
+      "sorteo": true
     },
     {
       "slug": "motor-psico",
       "titulo": "Motor psico",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.02,
+      "sorteo": true
     },
     {
       "slug": "murga-de-la-virgencita",
       "titulo": "Murga de la virgencita",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 3.42,
+      "sorteo": false,
+      "motivo": "arranque-tardio"
     },
     {
       "slug": "murga-purga",
       "titulo": "Murga purga",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.06,
+      "sorteo": true
     },
     {
       "slug": "musica-para-pastillas",
       "titulo": "Música para pastillas",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.02,
+      "sorteo": true
     },
     {
       "slug": "nadie-es-perfecto",
       "titulo": "Nadie es perfecto",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.03,
+      "sorteo": true
     },
     {
       "slug": "nam-fri-frufi-fali-fru",
       "titulo": "Ñam fri frufi fali fru",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.42,
+      "sorteo": true
     },
     {
       "slug": "noticias-de-ayer",
       "titulo": "Noticias de ayer",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.02,
+      "sorteo": true
     },
     {
       "slug": "nuestro-amo-juega-al-esclavo",
       "titulo": "Nuestro amo juega al esclavo",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.04,
+      "sorteo": true
     },
     {
       "slug": "nueva-roma",
       "titulo": "Nueva Roma",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.07,
+      "sorteo": true
     },
     {
       "slug": "nuotatori-professionisti",
       "titulo": "Nuotatori professionisti",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 1.38,
+      "sorteo": true
     },
     {
       "slug": "pensando-como-una-acelga",
       "titulo": "Pensando como una acelga",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.14,
+      "sorteo": true
     },
     {
       "slug": "pierre-el-vitricida",
       "titulo": "Pierre, el vitricida",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.01,
+      "sorteo": true
     },
     {
       "slug": "pogo",
       "titulo": "Pogo",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.02,
+      "sorteo": true
     },
     {
       "slug": "pool-averna-y-papusa",
       "titulo": "Pool, averna y papusa",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.01,
+      "sorteo": true
     },
     {
       "slug": "preso-en-mi-ciudad",
       "titulo": "Preso en mi ciudad",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.01,
+      "sorteo": true
     },
     {
       "slug": "queso-ruso",
       "titulo": "Queso ruso",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.06,
+      "sorteo": true
     },
     {
       "slug": "rato-molhado",
       "titulo": "Rato molhado",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.11,
+      "sorteo": true
     },
     {
       "slug": "rock-para-el-negro-atila",
       "titulo": "Rock para el negro Atila",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.01,
+      "sorteo": true
     },
     {
       "slug": "rock-para-los-dientes",
       "titulo": "Rock para los dientes",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.02,
+      "sorteo": true
     },
     {
       "slug": "rock-yugular",
       "titulo": "Rock yugular",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.05,
+      "sorteo": true
     },
     {
       "slug": "ropa-sucia",
       "titulo": "Ropa sucia",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.02,
+      "sorteo": true
     },
     {
       "slug": "roto-y-mal-parado",
       "titulo": "Roto y mal parado",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.13,
+      "sorteo": true
     },
     {
       "slug": "salando-las-heridas",
       "titulo": "Salando las heridas",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.06,
+      "sorteo": true
     },
     {
       "slug": "san-telmo",
       "titulo": "San Telmo",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.06,
+      "sorteo": true
     },
     {
       "slug": "scaramanzia",
       "titulo": "Scaramanzia",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.36,
+      "sorteo": true
     },
     {
       "slug": "semen-up",
       "titulo": "Semen-Up",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.03,
+      "sorteo": true
     },
     {
       "slug": "sheriff",
       "titulo": "Sheriff",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 9.29,
+      "sorteo": false,
+      "motivo": "arranque-tardio"
     },
     {
       "slug": "shopping-disco-zen",
       "titulo": "Shopping Disco-Zen",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.06,
+      "sorteo": true
     },
     {
       "slug": "soga-de-cain",
       "titulo": "Soga de Caín",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.17,
+      "sorteo": true
     },
     {
       "slug": "sorpresa-de-shangai",
       "titulo": "Sorpresa de Shangai",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.01,
+      "sorteo": true
     },
     {
       "slug": "superlogico",
       "titulo": "Superlógico",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.14,
+      "sorteo": true
     },
     {
       "slug": "susanita",
       "titulo": "Susanita",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 6.63,
+      "sorteo": false,
+      "motivo": "arranque-tardio"
     },
     {
       "slug": "sushi",
       "titulo": "Sushi",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.01,
+      "sorteo": true
     },
     {
       "slug": "tarea-fina",
       "titulo": "Tarea fina",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.15,
+      "sorteo": true
     },
     {
       "slug": "te-voy-a-atornillar",
       "titulo": "Te voy a atornillar",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.22,
+      "sorteo": true
     },
     {
       "slug": "templo-de-momo",
       "titulo": "Templo de Momo",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.02,
+      "sorteo": true
     },
     {
       "slug": "todo-preso-es-politico",
       "titulo": "Todo preso es político",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.01,
+      "sorteo": true
     },
     {
       "slug": "todo-un-palo",
       "titulo": "Todo un palo",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.05,
+      "sorteo": true
     },
     {
       "slug": "toxi-taxi",
       "titulo": "Toxi-Taxi",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 1.67,
+      "sorteo": true
     },
     {
       "slug": "un-angel-para-tu-soledad",
       "titulo": "Un ángel para tu soledad",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.09,
+      "sorteo": true
     },
     {
       "slug": "un-pacman-en-el-savoy",
       "titulo": "Un Pacman en el Savoy",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.02,
+      "sorteo": true
     },
     {
       "slug": "un-poco-de-amor-frances",
       "titulo": "Un poco de amor francés",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.9,
+      "sorteo": true
     },
     {
       "slug": "una-piba-con-la-remera-de-greenpeace",
       "titulo": "Una piba con la remera de Greenpeace…",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.06,
+      "sorteo": true
     },
     {
       "slug": "unos-pocos-peligros-sensatos",
       "titulo": "Unos pocos peligros sensatos",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.04,
+      "sorteo": true
     },
     {
       "slug": "vamos-las-bandas",
       "titulo": "Vamos las bandas",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.05,
+      "sorteo": true
     },
     {
       "slug": "vencedores-vencidos",
       "titulo": "Vencedores vencidos",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0,
+      "sorteo": true
     },
     {
       "slug": "ya-nadie-va-a-escuchar-tu-remera",
       "titulo": "Ya nadie va a escuchar tu remera",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.01,
+      "sorteo": true
     },
     {
       "slug": "yo-no-me-cai-del-cielo",
       "titulo": "Yo no me caí del cielo",
       "duracionSeg": 10.06,
-      "entero": false
+      "entero": false,
+      "inicioSeg": 0.01,
+      "sorteo": true
     }
-  ]
+  ],
+  "medicion": {
+    "medido": "2026-11-20",
+    "umbralDb": -30,
+    "ventanaMs": 10,
+    "con": "scripts/medir-fragmentos.mjs"
+  }
 }
