@@ -235,3 +235,94 @@ la marca queda adentro; "Seguí" queda a la vista al llegar la ficha.
 - El apagado de la pantalla dura 230 ms antes de que entre la nueva: se nota en la ráfaga, y
   jugando rápido puede sentirse como una espera.
 - No se probó con dedo, teclado ni lector de pantalla de verdad, ni `?incrustado`.
+
+---
+
+## Ronda 3 (2026-11-19): el vidrio, las teclas de la máquina y los dos finales
+
+### 1. Qué se hizo
+
+1. **La pantalla tiene vidrio.** Por afuera, el marco de la chapa en la tinta de la categoría;
+   arriba, en el marco, **la inscripción de la máquina** (la categoría, derecha y sin sello; el
+   rótulo de leyenda o testimonio conserva su caja y su tinta); adentro, **el canto del tubo**,
+   de esquinas redondeadas, con **una trama de barrido impresa** (`--textura-barrido`, token
+   nuevo, usada de máscara sobre la tinta al 16 %: una trama, no un degradado); y al pie del
+   vidrio, **la línea de estado** con el nivel ("FÁCIL · 1/14"). El enunciado va arriba, a un
+   tercio. El sello del cierre cae en la mitad de abajo y su marca queda en la esquina.
+   **No puse la tapa ni el dato debajo del enunciado**: la tapa, antes de contestar, es la
+   respuesta de varias preguntas ("¿en qué disco salió?"). Debajo queda el vidrio.
+2. **"Cerrá la partida" es una tecla de la cabecera**, al lado de "RUIDOS", arriba a la derecha
+   (sigue lejos del pulgar, `BR-19` apartado 7, y con su confirmación en dos pasos). La racha y
+   "LLEVÁS N" pasaron al renglón del riel, a su derecha. El tablero quedó en dos renglones.
+3. **La ficha de la portada tiene el canto estriado y no tapa la boca**: la chapa es más grande
+   que la ficha, la hendija asoma arriba y abajo. El cartel dice "PONÉ LA FICHA", sin flecha.
+4. **El apagado dura 120 ms** (`--duracion-toque`): la pantalla llega a la línea en un toque y
+   la nueva prende enseguida.
+5. **La compu, a escala**: la pantalla mide de 15 a 23 rem (44 % del alto de la ventana), el
+   enunciado va a 2 rem, las teclas son un 2 × 2 de 5,2 rem con la letra más grande, y la chapa
+   de la portada crece un 30 %.
+6. **Dos finales distintos.** *Derrota*: al perder la última ficha, **las tres, partidas,
+   llueven del tablero y cruzan la pantalla** hasta el pie (en saltos, las mueve la isla); en
+   el resultado la hoja da un golpe cuando la cifra termina de contar y el contador de créditos
+   vuelve a 00. *Victoria*: las fichas que te quedaron **caen de a una, grandes, cada una con
+   su clac**, y el crédito **queda en 01**: la máquina te lo deja. La retirada es la derrota
+   sin el golpe.
+7. **La planilla se imprime renglón por renglón** (el barrido de las pasadas, uno por escalón).
+   El sello por casilla de la ronda 2 salió: ver "Lo medido".
+8. **Reglas muertas y comentarios viejos** (verificado con grep que nadie más las usa): salieron
+   `.vidas`, `.vidas-rotulo`, `.vida`, `.vida--viva` y `.vida--ida` de la base (las fichas
+   viven bajo `.juego-quiz`), `.tablero .vidas`, `.tablero .vidas-rotulo`, la cinta gris
+   (`.ficha-pregunta::before`), las cinco reglas de `.tablero-pie`, la flecha del cartel y la
+   pestaña del nivel. El bloque de `D-71` avisa arriba que es la base y que manda lo de abajo.
+
+### 2. Lo que pide el visto de otro
+
+- **Texto sobre trama.** El enunciado se lee sobre el vidrio, que lleva la trama de barrido.
+  La regla de las rondas anteriores era "lo que se lee va sobre papel o sobre el fondo, nunca
+  sobre la textura". Acá la trama es una línea de 1,5 px cada 4, de la tinta de la categoría
+  al 16 % sobre `--fondo`: el par medido casi no se mueve, pero **no está medido como par
+  aparte**. Si `experiencia` no lo acepta, se saca la trama de atrás del texto cambiando el
+  `inset` de `.ficha-pregunta::after`.
+- **El crédito que queda en 01 al ganar** es una convención de fichín que nadie pidió.
+- `--textura-barrido` falta en el lienzo (hoja 07).
+
+### 3. Lo medido
+
+- **Diez tamaños con los datos peores**, después de los cambios de esta ronda: en los diez la
+  hoja no desborda, el sello cae adentro, la marca queda adentro, la pregunta con sus cuatro
+  teclas entra en la ventana (a 320 × 568 termina en 559 de 568) y "Seguí" queda a la vista.
+  "Jugá": 526 de 568, 526 de 640, 647 de 667, 656 de 844, 666 de 915, 673 de 860, 710 de 1024,
+  580 de 768, 580 de 800 y 580 de 900.
+- **Rendimiento** (CPU ×4, 430 × 860 a ×2, contra el sitio construido, dos tandas limpias con
+  control 16,7 ms y ningún cuadro sobre 34). Pantalla quieta, con el vidrio: 16,7 / 16,8, igual
+  que el control. **El pase** (apaga, rueda, prende): media 16,9–18,6, peor cuadro 33–117.
+  Acierto: peor 83–117. Error: un cuadro de 317–417 (el del toque). Meter la ficha y arrancar:
+  un cuadro de 383–433. **Llegar al resultado, con un sello por casilla: un cuadro de 617–633;
+  sin esa animación, 200** (una tanda). Por eso la planilla pasó a un barrido por renglón; **no
+  volví a medir después de ese cambio**.
+- **Ojo con esos números**: el cuadro del toque en el error y en el arranque dio 133–150 en la
+  ronda 1, medido contra `astro dev`; acá, contra el sitio construido, 317–433. Quise aislar
+  qué lo sube (el vidrio, el alto repartido, el prendido, las fichas) apagando cada cosa, y la
+  máquina estaba tan cargada que las tandas de prueba dieron de 300 a 1400 ms sin patrón. **No
+  quedó aislado.** Lo único que se separó limpio es que el vidrio no es: sin la trama, el
+  cuadro es el mismo.
+
+### 4. Lo aprendido (para los juegos que quedan)
+
+1. **Si la bajada nombra un objeto, las vidas, el número y el gesto de empezar son ese
+   objeto**: acá la ficha es la vida, el crédito y el botón.
+2. **El lugar del juego puede ser el recuadro de la pregunta**: repartir el alto de la ventana
+   (pantalla arriba, teclas en la zona del pulgar) vale más que cualquier adorno.
+3. **Adelantar un cierre se escucha con `click`, no con `pointerdown`**: si la hoja se corre,
+   el `click` del mismo toque cae en otro lado.
+4. **Con el teléfono emulado, una hoja que desborda achica la página y los toques del guion
+   caen corridos**: si un botón "no anda" en el recorrido, primero medir `scrollWidth`.
+5. **Una capa con `z-index` negativo se pinta encima del relleno de su propio padre** cuando el
+   padre arma contexto (por `translate` o `rotate`): la pieza de varias capas no lleva relleno.
+6. **Muchas animaciones chicas con espera cuestan más que una grande**: un sello por casilla
+   fue un cuadro de 600 ms; un barrido por renglón, no.
+7. **`steps()`, `fill=` en una textura y una clase sin regla rompen tests**: los saltos se
+   escriben como cuadros repetidos, la textura va sin color, y toda clase que crea la isla
+   necesita su regla.
+8. **Medir rendimiento con la máquina libre y contra lo mismo cada vez** (siempre `dev` o
+   siempre construido): si no, las rondas no se comparan.

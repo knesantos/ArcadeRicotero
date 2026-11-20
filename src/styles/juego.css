@@ -4284,35 +4284,8 @@ html.incrustado .juego-tema #partida .cabina {
    Ni un hex: todo sale de tokens.css, que es el unico lugar donde vive un color.
    ========================================================================== */
 
-/* El marcador de tres vidas. Ningun estado se comunica solo con color: el simbolo
-   cambia ademas de la tinta, y la palabra VIDAS esta siempre. */
-.vidas {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35em;
-}
-
-.vidas-rotulo {
-  color: var(--texto-tenue);
-  margin-right: 0.15em;
-}
-
-.vida {
-  font-size: 0.95em;
-  line-height: 1;
-}
-
-.vida--viva {
-  color: var(--acento-2);
-}
-
-/* Comparte la tinta del error a proposito: errar es la unica causa posible de perder
-   una vida (`BR-19` apartado 1). Un tono propio sugeriria una segunda causa que no
-   existe. */
-.vida--ida {
-  color: var(--acento-4);
-  opacity: 0.75;
-}
+/* El marcador de tres vidas vive con la ficha del fichin, mas abajo (`.juego-quiz .vidas`):
+   ningun estado se comunica solo con color, y la palabra VIDAS esta siempre. */
 
 /* El aviso de escalon vive con el resto del quiz de `D-71`, al final de esta hoja. */
 
@@ -4390,6 +4363,11 @@ html.incrustado .juego-tema #partida .cabina {
 /* ==========================================================================
    Preguntas ricoteras, que se sienta como un fichín (`D-71`, ciclo 20).
 
+   OJO: esta es la base. La ronda de pulida del 2026-11-19 la viste encima, más abajo, bajo
+   `.juego-quiz` ("la ficha del fichín" y "la pregunta es la pantalla del fichín"): las vidas
+   son fichas, la pregunta es una pantalla con su vidrio, `SEGUÍ` va adentro de la ficha de la
+   respuesta y la cinta gris salió. Lo que sigue dice cómo nació; manda lo de abajo.
+
    El usuario lo jugó y lo dijo entero: *"hoy está muy duro y feo"*. Medido a 375 px: cuatro
    cajas grises de formulario, una cabecera de 13 px, el `SEGUÍ` abajo del pliegue y "Cerrá la
    partida" entre las opciones y la respuesta. Lo que sigue lo resuelve en el idioma del sitio
@@ -4411,19 +4389,6 @@ html.incrustado .juego-tema #partida .cabina {
   display: flex;
   align-items: center;
   gap: var(--espacio-2);
-}
-
-/* Las vidas pasan de una línea de 13 px a tres fichas que se ven desde lejos. */
-.tablero .vidas {
-  font-size: 1.45rem;
-  gap: 0.15em;
-}
-
-.tablero .vidas-rotulo {
-  font-family: var(--fuente-rotulada);
-  font-size: 0.6rem;
-  letter-spacing: 0.12em;
-  align-self: center;
 }
 
 .tablero-numero {
@@ -4505,20 +4470,6 @@ html.incrustado .juego-tema #partida .cabina {
   /* Se apoya en la hoja: llega torcida de más y se asienta. Con movimiento reducido,
      `--duracion-paso` vale cero y aparece ya apoyada. */
   animation: momento-entra var(--duracion-paso) var(--curva-cinta) both;
-}
-
-/* La cinta que la sostiene, la misma del afiche de octubre y de los casetes. */
-.ficha-pregunta::before {
-  content: '';
-  position: absolute;
-  top: -13px;
-  left: 50%;
-  width: 84px;
-  height: 24px;
-  margin-left: -42px;
-  background: color-mix(in srgb, var(--papel) 30%, transparent);
-  border-radius: 2px;
-  transform: rotate(-3deg);
 }
 
 /* La mezcla (`D-19`): el borde lo tiñe el disco de la categoría, como la estampa de cada
@@ -5126,13 +5077,6 @@ html.incrustado .juego-tema #partida .cabina {
   color: var(--texto-tenue);
 }
 
-/* La racha va en el renglón de abajo, al lado de la tecla de los ruidos: en el de arriba, con
-   las fichas, el contador y la cuenta, a 320 px desbordaba la hoja (medido). */
-.juego-quiz .tablero-pie .racha {
-  margin-right: auto;
-  margin-left: 0.6rem;
-}
-
 .juego-quiz .tablero .restantes--llevas {
   align-self: center;
   margin-left: auto;
@@ -5141,17 +5085,6 @@ html.incrustado .juego-tema #partida .cabina {
   letter-spacing: 0.06em;
   text-transform: uppercase;
   white-space: nowrap;
-}
-
-.tablero-pie {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 1.5rem;
-}
-
-.juego-quiz .tablero-pie .ruidos-tecla {
-  margin-left: 0;
 }
 
 .juego-quiz .tablero .retirada {
@@ -5193,17 +5126,11 @@ html.incrustado .juego-tema #partida .cabina {
 }
 
 /* ---- La pregunta ----
-   El recorte ya no cuelga de una cinta gris: los sellos —categoría, rótulo y nivel— son
-   pestañas que pisan el borde de arriba, como las de un fichero. El sello grande del cierre
-   cae al medio y, al irse, deja su marca chica en la esquina de abajo. */
+   Los rótulos y el vidrio de la pantalla están en el bloque de la ronda 3, más abajo. */
 .juego-quiz .ficha-pregunta {
   z-index: 2;
   margin-top: calc(var(--espacio-2) + 0.7rem);
   padding-top: 1.45rem;
-}
-
-.juego-quiz .ficha-pregunta::before {
-  content: none;
 }
 
 .juego-quiz .ficha-sellos {
@@ -5221,16 +5148,6 @@ html.incrustado .juego-tema #partida .cabina {
 .juego-quiz .ficha-sellos > * {
   background: var(--fondo);
   white-space: nowrap;
-}
-
-.juego-quiz .ficha-sellos .paso {
-  order: 3;
-  margin-left: auto;
-  padding: 0.15em 0.6em;
-  border: 2px solid var(--tinta-ficha, var(--borde));
-  border-radius: 3px;
-  color: var(--texto);
-  rotate: 1.5deg;
 }
 
 .juego-quiz .ficha-pregunta .sello-marca {
@@ -5528,7 +5445,7 @@ html.incrustado .juego-tema #partida .cabina {
   margin-top: var(--espacio-1);
 }
 
-/* El cartel de la chapa: lo que dice la ranura de un fichín, en voz nuestra. Con su flecha. */
+/* El cartel de la chapa: lo que dice la ranura de un fichín, en voz nuestra. */
 .maquina-cartel {
   width: fit-content;
   margin: 0;
@@ -5542,10 +5459,6 @@ html.incrustado .juego-tema #partida .cabina {
   line-height: 1.3;
   text-transform: uppercase;
   rotate: -1.5deg;
-}
-
-.maquina-cartel::before {
-  content: '\2190\00a0';
 }
 
 /* ==========================================================================
@@ -5641,21 +5554,21 @@ html.incrustado .juego-tema #partida .cabina {
 
 @keyframes pantalla-apaga {
   0%,
-  19% {
+  9% {
     clip-path: inset(-2rem -1rem -2rem -1rem);
   }
 
-  20%,
-  39% {
+  10%,
+  19% {
     clip-path: inset(28% -1rem 28% -1rem);
   }
 
-  40%,
-  59% {
+  20%,
+  29% {
     clip-path: inset(48% -1rem 48% -1rem);
   }
 
-  60%,
+  30%,
   100% {
     clip-path: inset(49% 35% 49% 35%);
   }
@@ -5770,18 +5683,6 @@ html.incrustado .juego-tema #partida .cabina {
   margin-left: 0;
 }
 
-.juego-quiz .tablero-pie .racha {
-  margin-left: 0;
-}
-
-.juego-quiz .tablero-pie {
-  min-height: 1.3rem;
-}
-
-.juego-quiz .tablero-pie .retirada {
-  margin-left: auto;
-}
-
 /* ---- El zócalo de la ficha ----
    Pegado debajo de la ficha, del mismo ancho y con su mismo filete: el enlace a la izquierda
    y la puerta para corregir a la derecha (sola, también a la derecha). */
@@ -5811,7 +5712,7 @@ html.incrustado .juego-tema #partida .cabina {
 
 /* ---- El resultado con peso ----
    El desenlace es un sello grande; el contador de la máquina vuelve a 00; la planilla se
-   llena casilla por casilla, en el orden en que se jugó. */
+   imprime renglón por renglón, en el orden en que se jugó. */
 .juego-quiz #resultado .rotulo-desenlace {
   padding: 0.3em 0.8em 0.22em;
   border-width: var(--linea);
@@ -5824,10 +5725,13 @@ html.incrustado .juego-tema #partida .cabina {
   font-size: 1.2rem;
 }
 
-.juego-quiz .planilla-casilla--ok,
-.juego-quiz .planilla-casilla--no {
-  animation: sello-golpe var(--duracion-pasada) var(--curva-cinta)
-    calc(var(--duracion-cuenta) + var(--escalon-umbral) * var(--orden, 0) * 0.6) backwards;
+/* La planilla se imprime renglón por renglón, de izquierda a derecha —el orden en que se
+   jugó—, con el barrido de las pasadas. Una animación por escalón: un sello por casilla (ronda
+   2) costaba un cuadro largo al llegar al resultado (medido con la CPU ×4). */
+.juego-quiz .planilla-casillas {
+  --racleta-desde: inset(0 100% 0 0);
+  animation: pasada var(--duracion-cuenta) var(--curva-cinta)
+    calc(var(--duracion-cuenta) + var(--escalon-pasada) * var(--orden, 0)) backwards;
 }
 
 .juego-quiz .planilla-casilla {
@@ -5835,6 +5739,310 @@ html.incrustado .juego-tema #partida .cabina {
   height: 1.3rem;
   font-size: 0.78rem;
 }
+
+/* ==========================================================================
+   Preguntas ricoteras, ronda 3 (2026-11-19): la pantalla tiene vidrio
+
+   El recuadro de la pregunta pasa a ser un tubo: por afuera el marco de la chapa, en la tinta
+   de la categoría; arriba, en el marco, la inscripción de la máquina (la categoría y el rótulo
+   de leyenda o testimonio); adentro el vidrio, de esquinas redondeadas, con una trama de
+   barrido impresa (`--textura-barrido`, de máscara: una trama, no un degradado) y, al pie, la
+   línea de estado con el nivel. El enunciado va arriba, a un tercio.
+
+   La trama es muy tenue a propósito: la letra sigue leyéndose sobre `--fondo`, que es el par
+   medido. Lo que se lee nunca va sobre una tinta llena.
+   ========================================================================== */
+
+.juego-quiz .ficha-pregunta {
+  justify-content: flex-start;
+  padding: 2.75rem 1.3rem 2.4rem;
+  border-width: 4px;
+  border-radius: 6px;
+  box-shadow: none;
+  rotate: none;
+}
+
+/* El vidrio: el canto del tubo, redondeado por adentro del marco. */
+.juego-quiz .ficha-pregunta::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 1.7rem 6px 6px;
+  border: 2px solid var(--tinta-ficha, var(--borde));
+  border-radius: 14px;
+}
+
+/* La trama de barrido, por adentro del canto. */
+.juego-quiz .ficha-pregunta::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: calc(1.7rem + 5px) 11px 11px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--tinta-ficha, var(--borde)) 16%, transparent);
+  -webkit-mask-image: var(--textura-barrido);
+  mask-image: var(--textura-barrido);
+  -webkit-mask-size: 8px 4px;
+  mask-size: 8px 4px;
+  pointer-events: none;
+}
+
+/* La inscripción de la máquina: en el marco, derecha, sin sello ni giro. El rótulo de leyenda
+   o testimonio conserva su caja y su tinta: no se disfraza de nada. */
+.juego-quiz .ficha-sellos {
+  position: absolute;
+  top: 0.32rem;
+  right: 0.8rem;
+  left: 0.8rem;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+  font-size: 0.68rem;
+  translate: none;
+}
+
+.juego-quiz .ficha-sellos > * {
+  background: none;
+  white-space: nowrap;
+}
+
+.juego-quiz .ficha-sellos .categoria {
+  padding: 0;
+  border: 0;
+  font-size: 0.74rem;
+  letter-spacing: 0.16em;
+  transform: none;
+}
+
+.juego-quiz .ficha-sellos .insignia {
+  margin-left: auto;
+  padding-block: 0.05em;
+}
+
+/* La línea de estado, al pie del vidrio: en qué nivel vas y por cuál. */
+.pantalla-pie {
+  position: absolute;
+  bottom: 0.85rem;
+  left: 1.3rem;
+  margin: 0;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.64rem;
+  letter-spacing: 0.14em;
+  line-height: 1;
+}
+
+.juego-quiz .ficha-pregunta .enunciado {
+  font-size: clamp(1.45rem, 6.6vw, 2rem);
+}
+
+.juego-quiz .ficha-pregunta .enunciado--largo {
+  font-size: clamp(1.12rem, 4.9vw, 1.45rem);
+}
+
+/* El sello cae en la mitad de abajo del vidrio, que es donde hay lugar; la marca queda en la
+   esquina de abajo, a la altura de la línea de estado. */
+.juego-quiz .ficha-pregunta .sello-cae {
+  top: 60%;
+}
+
+.juego-quiz .ficha-pregunta .sello-marca {
+  right: 1rem;
+  bottom: 0.7rem;
+}
+
+.juego-quiz .partida--revelada .ficha-pregunta {
+  padding-right: 1.3rem;
+  padding-bottom: 3.3rem;
+}
+
+/* ---- El tablero: las dos teclas arriba, y la racha y la cuenta con el riel ---- */
+.tablero-teclas {
+  display: flex;
+  align-items: center;
+  align-self: center;
+  gap: 0.45rem;
+  margin-left: auto;
+}
+
+.juego-quiz .tablero-teclas .ruidos-tecla {
+  margin-left: 0;
+}
+
+/* "Cerrá la partida" es una tecla como la de los ruidos: chica, arriba a la derecha, lejos del
+   pulgar (`BR-19` apartado 7). La confirmación en dos pasos sigue igual. */
+.juego-quiz .retirada-tecla .retirada-disparador {
+  min-height: 0;
+  padding: 0.12rem 0.4rem 0.08rem;
+  border: 2px solid var(--borde);
+  border-radius: 3px;
+  color: var(--texto-tenue);
+  font-family: var(--fuente-rotulada);
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+.tablero-riel {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 1.3rem;
+}
+
+.tablero-riel .riel {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* El tablero no se ensancha por lo que lleve adentro: con la racha de dos cifras y la cuenta,
+   a 320 px el riel (44 pasos de 2 px como mínimo) empujaba la hoja 49 px de costado (medido). */
+.juego-quiz .tablero {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.juego-quiz .riel-paso {
+  min-width: 1px;
+}
+
+/* ---- La ficha de la portada: de canto, con el canto estriado, y la boca a la vista ----
+   La chapa es más grande que la ficha: la hendija asoma arriba y abajo, y el labio alrededor. */
+.juego-quiz .ranura {
+  width: 6.9rem;
+  height: 6.8rem;
+}
+
+.juego-quiz .ranura-chapa {
+  width: 4rem;
+}
+
+.juego-quiz .ranura-boca {
+  width: 0.7rem;
+  height: 4.9rem;
+  margin: -2.45rem 0 0 -0.35rem;
+}
+
+.juego-quiz .ranura-caida {
+  right: 2rem;
+}
+
+.juego-quiz .ficha-canto {
+  width: 1.9rem;
+  height: 3.5rem;
+  font-size: 1rem;
+  translate: 0.5rem 0;
+}
+
+/* La ficha se arma en tres capas, en orden: el canto (atrás, corrido), la cara y la FR. El
+   botón no lleva relleno propio: una capa con `z-index` negativo se pintaría encima de él. */
+.juego-quiz .ficha-canto {
+  background: none;
+  box-shadow: none;
+}
+
+/* El canto: estriado, como el de una ficha de verdad. Rayas de tinta plana, de un píxel. */
+.juego-quiz .ficha-canto::before {
+  z-index: 0;
+  background: repeating-linear-gradient(to bottom, var(--acento-2) 0 3px, var(--fondo) 3px 4px);
+  box-shadow: inset 0 0 0 2px var(--acento-2);
+  translate: -10px 0;
+}
+
+.juego-quiz .ficha-canto::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--acento-2);
+  box-shadow:
+    inset 0 0 0 3px var(--acento-2),
+    inset 0 0 0 5px var(--fondo);
+}
+
+.juego-quiz .ficha-canto > span {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---- El resultado, dos momentos ----
+   En la victoria las fichas que te quedaron caen de a una, más grandes y más despacio. */
+.juego-quiz .vidas--ganadas .vida--llega {
+  animation-delay: calc(var(--duracion-cuenta) + var(--escalon-umbral) * 5 * (var(--orden, 0) + 1));
+}
+
+.juego-quiz .vidas--ganadas .vida {
+  width: 2.6rem;
+  height: 2.6rem;
+  font-size: 1.15rem;
+}
+
+/* Las mitades que llueven al perder la última ficha: sueltas sobre la ventana, las mueve la
+   isla. Sin la animación de la ficha que se parte en su lugar. */
+.vida-mitad.vida-mitad--suelta {
+  position: fixed;
+  z-index: 30;
+  inset: auto;
+  animation: none;
+}
+
+/* ---- La compu, a escala ----
+   Con ancho de sobra la pantalla es alta, la pregunta es grande y las teclas son un 2 × 2 de
+   botones de fichín. La chapa de la portada también crece. */
+@media (min-width: 46rem) {
+  .juego-quiz #partida .ficha-pregunta {
+    min-height: clamp(15rem, 44svh, 23rem);
+    padding: 3.2rem 2rem 2.8rem;
+  }
+
+  .juego-quiz #partida.partida--revelada .ficha-pregunta {
+    min-height: 0;
+    padding-bottom: 3.4rem;
+  }
+
+  .juego-quiz .ficha-pregunta .enunciado {
+    font-size: 2.05rem;
+  }
+
+  .juego-quiz .ficha-pregunta .enunciado--largo {
+    font-size: 1.55rem;
+  }
+
+  .juego-quiz .pantalla-pie {
+    left: 2rem;
+  }
+
+  .juego-quiz .opciones--letradas:not(.opciones--cerradas) .opcion {
+    min-height: 5.2rem;
+    padding-inline: 0.9rem 1.1rem;
+    font-size: 1.15rem;
+  }
+
+  .juego-quiz .opciones--letradas:not(.opciones--cerradas) .opcion-letra {
+    width: 2.7rem;
+    height: 2.7rem;
+    font-size: 1.25rem;
+  }
+
+  .juego-quiz .maquina {
+    padding: var(--espacio-3) var(--espacio-4, 2rem);
+    gap: var(--espacio-2) 2.6rem;
+  }
+
+  .juego-quiz .ranura {
+    margin: 0.9rem 0.6rem 0.9rem 1rem;
+    scale: 1.3;
+  }
+
+  .juego-quiz .maquina-cartel {
+    font-size: 1rem;
+  }
+
+  .juego-quiz .maquina-creditos {
+    font-size: 1.8rem;
+  }
+}
+
 
 /* Angosto (380 px para abajo): el renglón de arriba se aprieta. La palabra `Nº` se va —el
    lector la sigue leyendo— y las fichas y la cuenta bajan un punto. */
@@ -5994,6 +6202,81 @@ html.incrustado .juego-tema #partida .cabina {
   color: var(--texto-tenue);
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+
+/* Lo de la ronda 3 en pantallas chicas, al final por lo mismo de siempre. */
+@media (max-width: 23.75rem) {
+  .juego-quiz .retirada-tecla .retirada-disparador {
+    max-width: 5.6rem;
+    line-height: 1.12;
+    text-align: center;
+  }
+
+  .juego-quiz .tablero-teclas {
+    gap: 0.3rem;
+  }
+
+  /* El riel se aprieta: los pasos quedan finos, pero los tres escalones se siguen leyendo. */
+  .juego-quiz .riel {
+    gap: 3px;
+  }
+
+  .juego-quiz .riel-tramo {
+    gap: 1px;
+  }
+
+  .juego-quiz .tablero-riel {
+    gap: 0.4rem;
+  }
+
+  .juego-quiz .tablero-riel .racha {
+    padding-inline: 0.25rem;
+    font-size: 0.58rem;
+    letter-spacing: 0.02em;
+  }
+
+  .juego-quiz .ranura {
+    width: 6rem;
+  }
+}
+
+@media (max-height: 40rem) {
+  .juego-quiz .ranura {
+    width: 5.6rem;
+    height: 5rem;
+  }
+
+  .juego-quiz .ranura-chapa {
+    width: 3.2rem;
+  }
+
+  .juego-quiz .ranura-caida {
+    right: 1.6rem;
+  }
+
+  .juego-quiz .ranura-boca {
+    height: 3.5rem;
+    margin-top: -1.75rem;
+  }
+
+  .juego-quiz .ficha-canto {
+    width: 1.5rem;
+    height: 2.6rem;
+    font-size: 0.8rem;
+  }
+
+  .juego-quiz .ficha-pregunta {
+    padding: 2.2rem 0.9rem 1.95rem;
+  }
+
+  .juego-quiz .pantalla-pie {
+    bottom: 0.7rem;
+    left: 0.95rem;
+  }
+
+  .juego-quiz .partida--revelada .ficha-pregunta {
+    padding-bottom: 2.9rem;
+  }
 }
 
 .fuente-verso-enlace:hover,

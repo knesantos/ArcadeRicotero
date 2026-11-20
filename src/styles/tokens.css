@@ -1775,6 +1775,11 @@
      dos ejes cambiados, no un motivo nuevo. */
   --textura-rodillo-canto: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='240'%3E%3Cfilter id='r'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9 0.06' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.85 0.85 0.85 0 -0.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23r)'/%3E%3C/svg%3E");
 
+  /* La trama de barrido de un tubo: una línea cada cuatro, de lado a lado. Es la textura del
+     vidrio de la pantalla de "Preguntas ricoteras" (ronda de pulida, 2026-11-19). Se usa de
+     máscara sobre una tinta casi transparente: es una trama impresa, no un degradado. */
+  --textura-barrido: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='4'%3E%3Crect width='8' height='1.5'/%3E%3C/svg%3E");
+
   /* La almohadilla (`D-64`, hoja 07). Las tapas de los juegos —el título del casete, el de la
      carátula, el h1 de cada juego y el macizo del sello— salen de la misma almohadilla de goma
      medio seca: le falta tinta en puntos (la sal) y en zonas donde la mano aflojó (la presión),

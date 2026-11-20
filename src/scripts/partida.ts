@@ -21,6 +21,9 @@
  *   parte en dos y las mitades se caen; queda el hueco con su cruz (forma y símbolo, no solo
  *   tinta) y la pantalla da un golpe.
  * - **El `Nº` de la pregunta es un contador de ruedas**: cada pregunta nueva le da una vuelta.
+ * - **La pregunta es la pantalla de la máquina** (rondas 2 y 3): un tubo con su vidrio y su
+ *   trama de barrido, la categoría inscripta arriba y el nivel abajo, que se prende y se apaga
+ *   al pasar de pregunta. Las cuatro teclas van abajo, en la zona del pulgar.
  * - **La respuesta se cierra en dos tiempos**, como en los otros juegos pulidos: primero el
  *   sello grande cae sobre la pregunta, donde está el ojo; después llega la ficha de la
  *   respuesta, con el grito, lo que sumaste, la tapa, el dato y "Seguí" adentro. El cierre se
@@ -346,8 +349,8 @@ function riel(p: Partida<Item>, respondida: boolean): HTMLElement {
 
 /**
  * El tablero de arriba, que se arma una vez por partida y después se pone al día: las tres
- * fichas, el `Nº` en su contador de ruedas y lo que llevás; debajo el riel, y en el último
- * renglón —lo más lejos del pulgar que hay— la tecla de los ruidos, la racha y "Cerrá la partida".
+ * fichas, el `Nº` en su contador de ruedas y las dos teclas (los ruidos y "Cerrá la partida");
+ * debajo, el riel con la racha y lo que llevás.
  */
 function armarTablero(): void {
   tableroEl = el('div', 'tablero');
@@ -369,18 +372,24 @@ function armarTablero(): void {
   rachaEl.hidden = true;
   llevasEl = el('span', 'restantes restantes--llevas', FICHIN.llevas(0));
   llevasEl.setAttribute('aria-live', 'polite');
-  // La tecla de los ruidos va en la cabecera, junto a lo que llevás, como en los otros juegos.
+  // Las dos teclas de la máquina van juntas en la cabecera, arriba a la derecha: los ruidos y
+  // "Cerrá la partida", que sigue lo más lejos del pulgar que hay (`BR-19` apartado 7).
+  const teclas = el('div', 'tablero-teclas');
   const ruidos = armarInterruptorDeRuidos({ apagar: FICHIN.ruidosTecla, prender: FICHIN.ruidosTecla });
   ruidos.classList.add('ruidos-tecla');
-  fila.append(vidasEl, numero, ruidos, llevasEl);
-
-  rielEl = riel(partida, false);
-
-  const pie = el('div', 'tablero-pie');
   retiradaEl = disparadorRetirada();
-  pie.append(rachaEl, retiradaEl);
+  retiradaEl.classList.add('retirada-tecla');
+  // "Cerrá" va primero: cuando se esconde (con la respuesta a la vista), los ruidos no quedan
+  // flotando con un hueco a la derecha.
+  teclas.append(retiradaEl, ruidos);
+  fila.append(vidasEl, numero, teclas);
 
-  tableroEl.append(fila, rielEl, pie);
+  // Debajo, en un renglón: el riel y, a su derecha, la racha y lo que llevás.
+  rielEl = riel(partida, false);
+  const renglon = el('div', 'tablero-riel');
+  renglon.append(rielEl, rachaEl, llevasEl);
+
+  tableroEl.append(fila, renglon);
   zonaPartida.append(tableroEl);
 }
 
@@ -407,7 +416,8 @@ function ponerTableroAlDia(respondida: boolean, perdioUna = false): void {
   rielEl.replaceWith(nuevoRiel);
   rielEl = nuevoRiel;
 
-  retiradaEl.hidden = respondida;
+  // No se esconde con `hidden`: así la tecla de los ruidos no se corre de lugar.
+  retiradaEl.style.visibility = respondida ? 'hidden' : '';
 }
 
 /** La racha de la cabecera: dos o más seguidas. Se anota al cerrar la respuesta, o se corta. */
@@ -441,7 +451,6 @@ function pintarPregunta(): void {
   // lee sale de la tabla de etiquetas, porque `mitologia` en mayusculas se leia sin tilde.
   sellos.append(el('span', `categoria categoria--${item.categoria}`, etiquetaCategoria(item.categoria)));
   const pos = posicionEnEscalon(partida);
-  sellos.append(el('span', 'paso', etiquetaNivel(pos.nivel, pos.van, pos.total)));
   // La insignia va antes de tocar: el que conoce la historia real tiene que saber que se
   // le pregunta "que se cuenta" y no "que paso".
   const ins = insignia(item.clase);
@@ -469,13 +478,18 @@ function pintarPregunta(): void {
   }
 
   // Un enunciado largo baja un cuerpo: la pantalla tiene que entrar con sus cuatro teclas.
+  // El nivel va abajo, en el pie del vidrio, como la línea de estado de la máquina.
+  const pie = el('p', 'pantalla-pie');
+  pie.id = 'nivel-pregunta';
+  pie.append(el('span', 'paso', etiquetaNivel(pos.nivel, pos.van, pos.total)));
+
   const enunciado = el('h2', item.enunciado.length > 120 ? 'enunciado enunciado--largo' : 'enunciado', item.enunciado);
   // El foco aterriza en la pregunta, pero las vidas, el numero, la categoria y —sobre todo—
   // la insignia de rotulo tienen que llegar con ella (`UX-01` v2).
   // Las vidas, el numero y los sellos, y no el tablero entero: el tablero tambien tiene el
   // boton de cerrar, y su texto no es parte de la pregunta (`FIND-151`).
-  enunciado.setAttribute('aria-describedby', 'vidas-pregunta numero-pregunta sellos-pregunta');
-  ficha.append(enunciado);
+  enunciado.setAttribute('aria-describedby', 'vidas-pregunta numero-pregunta sellos-pregunta nivel-pregunta');
+  ficha.append(enunciado, pie);
   zonaPartida.append(ficha);
 
   const lista = el('div', 'opciones opciones--letradas');
@@ -593,6 +607,42 @@ function dejarLaMarca(acerto: boolean): void {
   fichaEl.append(dibujo('span', `sello-marca sello-marca--${acerto ? 'ok' : 'no'}`, acerto ? '✔︎' : '✕︎'));
 }
 
+/**
+ * Se acabaron las fichas: las tres, partidas, se caen del tablero y cruzan la pantalla hasta
+ * el pie, en saltos. Es el momento de la derrota, antes de pasar al resultado. Son dibujo —el
+ * marcador ya dice "0 de 3" con sus tres cruces— y con movimiento reducido no hay lluvia.
+ */
+function lloverFichas(): void {
+  const ms = duracionDe('--duracion-inercia') * 1.5;
+  if (ms <= 0) return;
+  const piso = fichaEl.getBoundingClientRect().bottom;
+  vidasEl.querySelectorAll<HTMLElement>('.vida').forEach((hueco, i) => {
+    const r = hueco.getBoundingClientRect();
+    for (const lado of [-1, 1] as const) {
+      const mitad = dibujo('span', `vida-mitad vida-mitad--suelta vida-mitad--${lado < 0 ? 'izq' : 'der'}`);
+      mitad.style.left = `${r.left}px`;
+      mitad.style.top = `${r.top}px`;
+      mitad.style.width = `${r.width}px`;
+      mitad.style.height = `${r.height}px`;
+      if (typeof mitad.animate !== 'function') continue;
+      document.body.append(mitad);
+      const dx = (i - 1) * 46 + lado * (14 + i * 7) + 60;
+      const dy = Math.max(120, piso - r.bottom - 6 - (i % 2) * 16);
+      const caida = mitad.animate(
+        [
+          { transform: 'translate(0, 0) rotate(0deg) scale(1)', offset: 0 },
+          { transform: `translate(${Math.round(dx * 0.35)}px, -14px) rotate(${lado * 40}deg) scale(1.5)`, offset: 0.18 },
+          { transform: `translate(${dx}px, ${Math.round(dy)}px) rotate(${lado * (150 + i * 35)}deg) scale(1.9)`, offset: 1 },
+        ],
+        { duration: ms, delay: i * 80, easing: 'steps(14, end)', fill: 'both' },
+      );
+      const sacar = (): void => mitad.remove();
+      caida.addEventListener('finish', sacar, { once: true });
+      caida.addEventListener('cancel', sacar, { once: true });
+    }
+  });
+}
+
 function responder(texto: string): void {
   const item = actual(partida);
   if (!item || partida.desenlace !== 'jugando') return;
@@ -638,7 +688,10 @@ function responder(texto: string): void {
   } else {
     golpear(zonaPartida);
     sonarEfecto('golpe');
-    if (termino) window.setTimeout(() => sonarEfecto('golpe'), 170);
+    if (termino) {
+      window.setTimeout(() => sonarEfecto('golpe'), 170);
+      lloverFichas();
+    }
   }
 
   /*
@@ -843,10 +896,15 @@ function avanzar(): void {
   vieja.classList.add('ficha-pregunta--apaga');
   // El foco no se queda en un botón que ya no está.
   enfocar(vieja);
-  window.setTimeout(() => {
-    if (fichaEl !== vieja) return;
-    pintarPregunta();
-  }, ms * 0.6);
+  // El apagado dura lo que un toque (120 ms): lo mínimo que se lee. La pantalla nueva prende
+  // enseguida, y el que toca rápido no espera.
+  window.setTimeout(
+    () => {
+      if (fichaEl !== vieja) return;
+      pintarPregunta();
+    },
+    Math.min(ms, duracionDe('--duracion-toque')),
+  );
 }
 
 /* ---- El resultado ---- */
@@ -873,13 +931,12 @@ function planilla(p: Partida<Item>): HTMLElement {
     const tramo = el('div', 'planilla-tramo jugo-pega');
     tramo.style.setProperty('--orden', String(k + 5));
     tramo.append(el('span', 'planilla-nivel', (NOMBRE_NIVEL[g.nivel] ?? g.nivel).toUpperCase()));
+    // Cada renglón se imprime después del anterior: el orden en que se jugó.
     const casillas = el('div', 'planilla-casillas');
+    casillas.style.setProperty('--orden', String(k));
     for (const i of g.indices) {
       const estado = i < h.length ? (h[i] ? 'ok' : 'no') : 'resto';
-      const casilla = el('span', `planilla-casilla planilla-casilla--${estado}`, estado === 'ok' ? '✔︎' : estado === 'no' ? '✕︎' : '·');
-      // La planilla se llena casilla por casilla, en el orden en que se jugó.
-      if (estado !== 'resto') casilla.style.setProperty('--orden', String(i));
-      casillas.append(casilla);
+      casillas.append(el('span', `planilla-casilla planilla-casilla--${estado}`, estado === 'ok' ? '✔︎' : estado === 'no' ? '✕︎' : '·'));
     }
     tramo.append(casillas);
     grilla.append(tramo);
@@ -957,24 +1014,43 @@ function pintarResultado(): void {
   const numero = dibujo('p', 'resultado-numero');
   contar(numero, 0, r.pregunta, numeroDePregunta);
   cuenta.append(numero);
-  window.setTimeout(() => sonarEfecto(r.desenlace === 'derrota' ? 'golpe' : 'sello'), duracionDe('--duracion-cuenta'));
-  // El crédito se gastó: el contador de la máquina vuelve a 00 cuando la cifra terminó de
-  // contar. "Jugá de nuevo" es poner otra ficha.
+  /*
+   * Dos momentos distintos. **La derrota**: cuando la cifra termina de contar, la hoja da un
+   * golpe, y el contador de la máquina vuelve de 01 a 00 —el crédito se gastó; "Jugá de nuevo"
+   * es poner otra ficha—. **La victoria**: las fichas que te quedaron caen de a una, cada una
+   * con su clac, y el crédito queda en 01: la máquina te lo deja. La retirada es la derrota
+   * sin el golpe.
+   */
+  const gano = r.desenlace === 'victoria';
   const creditos = dibujo('p', 'maquina-creditos');
   const ruedas = armarContador(1, 2);
   creditos.append(el('span', 'maquina-rotulo', FICHIN.creditos), ruedas);
-  window.setTimeout(
-    () => {
-      if (rodarContador(ruedas, 0)) sonarEfecto('tecla');
-    },
-    duracionDe('--duracion-cuenta') + duracionDe('--duracion-umbral'),
-  );
-  if (r.desenlace !== 'victoria') {
-    const fichas = marcadorVidas(partida.vidas);
+  window.setTimeout(() => {
+    sonarEfecto(r.desenlace === 'derrota' ? 'golpe' : 'sello');
+    if (r.desenlace === 'derrota') golpear(zonaResultado);
+  }, duracionDe('--duracion-cuenta'));
+  if (!gano) {
+    window.setTimeout(
+      () => {
+        if (rodarContador(ruedas, 0)) sonarEfecto('tecla');
+      },
+      duracionDe('--duracion-cuenta') + duracionDe('--duracion-umbral'),
+    );
+  }
+  {
+    // Las fichas como quedaron. Son dibujo: el dato, cuando lo es, va escrito abajo.
+    const fichas = marcadorVidas(partida.vidas, false, gano);
     fichas.removeAttribute('id');
     fichas.setAttribute('aria-hidden', 'true');
     fichas.removeAttribute('role');
     fichas.classList.add('vidas--resultado');
+    if (gano) {
+      fichas.classList.add('vidas--ganadas');
+      const paso = duracionDe('--escalon-umbral') * 5;
+      for (let i = 0; i < partida.vidas; i++) {
+        window.setTimeout(() => sonarEfecto('clac'), duracionDe('--duracion-cuenta') + paso * (i + 1));
+      }
+    }
     cuenta.append(fichas);
   }
   cuenta.append(creditos);
