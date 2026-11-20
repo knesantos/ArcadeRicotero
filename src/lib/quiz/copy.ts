@@ -128,8 +128,10 @@ export const TRAMOS: Record<Tramo, { titulo: string; bajada: string }> = {
  */
 export const ENLACE_COPIADO = 'Se copió el enlace.';
 
-export const BOTON_COMPARTIR = 'COMPARTÍ';
-export const BOTON_DE_NUEVO = 'JUGÁ DE NUEVO';
+/* Sin versales forzadas desde la ronda de pulida (2026-11-19): el pie del resultado es la
+   pieza compartida (`.pie-resultado`) y sus textos se escriben igual en todos los juegos. */
+export const BOTON_COMPARTIR = 'Compartí';
+export const BOTON_DE_NUEVO = 'Jugá de nuevo';
 
 /**
  * D2 — el mensaje que ve quien llego por un desafio, comparado con quien lo mando.
@@ -311,3 +313,39 @@ export function planillaParaCompartir(escalones: readonly (readonly boolean[])[]
     .map((e) => e.map((acierto) => (acierto ? '◆' : '✕')).join(''))
     .join(' ');
 }
+
+/* ==========================================================================
+   Ronda de pulida (2026-11-19) — la ficha, el contador y el pie del resultado.
+   Textos nuevos, para el visto de `contenido`. Los audita `voz.test.ts` como al resto.
+   ========================================================================== */
+
+/** La cabina del fichín: lo que dice la chapa de la ranura, la cabecera y la ficha. */
+export const FICHIN = {
+  /** El nombre del juego, para la tarjeta. Es el del casete del portal. */
+  juego: 'Preguntas ricoteras',
+  /** El rótulo del contador de la portada. Registro 3. */
+  creditos: 'Créditos',
+  /** Lo que llevás acertado, en la cabecera. Sube al acertar. */
+  llevas: (n: number) => `Llevás ${n}`,
+  /** Lo que suma un acierto: vuela de la ficha a la cuenta. */
+  suma: '+1',
+  /** La racha: dos o más seguidas. Sello en la cabecera, como en los otros juegos. */
+  racha: (n: number) => `${n} al hilo`,
+  /** El paso al resultado, cuando la partida terminó con esa respuesta. */
+  alResultado: 'Mirá cómo te fue',
+  /** El interruptor de los ruidos: la frase entera en la portada, la tecla en la cabecera. */
+  ruidosApagar: 'Apagá los ruidos',
+  ruidosPrender: 'Prendé los ruidos',
+  ruidosTecla: 'Ruidos',
+  /** La salida del resultado, la cinta de siempre. */
+  volver: 'Volvé al fichín',
+  /** La hazaña: agotar el banco sin perder una sola vida. */
+  hazana: '¡Sin perder una!',
+} as const;
+
+/** Los textos del botón de compartir (`compartir.ts`). */
+export const COMPARTIR = {
+  compartir: BOTON_COMPARTIR,
+  copiado: ENLACE_COPIADO,
+  aManoTitulo: 'Copiá esto y mandalo',
+} as const;

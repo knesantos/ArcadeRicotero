@@ -21,7 +21,7 @@ import Cabeza from '../components/Cabeza.astro';
 import Caratula from '../components/Caratula.astro';
 import PieImprenta from '../components/PieImprenta.astro';
 import { cargarBanco, type BancoCrudo } from '../lib/quiz/banco.ts';
-import { PANTALLA_0 } from '../lib/quiz/copy.ts';
+import { PANTALLA_0, FICHIN } from '../lib/quiz/copy.ts';
 import { PORTAL, LUGARES } from '../lib/sitio/copy.ts';
 import { caratulaDe, tapasConCaratula } from '../lib/sitio/caratula.ts';
 import crudo from '../data/quiz.json';
@@ -46,7 +46,7 @@ const TITULO = 'Preguntas ricoteras — Fichín Ricotero';
     <Cabeza titulo={TITULO} descripcion={PANTALLA_0.subtitulo} />
   </head>
   <body class="con-grano">
-    <main id="app" class={`juego--${caratula.casete.variante}`}>
+    <main id="app" class={`juego-quiz juego--${caratula.casete.variante}`}>
       <!-- Pantalla 0. El subtitulo lo reemplaza partida.ts si se llega por un desafio.
            La cinta de regreso vive solo aca: en plena partida no hay salidas que
            distraigan, y el resultado ya tiene sus propios botones. -->
@@ -60,11 +60,32 @@ const TITULO = 'Preguntas ricoteras — Fichín Ricotero';
         <p id="subtitulo" class="tenue">{PANTALLA_0.subtitulo}</p>
         <!-- La linea que nombra (`D-71`, regla de las dos lineas): cuantas vidas y como sube.
              Las fichas son las mismas del tablero de la partida, para que se reconozcan. -->
-        <p class="como-se-juega">
-          <span class="como-se-juega-fichas" aria-hidden="true">◆◆◆</span>
-          <span>{PANTALLA_0.comoSeJuega}</span>
-        </p>
+        <!-- La chapa de la ranura (ronda de pulida, 2026-11-19): el objeto que nombra la
+             acotación. A la izquierda, la ficha apoyada sobre la ranura; a la derecha, el
+             contador de créditos y las tres vidas, que son tres fichas —las mismas del tablero
+             de la partida—. La ficha grande es un atajo de "Jugá" (mismo gesto, dicho con el
+             objeto): va fuera del orden de tabulación y escondida del lector, porque el botón
+             ya está ahí y dice lo mismo. -->
+        <div class="maquina">
+          <div class="ranura" aria-hidden="true">
+            <div class="ranura-caida">
+              <button id="ficha-portada" class="ficha-grande" type="button" tabindex="-1"><span>FR</span></button>
+            </div>
+            <span class="ranura-boca"></span>
+          </div>
+          <div class="maquina-datos">
+            <p class="maquina-creditos" aria-hidden="true">
+              <span class="maquina-rotulo">{FICHIN.creditos}</span>
+              <span id="creditos" class="contador"><span class="contador-cifra"><span class="contador-tira"><span>0</span></span></span><span class="contador-cifra"><span class="contador-tira"><span>0</span></span></span></span>
+            </p>
+            <p class="como-se-juega">
+              <span class="vidas vidas--portada" aria-hidden="true"><span class="vidas-fichas"><span class="vida vida--viva">◆</span><span class="vida vida--viva">◆</span><span class="vida vida--viva">◆</span></span></span>
+              <span>{PANTALLA_0.comoSeJuega}</span>
+            </p>
+          </div>
+        </div>
         <button id="jugar" class="primario" type="button">{PANTALLA_0.botón}</button>
+        <p id="ruidos" class="arranque-ruidos"></p>
       </section>
 
       <section id="partida" class="pantalla" hidden></section>

@@ -229,16 +229,22 @@
 
 /* ---- Spotify (ADR-01 opcion B) ---- */
 
+/* Es un enlace del sitio y se ve como los demas (ronda de pulida, 2026-11-19): letra chica y
+   tenue, subrayado fino, la flecha de las salidas. Antes era un boton de borde amarillo que
+   parecia de otra aplicacion. El blanco de toque sigue midiendo `--toque-min`. */
 .spotify {
-  display: inline-block;
-  margin-top: var(--espacio-2);
+  display: inline-flex;
+  align-items: center;
   min-height: var(--toque-min);
-  padding: var(--espacio-1) var(--espacio-2);
-  color: var(--acento-2);
-  border: 2px solid var(--acento-2);
-  border-radius: 3px;
-  text-decoration: none;
-  line-height: var(--toque-min);
+  color: var(--texto-tenue);
+  font-size: 0.8rem;
+  text-decoration: underline;
+  text-decoration-color: var(--borde);
+  text-underline-offset: 3px;
+}
+
+.spotify::after {
+  content: '\00a0\2192';
 }
 
 /* ---- Resultado ---- */
@@ -4657,8 +4663,6 @@ html.incrustado .juego-tema #partida .cabina {
   padding: var(--espacio-2);
   border-radius: 3px;
   transform: rotate(0.4deg);
-  /* Que el desplazamiento la deje entera arriba de la barra del `SEGUÍ`. */
-  scroll-margin-bottom: 7rem;
 }
 
 #partida .revelacion.no .micro {
@@ -4667,10 +4671,11 @@ html.incrustado .juego-tema #partida .cabina {
   font-size: 1.15rem;
 }
 
-/* La racha: un segundo sello, amarillo, que cae un compás después del grito. */
-.racha {
-  flex: none;
-  margin: 0;
+/* La racha redonda (tres, cinco, diez): un segundo sello, amarillo, que cae un compás después
+   del grito. `.racha` a secas es el sello de la cabecera, el de todos los juegos. */
+.racha-grito {
+  width: fit-content;
+  margin: 0.55rem 0 0;
   padding: 0.2em 0.6em;
   font-family: var(--fuente-rotulada);
   font-size: 0.8rem;
@@ -4725,19 +4730,6 @@ html.incrustado .juego-tema #partida .cabina {
   line-height: 1.5;
 }
 
-/* `SEGUÍ` pegado abajo, en la zona del pulgar y siempre a la vista. */
-.seguir-barra {
-  position: sticky;
-  bottom: 0;
-  z-index: 3;
-  margin-top: var(--espacio-2);
-  padding: var(--espacio-1) 0 calc(var(--espacio-2) + env(safe-area-inset-bottom, 0px));
-  background: var(--fondo);
-}
-
-.seguir-barra .primario {
-  margin-top: 0;
-}
 
 /* ---- El resultado ---- */
 
@@ -4848,10 +4840,674 @@ html.incrustado .juego-tema #partida .cabina {
   color: var(--texto);
 }
 
-.como-se-juega-fichas {
+/* ==========================================================================
+   Preguntas ricoteras: la ficha del fichín (ronda de pulida, 2026-11-19)
+
+   El objeto lo nombra la acotación de la portada —"Se te cae una moneda en la ranura"—: es
+   **la ficha**, y la máquina le contesta. La portada es la chapa de la ranura; las tres vidas
+   son tres fichas; el `Nº` es un contador de ruedas; cuando errás, la ficha se parte y las
+   mitades se caen. Todo va bajo `.juego-quiz` (la página), así no agarra ninguna pieza
+   compartida de los otros juegos.
+
+   Ni un hex, ni una sombra (los anillos de la ficha son filetes pegados, `0 0 0`), ni un
+   degradado. Los tiempos salen de tokens que el corte de movimiento reducido lleva a cero.
+   NINGÚN ESTADO DEPENDE DE ESTO: la vida perdida es un hueco con su cruz, la respuesta tiene
+   su símbolo y su palabra, el número su cifra.
+   ========================================================================== */
+
+/* ---- El contador de ruedas (`armarContador`, en `jugo.ts`) ----
+   Cada cifra en su ventanita. Cuando cambia, la tira trae la cifra nueva arriba de la vieja y
+   baja en cuatro saltos: la rueda da la vuelta. Es de todos los juegos: no nombra a este. */
+.contador {
+  display: inline-flex;
+  gap: 2px;
+  font-family: var(--fuente-rotulada);
+  font-weight: 400;
+  line-height: 1;
+}
+
+.contador-cifra {
+  box-sizing: content-box;
+  display: block;
+  width: 0.86em;
+  height: 1.3em;
+  overflow: hidden;
+  border: 2px solid var(--borde);
+  border-radius: 2px;
+  background: var(--fondo);
+  text-align: center;
+}
+
+.contador-tira {
+  display: block;
+}
+
+.contador-tira > span {
+  display: block;
+  height: 1.3em;
+  line-height: 1.34em;
+}
+
+.contador-cifra--rueda .contador-tira {
+  animation: cifra-rueda var(--duracion-golpe) linear both;
+}
+
+@keyframes cifra-rueda {
+  0%,
+  24% {
+    translate: 0 -50%;
+  }
+
+  25%,
+  49% {
+    translate: 0 -34%;
+  }
+
+  50%,
+  74% {
+    translate: 0 -16%;
+  }
+
+  75%,
+  100% {
+    translate: 0 0;
+  }
+}
+
+/* ---- La ficha de vida ----
+   En pie: llena, en el amarillo de siempre, con su filete y el rombo. Ida: el hueco de trazo
+   cortado con la cruz, en la tinta del error (errar es la única causa de perderla, `BR-19`).
+   Forma y símbolo, además de tinta. La palabra VIDAS va siempre, arriba y chica. */
+.juego-quiz .vidas {
+  display: inline-grid;
+  gap: 0.22rem;
+  justify-items: start;
+}
+
+.juego-quiz .vidas-rotulo {
+  margin: 0;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.56rem;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  color: var(--texto-tenue);
+}
+
+.vidas-fichas {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.juego-quiz .vida {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  font-size: 0.72rem;
+  line-height: 1;
+  rotate: -8deg;
+}
+
+.juego-quiz .vida:nth-child(2) {
+  rotate: 6deg;
+}
+
+.juego-quiz .vida:nth-child(3) {
+  rotate: -3deg;
+}
+
+.juego-quiz .vida--viva,
+.vida-mitad {
+  background: var(--acento-2);
+  color: var(--fondo);
+  box-shadow:
+    inset 0 0 0 2px var(--acento-2),
+    inset 0 0 0 4px var(--fondo);
+}
+
+.juego-quiz .vida--ida {
+  border: 2px dashed var(--acento-4);
+  color: var(--acento-4);
+  opacity: 1;
+}
+
+/* Al arrancar la partida, las tres fichas caen en su lugar, una atrás de la otra. */
+.vida--llega {
+  animation: sello-golpe var(--duracion-pasada) var(--curva-cinta) calc(var(--escalon-umbral) * var(--orden, 0) * 2) backwards;
+}
+
+/* La ficha que se acaba de perder: dos mitades de la misma ficha, encima del hueco, que se
+   separan y se caen en saltos. Terminan invisibles; debajo ya estaba el hueco con su cruz. */
+.vida-mitad {
+  position: absolute;
+  z-index: 4;
+  inset: -2px;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.vida-mitad--izq {
+  clip-path: polygon(0 0, 60% 0, 40% 100%, 0 100%);
+  animation: ficha-rompe-izq var(--duracion-inercia) linear both;
+}
+
+.vida-mitad--der {
+  clip-path: polygon(60% 0, 100% 0, 100% 100%, 40% 100%);
+  animation: ficha-rompe-der var(--duracion-inercia) linear both;
+}
+
+@keyframes ficha-rompe-izq {
+  0%,
+  11% {
+    translate: 0 0;
+    rotate: 0deg;
+    opacity: 1;
+  }
+
+  12%,
+  27% {
+    translate: -4px -3px;
+    rotate: -12deg;
+    opacity: 1;
+  }
+
+  28%,
+  43% {
+    translate: -7px 5px;
+    rotate: -26deg;
+    opacity: 1;
+  }
+
+  44%,
+  59% {
+    translate: -10px 20px;
+    rotate: -44deg;
+    opacity: 1;
+  }
+
+  60%,
+  75% {
+    translate: -12px 42px;
+    rotate: -64deg;
+    opacity: 1;
+  }
+
+  76%,
+  91% {
+    translate: -13px 70px;
+    rotate: -84deg;
+    opacity: 1;
+  }
+
+  92%,
+  100% {
+    translate: -13px 96px;
+    rotate: -96deg;
+    opacity: 0;
+  }
+}
+
+@keyframes ficha-rompe-der {
+  0%,
+  11% {
+    translate: 0 0;
+    rotate: 0deg;
+    opacity: 1;
+  }
+
+  12%,
+  27% {
+    translate: 5px -4px;
+    rotate: 14deg;
+    opacity: 1;
+  }
+
+  28%,
+  43% {
+    translate: 9px 3px;
+    rotate: 30deg;
+    opacity: 1;
+  }
+
+  44%,
+  59% {
+    translate: 13px 16px;
+    rotate: 50deg;
+    opacity: 1;
+  }
+
+  60%,
+  75% {
+    translate: 16px 36px;
+    rotate: 72deg;
+    opacity: 1;
+  }
+
+  76%,
+  91% {
+    translate: 18px 62px;
+    rotate: 92deg;
+    opacity: 1;
+  }
+
+  92%,
+  100% {
+    translate: 19px 88px;
+    rotate: 104deg;
+    opacity: 0;
+  }
+}
+
+/* ---- El tablero ----
+   Un renglón: las fichas, el `Nº` en su contador, la racha y, a la derecha, lo que llevás.
+   Debajo el riel, y en el último renglón la tecla de los ruidos y "Cerrá la partida": arriba,
+   lejos del pulgar (`BR-19` apartado 7), y chicos. */
+.juego-quiz .tablero {
+  gap: 0.5rem;
+}
+
+.juego-quiz .tablero-fila {
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+
+.juego-quiz .tablero-numero {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 1.3rem;
+}
+
+.tablero-numero-rotulo {
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  color: var(--texto-tenue);
+}
+
+/* La racha va en el renglón de abajo, al lado de la tecla de los ruidos: en el de arriba, con
+   las fichas, el contador y la cuenta, a 320 px desbordaba la hoja (medido). */
+.juego-quiz .tablero-pie .racha {
+  margin-right: auto;
+  margin-left: 0.6rem;
+}
+
+.juego-quiz .tablero .restantes--llevas {
+  align-self: center;
+  margin-left: auto;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.tablero-pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 1.5rem;
+}
+
+.juego-quiz .tablero-pie .ruidos-tecla {
+  margin-left: 0;
+}
+
+.juego-quiz .tablero .retirada {
+  margin: 0;
+}
+
+.juego-quiz .tablero .retirada[hidden] {
+  display: none;
+}
+
+.juego-quiz .tablero .retirada-disparador {
+  position: relative;
+  min-height: 0;
+  padding-block: 0.1rem;
+}
+
+/* El blanco de toque se agranda con una pieza que no ocupa renglón, como la tecla de ruidos. */
+.juego-quiz .tablero .retirada-disparador::after {
+  content: '';
+  position: absolute;
+  inset: -14px -6px;
+}
+
+.juego-quiz .riel {
+  height: 14px;
+}
+
+.juego-quiz .riel-paso {
+  height: 6px;
+}
+
+.juego-quiz .riel-paso--ok,
+.juego-quiz .riel-paso--no {
+  height: 11px;
+}
+
+.juego-quiz .riel-paso--ahora {
+  height: 14px;
+}
+
+/* ---- La pregunta ----
+   El recorte ya no cuelga de una cinta gris: los sellos —categoría, rótulo y nivel— son
+   pestañas que pisan el borde de arriba, como las de un fichero. El sello grande del cierre
+   cae al medio y, al irse, deja su marca chica en la esquina de abajo. */
+.juego-quiz .ficha-pregunta {
+  z-index: 2;
+  margin-top: calc(var(--espacio-2) + 0.7rem);
+  padding-top: 1.45rem;
+}
+
+.juego-quiz .ficha-pregunta::before {
+  content: none;
+}
+
+.juego-quiz .ficha-sellos {
+  position: absolute;
+  top: 0;
+  right: 0.6rem;
+  left: 0.6rem;
+  flex-wrap: nowrap;
+  gap: 0.35rem;
+  margin: 0;
+  font-size: 0.68rem;
+  translate: 0 -58%;
+}
+
+.juego-quiz .ficha-sellos > * {
+  background: var(--fondo);
+  white-space: nowrap;
+}
+
+.juego-quiz .ficha-sellos .paso {
+  order: 3;
+  margin-left: auto;
+  padding: 0.15em 0.6em;
+  border: 2px solid var(--tinta-ficha, var(--borde));
+  border-radius: 3px;
+  color: var(--texto);
+  rotate: 1.5deg;
+}
+
+.juego-quiz .ficha-pregunta .sello-marca {
+  top: auto;
+  right: -0.75rem;
+  bottom: 0.5rem;
+  margin: 0;
+}
+
+/* ---- Las opciones: las teclas del fichín ----
+   El canto de abajo es más grueso —es el alto de la tecla, borde y no sombra— y al apretarla
+   baja. Cuando llega la ficha, las dos que no eran ni la tuya ni la buena se van: lo que
+   queda dice algo. */
+.juego-quiz .opciones--letradas {
+  margin-top: var(--espacio-2);
+}
+
+.juego-quiz .opciones--letradas .opcion {
+  border-bottom-width: 6px;
+}
+
+.juego-quiz .opciones--letradas .opcion:active:not(:disabled) {
+  translate: 0 3px;
+}
+
+.opciones--cerradas .opcion.es-otra {
+  display: none;
+}
+
+/* ---- La ficha de la respuesta ----
+   La pieza de "Adiviná el tema" (`.revelacion`), con la marca dibujada al lado del grito y
+   "Seguí" adentro, cerrando la columna. El zócalo de abajo trae el enlace y la corrección. */
+.juego-quiz .ficha-respuesta {
+  margin-top: var(--espacio-2);
+}
+
+.juego-quiz .ficha-respuesta .revelacion-cabeza {
+  justify-content: flex-start;
+  gap: 0.65rem;
+}
+
+.ficha-respuesta-marca {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2.3rem;
+  height: 2.3rem;
+  border-radius: 3px;
+  color: var(--fondo);
+  font-size: 1.4rem;
+  line-height: 1;
+  rotate: -6deg;
+  animation: sello-golpe var(--duracion-pasada) var(--curva-cinta) both;
+}
+
+.ficha-respuesta.ok .ficha-respuesta-marca {
+  background: var(--acento-3);
+}
+
+.ficha-respuesta.no .ficha-respuesta-marca {
+  background: var(--acento-4);
+}
+
+.juego-quiz .ficha-respuesta .revelacion-suma {
+  margin-left: auto;
+}
+
+.juego-quiz .ficha-respuesta.ok .micro {
+  min-width: 0;
+  font-size: clamp(0.92rem, 4.1vw, 1.2rem);
+  text-wrap: balance;
+}
+
+.juego-quiz .ficha-respuesta .seguir-ficha {
+  margin-top: var(--espacio-2);
+}
+
+.juego-quiz .ficha-pie {
+  padding-bottom: calc(var(--espacio-1) + env(safe-area-inset-bottom, 0px));
+}
+
+/* ---- El resultado ----
+   El `Nº` al que llegaste, grande, y al lado las fichas como quedaron. */
+.juego-quiz .cuenta-fichin {
+  align-items: flex-end;
+  gap: 0.6rem 1.2rem;
+  margin-top: var(--espacio-2);
+}
+
+.juego-quiz .cuenta-fichin .resultado-numero {
+  margin: 0;
+}
+
+.juego-quiz #resultado .puntaje {
+  margin-top: var(--espacio-2);
+  font-size: 1.1rem;
+}
+
+.vidas--resultado .vidas-fichas {
+  gap: 0.4rem;
+}
+
+.juego-quiz .vidas--resultado .vida {
+  width: 2.1rem;
+  height: 2.1rem;
+  font-size: 0.95rem;
+}
+
+.juego-quiz .vidas--resultado {
+  margin-bottom: 0.5rem;
+}
+
+/* La hazaña: agotar el banco sin perder una. Doble filete (un segundo marco pegado por
+   afuera, no una sombra); al lado cae el segundo sello (`.hazana-sello`). */
+.resultado-numero--hazana {
+  padding: 0.1em 0.2em 0;
+  outline: var(--linea) solid var(--acento-3);
+  outline-offset: 5px;
+}
+
+/* ---- La portada: la chapa de la ranura ----
+   Una chapa atornillada, apenas torcida. A la izquierda la ficha, apoyada sobre la ranura; a
+   la derecha el contador de créditos y las tres vidas con la línea que nombra. Al tocar
+   "Jugá" (o la ficha) la isla la hace girar de canto y caer: `.ranura-caida` la recorta a la
+   altura de la boca, que es donde la máquina se la traga. */
+.maquina {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--espacio-1) var(--espacio-3);
+  margin: var(--espacio-3) 0 0;
+  padding: var(--espacio-2) var(--espacio-3) var(--espacio-2);
+  border: var(--linea) solid var(--borde);
+  border-radius: 3px;
+  rotate: -0.6deg;
+}
+
+/* Los dos tornillos de la chapa, en esquinas opuestas. */
+.maquina::before,
+.maquina::after {
+  content: '';
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 7px;
+  height: 7px;
+  border: 2px solid var(--borde);
+  border-radius: 50%;
+}
+
+.maquina::after {
+  top: auto;
+  right: auto;
+  bottom: 7px;
+  left: 7px;
+}
+
+.ranura {
+  display: grid;
+  justify-items: center;
+  width: 4.4rem;
+}
+
+.ranura-caida {
+  display: grid;
+  align-items: start;
+  justify-items: center;
+  width: 100%;
+  height: 5.3rem;
+  padding-top: 0.2rem;
+  overflow: hidden;
+}
+
+.ficha-grande {
+  display: grid;
+  place-items: center;
+  width: 4rem;
+  height: 4rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--acento-2);
+  color: var(--fondo);
+  box-shadow:
+    inset 0 0 0 4px var(--acento-2),
+    inset 0 0 0 7px var(--fondo);
+  font-family: var(--fuente-rotulada);
+  font-size: 1.2rem;
+  letter-spacing: 0.02em;
+  rotate: -8deg;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.ranura-boca {
+  display: block;
+  width: 0.95rem;
+  height: 2.3rem;
+  margin-top: -1.15rem;
+  border: 3px solid var(--acento-2);
+  border-radius: 3px;
+}
+
+.maquina-datos {
+  display: grid;
+  gap: var(--espacio-1);
+  min-width: 0;
+}
+
+.maquina-creditos {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
   font-size: 1.45rem;
-  letter-spacing: 0.15em;
-  color: var(--acento-2);
+}
+
+.maquina-rotulo {
+  font-family: var(--fuente-rotulada);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+}
+
+.maquina .como-se-juega {
+  gap: 0.4rem 0.7rem;
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.35;
+}
+
+.juego-quiz #portada .arranque-ruidos {
+  margin-top: var(--espacio-1);
+}
+
+/* Teléfonos bajos (320 × 568): la chapa se aprieta para que "Jugá" quede arriba del pliegue.
+   Va al final del bloque: con el mismo peso de selector, antes de la regla base no pisa nada. */
+@media (max-height: 40rem) {
+  .juego-quiz #portada .marca {
+    width: 5.2rem;
+    margin-block: var(--espacio-1) 0;
+  }
+
+  .juego-quiz .maquina {
+    gap: var(--espacio-1) var(--espacio-2);
+    margin-top: var(--espacio-2);
+    padding: 0.5rem var(--espacio-2);
+  }
+
+  .juego-quiz .ranura {
+    width: 3.3rem;
+  }
+
+  .juego-quiz .ranura-caida {
+    height: 4rem;
+  }
+
+  .juego-quiz .ficha-grande {
+    width: 3rem;
+    height: 3rem;
+    font-size: 0.95rem;
+  }
+
+  .juego-quiz .ranura-boca {
+    height: 1.8rem;
+    margin-top: -0.9rem;
+  }
+
+  .juego-quiz .maquina .como-se-juega {
+    font-size: 0.88rem;
+  }
+
+  .juego-quiz #portada #jugar {
+    margin-top: var(--espacio-2);
+  }
 }
 
 /* La fuente del verso en el panel de respuesta (`T-145`, `D-25`). Registro 3: letra
@@ -5333,7 +5989,8 @@ body > main {
      boton era apretarlo. Mismo criterio que el resto — reusa el tinte que el elemento ya
      tiene, sin elevacion ni escala. */
   .correccion-disparador:hover,
-  .fuente-verso-enlace:hover {
+  .fuente-verso-enlace:hover,
+  .spotify:hover {
     color: var(--texto);
   }
 

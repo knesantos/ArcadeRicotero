@@ -1387,6 +1387,218 @@ async function ponelosEnFila(ctx) {
   await foto('eleccion-con-una-a-medias');
 }
 
+/**
+ * "Preguntas ricoteras": la portada con la ficha en la ranura, una partida que se pierde (un
+ * error, tres aciertos al hilo, y los dos errores que faltan), el resultado con su tarjeta, una
+ * partida entera sin errar (la pregunta con rótulo, el aviso de escalón, la victoria) y una
+ * retirada.
+ */
+async function preguntasRicoteras(ctx) {
+  const { pagina, foto, tira, rafaga, quieto } = ctx;
+  await pagina.goto(`${base}/quiz/`, { waitUntil: 'networkidle0' });
+  // El menú de compartir del sistema se queda esperando en el navegador de las capturas.
+  await pagina.evaluate(() => {
+    try {
+      delete Navigator.prototype.share;
+    } catch {}
+  });
+  await tira('portada-entra', () => pagina.reload({ waitUntil: 'domcontentloaded' }), { ms: 900 });
+  await pagina.evaluate(() => {
+    try {
+      delete Navigator.prototype.share;
+    } catch {}
+  });
+  await foto('portada');
+  await foto('portada-entera', { entera: true });
+
+  const banco = await pagina.evaluate(() => JSON.parse(document.getElementById('banco').textContent));
+  const elDeAhora = async () => {
+    const enunciado = await pagina.$eval('#partida .enunciado', (n) => n.textContent);
+    const item = banco.find((i) => i.enunciado === enunciado);
+    if (!item) throw new Error(`no encuentro en el banco «${enunciado}»`);
+    return item;
+  };
+  const opcion = async (buena) => {
+    const item = await elDeAhora();
+    const texto = item.opciones.find((o) => !!o.correcta === buena).texto;
+    for (const b of await pagina.$$('#partida .opcion:not(:disabled)')) {
+      if ((await b.evaluate((n) => n.dataset.texto)) === texto) return b;
+    }
+    throw new Error(`no hay opción "${texto}"`);
+  };
+  const fichaLista = () => pagina.waitForSelector('#partida .ficha-respuesta .seguir-ficha', { timeout: 8000 });
+  const seguir = async () => {
+    await pagina.click('#partida .ficha-respuesta .seguir-ficha');
+    await ctx.espera(quieto ? 120 : 520);
+    // Si el toque no pasó de pregunta, se dice qué había debajo del dedo: es un defecto del sitio.
+    const trabado = await pagina.evaluate(() => {
+      const b = document.querySelector('#partida .ficha-respuesta .seguir-ficha');
+      if (!b) return null;
+      const c = b.getBoundingClientRect();
+      const e = document.elementFromPoint(c.left + c.width / 2, c.top + c.height / 2);
+      return { caja: [Math.round(c.top), Math.round(c.bottom)], alto: innerHeight, debajo: e ? `${e.tagName}.${e.className}` : null };
+    });
+    if (trabado) {
+      console.log(`   (¡"Seguí" no avanzó! ${JSON.stringify(trabado)})`);
+      await pagina.$eval('#partida .ficha-respuesta .seguir-ficha', (b) => b.click());
+      await ctx.espera(quieto ? 120 : 520);
+    }
+  };
+  const asentar = () => ctx.espera(quieto ? 150 : 1100);
+  const estado = () =>
+    pagina.evaluate(() => ({
+      vidas: document.querySelector('#partida .vidas')?.getAttribute('aria-label'),
+      numero: document.querySelector('#numero-pregunta .solo-lector')?.textContent,
+      llevas: document.querySelector('#partida .restantes--llevas')?.textContent,
+      racha: document.querySelector('#partida .racha:not([hidden])')?.textContent ?? null,
+      boton: document.querySelector('#partida .seguir-ficha')?.textContent,
+      desborda: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    }));
+
+  // ---- Jugá: la ficha gira de canto, cae por la ranura y el contador da la vuelta.
+  await rafaga('mete-la-ficha', () => pagina.click('#jugar'), { desde: 0, hasta: 1000, sobre: '.maquina', zoom: 2, cada: 2, tope: 12, porRenglon: 4 });
+  await pagina.waitForSelector('#partida:not([hidden]) .opcion', { timeout: 8000 });
+  await ctx.espera(quieto ? 200 : 900);
+  await foto('partida');
+  await foto('partida-entera', { entera: true });
+
+  // ---- pregunta 1: el error. Se pierde una ficha, la pantalla da un golpe, cae el sello.
+  const mala = await opcion(false);
+  await rafaga('error-pierde-una', () => mala.click(), { desde: 0, hasta: 1500, cada: 6, tope: 12 });
+  await fichaLista();
+  await asentar();
+  await foto('error-ficha');
+  await foto('error-ficha-entera', { entera: true });
+  console.log(`   (error: ${JSON.stringify(await estado())})`);
+
+  // El pase: la rueda del contador da la vuelta.
+  await rafaga('pase-contador', () => pagina.click('#partida .ficha-respuesta .seguir-ficha'), { desde: 0, hasta: 520, sobre: '#partida .tablero', zoom: 2, cada: 2, tope: 8, porRenglon: 2 });
+  await ctx.espera(400);
+  await foto('pregunta-2');
+
+  // ---- pregunta 2: el acierto.
+  await rafaga('acierto', async () => (await opcion(true)).click(), { desde: 0, hasta: 1900, cada: 8, tope: 12 });
+  await fichaLista();
+  await asentar();
+  await foto('acierto-ficha');
+  await foto('acierto-ficha-entera', { entera: true });
+  await seguir();
+
+  // ---- preguntas 3 y 4: la racha. En la 3 el cierre se adelanta con un toque.
+  await (await opcion(true)).click();
+  await ctx.espera(140);
+  await pagina.mouse.click(ctx.ancho / 2, 60);
+  await fichaLista();
+  await asentar();
+  await foto('racha-dos-al-hilo');
+  console.log(`   (adelantado: ${JSON.stringify(await estado())})`);
+  await seguir();
+  await (await opcion(true)).click();
+  await fichaLista();
+  await asentar();
+  await foto('racha-tres-al-hilo');
+  await seguir();
+
+  // ---- pregunta 5: otro error, mirando solo el tablero: la ficha que se parte y se cae.
+  const otraMala = await opcion(false);
+  await rafaga('ficha-se-rompe', () => otraMala.click(), { desde: 0, hasta: 950, sobre: '#partida .tablero', zoom: 2, cada: 4, tope: 12, porRenglon: 2 });
+  await fichaLista();
+  await asentar();
+  await seguir();
+
+  // ---- pregunta 6: el tercer error, la última ficha. Fin de la partida.
+  const ultimaMala = await opcion(false);
+  await rafaga('ultima-ficha', () => ultimaMala.click(), { desde: 0, hasta: 1500, cada: 6, tope: 12 });
+  await fichaLista();
+  await asentar();
+  await foto('sin-fichas');
+  console.log(`   (sin fichas: ${JSON.stringify(await estado())})`);
+  await rafaga('resultado-entra', () => pagina.click('#partida .ficha-respuesta .seguir-ficha'), { desde: 0, hasta: 1500, cada: 6, tope: 12 });
+  await pagina.waitForSelector('#resultado:not([hidden])', { timeout: 8000 });
+  await ctx.espera(1200);
+  await foto('derrota');
+  await foto('derrota-entera', { entera: true });
+
+  // La tarjeta que asoma, mirada entera: se la pone encima de la ventana un momento.
+  const mirarLaTarjeta = async (nombre) => {
+    await pagina.waitForSelector('.tarjeta-asoma img', { timeout: 8000 }).catch(() => {});
+    const hay = await pagina.evaluate(() => {
+      const img = document.querySelector('.tarjeta-asoma img');
+      if (!img) return false;
+      const copia = img.cloneNode();
+      copia.id = 'ver-tarjeta';
+      copia.className = '';
+      copia.style.cssText = 'position:fixed;inset:0;z-index:99;width:100vw;height:100vh;object-fit:contain;background:#000';
+      document.body.append(copia);
+      return true;
+    });
+    if (!hay) return console.log('   (no hay tarjeta que mirar)');
+    await ctx.espera(300);
+    await foto(nombre);
+    await pagina.evaluate(() => document.getElementById('ver-tarjeta')?.remove());
+  };
+  await mirarLaTarjeta('tarjeta-derrota');
+  await pagina.evaluate(() => document.querySelector('#resultado .primario.firma')?.click());
+  await ctx.espera(700);
+  await foto('compartido-entera', { entera: true });
+
+  // ---- otra partida, entera y sin errar: la pregunta con rótulo, el escalón y la victoria.
+  await pagina.evaluate(() => document.querySelector('#resultado .pie-resultado button.secundario')?.click());
+  await pagina.waitForSelector('#partida:not([hidden]) .opcion', { timeout: 8000 });
+  await ctx.espera(quieto ? 200 : 700);
+  const vistos = new Set();
+  for (let n = 1; n <= banco.length + 2; n++) {
+    if (!(await pagina.$('#partida:not([hidden]) .opcion:not(:disabled)'))) break;
+    const conRotulo = await pagina.$('#partida .ficha-sellos .insignia');
+    const conEscalon = await pagina.$('#partida .escalon');
+    const item = await elDeAhora();
+    const mirar = [];
+    if (conRotulo && !vistos.has('rotulo')) mirar.push('rotulo');
+    if (conEscalon && !vistos.has('escalon')) mirar.push('escalon');
+    if (!item.disco && !vistos.has('sin-tapa')) mirar.push('sin-tapa');
+    if (item.enunciado.length > 110 && !vistos.has('larga')) mirar.push('larga');
+    if (item.spotify && !vistos.has('spotify')) mirar.push('spotify');
+    for (const m of mirar) vistos.add(m);
+    if (mirar.length) {
+      await ctx.espera(quieto ? 100 : 500);
+      await foto(`pregunta-${mirar.join('-')}`);
+    }
+    await (await opcion(true)).evaluate((b) => b.click());
+    await fichaLista();
+    if (mirar.length) {
+      await asentar();
+      await foto(`ficha-${mirar.join('-')}`, { entera: true });
+    }
+    if (n === 10) {
+      await asentar();
+      await foto('racha-diez');
+    }
+    await pagina.$eval('#partida .ficha-respuesta .seguir-ficha', (b) => b.click());
+    await ctx.espera(quieto ? 30 : 120);
+  }
+  await pagina.waitForSelector('#resultado:not([hidden])', { timeout: 8000 });
+  await ctx.espera(1400);
+  await foto('victoria');
+  await foto('victoria-entera', { entera: true });
+  await mirarLaTarjeta('tarjeta-victoria');
+
+  // ---- y una retirada: dos preguntas, "Cerrá la partida", la confirmación y el resultado.
+  await pagina.evaluate(() => document.querySelector('#resultado .pie-resultado button.secundario')?.click());
+  await pagina.waitForSelector('#partida:not([hidden]) .opcion', { timeout: 8000 });
+  await ctx.espera(quieto ? 200 : 700);
+  await (await opcion(true)).evaluate((b) => b.click());
+  await fichaLista();
+  await pagina.$eval('#partida .ficha-respuesta .seguir-ficha', (b) => b.click());
+  await ctx.espera(quieto ? 100 : 500);
+  await pagina.$eval('#partida .retirada-disparador', (b) => b.click());
+  await ctx.espera(300);
+  await foto('retirada-confirma');
+  await pagina.$eval('#partida .retirada--confirma .secundario', (b) => b.click());
+  await pagina.waitForSelector('#resultado:not([hidden])', { timeout: 8000 });
+  await ctx.espera(1200);
+  await foto('retirada');
+}
+
 /** Cualquier otra ruta: la portada, y lo que aparece al tocar el botón de empezar. */
 async function generico(ctx, ruta) {
   const { pagina, foto, tira } = ctx;
@@ -1428,6 +1640,8 @@ const RECORRIDOS = {
   'skayboy-y-poligirl': skayboy,
   'completar-la-letra': completarLaLetra,
   'ponelos-en-fila': ponelosEnFila,
+  quiz: preguntasRicoteras,
+  'preguntas-ricoteras': preguntasRicoteras,
 };
 
 // ---------------------------------------------------------------- correr

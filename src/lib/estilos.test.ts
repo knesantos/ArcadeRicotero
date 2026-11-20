@@ -64,6 +64,15 @@ const ESTADOS = [
   '.tramo--bajo',
   '.tramo--medio',
   '.tramo--alto',
+  // La ficha del fichin (ronda de pulida, 2026-11-19): la vida en pie y la ida, lo que se va
+  // al llegar la ficha de la respuesta, y el sello y la marca del cierre.
+  '.vida--viva',
+  '.vida--ida',
+  '.opciones--cerradas',
+  '.sello-cae--ok',
+  '.sello-cae--no',
+  '.sello-marca--ok',
+  '.sello-marca--no',
 ];
 
 test('el acierto y el error no se comunican solo con color', () => {
@@ -932,6 +941,7 @@ const ISLAS: Readonly<Record<string, Tablero | SinTablero>> = {
   'spotify.ts': { sinTablero: 'un <a> y nada mas, que es literalmente RQ-B2 de ADR-01' },
   'tarjeta.ts': { sinTablero: 'pincel de canvas (US-02 y US-07); dibuja pixeles, no crea nodos con clase' },
   'tarjeta-pared.ts': { sinTablero: 'pincel de canvas de la tarjeta de US-03 (el muro de la vuelta); dibuja pixeles, no crea nodos con clase' },
+  'tarjeta-fichin.ts': { sinTablero: 'pincel de canvas de la tarjeta de US-01 (la chapa del fichin con la planilla); dibuja pixeles, no crea nodos con clase' },
 };
 
 const esTablero = (i: Tablero | SinTablero): i is Tablero => 'estados' in i;

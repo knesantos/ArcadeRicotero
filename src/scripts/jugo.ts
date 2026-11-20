@@ -161,3 +161,62 @@ export function contar(
   }, total / ESCALONES_DE_CUENTA);
   cuentas.set(pieza, reloj);
 }
+
+/* ---------------------------------------------------------------- el contador mecánico
+ *
+ * Nace en la ronda de "Preguntas ricoteras" (2026-11-19): el contador de créditos de un
+ * fichín, de ruedas. Cada cifra vive en su ventanita y, cuando cambia, **la rueda gira**: la
+ * cifra nueva baja y empuja a la vieja, en cuatro saltos (`cifra-rueda`, en `juego.css`). Solo
+ * giran las ruedas que cambian, como en uno de verdad.
+ *
+ * Es dibujo: va con `aria-hidden` y quien llama pone al lado el texto que se lee. Con
+ * movimiento reducido el tiempo vale cero y la cifra nueva aparece puesta.
+ */
+
+const enRuedas = (valor: number, cifras: number): string =>
+  String(Math.max(0, Math.floor(valor))).padStart(cifras, '0').slice(-cifras);
+
+/** Arma un contador con `cifras` ruedas (se completa con ceros a la izquierda). */
+export function armarContador(valor: number, cifras = 2): HTMLElement {
+  const caja = document.createElement('span');
+  caja.className = 'contador';
+  caja.setAttribute('aria-hidden', 'true');
+  for (const letra of enRuedas(valor, cifras)) {
+    const rueda = document.createElement('span');
+    rueda.className = 'contador-cifra';
+    const tira = document.createElement('span');
+    tira.className = 'contador-tira';
+    const cifra = document.createElement('span');
+    cifra.textContent = letra;
+    tira.append(cifra);
+    rueda.append(tira);
+    caja.append(rueda);
+  }
+  return caja;
+}
+
+/** Lleva el contador a `valor`: giran solo las ruedas cuya cifra cambia. Devuelve si algo giró. */
+export function rodarContador(contador: Element | null | undefined, valor: number): boolean {
+  if (!contador) return false;
+  const ruedas = [...contador.querySelectorAll<HTMLElement>('.contador-cifra')];
+  const texto = enRuedas(valor, ruedas.length);
+  let giro = false;
+  ruedas.forEach((rueda, i) => {
+    const tira = rueda.firstElementChild as HTMLElement | null;
+    const vieja = tira?.firstElementChild?.textContent ?? '';
+    const nueva = texto[i]!;
+    if (!tira || vieja === nueva) return;
+    giro = true;
+    // La tira queda con la nueva arriba y la vieja abajo: la animación arranca mostrando la
+    // vieja y termina, sin transformación, en la nueva.
+    const a = document.createElement('span');
+    a.textContent = nueva;
+    const b = document.createElement('span');
+    b.textContent = vieja;
+    tira.replaceChildren(a, b);
+    rueda.classList.remove('contador-cifra--rueda');
+    void rueda.offsetWidth;
+    rueda.classList.add('contador-cifra--rueda');
+  });
+  return giro;
+}
