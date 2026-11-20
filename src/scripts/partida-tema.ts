@@ -64,6 +64,8 @@ import {
 interface Tema extends TemaBuscable {
   readonly anio: number;
   readonly jugable: boolean;
+  /** Dónde está el primer sonido real del fragmento (`T-533`): de ahí arranca cada corte. */
+  readonly inicioSeg: number;
   readonly entero: boolean;
   readonly letra: string | null;
   /**
@@ -672,8 +674,8 @@ function pintarBarra(transcurrido: number): void {
 function pintarBotonPrincipal(): void {
   /*
    * Con un tema elegido, "Arriesgá". Sin nada elegido, **pasar dice cuánto audio compra**:
-   * "Pasá (+0,4 s)". Es el mismo boton que el juego de referencia escribe como "Skip
-   * (+1s)", y le saca al que llega sin idea la duda de si pasar es perder. En el ultimo
+   * "Dame 0,4 s más" (`T-533`: "Pasá (+0,4 s)" se leia como saltear el tema). Es el mismo
+   * boton que el juego de referencia escribe como "Skip (+1s)", y le saca al que llega sin idea la duda de si pasar es perder. En el ultimo
    * intento ya no hay audio que comprar: el boton dice lo que va a pasar, que es ver cual era.
    */
   if (elegido) {
@@ -748,6 +750,17 @@ function abrirAyudaDeSonido(ancla: HTMLElement): void {
   diag.href = '/diagnostico-audio/';
   panel.append(diag);
 
+  // La salida del que no puede poner sonido ahora (`T-533`): un juego que se juega
+  // mirando. Cuál es lo dice la página, que lo saca del portal.
+  const { sinSonidoHref, sinSonidoTitulo } = zonaPartida.dataset;
+  if (sinSonidoHref && sinSonidoTitulo) {
+    const salida = el('p', 'sin-sonido-punto', `${SIN_SONIDO.sinSonidoAhora} `);
+    const va = el('a', undefined, sinSonidoTitulo);
+    va.href = sinSonidoHref;
+    salida.append(va);
+    panel.append(salida);
+  }
+
   const cerrar = el('button', 'sin-sonido-cerrar', SIN_SONIDO.cerrar);
   cerrar.type = 'button';
   cerrar.addEventListener('click', () => {
@@ -788,10 +801,15 @@ function sonar(segundos: number): void {
   botonEscuchar.classList.add('escuchar--sonando');
   reproductorCaja.classList.add('reproductor--sonando');
   palabraCinta.hidden = false;
-  reproductor.sonar(tema.slug, segundos, {
-    alAvanzar: (t) => pintarBarra(t),
-    alTerminar: frenar,
-  });
+  reproductor.sonar(
+    tema.slug,
+    segundos,
+    {
+      alAvanzar: (t) => pintarBarra(t),
+      alTerminar: frenar,
+    },
+    tema.inicioSeg,
+  );
 }
 
 function frenar(): void {

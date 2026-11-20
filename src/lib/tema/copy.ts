@@ -80,11 +80,16 @@ export const PARTIDA = {
   arriesgar: 'Arriesgá',
   pasar: 'Pasá',
   /**
-   * El botón de pasar dice cuánto audio compra (`extraAlPasar`), como el juego de
-   * referencia. Pasar no es rendirse: es pedir más cinta, y el que llega sin idea tiene
-   * que saber que ese botón le da algo antes de apretarlo.
+   * El botón de pedir más audio dice lo que hace y cuánto da (`extraAlPasar`). Pedir no es
+   * rendirse: es pedir más cinta, y el que llega sin idea tiene que saber que ese botón le
+   * da algo antes de apretarlo.
+   *
+   * Decía "Pasá (+0,4 s)", calcado del "Skip (+1s)" del juego de referencia, y la gente que
+   * lo probó (`T-533`) lo leyó como **saltear el tema**: nadie quiere apretar un botón que
+   * parece tirar la pregunta. "Dame" dice quién le da qué a quién, en voseo y en cuatro
+   * palabras.
    */
-  pasarSuma: (extra: string) => `Pasá (+${extra})`,
+  pasarSuma: (extra: string) => `Dame ${extra} más`,
   /** En el último intento no queda audio que comprar: pasar cierra el tema y lo muestra. */
   rendirse: 'Mirá cuál era',
   /** Lo que vale acertar en el paso en curso. Va al lado del audio que tenés. */
@@ -94,7 +99,8 @@ export const PARTIDA = {
    * elegir: gastar un intento en algo que ya sabés que no es no le sirve a nadie.
    */
   yaProbado: 'Ya lo probaste',
-  pasado: 'Pasaste',
+  /** El renglón de un intento gastado en pedir audio. Va con el botón: "Dame… más". */
+  pasado: 'Pediste más',
   /** El renglón de un intento fallado. El título es el que eligió el jugador. */
   fallado: (titulo: string) => titulo,
   ultimoIntento: 'Último intento',
@@ -141,6 +147,13 @@ export const SIN_SONIDO = {
     'Con auriculares se escucha mejor: el primer paso dura una décima de segundo y por ' +
     'el parlante del teléfono puede pasar de largo.',
   verDiagnostico: 'Revisá el audio de este aparato',
+  /**
+   * La salida del que no puede poner sonido ahora —en el bondi, sin auriculares— (`T-533`).
+   * Antes el aviso terminaba en "sin sonido no se puede jugar" y lo dejaba en la puerta: un
+   * molinete. Va seguida del enlace a un juego que se juega mirando; el nombre del juego lo
+   * pone la página desde el portal, no esta cadena.
+   */
+  sinSonidoAhora: 'Si ahora no podés poner sonido, este se juega mirando:',
   cerrar: 'Cerrá',
 } as const;
 

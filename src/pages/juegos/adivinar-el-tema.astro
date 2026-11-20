@@ -23,13 +23,13 @@ import '../../styles/tokens.css';
 import '../../styles/juego.css';
 import '../../styles/sitio.css';
 import { catalogo, type Manifiesto } from '../../lib/tema/catalogo.ts';
-import { PANTALLA_0, PARTIDA } from '../../lib/tema/copy.ts';
+import { PANTALLA_0, PARTIDA, SIN_SONIDO } from '../../lib/tema/copy.ts';
 import Cabeza from '../../components/Cabeza.astro';
 import FranjaEnX from '../../components/FranjaEnX.astro';
 import PieImprenta from '../../components/PieImprenta.astro';
 import Caratula from '../../components/Caratula.astro';
 import { caratulaDe, tapasConCaratula } from '../../lib/sitio/caratula.ts';
-import { PORTAL, LUGARES } from '../../lib/sitio/copy.ts';
+import { PORTAL, LUGARES, JUEGOS } from '../../lib/sitio/copy.ts';
 import { fondoTapa, discosDe } from '../../lib/sitio/arte.ts';
 import { claseDisco } from '../../lib/tema/paleta.ts';
 import { ESCALERA } from '../../lib/tema/escalera.ts';
@@ -58,6 +58,10 @@ const tapasUsadas = fondo ? discosDe([FONDO]) : [];
 const caratula = caratulaDe('/juegos/adivinar-el-tema/');
 
 const TITULO = 'Adiviná el tema — Fichín Ricotero';
+
+// La salida del que no puede poner sonido (`T-533`): un juego que se juega mirando. El
+// nombre y la dirección salen del portal, que es donde vive la lista de juegos.
+const sinSonidoVa = JUEGOS.find((j) => j.href === '/juegos/adivinar-la-tapa/');
 
 /**
  * La bajada, cortada en el punto que el texto ya tiene: la primera oración es la que canta
@@ -166,7 +170,15 @@ const bajadaCorta = (() => {
               </details>
               {/* `US-02` criterio 2: el aviso va **antes de arrancar la partida**, no
                   durante. Nadie puede adivinar a ciegas sin saber que el audio no sonó. */}
-              <p class="aviso-sonido">{PARTIDA.sinSonido}</p>
+              <p class="aviso-sonido">
+                {PARTIDA.sinSonido}
+                {sinSonidoVa && (
+                  <span class="sin-sonido-salida">
+                    {' '}{SIN_SONIDO.sinSonidoAhora}{' '}
+                    <a href={sinSonidoVa.href}>{sinSonidoVa.titulo}</a>
+                  </span>
+                )}
+              </p>
               <div class="arranque">
                 <p id="cuantos" class="tenue">{PANTALLA_0.hay(cat.jugables)}</p>
                 <button id="jugar" class="primario" type="button">{PANTALLA_0.boton}</button>
@@ -182,7 +194,13 @@ const bajadaCorta = (() => {
         }
       </section>
 
-      <section id="partida" class="pantalla sobre-tapa" hidden></section>
+      <section
+        id="partida"
+        class="pantalla sobre-tapa"
+        data-sin-sonido-href={sinSonidoVa?.href}
+        data-sin-sonido-titulo={sinSonidoVa?.titulo}
+        hidden
+      ></section>
       <section id="resultado" class="pantalla sobre-tapa" hidden></section>
 
       <Caratula caratula={caratula} />
