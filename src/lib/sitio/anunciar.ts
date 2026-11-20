@@ -23,15 +23,25 @@ export interface NodoDeAnuncio {
   setAttribute(nombre: string, valor: string): void;
 }
 
+/** Lo que distingue un texto repetido del anterior: un espacio duro, que no se pronuncia. */
+export const REPETIDO = '\u00a0';
+
 /** Viste un nodo de región viva y devuelve la función que le habla. Es lo que se prueba. */
 export function hacerRegion(region: NodoDeAnuncio): (texto: string) => void {
   region.className = 'solo-lector';
   region.setAttribute('role', 'status');
   region.setAttribute('aria-live', 'polite');
+  let ultimo: string | null = null;
   return (texto) => {
-    // Decir lo mismo dos veces seguidas lo vuelve a decir: el texto se vacía antes.
-    region.textContent = '';
-    region.textContent = texto;
+    /*
+     * Decir lo mismo dos veces seguidas lo vuelve a decir. Vaciar y volver a llenar en la
+     * misma tarea no alcanza: el lector ve un solo cambio, y si el texto final es el que ya
+     * estaba, ninguno. Entonces el repetido se escribe con un espacio duro al final, y el
+     * siguiente repetido sin él: el texto de la región cambia siempre, y se escucha igual.
+     */
+    const escrito = texto === ultimo ? `${texto}${REPETIDO}` : texto;
+    region.textContent = escrito;
+    ultimo = escrito;
   };
 }
 

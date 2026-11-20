@@ -3,7 +3,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { hacerRegion, type NodoDeAnuncio } from './anunciar.ts';
+import { REPETIDO, hacerRegion, type NodoDeAnuncio } from './anunciar.ts';
 
 function nodoDeMentira() {
   const atributos = new Map<string, string>();
@@ -40,12 +40,27 @@ test('decir escribe el texto en la region', () => {
   assert.equal(d.nodo.textContent, '¡La sacaste! Era Nueva Roma. 100 puntos.');
 });
 
-test('decir lo mismo dos veces lo vuelve a decir: el texto se vacia antes', () => {
+test('decir lo mismo dos, tres, cuatro veces: el texto de la region cambia cada vez', () => {
+  // Una region viva anuncia cuando su texto CAMBIA. Si dos escrituras seguidas dejan el mismo
+  // texto, la segunda no se escucha: aca ninguna escritura repite a la anterior.
+  const d = nodoDeMentira();
+  const decir = hacerRegion(d.nodo);
+  for (let i = 0; i < 4; i += 1) decir('No era esa.');
+  assert.equal(d.escrituras.length, 4, 'una escritura por anuncio, sin vaciar en el medio');
+  for (let i = 1; i < d.escrituras.length; i += 1) {
+    assert.notEqual(d.escrituras[i], d.escrituras[i - 1], `el anuncio ${i + 1} dejo el mismo texto`);
+  }
+});
+
+test('el repetido se lee igual: lo unico que cambia es un espacio duro al final', () => {
   const d = nodoDeMentira();
   const decir = hacerRegion(d.nodo);
   decir('No era esa.');
   decir('No era esa.');
-  assert.deepEqual(d.escrituras, ['', 'No era esa.', '', 'No era esa.']);
+  assert.equal(d.nodo.textContent, `No era esa.${REPETIDO}`);
+  assert.equal(REPETIDO.trim(), '', 'la marca tiene que ser solo espacio');
+  decir('Era Nueva Roma.');
+  assert.equal(d.nodo.textContent, 'Era Nueva Roma.', 'un texto nuevo va limpio');
 });
 
 test('la clase que la esconde existe en la hoja de los juegos', () => {
