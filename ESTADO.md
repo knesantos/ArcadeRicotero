@@ -36,7 +36,7 @@
 >   se llama `listaEl` allá) y en el `append` de `partida.ts`; los tests de enganche fallan si se pierde alguna línea.
 > - **Descartado, con el porqué**: los distractores sinónimos (*toalla* por *esponja*, *aguantar* por *soportar*) **se quedan**:
 >   engañan al que no sabe y nunca al que sabe. Medido: ningún distractor se canta en el mismo tema después de las mismas palabras.
-> - **Verde:** `npm test` 2670 con **1 rojo ajeno** (`D-91/t6` de `aire.test.ts`, del bestiario: falla igual en `main`), `astro
+> - **Verde:** `npm test` 2669 con **1 rojo ajeno** (`D-91/t6` de `aire.test.ts`, del bestiario: falla igual en `main`), `astro
 >   check` 0 errores, `astro build` 200 páginas. Visto a 375 px en la vista previa; **no oído en un teléfono**.
 > - **Para sus dueños**: Montevideo 1989/1990 (`TP-005` contra `QZ-066`), `TP-010` y `QZ-053` en
 >   `Docs/SUGERENCIAS/HILO-para-investigador-y-contenido-pulida-jugabilidad.md`; CTR-03 v3 y la curaduría de letra, en sus
