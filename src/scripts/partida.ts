@@ -78,6 +78,7 @@ import {
 } from '../lib/quiz/copy.ts';
 import { PORTAL } from '../lib/sitio/copy.ts';
 import { botonCorreccion } from './correccion.ts';
+import { protegerDeRebote } from '../lib/sitio/rebote.ts';
 
 /** Quien soy, para `leerDesafio`. Ver `FIND-28` en `desafio.ts`. */
 const JUEGO = 'quiz';
@@ -294,6 +295,7 @@ function pintarPregunta(): void {
     b.addEventListener('click', () => responder(op.texto), { once: true });
     lista.append(b);
   });
+  protegerDeRebote(lista); // T-534: el doble toque sobre "Seguí" no contesta esta pregunta
   zonaPartida.append(lista);
 
   enfocar(enunciado);
