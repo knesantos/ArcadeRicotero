@@ -79,7 +79,10 @@ const JUEGO = 'letra';
 $('jugar')?.addEventListener('click', comenzar);
 
 function comenzar(): void {
-  ronda = armarRonda(banco, Math.min(LARGO_RONDA, banco.length));
+  // Un verso por tema (`T-532`): el contexto de uno suele traer la respuesta del otro.
+  ronda = armarRonda(banco, Math.min(LARGO_RONDA, banco.length), Math.random, {
+    grupo: (item) => item.tema.slug,
+  });
   indice = 0;
   elegidas = [];
   mostrar(zonaPartida);

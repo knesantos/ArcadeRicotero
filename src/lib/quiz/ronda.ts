@@ -135,17 +135,62 @@ function barajar<T>(xs: readonly T[], azar: () => number): T[] {
   return a;
 }
 
+/** Lo que se le puede pedir a `armarRonda()` ademas del largo. Sin nada, hace lo de siempre. */
+export interface OpcionesRonda<T> {
+  /**
+   * De que **grupo** es cada item. Si se pasa, la ronda no trae dos items del mismo grupo.
+   *
+   * Existe por "Completa la letra" (`T-532`), donde el grupo es el tema: el banco tiene
+   * varios versos de la misma cancion, cada uno con sus versos vecinos a la vista, y dos en
+   * la misma ronda se contestan entre si. «Y se [___]» muestra debajo «Mejor que nunca», que
+   * es la respuesta del item siguiente del mismo tema (`CL-081` / `CL-082` / `CL-083`). El
+   * quiz y las tapas no lo pasan y no cambian.
+   *
+   * Si no hay grupos distintos para completar el largo, se completa repitiendo grupo:
+   * una ronda corta por respetar esto seria romper la partida por un banco chico.
+   */
+  readonly grupo?: (item: T) => string;
+}
+
+/**
+ * Deja un item por grupo, sorteado, y devuelve aparte los que sobraron.
+ *
+ * El primero de la partida ya esta elegido y su grupo queda tomado. El sorteo es por
+ * barajado: cada item de un grupo tiene la misma chance de ser el que queda.
+ */
+function unoPorGrupo<T>(
+  items: readonly T[],
+  grupo: (item: T) => string,
+  tomados: ReadonlySet<string>,
+  azar: () => number,
+): { readonly unicos: T[]; readonly sobrantes: T[] } {
+  const vistos = new Set(tomados);
+  const unicos: T[] = [];
+  const sobrantes: T[] = [];
+  for (const it of barajar(items, azar)) {
+    const g = grupo(it);
+    if (vistos.has(g)) sobrantes.push(it);
+    else {
+      vistos.add(g);
+      unicos.push(it);
+    }
+  }
+  return { unicos, sobrantes };
+}
+
 /**
  * Arma una ronda que cumple `BR-01`.
  *
- * @param items  el banco jugable
- * @param largo  cuantas preguntas tiene la ronda (`US-01` criterio 1: 8)
- * @param azar   fuente de aleatoriedad, inyectable para los tests
+ * @param items     el banco jugable
+ * @param largo     cuantas preguntas tiene la ronda (`US-01` criterio 1: 8)
+ * @param azar      fuente de aleatoriedad, inyectable para los tests
+ * @param opciones  `grupo`, para no repetir tema en la ronda (`T-532`)
  */
 export function armarRonda<T extends Jugable>(
   items: readonly T[],
   largo: number,
   azar: () => number = Math.random,
+  opciones: OpcionesRonda<T> = {},
 ): readonly T[] {
   if (!Number.isInteger(largo) || largo <= 0) throw new RangeError('largo tiene que ser un entero positivo');
   if (items.length < largo) {
@@ -162,7 +207,13 @@ export function armarRonda<T extends Jugable>(
 
   // Punto 2: el resto se ordena por dificultad ascendente. Dentro de cada nivel se
   // baraja, para que dos partidas seguidas no sean identicas.
-  const resto = items.filter((i) => i.id !== primero.id);
+  let resto = items.filter((i) => i.id !== primero.id);
+
+  // `T-532`: un item por grupo. Lo que sobra vuelve solo si sin eso la ronda queda corta.
+  if (opciones.grupo) {
+    const { unicos, sobrantes } = unoPorGrupo(resto, opciones.grupo, new Set([opciones.grupo(primero)]), azar);
+    resto = [...unicos, ...sobrantes.slice(0, Math.max(0, largo - 1 - unicos.length))];
+  }
   const porNivel: Record<Dificultad, T[]> = {
     facil: barajar(resto.filter((i) => i.dificultad === 'facil'), azar),
     media: barajar(resto.filter((i) => i.dificultad === 'media'), azar),
