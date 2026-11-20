@@ -54,11 +54,21 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { versosDelTema, vecinos } from '../src/lib/letra/versos.ts';
 import { CONTEXTO_POR_NIVEL } from '../src/lib/letra/banco.ts';
 import { repartirEnTercios } from '../src/lib/en-vivo.ts';
+import {
+  acento, generoPorTerminacion, parecePlural, pareceInfinitivo, pareceGerundio, rimaAsonante, rimaConsonante,
+  silabas, MARGEN_SILABAS,
+} from '../src/lib/letra/morfologia.ts';
+import { indiceDeCuraduria, llaveDe, problemasDe, vocabularioDelCancionero } from '../src/lib/letra/curaduria.ts';
 
 const CANCIONERO = 'src/data/cancionero.json';
 const CONFIRMACIONES = 'src/data/letra-confirmaciones.json';
 const SALIDA = 'src/data/letra.json';
 const CONTEO = 'src/data/setlistfm.json';
+/**
+ * Los distractores que eligió una persona (`T-532`). Este script los **aplica**; no los
+ * sortea ni los pisa. Y un verso sin entrada ahí no se promueve a `listo`: ver `curar()`.
+ */
+const CURADURIA = 'src/data/letra-distractores.json';
 
 /**
  * Qué ficha respalda a cada sitio del que sale una letra.
@@ -317,6 +327,55 @@ function formaDelDistractor(clave, respuesta, formas) {
   return respuestaEnMinuscula ? baja : baja[0].toLocaleUpperCase('es') + baja.slice(1);
 }
 
+/**
+ * ¿El candidato tiene la forma de la respuesta? (`T-532`)
+ *
+ * Hasta `T-532` un distractor era cualquier palabra del disco de largo parecido, y «Y se
+ * [___]» ofrecía tres sustantivos donde va un verbo. Esto mira lo que la terminación deja
+ * leer sin diccionario (`src/lib/letra/morfologia.ts`): mismo número, infinitivo con
+ * infinitivo, gerundio con gerundio, aguda con tilde con aguda con tilde («llegó» / «pasó»),
+ * mismo género cuando los dos lo insinúan, y una sílaba de diferencia como mucho.
+ *
+ * **Ordena, no descarta**: si no hay tres con la forma, se completa con el pozo de siempre,
+ * así ningún verso deja de dar ítem y los ids no se corren. Y no alcanza para jugar: es el
+ * punto de partida de un `borrador`. Lo que se juega lo elige una persona (`curar()`).
+ */
+const FORMAS_MEDIDAS = new Map();
+/** Lo que se lee de la terminación de una palabra, medido una sola vez: el pozo se recorre por cada verso. */
+function formaDe(palabra) {
+  let f = FORMAS_MEDIDAS.get(palabra);
+  if (!f) {
+    f = {
+      silabas: silabas(palabra),
+      plural: parecePlural(palabra),
+      infinitivo: pareceInfinitivo(palabra),
+      gerundio: pareceGerundio(palabra),
+      agudaConTilde: /[áéíó]$/.test(palabra),
+      genero: generoPorTerminacion(palabra),
+      acento: acento(palabra),
+      asonante: rimaAsonante(palabra),
+      consonante: rimaConsonante(palabra),
+    };
+    FORMAS_MEDIDAS.set(palabra, f);
+  }
+  return f;
+}
+
+function mismaForma(candidato, respuesta) {
+  const [c, r] = [formaDe(candidato), formaDe(respuesta)];
+  if (Math.abs(c.silabas - r.silabas) > MARGEN_SILABAS) return false;
+  if (c.plural !== r.plural || c.infinitivo !== r.infinitivo || c.gerundio !== r.gerundio) return false;
+  if (c.agudaConTilde !== r.agudaConTilde) return false;
+  return c.genero === null || r.genero === null || c.genero === r.genero;
+}
+
+/** Cuánto suena un candidato a la respuesta: la misma cuenta que `parecidoSonoro()`, sobre lo ya medido. */
+function parecido(candidato, respuesta) {
+  const [c, r] = [formaDe(candidato), formaDe(respuesta)];
+  return (c.silabas === r.silabas ? 2 : 0) + (c.acento === r.acento ? 1 : 0) +
+    (c.asonante === r.asonante ? 2 : 0) + (c.consonante === r.consonante ? 1 : 0);
+}
+
 /** Hash estable: los distractores tienen que salir iguales en cada corrida. */
 function hash(texto) {
   let h = 2166136261;
@@ -470,7 +529,15 @@ function armarItems(temas, pozo, tercios, vocabulario) {
       // (pasó el 2026-09-25 con `--reanclar`). Con la huella, un ítem conserva sus opciones
       // mientras su verso, su contexto y el vocabulario de su disco no cambien.
       const huella = `${tema.slug}|${antes}|${respuesta}|${despues}`;
-      const distractores = barajar(candidatos, huella).slice(0, 3);
+      // `T-532`: primero los que tienen la forma de la respuesta, del que más se le parece
+      // al oído al que menos; el barajado de la huella desempata. Si no llegan a tres, se
+      // completa con el resto del pozo, como antes.
+      const barajados = barajar(candidatos, huella);
+      const conForma = barajados
+        .filter((p) => mismaForma(p, respuesta))
+        .sort((a, b) => parecido(b, respuesta) - parecido(a, respuesta))
+        .slice(0, 3);
+      const distractores = [...conForma, ...barajados.filter((p) => !conForma.includes(p))].slice(0, 3);
       if (distractores.length < 3) {
         descartes.sinDistractores++;
         continue;
@@ -643,13 +710,59 @@ function main() {
     process.exit(1);
   }
 
+  // ─── `T-532`: sin distractores elegidos por una persona, no se juega ──────────────
+  //
+  // Elegir el verso no alcanza. Hasta `T-532` un verso promovido salía con los tres
+  // distractores que le tocaran en el sorteo, y 44 de los 72 jugables no tenían ni uno que
+  // compitiera: se acertaba por gramática. Ahora las dos vías de promoción pasan por
+  // `curar()`: si el verso tiene su entrada en `letra-distractores.json`, se le ponen esos
+  // tres —con la caja de la respuesta— y se promueve; si no la tiene, o la entrada dice
+  // `baja`, **queda en `borrador`** y se informa. Una entrada que no pasa la vara
+  // (`problemasDe`, la misma que mira el test) aborta: es un archivo roto, no un dato que falta.
+  const archivoCur = existsSync(CURADURIA) ? JSON.parse(readFileSync(CURADURIA, 'utf-8')) : { items: [] };
+  const curaduria = indiceDeCuraduria(archivoCur.items ?? []);
+  const cantado = vocabularioDelCancionero(cancionero.temas);
+  const sinCurar = [];
+  const dadosDeBaja = [];
+  const curaduriaRota = [];
+  const usadas = new Set();
+  function curar(item) {
+    const llave = llaveDe(item.tema.slug, renglon(item));
+    const entrada = curaduria.get(llave);
+    if (!entrada) {
+      sinCurar.push(`${item.id} «${renglon(item)}» (${item.tema.slug})`);
+      return false;
+    }
+    usadas.add(llave);
+    if (entrada.baja) {
+      dadosDeBaja.push(`${item.id} «${renglon(item)}»: ${entrada.baja}`);
+      item.notaInterna = `No se juega (T-532): ${entrada.baja}`;
+      return false;
+    }
+    const problemas = problemasDe(entrada, item, cantado);
+    if (problemas.length) {
+      curaduriaRota.push(`${item.id} «${renglon(item)}»: ${problemas.join('; ')}`);
+      return false;
+    }
+    const { antes, respuesta, despues } = item.hueco;
+    const enMinuscula = respuesta === respuesta.toLocaleLowerCase('es');
+    const conCaja = (d) => (enMinuscula ? d : d[0].toLocaleUpperCase('es') + d.slice(1));
+    item.opciones = barajar(
+      [{ texto: respuesta, correcta: true }, ...entrada.distractores.map((d) => ({ texto: conCaja(d), correcta: false }))],
+      `${item.tema.slug}|${antes}|${respuesta}|${despues}`,
+    );
+    return true;
+  }
+  const CURADO = ' Distractores elegidos a mano (T-532, letra-distractores.json).';
+
   for (const item of items) {
     const conf = confirmadas.get(item.id);
     if (!conf) continue;
+    if (!curar(item)) continue;
     item.confirmadoDeOido = conf;
     item.cotejo = { regimen: 'oido' };
     item.estado = 'listo';
-    item.notaInterna = `Verso confirmado de oído por ${conf.quien} el ${conf.fecha} (${conf.donde}, ${conf.minuto}).`;
+    item.notaInterna = `Verso confirmado de oído por ${conf.quien} el ${conf.fecha} (${conf.donde}, ${conf.minuto}).${CURADO}`;
   }
 
   // ─── La tercera vía: la selección curada de `T-138`, bajo `D-25` ──────────────────
@@ -737,13 +850,20 @@ function main() {
       continue;
     }
     if (item.estado === 'listo') continue; // ya promovido por oído
+    if (!curar(item)) continue;
     if (item.fuenteLetra.length >= 2) {
       item.cotejo = { regimen: 'dos-fuentes' };
     } else {
       item.cotejo = { regimen: 'fuente-unica', decision: 'D-25' };
     }
     item.estado = 'listo';
-    item.notaInterna = `Promovido por T-138 bajo D-25 (fuente unica). Motivo: ${motivo}`;
+    item.notaInterna = `Promovido por T-138 bajo D-25 (fuente unica). Motivo: ${motivo}${CURADO}`;
+  }
+  if (curaduriaRota.length) {
+    console.error(`\n✕ ${CURADURIA}: ${curaduriaRota.length} entrada(s) no pasan la vara de T-532. No escribi nada.`);
+    for (const c of curaduriaRota) console.error(`   · ${c}`);
+    console.error('   Si cambio el nivel del tema, cambio el contexto: puede haber quedado un distractor a la vista.\n');
+    process.exit(1);
   }
   if (corridos.length) {
     console.error(`\n✕ ${CONFIRMACIONES}, fuenteUnica: ${corridos.length} seleccion(es) apuntan a otro verso. No escribi nada.`);
@@ -817,6 +937,22 @@ function main() {
   }
   const porNivelListos = contar(listos);
   console.log(`LISTOS:         ${listos.length}  ${JSON.stringify(porNivelListos)}`);
+
+  // `T-532`: lo que una persona eligió y aun así no se juega, con el porqué.
+  if (dadosDeBaja.length) {
+    console.log(`dados de baja:  ${dadosDeBaja.length} verso(s) elegidos que no se juegan (${CURADURIA}):`);
+    for (const b of dadosDeBaja) console.log(`   · ${b}`);
+  }
+  if (sinCurar.length) {
+    console.log(`\n⚠ sin curar:    ${sinCurar.length} verso(s) elegidos quedaron en borrador: nadie les eligió los distractores.`);
+    for (const s of sinCurar) console.log(`   · ${s}`);
+    console.log(`   Sumales una entrada en ${CURADURIA} y corré de nuevo.`);
+  }
+  const huerfanas = [...curaduria.keys()].filter((k) => !usadas.has(k));
+  if (huerfanas.length) {
+    console.log(`\n⚠ curaduría sin verso: ${huerfanas.length} entrada(s) de ${CURADURIA} no encontraron su ítem promovido:`);
+    for (const h of huerfanas) console.log(`   · ${h}`);
+  }
 
   // Las anclas que `contenido` eligió y el contrato dejó sin ítem, apartadas sin borrarse.
   // No se promueven: esperan que `contenido` elija otro verso. Si alguna vuelve a dar ítem
