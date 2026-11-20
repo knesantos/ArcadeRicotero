@@ -94,6 +94,52 @@ export function volar(texto: string, clase: string, desde: Element, hasta: Eleme
 }
 
 /**
+ * Una pieza que vuela de un lugar a otro de la pantalla: la hoja recién impresa, de la mesa a
+ * la soga (nace en "Adiviná la tapa", ronda de pulida del 2026-11-20). Es `volar`, pero con
+ * una pieza en vez de un texto: quien llama arma el nodo (una imagen, un recorte de papel) y
+ * este gesto lo lleva del rectángulo de `desde` al de `hasta`, achicándolo a su medida.
+ *
+ * La pieza viaja suelta por encima de la pantalla (`.pieza-vuela`, en `juego.css`), no se lee
+ * ni toma toques, y se borra al llegar. Dura `--duracion-umbral`; con movimiento reducido no
+ * hay vuelo y `alLlegar` se llama en el acto. Solo se anima `transform`.
+ */
+export function volarPieza(pieza: HTMLElement, desde: Element, hasta: Element, alLlegar: () => void): void {
+  const ms = duracionDe('--duracion-umbral');
+  const a = desde.getBoundingClientRect();
+  const b = hasta.getBoundingClientRect();
+  if (ms <= 0 || typeof pieza.animate !== 'function' || a.width === 0 || b.width === 0) {
+    alLlegar();
+    return;
+  }
+  pieza.classList.add('pieza-vuela');
+  pieza.setAttribute('aria-hidden', 'true');
+  pieza.style.left = `${a.left}px`;
+  pieza.style.top = `${a.top}px`;
+  pieza.style.width = `${a.width}px`;
+  pieza.style.height = `${a.height}px`;
+  document.body.append(pieza);
+  const curva = getComputedStyle(document.documentElement).getPropertyValue('--curva-cinta').trim() || 'linear';
+  const vuelo = pieza.animate(
+    [
+      { transform: 'translate(0, 0) scale(1) rotate(0deg)' },
+      {
+        transform: `translate(${b.left - a.left}px, ${b.top - a.top}px) scale(${b.width / a.width}, ${b.height / a.height}) rotate(-3deg)`,
+      },
+    ],
+    { duration: ms, easing: curva, fill: 'forwards' },
+  );
+  let llego = false;
+  const llegar = (): void => {
+    if (llego) return;
+    llego = true;
+    pieza.remove();
+    alLlegar();
+  };
+  vuelo.addEventListener('finish', llegar, { once: true });
+  vuelo.addEventListener('cancel', llegar, { once: true });
+}
+
+/**
  * El interruptor de los ruidos de interfaz, para la cabina de cualquier juego.
  *
  * Un boton chico con `aria-pressed`: apretado es "ruidos prendidos". El texto dice lo que va

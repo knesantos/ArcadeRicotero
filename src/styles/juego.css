@@ -10954,6 +10954,897 @@ body:has(.juego-completar > #partida:not([hidden])) {
 }
 
 /* ==========================================================================
+   Adiviná la tapa: la mesa de serigrafía (ronda de pulida, 2026-11-20).
+
+   La acotación de la portada ya lo decía: "Tenés tinta fresca pegada en los dedos." El objeto
+   es la mesa de imprenta: un bastidor de madera con sus mordazas y sus grampas, la racleta
+   —el mango de madera y la goma—, y la soga donde las hojas se cuelgan a secar.
+
+   - La pregunta se mira adentro del bastidor. Al responder **el zoom se abre**: el pedazo se
+     achica hasta su lugar real en la tapa (`recorte.ts`) y la racleta pasa una vez por tinta,
+     de arriba abajo y de vuelta. Tres tintas y el fijado si la tenías; la clave sola si no.
+   - Al pie del bastidor, las tres tintas de la tirada: llenas las que se usaron, huecas las
+     que no. Es la forma que acompaña a "en una tinta".
+   - La cabecera es la soga: una hoja por tapa, con su broche. La hoja impresa vuela de la mesa
+     a la soga al pasar, y se queda hamacando. En el resultado, la soga entera es la tirada.
+   - El botón principal es la racleta: papel y goma. La plata vieja de Último bondi (`D-19`)
+     queda en las mordazas y en la goma; como relleno de un botón se leía apagado.
+
+   Ni un hex, ni una sombra, ni un degradado. Todo par de texto ya está en `contraste.test.ts`
+   (la tinta del fondo sobre el papel; el texto sobre el fondo).
+   ========================================================================== */
+
+.juego-tapa {
+  --tinte-accion: var(--papel);
+}
+
+/* La racleta: el mango de madera clara y, abajo, el canto de goma (borde, no sombra). */
+.juego-tapa .primario:not(.firma) {
+  padding-bottom: calc(var(--espacio-2) - 0.2rem);
+  border-bottom: 0.4rem solid var(--cat-discos-apoyo);
+}
+
+/* ---- La mesa: el bastidor ---- */
+.mesa-imprenta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: var(--espacio-2) 0 0;
+}
+
+.bastidor {
+  position: relative;
+  box-sizing: border-box;
+  width: min(100%, 21.4rem, 38svh + 1.4rem);
+  padding: 1.7rem 0.7rem;
+  background: var(--papel-borde);
+  border: 2px solid var(--fondo);
+  border-radius: 3px;
+  rotate: -0.6deg;
+}
+
+/* Las grampas que sujetan la malla a la madera: una línea de trazo cortado, todo alrededor. */
+.bastidor::before {
+  content: '';
+  position: absolute;
+  inset: 0.26rem;
+  border: 2px dashed var(--papel-tenue);
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+/* Las mordazas que agarran el bastidor a la mesa: metal, en la plata vieja del disco. */
+.bastidor-mordaza {
+  position: absolute;
+  z-index: 1;
+  top: -0.62rem;
+  left: 13%;
+  width: 2.3rem;
+  height: 1rem;
+  background: var(--cat-discos);
+  border: 2px solid var(--fondo);
+  border-radius: 3px;
+}
+
+.bastidor-mordaza::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0.34rem;
+  height: 0.34rem;
+  margin: -0.17rem 0 0 -0.17rem;
+  background: var(--fondo);
+  border-radius: 50%;
+}
+
+.bastidor-mordaza--der {
+  right: 13%;
+  left: auto;
+}
+
+/* La hoja, derecha y del ancho del bastidor: acá el que está torcido es el bastidor. */
+.juego-tapa .estampa-papel--abre {
+  width: 100%;
+  margin: 0;
+  rotate: 0deg;
+}
+
+/* El recorte con el que se juega llena la hoja desde el arranque: al responder no salta nada. */
+.juego-tapa .estampa-papel--abre .tapa-juego {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  transform: none;
+  transform-origin: 0 0;
+  object-fit: cover;
+}
+
+.juego-tapa .estampa-foto {
+  z-index: 2;
+}
+
+/* El zoom se abre: el pedazo se achica hasta su lugar en la tapa. Dónde va lo escribe la isla
+   (`--recorte-x`, `--recorte-y`, `--recorte-lado`). Con movimiento reducido ya está en su lugar. */
+.juego-tapa .tapa-juego--a-su-lugar {
+  animation: recorte-a-su-lugar var(--duracion-umbral) var(--curva-cinta) both;
+}
+
+@keyframes recorte-a-su-lugar {
+  to {
+    translate: var(--recorte-x, 0) var(--recorte-y, 0);
+    scale: var(--recorte-lado, 1);
+  }
+}
+
+/* En esta mesa la racleta va y viene de arriba abajo, y cada tinta aparece detrás de ella:
+   la clara al bajar, la media al volver, la clave al bajar, y el fijado al volver. */
+.juego-tapa .pasada--clara,
+.juego-tapa .pasada--clave {
+  --racleta-desde: inset(0 0 100% 0);
+}
+
+.juego-tapa .pasada--media {
+  --racleta-desde: inset(100% 0 0 0);
+}
+
+.juego-tapa .estampa-foto {
+  --racleta-desde: inset(100% 0 0 0);
+  animation-name: pasada;
+}
+
+/* En la partida las pasadas esperan un paso: primero se abre el zoom. */
+.juego-tapa #partida .pasada--clara,
+.juego-tapa #partida .estampa-papel--prueba .pasada--clave {
+  animation-delay: var(--duracion-paso);
+}
+
+.juego-tapa #partida .pasada--media {
+  animation-delay: calc(var(--duracion-paso) + var(--escalon-pasada));
+}
+
+.juego-tapa #partida .pasada--clave {
+  animation-delay: calc(var(--duracion-paso) + var(--escalon-pasada) * 2);
+}
+
+.juego-tapa #partida .estampa-foto {
+  animation-delay: calc(var(--duracion-paso) + var(--escalon-pasada) * 3);
+}
+
+/* ---- La racleta ----
+   El carro mide lo que la hoja; la racleta descansa arriba, sobre la madera. Al pasar, el carro
+   baja lo que mide la hoja (y el alto de la racleta, para que salga del todo) y vuelve. */
+.racleta-carro {
+  position: absolute;
+  z-index: 3;
+  top: 1.7rem;
+  right: 0.7rem;
+  left: 0.7rem;
+  aspect-ratio: 1;
+  pointer-events: none;
+}
+
+.racleta {
+  position: absolute;
+  right: -1.2rem;
+  bottom: 100%;
+  left: -1.2rem;
+  box-sizing: border-box;
+  height: 1.3rem;
+  background: var(--papel);
+  border: 2px solid var(--fondo);
+  border-bottom: 0.34rem solid var(--cat-discos-apoyo);
+  border-radius: 3px;
+}
+
+/* La veta del mango: un filete, de la madera más oscura. */
+.racleta::before {
+  content: '';
+  position: absolute;
+  top: 0.28rem;
+  right: 12%;
+  left: 12%;
+  border-top: 2px solid var(--papel-borde);
+}
+
+/* La tirada entera: cuatro pasadas, ida y vuelta dos veces. Termina arriba, donde empezó. */
+.racleta-carro--tirada {
+  animation: racleta-tirada calc(var(--escalon-pasada) * 4) linear var(--duracion-paso) both;
+}
+
+@keyframes racleta-tirada {
+  0%,
+  50%,
+  100% {
+    translate: 0 0;
+    animation-timing-function: var(--curva-cinta);
+  }
+
+  25%,
+  75% {
+    translate: 0 calc(100% + 1.5rem);
+    animation-timing-function: var(--curva-cinta);
+  }
+}
+
+/* La prueba en una tinta, y la pasada de la portada: baja, deja la tinta y vuelve. */
+.racleta-carro--prueba {
+  animation: racleta-ida-y-vuelta calc(var(--escalon-pasada) * 2) linear var(--duracion-paso) both;
+}
+
+@keyframes racleta-ida-y-vuelta {
+  0%,
+  100% {
+    translate: 0 0;
+    animation-timing-function: var(--curva-cinta);
+  }
+
+  50% {
+    translate: 0 calc(100% + 1.5rem);
+    animation-timing-function: var(--curva-cinta);
+  }
+}
+
+/* ---- Las tres tintas de la tirada ----
+   Al pie del bastidor. Hueca: no se usó. Llena: se imprimió con esa. */
+.tintas {
+  position: absolute;
+  bottom: 0.44rem;
+  left: 0.95rem;
+  display: flex;
+  gap: 0.3rem;
+}
+
+.tinta {
+  box-sizing: border-box;
+  width: 0.8rem;
+  height: 0.8rem;
+  border: 2px solid var(--fondo);
+  border-radius: 2px;
+}
+
+.tinta--puesta {
+  background: var(--fondo);
+  animation: tinta-se-pone var(--duracion-pasada) var(--curva-cinta)
+    calc(var(--duracion-paso) + var(--escalon-pasada) * var(--orden, 0)) backwards;
+}
+
+/* Hueca hasta que le toca; ahí cae llena, como un sello chico. */
+@keyframes tinta-se-pone {
+  0% {
+    background-color: transparent;
+    scale: 1.7;
+    rotate: -14deg;
+  }
+
+  12% {
+    background-color: var(--fondo);
+  }
+}
+
+/* ---- El sello del cierre, sobre la esquina de la hoja ----
+   Cae cuando la última tinta ya apoyó, y deja la marca chica en la esquina del bastidor: no
+   tapa la tapa recién impresa, que es el premio. */
+.bastidor > .sello-cae {
+  z-index: 4;
+  top: auto;
+  right: -0.7rem;
+  bottom: -0.7rem;
+  left: auto;
+  width: 5.6rem;
+  height: 5.6rem;
+  margin: 0;
+  font-size: 2.7rem;
+}
+
+.bastidor > .sello-marca {
+  z-index: 4;
+  top: auto;
+  right: -0.55rem;
+  bottom: -0.55rem;
+  margin: 0;
+}
+
+.juego-tapa #partida .credito-tapa {
+  margin: 0.55rem 0 0;
+  text-align: center;
+}
+
+/* ---- La mesa de la portada ----
+   Una hoja con la primera tinta ya puesta. "Empezá" pasa la racleta: baja y deja la segunda,
+   vuelve y deja la clave. Tocar la mesa es tocar el botón. */
+.mesa-imprenta--portada {
+  margin-top: var(--espacio-3);
+  cursor: pointer;
+}
+
+.mesa-imprenta--portada .bastidor {
+  width: min(66%, 15.5rem, 31svh);
+}
+
+.mesa-imprenta--portada .pasada {
+  animation: none;
+}
+
+.mesa-imprenta--portada .pasada--media,
+.mesa-imprenta--portada .pasada--clave {
+  clip-path: inset(0 0 100% 0);
+}
+
+.mesa-imprenta--imprime .pasada--media {
+  --racleta-desde: inset(0 0 100% 0);
+  animation: pasada var(--duracion-pasada) var(--curva-cinta) both;
+}
+
+.mesa-imprenta--imprime .pasada--clave {
+  --racleta-desde: inset(100% 0 0 0);
+  animation: pasada var(--duracion-pasada) var(--curva-cinta) var(--escalon-pasada) both;
+}
+
+.mesa-imprenta--imprime .racleta-carro {
+  animation: racleta-ida-y-vuelta calc(var(--escalon-pasada) * 2) linear both;
+}
+
+.mesa-imprenta--portada .tinta--puesta {
+  animation: none;
+}
+
+.mesa-imprenta--imprime .tinta:nth-child(n + 2) {
+  background: var(--fondo);
+  animation: tinta-se-pone var(--duracion-pasada) var(--curva-cinta) backwards;
+}
+
+.mesa-imprenta--imprime .tinta:nth-child(3) {
+  animation-delay: var(--escalon-pasada);
+}
+
+/* El cartel de la mesa: lo que hace el botón, dicho con el objeto. */
+.mesa-cartel {
+  margin: 0.7rem 0 0;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  line-height: 1.2;
+  color: var(--texto-tenue);
+  text-transform: uppercase;
+}
+
+.juego-tapa #portada .primario {
+  margin-top: var(--espacio-2);
+}
+
+/* ---- La cabecera de la partida ---- */
+.tablero-imprenta-fila {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 1.7rem;
+}
+
+.tablero-imprenta-paso {
+  margin: 0 auto 0 0;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.8rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tablero-imprenta .restantes--llevas {
+  font-family: var(--fuente-rotulada);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.tablero-imprenta .ruidos.ruidos-tecla {
+  margin-left: 0;
+}
+
+/* ---- La soga ----
+   Una hoja por tapa de la vuelta, cada una con su broche. Hueca de trazo cortado: todavía no
+   salió. Hueca de borde claro: es la que está en la mesa. Con papel: ya se respondió, y lleva
+   su tilde o su cruz. La impresa llega volando desde la mesa. */
+.tendedero {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.3rem;
+  margin: 0.7rem 0 0;
+  padding: 0.5rem 0.5rem 0;
+  list-style: none;
+}
+
+.tendedero::before,
+.tendedero--vuelta::after {
+  content: '';
+  position: absolute;
+  top: 0.5rem;
+  right: 0;
+  left: 0;
+  border-top: 2px solid var(--texto-tenue);
+}
+
+.colgada {
+  position: relative;
+  flex: 0 1 2.9rem;
+  transform-origin: 50% 0;
+  rotate: -2deg;
+}
+
+.colgada:nth-child(even) {
+  rotate: 2.5deg;
+}
+
+.colgada-papel {
+  position: relative;
+  display: block;
+}
+
+/* El broche: madera, pisando la soga y el borde de la hoja. */
+.colgada-papel::before {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  top: -0.42rem;
+  left: 50%;
+  box-sizing: border-box;
+  width: 0.4rem;
+  height: 0.95rem;
+  margin-left: -0.2rem;
+  background: var(--papel-borde);
+  border: 1px solid var(--fondo);
+  border-radius: 1px;
+}
+
+.colgada-hoja {
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  aspect-ratio: 1;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--papel);
+  border: 2px solid var(--borde);
+  border-radius: 2px;
+}
+
+.colgada--resto .colgada-hoja {
+  background: none;
+  border-style: dashed;
+}
+
+.colgada--ahora .colgada-hoja {
+  background: none;
+  border-color: var(--papel);
+}
+
+.colgada-foto {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* La clave sola: tinta sobre el papel, como en la mesa. */
+.colgada-foto--clave {
+  mix-blend-mode: multiply;
+}
+
+.colgada-marca {
+  position: absolute;
+  z-index: 3;
+  right: -0.36rem;
+  bottom: -0.36rem;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  width: 1.1rem;
+  height: 1.1rem;
+  background: var(--fondo);
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  font-size: 0.6rem;
+  line-height: 1;
+}
+
+.colgada--ok .colgada-marca {
+  color: var(--acento-3);
+}
+
+.colgada--no .colgada-marca {
+  color: var(--acento-4);
+}
+
+/* La hoja recién colgada se hamaca y se queda quieta. Detalle vivo, atado a "se colgó una". */
+.colgada--llega {
+  animation: hoja-se-hamaca var(--duracion-inercia) var(--curva-cinta) calc(var(--escalon-umbral) * var(--orden, 0) * 2) backwards;
+}
+
+@keyframes hoja-se-hamaca {
+  0% {
+    rotate: 12deg;
+  }
+
+  30% {
+    rotate: -9deg;
+  }
+
+  55% {
+    rotate: 6deg;
+  }
+
+  78% {
+    rotate: -3.5deg;
+  }
+}
+
+/* La hoja en el aire, de la mesa a la soga (`volarPieza`, en `jugo.ts`). */
+.pieza-vuela {
+  position: fixed;
+  z-index: 50;
+  margin: 0;
+  transform-origin: 0 0;
+  pointer-events: none;
+}
+
+.hoja-suelta {
+  display: block;
+  box-sizing: border-box;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--papel);
+  border: 2px solid var(--borde);
+  border-radius: 3px;
+}
+
+.hoja-suelta .colgada-foto {
+  width: 100%;
+  height: 100%;
+}
+
+/* ---- La pregunta y las cuatro teclas ---- */
+.juego-tapa #partida .enunciado {
+  margin: var(--espacio-2) 0 0;
+  font-size: 1.2rem;
+  line-height: 1.3;
+  text-wrap: balance;
+}
+
+.juego-tapa #partida .enunciado:focus {
+  outline: none;
+}
+
+.opciones--tapa {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+  margin-top: var(--espacio-2);
+}
+
+/* Cada opción es una tecla: el canto de abajo más grueso (borde, no sombra), y baja al
+   apretarla. El nombre del disco va en la rotulada: es un título corto. */
+.opciones--tapa .opcion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+  width: 100%;
+  min-height: 4.1rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--fondo);
+  border-bottom-width: 6px;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.9rem;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  touch-action: manipulation;
+}
+
+.opciones--tapa .opcion.es-correcta {
+  font-weight: 400;
+}
+
+.opciones--tapa .opcion:active:not(:disabled) {
+  translate: 0 2px;
+}
+
+.opciones--tapa .opcion-texto {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Con la ficha a la vista quedan la buena y, si erraste, la tuya. */
+.opciones--tapa.opciones--cerradas li:has(.es-otra) {
+  display: none;
+}
+
+/* En el teléfono la partida ocupa el alto de la ventana: la mesa arriba, y la pregunta con
+   sus teclas abajo, donde está el pulgar. Con la ficha a la vista todo vuelve a su lugar. */
+@media (max-width: 45.99rem) {
+  .juego-tapa #partida:not([hidden]) {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100svh - var(--espacio-3) * 2);
+  }
+
+  .juego-tapa #partida .enunciado {
+    margin-top: auto;
+    padding-top: var(--espacio-2);
+  }
+
+  .juego-tapa #partida.partida--revelada .enunciado {
+    margin-top: 0;
+  }
+}
+
+/* ---- La ficha de la respuesta ---- */
+.juego-tapa .ficha-respuesta {
+  margin-top: var(--espacio-2);
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.juego-tapa .ficha-respuesta .revelacion-cabeza {
+  justify-content: flex-start;
+  gap: 0.65rem;
+}
+
+.juego-tapa .ficha-respuesta .revelacion-suma {
+  margin-left: auto;
+}
+
+.juego-tapa .ficha-respuesta.ok .micro {
+  min-width: 0;
+  font-size: clamp(0.92rem, 4.1vw, 1.2rem);
+}
+
+.juego-tapa .ficha-respuesta .respuesta-dato {
+  margin: 0.7rem 0 0.45rem;
+  font-size: 1.4rem;
+}
+
+/* El rótulo de leyenda o testimonio (`BR-08`, registro 3): una nota al margen de la prueba.
+   Trazo cortado, su tinta, su símbolo; la letra del sistema, que es la que se lee. */
+.juego-tapa .ficha-respuesta .sello {
+  margin: var(--espacio-2) 0 0;
+  border-radius: 3px;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.juego-tapa .ficha-respuesta .seguir-ficha {
+  margin-top: var(--espacio-2);
+}
+
+/* El zócalo, pegado debajo de la ficha: de qué edición es la imagen y la puerta para corregir. */
+.juego-tapa .ficha-zocalo {
+  position: relative;
+  justify-content: flex-end;
+  margin: 0 0.25rem;
+  padding: 0 var(--espacio-2) calc(env(safe-area-inset-bottom, 0px));
+  background: var(--fondo);
+  border: 2px solid var(--borde);
+  border-top: 0;
+  border-radius: 0 0 3px 3px;
+}
+
+.juego-tapa .ficha-zocalo .edicion-tapa {
+  flex: 1 1 11rem;
+  margin: 0 auto 0 0;
+  padding: 0.5rem 0;
+  font-size: 0.76rem;
+  line-height: 1.35;
+}
+
+.juego-tapa .ficha-zocalo .correccion {
+  margin: 0;
+}
+
+.juego-tapa .ficha-zocalo .correccion-disparador {
+  border-bottom: 0;
+}
+
+/* ---- El resultado: la tirada colgada ---- */
+.juego-tapa #resultado h2 {
+  margin: 0;
+  font-family: var(--fuente-rotulada);
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.juego-tapa #resultado h2:focus {
+  outline: none;
+}
+
+.puntaje.puntaje--tirada {
+  width: fit-content;
+  margin-top: var(--espacio-1);
+  padding: 0.2rem 0.9rem 0.14rem;
+  border: var(--linea) solid var(--papel);
+  border-radius: 3px;
+  font-size: 2.8rem;
+  text-transform: uppercase;
+  rotate: -2deg;
+}
+
+.tendedero-rotulo {
+  margin: var(--espacio-3) 0 0;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: var(--texto-tenue);
+  text-transform: uppercase;
+}
+
+.tendedero--vuelta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
+  gap: 1.5rem 1.1rem;
+  margin-top: 0.3rem;
+  padding: 0.8rem 0.7rem 0;
+}
+
+.tendedero--vuelta::before {
+  top: 0.8rem;
+}
+
+/* La segunda soga, a la altura del segundo renglón (los dos miden lo mismo). */
+.tendedero--vuelta::after {
+  top: calc(50% + 1.15rem);
+}
+
+.tendedero--vuelta .colgada-papel::before {
+  top: -0.75rem;
+  width: 0.62rem;
+  height: 1.6rem;
+  margin-left: -0.31rem;
+  border-width: 2px;
+}
+
+.tendedero--vuelta .colgada-hoja {
+  border-width: var(--linea);
+  border-radius: 3px;
+}
+
+.tendedero--vuelta .colgada-marca {
+  right: -0.5rem;
+  bottom: -0.5rem;
+  width: 1.9rem;
+  height: 1.9rem;
+  border-width: var(--linea);
+  font-size: 1rem;
+}
+
+.colgada-disco {
+  display: block;
+  margin-top: 0.7rem;
+  font-family: var(--fuente-rotulada);
+  font-size: clamp(0.58rem, 2.9vw, 0.72rem);
+  line-height: 1.2;
+  letter-spacing: 0.03em;
+  color: var(--texto);
+  text-align: center;
+  text-transform: uppercase;
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+
+@media (min-width: 46rem) {
+  .tendedero--vuelta {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 1rem 0.8rem;
+  }
+
+  .tendedero--vuelta::after {
+    content: none;
+  }
+}
+
+/* ---- En una ventana baja (un teléfono chico, o uno acostado) ----
+   La portada pone la mesa al lado de la bajada, para que "Empezá" quede arriba del pliegue; y
+   en la partida la mesa y las teclas se aprietan para que las cuatro entren sin desplazar. */
+@media (max-height: 46rem) and (max-width: 45.99rem) {
+  .juego-tapa #portada:not([hidden]) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: var(--espacio-2);
+    align-items: start;
+  }
+
+  .juego-tapa #portada > * {
+    grid-column: 1 / -1;
+  }
+
+  .juego-tapa #portada > .donde-estas,
+  .juego-tapa #portada > #subtitulo {
+    grid-column: 1;
+  }
+
+  .juego-tapa #portada > .mesa-imprenta--portada {
+    grid-row: 4 / span 2;
+    grid-column: 2;
+    width: min(38vw, 9rem);
+    margin-top: 0.4rem;
+  }
+
+  .juego-tapa #portada .mesa-imprenta--portada .bastidor {
+    width: 100%;
+    padding: 1.2rem 0.5rem;
+  }
+
+  .juego-tapa #portada .mesa-imprenta--portada .racleta-carro {
+    top: 1.2rem;
+    right: 0.5rem;
+    left: 0.5rem;
+  }
+
+  .juego-tapa #portada .mesa-imprenta--portada .racleta {
+    right: -0.8rem;
+    left: -0.8rem;
+    height: 1rem;
+  }
+
+  .juego-tapa #portada .mesa-imprenta--portada .tintas {
+    bottom: 0.22rem;
+    left: 0.7rem;
+  }
+
+  .juego-tapa #portada .mesa-cartel {
+    display: none;
+  }
+
+}
+
+@media (max-height: 40rem) and (max-width: 45.99rem) {
+  .juego-tapa #partida .bastidor {
+    width: min(100%, 21.4rem, 31svh + 1.4rem);
+  }
+
+  .juego-tapa #partida .colgada {
+    flex-basis: 2.1rem;
+  }
+
+  .juego-tapa #partida .tendedero {
+    margin-top: 0.45rem;
+  }
+
+  .juego-tapa #partida .mesa-imprenta {
+    margin-top: var(--espacio-1);
+  }
+
+  .juego-tapa #partida .credito-tapa {
+    margin-top: 0.3rem;
+  }
+
+  .juego-tapa #partida .enunciado {
+    padding-top: var(--espacio-1);
+    font-size: 1.02rem;
+    text-wrap: nowrap;
+  }
+
+  .juego-tapa #partida .opciones--tapa {
+    gap: 0.4rem;
+    margin-top: var(--espacio-1);
+  }
+
+  .juego-tapa #partida .opciones--tapa .opcion {
+    min-height: 3.1rem;
+    padding: 0.3rem 0.55rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* ==========================================================================
    Ponelos en fila (`US-08`) — el tablero de repartir
 
    Es, de los siete juegos, **el que más superficie tiene para la estética genérica de

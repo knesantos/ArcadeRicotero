@@ -304,6 +304,15 @@ const ANIMACIONES = [
   // `clip-path`, en saltos), una vez por pregunta.
   { nombre: 'pantalla-prende', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
   { nombre: 'pantalla-apaga', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  // "Adiviná la tapa", la mesa de serigrafía (ronda de pulida, 2026-11-20): el pedazo que se
+  // achica hasta su lugar en la tapa, la racleta que va y viene (cuatro pasadas, o una ida y
+  // vuelta) y la hoja recién colgada que se hamaca en la soga. Las cuatro pasan una vez.
+  { nombre: 'recorte-a-su-lugar', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  { nombre: 'racleta-tirada', apaga: 'token', valor: '--escalon-pasada', hoja: 'src/styles/juego.css' },
+  { nombre: 'racleta-ida-y-vuelta', apaga: 'token', valor: '--escalon-pasada', hoja: 'src/styles/juego.css' },
+  { nombre: 'hoja-se-hamaca', apaga: 'token', valor: '--duracion-inercia', hoja: 'src/styles/juego.css' },
+  // Y la tinta de la tirada que se llena cuando pasa su racleta.
+  { nombre: 'tinta-se-pone', apaga: 'token', valor: '--duracion-pasada', hoja: 'src/styles/juego.css' },
 ] as const;
 
 test('no hay ninguna animacion que esta lista no conozca', () => {

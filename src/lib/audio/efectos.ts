@@ -30,7 +30,7 @@
 
 import { contextoVivo } from './contexto.ts';
 
-export type Efecto = 'tecla' | 'clac' | 'golpe' | 'sello' | 'carton';
+export type Efecto = 'tecla' | 'clac' | 'golpe' | 'sello' | 'carton' | 'racleta';
 
 /* ---------------------------------------------------------------- el interruptor
  *
@@ -125,6 +125,15 @@ export const EFECTOS: Readonly<Record<Efecto, FichaDeEfecto>> = {
     // El roce del cartón, apagado, y el cuerpo del golpe contra la madera de la batea.
     soplidos: [{ desde: 0, largoSeg: 0.045, filtro: 'lowpass', hz: 340, nivel: 0.7 }],
     caidas: [{ desde: 0, largoSeg: 0.09, desdeHz: 105, hastaHz: 58, nivel: 0.8 }],
+  },
+  racleta: {
+    // La goma de la racleta arrastrando la tinta por la malla: un soplido largo y agudo, sin
+    // cuerpo grave ("Adiviná la tapa", ronda de pulida del 2026-11-20).
+    soplidos: [
+      { desde: 0, largoSeg: 0.2, filtro: 'bandpass', hz: 2600, nivel: 0.5 },
+      { desde: 0.02, largoSeg: 0.16, filtro: 'highpass', hz: 5200, nivel: 0.22 },
+    ],
+    caidas: [],
   },
 };
 

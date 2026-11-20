@@ -1605,6 +1605,230 @@ async function preguntasRicoteras(ctx) {
   await foto('retirada');
 }
 
+/**
+ * "Adiviná la tapa": la mesa de serigrafía. La portada y la racleta que pasa; una vuelta con
+ * error (la prueba en una tinta), acierto (la tirada entera), el pase que cuelga la hoja en la
+ * soga, un recorte de nivel difícil, un rótulo de leyenda o de testimonio si sale, el resultado
+ * con la tirada colgada y la tarjeta; y otra vuelta sin errar, para la hazaña. Avisa si "Seguí"
+ * queda fuera de la ventana y cuánto desborda la hoja de costado.
+ */
+async function adivinarLaTapa(ctx) {
+  const { pagina, foto, tira, rafaga, quieto } = ctx;
+  const sinMenu = () =>
+    pagina.evaluate(() => {
+      try {
+        delete Navigator.prototype.share;
+      } catch {}
+    });
+  await pagina.goto(`${base}/juegos/adivinar-la-tapa/`, { waitUntil: 'networkidle0' });
+  await tira('portada-entra', () => pagina.reload({ waitUntil: 'domcontentloaded' }), { ms: 900 });
+  // El menú de compartir del sistema se queda esperando en el navegador de las capturas.
+  await sinMenu();
+  await ctx.espera(400);
+  await foto('portada');
+  await foto('portada-entera', { entera: true });
+
+  const banco = await pagina.evaluate(() => JSON.parse(document.getElementById('banco').textContent));
+  const elDeAhora = async () => {
+    const ruta = await pagina.$eval('#partida .estampa-papel .tapa-juego', (n) => new URL(n.src).pathname);
+    const item = banco.find((i) => i.imagen.ruta === ruta);
+    if (!item) throw new Error(`no encuentro en el banco «${ruta}»`);
+    return item;
+  };
+  const opcion = async (buena) => {
+    const item = await elDeAhora();
+    const texto = item.opciones.find((o) => !!o.correcta === buena).texto;
+    for (const b of await pagina.$$('#partida .opcion:not(:disabled)')) {
+      if ((await b.evaluate((n) => n.dataset.texto)) === texto) return b;
+    }
+    throw new Error(`no hay opción "${texto}"`);
+  };
+  const fichaLista = () => pagina.waitForSelector('#partida .ficha-respuesta .seguir-ficha', { timeout: 8000 });
+  const asentar = () => ctx.espera(quieto ? 150 : 1100);
+  const estado = () =>
+    pagina.evaluate(() => {
+      const b = document.querySelector('#partida .seguir-ficha');
+      const c = b?.getBoundingClientRect();
+      return {
+        paso: document.querySelector('#partida .tablero-imprenta-paso')?.textContent,
+        llevas: document.querySelector('#partida .restantes--llevas')?.textContent,
+        racha: document.querySelector('#partida .racha:not([hidden])')?.textContent ?? null,
+        boton: b?.textContent,
+        seguiALaVista: c ? c.top >= 0 && c.bottom <= innerHeight : null,
+        altoDeLaHoja: document.documentElement.scrollHeight,
+        desborda: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      };
+    });
+  const pasar = async () => {
+    await pagina.$eval('#partida .ficha-respuesta .seguir-ficha', (b) => b.click());
+    await pagina.waitForFunction(
+      () => document.querySelector('#partida').hidden || document.querySelector('#partida .opcion:not(:disabled)'),
+      { timeout: 8000 },
+    );
+  };
+
+  // ---- Empezá: la racleta baja y deja la segunda tinta, vuelve y deja la clave.
+  await rafaga('pasa-la-racleta', () => pagina.click('#jugar'), { desde: 0, hasta: 760, sobre: '#mesa-portada', zoom: 1, cada: 3, tope: 12, porRenglon: 6 });
+  await pagina.waitForSelector('#partida:not([hidden]) .opcion', { timeout: 8000 });
+  await ctx.espera(quieto ? 200 : 900);
+  await foto('partida');
+  await foto('partida-entera', { entera: true });
+  console.log(`   (partida: ${JSON.stringify(await estado())})`);
+
+  // ---- tapa 1: el error. La mesa da un golpe, el pedazo va a su lugar y sale una sola tinta.
+  const mala = await opcion(false);
+  await rafaga('error-una-tinta', () => mala.evaluate((b) => b.click()), { desde: 0, hasta: 1300, cada: 5, tope: 12 });
+  await fichaLista();
+  await asentar();
+  await foto('error-ficha');
+  await foto('error-ficha-entera', { entera: true });
+  console.log(`   (error: ${JSON.stringify(await estado())})`);
+
+  // El pase: la hoja sale de la mesa, vuela a la soga y se queda hamacando.
+  await rafaga('pase-cuelga-la-hoja', () => pagina.$eval('#partida .ficha-respuesta .seguir-ficha', (b) => b.click()), {
+    desde: 0,
+    hasta: 1500,
+    cada: 5,
+    tope: 12,
+  });
+  await ctx.espera(500);
+  await foto('tapa-2');
+
+  // ---- tapa 2: el acierto. El zoom se abre y la racleta pasa cuatro veces.
+  const buena = await opcion(true);
+  await rafaga('acierto-la-tirada', () => buena.evaluate((b) => b.click()), {
+    desde: 0,
+    hasta: 1700,
+    sobre: '#partida .mesa-imprenta',
+    cada: 5,
+    tope: 15,
+    porRenglon: 5,
+  });
+  await fichaLista();
+  await asentar();
+  await foto('acierto-ficha');
+  await foto('acierto-ficha-entera', { entera: true });
+  console.log(`   (acierto: ${JSON.stringify(await estado())})`);
+
+  // La soga de cerca, mientras llega la hoja: el vuelo y la hamaca.
+  await rafaga('pase-la-soga-de-cerca', () => pagina.$eval('#partida .ficha-respuesta .seguir-ficha', (b) => b.click()), {
+    desde: 250,
+    hasta: 1500,
+    sobre: '#partida .tablero-imprenta',
+    zoom: 2,
+    cada: 5,
+    tope: 12,
+    porRenglon: 3,
+  });
+  await ctx.espera(500);
+
+  // ---- lo que queda de la vuelta: acierto y error, de a uno. Se mira lo que vaya saliendo.
+  const vistos = new Set();
+  const mirarLoQueSale = async (item) => {
+    const mirar = [];
+    if (item.dificultad === 'dificil' && !vistos.has('nivel-dificil')) mirar.push('nivel-dificil');
+    if (item.rotulo && !vistos.has(item.rotulo.tipo)) mirar.push(item.rotulo.tipo);
+    for (const m of mirar) vistos.add(m);
+    return mirar;
+  };
+  for (let n = 3; n <= 8; n++) {
+    if (!(await pagina.$('#partida:not([hidden]) .opcion:not(:disabled)'))) break;
+    const item = await elDeAhora();
+    const mirar = await mirarLoQueSale(item);
+    if (mirar.includes('nivel-dificil')) {
+      await ctx.espera(quieto ? 100 : 500);
+      await foto('pregunta-nivel-dificil');
+    }
+    await (await opcion(n % 2 === 1)).evaluate((b) => b.click());
+    await fichaLista();
+    if (mirar.length) {
+      await asentar();
+      await foto(`ficha-${mirar.join('-')}`);
+      await foto(`ficha-${mirar.join('-')}-entera`, { entera: true });
+      console.log(`   (${mirar.join(', ')}: ${JSON.stringify(await estado())})`);
+    }
+    const ultima = await pagina.$eval('#partida .tablero-imprenta-paso', (p) => /^(\d+) de \1$/.test(p.textContent));
+    if (ultima) {
+      await asentar();
+      await foto('ultima-ficha');
+      await rafaga('llega-el-resultado', () => pagina.$eval('#partida .ficha-respuesta .seguir-ficha', (b) => b.click()), {
+        desde: 0,
+        hasta: 1800,
+        cada: 7,
+        tope: 12,
+      });
+    } else {
+      await pasar();
+      await ctx.espera(quieto ? 100 : 700);
+    }
+  }
+  await pagina.waitForSelector('#resultado:not([hidden])', { timeout: 8000 });
+  await ctx.espera(1400);
+  await foto('resultado');
+  await foto('resultado-entera', { entera: true });
+  console.log(
+    `   (resultado: ${JSON.stringify(
+      await pagina.evaluate(() => ({
+        puntaje: document.querySelector('#resultado .puntaje')?.textContent,
+        soga: document.querySelector('#resultado .tendedero')?.getAttribute('aria-label'),
+        desborda: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      })),
+    )})`,
+  );
+
+  // La tarjeta que asoma, mirada entera: se la pone encima de la ventana un momento.
+  const mirarLaTarjeta = async (nombre) => {
+    await pagina.waitForSelector('.tarjeta-asoma img', { timeout: 8000 }).catch(() => {});
+    const hay = await pagina.evaluate(() => {
+      const img = document.querySelector('.tarjeta-asoma img');
+      if (!img) return false;
+      const copia = img.cloneNode();
+      copia.id = 'ver-tarjeta';
+      copia.className = '';
+      copia.style.cssText = 'position:fixed;inset:0;z-index:99;width:100vw;height:100vh;object-fit:contain;background:#000';
+      document.body.append(copia);
+      return true;
+    });
+    if (!hay) return console.log('   (no hay tarjeta que mirar)');
+    await ctx.espera(300);
+    await foto(nombre);
+    await pagina.evaluate(() => document.getElementById('ver-tarjeta')?.remove());
+  };
+  await mirarLaTarjeta('tarjeta');
+  await pagina.evaluate(() => document.querySelector('#resultado .primario.firma')?.click());
+  await ctx.espera(700);
+  await foto('compartido-entera', { entera: true });
+
+  // ---- otra vuelta, sin errar: lo que no haya salido antes, y la hazaña.
+  await pagina.evaluate(() => document.querySelector('#resultado .pie-resultado button.secundario')?.click());
+  await pagina.waitForSelector('#partida:not([hidden]) .opcion', { timeout: 8000 });
+  await ctx.espera(quieto ? 200 : 700);
+  for (let n = 1; n <= 8; n++) {
+    if (!(await pagina.$('#partida:not([hidden]) .opcion:not(:disabled)'))) break;
+    const item = await elDeAhora();
+    const mirar = await mirarLoQueSale(item);
+    if (mirar.includes('nivel-dificil')) {
+      await ctx.espera(quieto ? 100 : 500);
+      await foto('pregunta-nivel-dificil');
+    }
+    await (await opcion(true)).evaluate((b) => b.click());
+    await fichaLista();
+    if (mirar.length || n === 3) {
+      await asentar();
+      await foto(`ficha-${mirar.length ? mirar.join('-') : 'tres-al-hilo'}`);
+      if (mirar.length) await foto(`ficha-${mirar.join('-')}-entera`, { entera: true });
+    }
+    await pasar();
+    await ctx.espera(quieto ? 100 : 600);
+  }
+  await pagina.waitForSelector('#resultado:not([hidden])', { timeout: 8000 });
+  await ctx.espera(1500);
+  await foto('hazana');
+  await foto('hazana-entera', { entera: true });
+  await mirarLaTarjeta('tarjeta-hazana');
+  if (!vistos.has('leyenda')) console.log('   (en estas dos vueltas no salió ninguna tapa con leyenda)');
+}
+
 /** Cualquier otra ruta: la portada, y lo que aparece al tocar el botón de empezar. */
 async function generico(ctx, ruta) {
   const { pagina, foto, tira } = ctx;
@@ -1648,6 +1872,7 @@ const RECORRIDOS = {
   'ponelos-en-fila': ponelosEnFila,
   quiz: preguntasRicoteras,
   'preguntas-ricoteras': preguntasRicoteras,
+  'adivinar-la-tapa': adivinarLaTapa,
 };
 
 // ---------------------------------------------------------------- correr

@@ -751,6 +751,27 @@ const ESTADOS_TAPA = [
   '.pasada--clara',
   '.pasada--media',
   '.pasada--clave',
+  // La mesa de serigrafía (ronda de pulida, 2026-11-20): el pedazo que vuelve a su lugar, la
+  // hoja en una sola tinta, las dos maneras de pasar la racleta, la tinta que se usó, el sello
+  // del cierre y su marca, y las hojas de la soga según cómo salieron.
+  '.tapa-juego--a-su-lugar',
+  '.estampa-papel--prueba',
+  '.racleta-carro--tirada',
+  '.racleta-carro--prueba',
+  '.tinta--puesta',
+  '.sello-cae--ok',
+  '.sello-cae--no',
+  '.sello-marca--ok',
+  '.sello-marca--no',
+  '.colgada--resto',
+  '.colgada--ahora',
+  '.colgada--ok',
+  '.colgada--no',
+  '.colgada--llega',
+  '.colgada-foto--clave',
+  '.mesa-imprenta--imprime',
+  '.tendedero--vuelta',
+  '.puntaje--tirada',
 ];
 
 /**
@@ -941,6 +962,7 @@ const ISLAS: Readonly<Record<string, Tablero | SinTablero>> = {
   'spotify.ts': { sinTablero: 'un <a> y nada mas, que es literalmente RQ-B2 de ADR-01' },
   'tarjeta.ts': { sinTablero: 'pincel de canvas (US-02 y US-07); dibuja pixeles, no crea nodos con clase' },
   'tarjeta-pared.ts': { sinTablero: 'pincel de canvas de la tarjeta de US-03 (el muro de la vuelta); dibuja pixeles, no crea nodos con clase' },
+  'tarjeta-tirada.ts': { sinTablero: 'pincel de canvas de la tarjeta de US-04 (la tirada colgada a secar); dibuja pixeles, no crea nodos con clase' },
   'tarjeta-fichin.ts': { sinTablero: 'pincel de canvas de la tarjeta de US-01 (la chapa del fichin con la planilla); dibuja pixeles, no crea nodos con clase' },
 };
 
