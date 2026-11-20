@@ -58,9 +58,9 @@ const VENTANAS_PASO_CORTO = Math.round(PASO_CORTO * POR_SEG);
 
 /**
  * Cuánto fragmento tiene que quedar después del arranque para que el tema se sortee: lo
- * que dura el penúltimo paso. Con eso, el único paso que no entra entero después del
- * arranque es el último —que es el fragmento completo— y `ventana()` de `escalera.ts` lo
- * resuelve sin prometer de más.
+ * que dura el penúltimo paso. Con eso los cinco pasos que prometen un número lo cumplen
+ * enteros desde el primer sonido, y el último —que no promete número: es "el resto"—
+ * suena lo que quede hasta el final (`ventana()` en `escalera.ts`).
  */
 export const RESTO_MINIMO_SEG = ESCALERA[ESCALERA.length - 2]!.segundos;
 

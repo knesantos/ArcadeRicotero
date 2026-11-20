@@ -107,30 +107,32 @@ test('el nivel de un tramo promedia potencia, no decibeles', () => {
 
 // ---------------------------------------------------------------- la ventana (escalera.ts)
 
-test('la ventana arranca en el primer sonido cuando el paso entra entero', () => {
+test('la ventana arranca en el primer sonido', () => {
   assert.deepEqual(ventana(0.1, 0.84, 10), { desdeSeg: 0.84, duraSeg: 0.1 });
   assert.deepEqual(ventana(8, 2, 10), { desdeSeg: 2, duraSeg: 8 });
 });
 
-test('🔴 la ventana nunca da menos de lo que el paso promete: se corre hacia atrás', () => {
-  // 10 s prometidos, arranque en 0,84: después del arranque hay 9,16. Suena el fragmento
-  // entero, no 9,16 s con un cartel que dice 10 (`D-26`).
-  assert.deepEqual(ventana(10, 0.84, 10), { desdeSeg: 0, duraSeg: 10 });
-  const v = ventana(8, 3.5, 10);
-  assert.equal(v.duraSeg, 8);
-  assert.equal(v.desdeSeg, 2);
+test('🔴 el último paso es el resto: desde el primer sonido hasta el final, sin volver atrás', () => {
+  // Antes se corría a [0, 10] para completar los 10 s, y metía la entrada muda adentro:
+  // "Dame 2 s más" daba silencio. Ahora suena lo que queda y se llama "el resto".
+  const v = ventana(10, 0.84, 10);
+  assert.equal(v.desdeSeg, 0.84);
+  assert.ok(Math.abs(v.duraSeg - 9.16) < 1e-9);
 });
 
-test('la ventana nunca se sale del archivo', () => {
-  for (const inicio of [0, 0.3, 2, 9.9, 15]) {
+test('🔴 ningún paso reproduce audio anterior al primer sonido, ni se sale del archivo', () => {
+  for (const inicio of [0, 0.3, 1.67, 2, 9.9]) {
     for (const p of ESCALERA) {
       for (const largo of [10, 10.06, 9.5]) {
         const v = ventana(p.segundos, inicio, largo);
-        assert.ok(v.desdeSeg >= 0 && v.desdeSeg + v.duraSeg <= largo + 1e-9, `${p.segundos} s desde ${inicio} en ${largo}`);
-        assert.equal(v.duraSeg, Math.min(p.segundos, largo));
+        assert.equal(v.desdeSeg, Math.min(inicio, largo), `${p.etiqueta} desde ${inicio} en ${largo}`);
+        assert.ok(v.duraSeg >= 0 && v.duraSeg <= p.segundos);
+        assert.ok(v.desdeSeg + v.duraSeg <= largo + 1e-9, `${p.etiqueta} desde ${inicio} en ${largo}`);
       }
     }
   }
+  // Un arranque fuera del archivo no explota: no suena nada.
+  assert.deepEqual(ventana(2, 15, 10), { desdeSeg: 10, duraSeg: 0 });
 });
 
 // ---------------------------------------------------------------- contra lo real
@@ -227,18 +229,23 @@ test('🔴 el paso 2 no es el paso 1 repetido: lo que agrega también suena', ()
 });
 
 test('🔴 la escalera no promete más audio del que hay, en ningún tema del sorteo', () => {
+  const ultimo = ESCALERA[ESCALERA.length - 1]!;
+  const penultimo = ESCALERA[ESCALERA.length - 2]!;
   for (const f of delSorteo) {
     const { duracionSeg } = medido(f.slug);
     const ini = f.inicioSeg ?? 0;
     for (const p of ESCALERA) {
       const v = ventana(p.segundos, ini, duracionSeg);
-      assert.equal(v.duraSeg, p.segundos, `${f.slug}: el paso de ${p.etiqueta} suena ${v.duraSeg} s`);
-      assert.ok(v.desdeSeg + v.duraSeg <= duracionSeg + 1e-9, `${f.slug}: el paso de ${p.etiqueta} se sale del archivo`);
-      // Solo el último paso —el fragmento entero— puede correrse antes del primer sonido.
-      if (p.n < ESCALERA.length) {
-        assert.equal(v.desdeSeg, ini, `${f.slug}: el paso de ${p.etiqueta} no arranca en el primer sonido`);
-      }
+      // Ningún paso suena nada anterior al primer sonido. Ninguno: tampoco el último.
+      assert.equal(v.desdeSeg, ini, `${f.slug}: el paso "${p.etiqueta}" no arranca en el primer sonido`);
+      assert.ok(v.desdeSeg + v.duraSeg <= duracionSeg + 1e-9, `${f.slug}: el paso "${p.etiqueta}" se sale del archivo`);
+      // Los cinco que prometen un número lo cumplen entero.
+      if (p !== ultimo) assert.equal(v.duraSeg, p.segundos, `${f.slug}: el paso de ${p.etiqueta} suena ${v.duraSeg} s`);
     }
+    // Y "el resto" es resto de verdad: llega al final y agrega audio sobre el penúltimo.
+    const resto = ventana(ultimo.segundos, ini, duracionSeg);
+    assert.ok(Math.abs(resto.desdeSeg + resto.duraSeg - duracionSeg) < 1e-9, `${f.slug}: el resto no llega al final`);
+    assert.ok(resto.duraSeg > penultimo.segundos, `${f.slug}: "el resto" no agrega nada sobre los ${penultimo.etiqueta}`);
   }
 });
 

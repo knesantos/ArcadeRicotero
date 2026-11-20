@@ -234,7 +234,7 @@ export class Reproductor {
    * `inicioSeg` es de `T-533`: varios recortes arrancan con silencio, y sonando desde 0
    * el paso de 0,1 s y el de 0,5 s eran el mismo silencio. El número viene medido en el
    * manifiesto (`arranque.ts`). Qué pedazo exacto suena lo decide `ventana()` de
-   * `escalera.ts`, que nunca da menos de lo que el paso promete.
+   * `escalera.ts`: nunca nada anterior al primer sonido, y el último paso hasta el final.
    */
   public sonar(slug: string, segundos: number, escucha: Escucha = {}, inicioSeg = 0): void {
     this.detener();
@@ -331,7 +331,9 @@ export class Reproductor {
     fuente.onended = () => {
       if (this.fuente === fuente) this.terminar(escucha);
     };
-    this.seguir(() => this.ctx!.currentTime - arranque, limite, escucha);
+    // La barra corre hasta donde llega el sonido: en el último paso es "el resto", que
+    // puede ser menos que el techo. Al terminar, la isla la deja llena.
+    this.seguir(() => this.ctx!.currentTime - arranque, corte.duraSeg, escucha);
   }
 
   /**
@@ -376,11 +378,15 @@ export class Reproductor {
     // sonó de verdad— y separarlas fue justamente lo que dejó el corte contando otra cosa.
     // El mismo corte que el camino bueno. Acá el largo es el nominal: un `<audio>` recién
     // apuntado todavía no sabe cuánto dura.
-    const desde = ventana(limite, inicioSeg, DURACION_FRAGMENTO_SEG).desdeSeg;
+    const corte = ventana(limite, inicioSeg, DURACION_FRAGMENTO_SEG);
+    const desde = corte.desdeSeg;
+    const hasta = corte.duraSeg;
     const vigilar = (): void => {
       const t = Math.max(0, el.currentTime - desde);
-      escucha.alAvanzar?.(Math.min(t, limite));
-      if (t >= limite) {
+      escucha.alAvanzar?.(Math.min(t, hasta));
+      // `ended`: en el último paso el corte es el final del archivo, y si el archivo mide
+      // unos milisegundos menos que el nominal, el reloj no llegaría nunca a `hasta`.
+      if (t >= hasta || el.ended) {
         cortar();
         return;
       }

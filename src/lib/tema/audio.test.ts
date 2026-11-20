@@ -342,10 +342,14 @@ test('🔴 el corte arranca en el primer sonido del fragmento, no en el segundo 
   );
 });
 
-test('🔴 el último paso suena lo que promete: el fragmento entero, no lo que quedaba', async () => {
-  // 10 s prometidos en un buffer de 10 s que arranca en 0,84: suenan 10, desde 0 (`D-26`).
+test('🔴 el último paso es el resto: arranca en el primer sonido y llega al final', async () => {
+  // El techo son 10 s en un buffer de 10 s que arranca en 0,84: suenan los 9,16 que quedan.
+  // Nunca [0, 10]: eso metía la entrada muda adentro del paso (`T-533`).
   const arranques = await conBufferDe(10, (r) => r.sonar('un-tema', 10, {}, 0.84));
-  assert.deepEqual(arranques.map(([, desde, dura]) => [desde, dura]), [[0, 10]]);
+  assert.equal(arranques.length, 1);
+  const [, desde, dura] = arranques[0]!;
+  assert.equal(desde, 0.84);
+  assert.ok(Math.abs(dura! - 9.16) < 1e-9);
 });
 
 test('sin arranque medido, suena desde 0 como siempre', async () => {

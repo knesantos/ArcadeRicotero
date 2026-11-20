@@ -47,6 +47,12 @@ export interface Paso {
   readonly puntos: number;
   /** Cómo se escribe el número en pantalla. Coma decimal: se lee en castellano. */
   readonly etiqueta: string;
+  /**
+   * El mismo dato dentro de una frase: "0,1 s de audio", "el resto del audio". Va acá y no
+   * armado en cada pantalla porque el último paso no es un número (`T-533`) y "el resto de
+   * audio" no es castellano.
+   */
+  readonly deAudio: string;
 }
 
 /**
@@ -60,17 +66,31 @@ export interface Paso {
  * que promete 10 y cumple, gana la que no miente. Si algún día los fragmentos se
  * regeneran a 15 s (`generar-fragmentos.mjs`, con ffmpeg), esto vuelve a 15 y el último
  * paso también — son las dos únicas líneas que cambian.
+ *
+ * **`T-533`: el último paso ya no promete "10 s", promete "el resto".** Varios recortes
+ * arrancan con silencio y el corte ahora empieza en el primer sonido real (`inicioSeg`,
+ * `arranque.ts`). Un fragmento de 10 s que arranca a los 1,6 no tiene 10 s de sonido: tiene
+ * 8,4. La primera salida fue correr la ventana del último paso hacia atrás para que sonaran
+ * los 10 s enteros, y mentía igual por otro lado: "Dame 2 s más" devolvía la entrada muda y
+ * mucho menos de 2 s de sonido nuevo. Es otra vez la regla de `D-26`, gana la que no
+ * miente: el sexto paso suena desde el primer sonido hasta el final del fragmento, y se
+ * llama igual en los 88 temas —"el resto"— para que el número no sea una pista. Los 10 de
+ * abajo quedan como **techo**: lo que mide el archivo y el largo de la regla dibujada.
  */
 export const DURACION_FRAGMENTO_SEG = 10;
 
+/** Cómo se llama el último paso: lo que queda del fragmento, sin número (`T-533`). */
+export const RESTO = 'el resto';
+
 export const ESCALERA: readonly Paso[] = [
-  { n: 1, segundos: 0.1, puntos: 100, etiqueta: '0,1 s' },
-  { n: 2, segundos: 0.5, puntos: 80, etiqueta: '0,5 s' },
-  { n: 3, segundos: 2, puntos: 60, etiqueta: '2 s' },
-  { n: 4, segundos: 4, puntos: 40, etiqueta: '4 s' },
-  { n: 5, segundos: 8, puntos: 20, etiqueta: '8 s' },
-  // `D-26`: 10 y no los 15 de `D-24`, mientras los fragmentos del PR #8 midan 10.
-  { n: 6, segundos: 10, puntos: 10, etiqueta: '10 s' },
+  { n: 1, segundos: 0.1, puntos: 100, etiqueta: '0,1 s', deAudio: '0,1 s de audio' },
+  { n: 2, segundos: 0.5, puntos: 80, etiqueta: '0,5 s', deAudio: '0,5 s de audio' },
+  { n: 3, segundos: 2, puntos: 60, etiqueta: '2 s', deAudio: '2 s de audio' },
+  { n: 4, segundos: 4, puntos: 40, etiqueta: '4 s', deAudio: '4 s de audio' },
+  { n: 5, segundos: 8, puntos: 20, etiqueta: '8 s', deAudio: '8 s de audio' },
+  // `D-26` y `T-533`: `segundos` es el techo (el fragmento entero); lo que suena es desde el
+  // primer sonido hasta el final, y por eso la etiqueta no es un número.
+  { n: 6, segundos: DURACION_FRAGMENTO_SEG, puntos: 10, etiqueta: RESTO, deAudio: 'el resto del audio' },
 ];
 
 /** Cuántos intentos tiene el jugador por tema. Es la altura de la escalera, no un tope
@@ -131,14 +151,16 @@ export function anchosDeTramos(): readonly number[] {
  * escalera—, y compra lo que más importa en la primera pantalla: ver que después de una
  * décima viene medio segundo.
  *
- * La unidad va una sola vez, en el último: seis veces "s" en 300 píxeles es ruido, y el
- * último número es el que dice de qué está hecha la regla.
+ * La unidad va una sola vez, en el último **número**: seis veces "s" en 300 píxeles es
+ * ruido, y ese es el que dice de qué está hecha la regla. El último tramo no lleva número
+ * (`T-533`): dice "resto", que es lo que suena.
  */
 export function etiquetaDeRegla(indice: number): string {
   const p = ESCALERA[indice];
   if (!p) return '';
-  const ultimo = indice === ESCALERA.length - 1;
-  return ultimo ? p.etiqueta : p.etiqueta.replace(/\s*s$/, '');
+  if (indice === ESCALERA.length - 1) return p.etiqueta.replace(/^el /, '');
+  const ultimoNumero = indice === ESCALERA.length - 2;
+  return ultimoNumero ? p.etiqueta : p.etiqueta.replace(/\s*s$/, '');
 }
 
 /**
@@ -147,9 +169,13 @@ export function etiquetaDeRegla(indice: number): string {
  * Es lo que el botón de pasar promete ("Dame 0,4 s más"), la misma idea que el juego de
  * referencia escribe al lado de su botón: pasar no es rendirse, es comprar audio. En el
  * último paso no hay nada más que comprar, y devuelve `null` — ahí pasar cierra el tema.
+ *
+ * Del penúltimo al último devuelve `RESTO` y no una cantidad (`T-533`): lo que falta
+ * depende de dónde arranca cada fragmento, y un número fijo ("2 s") prometía de más.
  */
 export function extraAlPasar(n: number): string | null {
   if (n >= ESCALERA.length) return null;
+  if (n === ESCALERA.length - 1) return RESTO;
   const agrega = paso(n + 1).segundos - paso(n).segundos;
   return formatoSegundos(agrega);
 }
@@ -165,32 +191,28 @@ export function formatoSegundos(segundos: number): string {
 export interface Ventana {
   /** Desde dónde, en segundos del archivo. */
   readonly desdeSeg: number;
-  /** Cuánto. Es lo que el paso promete, salvo que el archivo entero mida menos. */
+  /** Cuánto suena. */
   readonly duraSeg: number;
 }
 
 /**
- * El pedazo `[desde, desde + dura]` del fragmento que suena cuando un paso promete
+ * El pedazo `[desde, desde + dura]` del fragmento que suena cuando un paso pide hasta
  * `segundos`, en un fragmento que mide `duracionSeg` y cuyo primer sonido real está en
  * `inicioSeg` (`T-533`, `arranque.ts`).
  *
- * **El corte arranca en el primer sonido, y nunca da menos de lo que promete.** Las dos
- * cosas chocan en un solo lugar: cuando lo que falta del fragmento después del arranque
- * no alcanza. Un fragmento de 10 s que arranca a los 0,8 no tiene 10 s después del
- * arranque: tiene 9,2. Ahí la ventana **se corre hacia atrás** lo justo para entrar
- * entera. Es la misma regla de `D-26`, "gana la que no miente": el paso que dice 10 s
- * suena 10 s, que es el fragmento completo con su entrada, en vez de sonar 9,2 con un
- * cartel que dice 10.
+ * **Ningún paso reproduce audio anterior al primer sonido.** Arranca siempre en
+ * `inicioSeg` y suena lo que pide, o hasta donde llegue el archivo. En los cinco primeros
+ * pasos eso es exactamente lo que el paso promete: `arranque.ts` deja fuera del sorteo al
+ * tema que no tenga, después de su arranque, lo que dura el penúltimo. El último pide el
+ * techo y por eso suena hasta el final: es "el resto", y así se llama.
  *
- * (La otra salida, acortar el último paso de ese tema a "9,2 s", se descartó: la regla
- * mostraría un número distinto en siete temas, y en un juego de adivinar eso es una pista.)
- *
- * En los pasos cortos —que son los que tenían el defecto— la ventana no se corre nunca:
- * `arranque.ts` deja fuera del sorteo al tema que no tenga, después de su arranque, lo
- * que dura el penúltimo paso. El único que se corre es el último.
+ * (Dos salidas descartadas, las dos por mentir. Correr la ventana del último paso hacia
+ * atrás para completar 10 s metía la entrada muda adentro: "Dame 2 s más" daba silencio. Y
+ * escribir en cada tema lo que de verdad queda —"8,4 s"— ponía un número distinto en siete
+ * temas, que en un juego de adivinar es una pista.)
  */
 export function ventana(segundos: number, inicioSeg: number, duracionSeg: number): Ventana {
-  const duraSeg = Math.max(0, Math.min(segundos, duracionSeg));
-  const desdeSeg = Math.max(0, Math.min(inicioSeg, duracionSeg - duraSeg));
+  const desdeSeg = Math.max(0, Math.min(inicioSeg, duracionSeg));
+  const duraSeg = Math.max(0, Math.min(segundos, duracionSeg - desdeSeg));
   return { desdeSeg, duraSeg };
 }
