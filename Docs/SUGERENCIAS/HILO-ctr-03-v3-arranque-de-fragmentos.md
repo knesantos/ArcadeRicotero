@@ -24,8 +24,11 @@ cambió sin volver a medir (sha1).
    arranca sobre −30 y tiene 6 de sus 10 ventanas de 10 ms sobre −40.
 2. **Sorteo:** entra si hay arranque y después de él queda lo que dura el penúltimo paso (8 s).
 3. **Ventana de cada paso** (`ventana()` en `escalera.ts`): arranca en `inicioSeg` y dura lo
-   que el paso promete; si no entra, se corre hacia atrás. Nunca suena menos de lo prometido
-   (`D-26`). En la práctica solo se corre el último paso, que es el fragmento entero.
+   que el paso promete, y nunca se corre hacia atrás: ningún paso suena audio anterior a
+   `inicioSeg`. Los cinco pasos con número entran siempre (la regla 2 lo garantiza). El sexto
+   no tiene número: es **"el resto"**, de `inicioSeg` al final del fragmento, con la misma
+   etiqueta para todos los temas para que no sea pista (`D-26`, corregido en la auditoría de
+   `T-533`; antes el sexto sonaba `[0, 10]` con la entrada muda adentro).
 4. **El corte de dificultad no cambia de pozo:** se sigue calculando sobre todos los
    fragmentos (`BR-30`), entren o no al sorteo. `Catalogo.faciles` cuenta solo los jugables.
 5. `catalogo.ts` rompe el build si un fragmento con `sorteo: true` no cumple la regla 2.
