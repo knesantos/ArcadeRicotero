@@ -9,8 +9,8 @@
 
 > ## 🎯 LA PULIDA DE JUGABILIDAD, RONDAS 0 A 2 (2026-11-19/20) — `REV-24`, `T-531`..`T-533`
 >
-> **Sin integrar**: rama `worktree-pulida-jugabilidad`, sobre `main` en `7d0a22d`. Pedido del usuario (la idea guardada del
-> 2026-11-19, más abajo): siete perfiles critican los cuatro juegos; Opus orquesta y audita, Fable construye, un crítico fresco
+> **Sin integrar**: rama `worktree-pulida-jugabilidad`, sobre `main` en `7d0a22d`. Pedido del usuario del 2026-11-19 (la idea está
+> anotada en "Ideas guardadas" del `ESTADO.md` del checkout principal, todavía sin commitear ahí): siete perfiles critican los cuatro juegos; Opus orquesta y audita, Fable construye, un crítico fresco
 > juega cada ronda.
 >
 > - **Ronda 0 (`T-531`, `REV-24`)**: tres críticos Sonnet, siete perfiles anotados por separado, en el build real a 375×812.
