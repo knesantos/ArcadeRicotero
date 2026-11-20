@@ -144,7 +144,7 @@ export function etiquetaDeRegla(indice: number): string {
 /**
  * Cuánto audio nuevo te da pasar (o errar) en el paso `n`, escrito como en pantalla.
  *
- * Es lo que el botón de pasar promete ("Pasá (+0,4 s)"), la misma idea que el juego de
+ * Es lo que el botón de pasar promete ("Dame 0,4 s más"), la misma idea que el juego de
  * referencia escribe al lado de su botón: pasar no es rendirse, es comprar audio. En el
  * último paso no hay nada más que comprar, y devuelve `null` — ahí pasar cierra el tema.
  */
@@ -159,4 +159,38 @@ export function formatoSegundos(segundos: number): string {
   const redondo = Math.round(segundos * 10) / 10;
   const texto = Number.isInteger(redondo) ? String(redondo) : redondo.toFixed(1).replace('.', ',');
   return `${texto} s`;
+}
+
+/** Qué pedazo del fragmento suena en un paso. */
+export interface Ventana {
+  /** Desde dónde, en segundos del archivo. */
+  readonly desdeSeg: number;
+  /** Cuánto. Es lo que el paso promete, salvo que el archivo entero mida menos. */
+  readonly duraSeg: number;
+}
+
+/**
+ * El pedazo `[desde, desde + dura]` del fragmento que suena cuando un paso promete
+ * `segundos`, en un fragmento que mide `duracionSeg` y cuyo primer sonido real está en
+ * `inicioSeg` (`T-533`, `arranque.ts`).
+ *
+ * **El corte arranca en el primer sonido, y nunca da menos de lo que promete.** Las dos
+ * cosas chocan en un solo lugar: cuando lo que falta del fragmento después del arranque
+ * no alcanza. Un fragmento de 10 s que arranca a los 0,8 no tiene 10 s después del
+ * arranque: tiene 9,2. Ahí la ventana **se corre hacia atrás** lo justo para entrar
+ * entera. Es la misma regla de `D-26`, "gana la que no miente": el paso que dice 10 s
+ * suena 10 s, que es el fragmento completo con su entrada, en vez de sonar 9,2 con un
+ * cartel que dice 10.
+ *
+ * (La otra salida, acortar el último paso de ese tema a "9,2 s", se descartó: la regla
+ * mostraría un número distinto en siete temas, y en un juego de adivinar eso es una pista.)
+ *
+ * En los pasos cortos —que son los que tenían el defecto— la ventana no se corre nunca:
+ * `arranque.ts` deja fuera del sorteo al tema que no tenga, después de su arranque, lo
+ * que dura el penúltimo paso. El único que se corre es el último.
+ */
+export function ventana(segundos: number, inicioSeg: number, duracionSeg: number): Ventana {
+  const duraSeg = Math.max(0, Math.min(segundos, duracionSeg));
+  const desdeSeg = Math.max(0, Math.min(inicioSeg, duracionSeg - duraSeg));
+  return { desdeSeg, duraSeg };
 }

@@ -34,7 +34,7 @@
  * puede tener 105 temas: eso no cambia un solo byte de esta cuenta.
  */
 
-import { DURACION_FRAGMENTO_SEG } from './escalera.ts';
+import { DURACION_FRAGMENTO_SEG, ventana } from './escalera.ts';
 import { contextoDeAudio } from '../audio/contexto.ts';
 
 /*
@@ -225,13 +225,18 @@ export class Reproductor {
   }
 
   /**
-   * Suena `[0, segundos]` del fragmento.
+   * Suena `segundos` del fragmento, **desde su primer sonido real** (`inicioSeg`).
    *
-   * Siempre desde el arranque del archivo y nunca desde donde quedó: el reveal es
+   * Siempre desde el mismo arranque y nunca desde donde quedó: el reveal es
    * acumulativo, cada paso vuelve a contar la misma historia un poco más larga. Escuchar
    * "los siete segundos que faltaban" sueltos no es el mismo juego.
+   *
+   * `inicioSeg` es de `T-533`: varios recortes arrancan con silencio, y sonando desde 0
+   * el paso de 0,1 s y el de 0,5 s eran el mismo silencio. El número viene medido en el
+   * manifiesto (`arranque.ts`). Qué pedazo exacto suena lo decide `ventana()` de
+   * `escalera.ts`, que nunca da menos de lo que el paso promete.
    */
-  public sonar(slug: string, segundos: number, escucha: Escucha = {}): void {
+  public sonar(slug: string, segundos: number, escucha: Escucha = {}, inicioSeg = 0): void {
     this.detener();
     const limite = Math.min(segundos, DURACION_FRAGMENTO_SEG);
 
@@ -275,32 +280,38 @@ export class Reproductor {
       const sigueVigente = (): boolean => vuelta === this.vuelta;
       void this.ctx.resume().then(
         () => {
-          if (sigueVigente()) this.reproducir(slug, limite, escucha);
+          if (sigueVigente()) this.reproducir(slug, limite, escucha, inicioSeg);
         },
         // Si ni resumiendo arranca, mejor el `<audio>` impreciso que el silencio.
         () => {
-          if (sigueVigente()) this.sonarConRepuesto(slug, limite, escucha);
+          if (sigueVigente()) this.sonarConRepuesto(slug, limite, escucha, inicioSeg);
         },
       );
       return;
     }
 
-    this.reproducir(slug, limite, escucha);
+    this.reproducir(slug, limite, escucha, inicioSeg);
   }
 
   /** Elige el camino según lo que hay: buffer con contexto vivo, o el repuesto. */
-  private reproducir(slug: string, limite: number, escucha: Escucha): void {
+  private reproducir(slug: string, limite: number, escucha: Escucha, inicioSeg: number): void {
     this.enJuego = slug;
     const buffer = this.buffers.get(slug);
     if (this.ctx && this.ctx.state === 'running' && buffer) {
-      this.sonarConBuffer(slug, buffer, limite, escucha);
+      this.sonarConBuffer(slug, buffer, limite, escucha, inicioSeg);
       return;
     }
-    this.sonarConRepuesto(slug, limite, escucha);
+    this.sonarConRepuesto(slug, limite, escucha, inicioSeg);
   }
 
   /** El camino bueno: el buffer ya decodificado, con el contexto corriendo. */
-  private sonarConBuffer(slug: string, buffer: AudioBuffer, limite: number, escucha: Escucha): void {
+  private sonarConBuffer(
+    slug: string,
+    buffer: AudioBuffer,
+    limite: number,
+    escucha: Escucha,
+    inicioSeg: number,
+  ): void {
     if (!this.ctx) return;
     // Renovar el buffer en la cola del LRU: el que suena es el último que se tira.
     this.buffers.delete(slug);
@@ -310,7 +321,12 @@ export class Reproductor {
     fuente.buffer = buffer;
     fuente.connect(this.ctx.destination);
     const arranque = this.ctx.currentTime;
-    fuente.start(arranque, 0, limite);
+    // El largo que manda es el del buffer que decodificó **este** navegador, no el del
+    // manifiesto: es lo que hay de verdad para sonar.
+    const largo =
+      Number.isFinite(buffer.duration) && buffer.duration > 0 ? buffer.duration : DURACION_FRAGMENTO_SEG;
+    const corte = ventana(limite, inicioSeg, largo);
+    fuente.start(arranque, corte.desdeSeg, corte.duraSeg);
     this.fuente = fuente;
     fuente.onended = () => {
       if (this.fuente === fuente) this.terminar(escucha);
@@ -324,7 +340,7 @@ export class Reproductor {
    * En el paso de 0,1 s esto es aproximado y no hay forma de que no lo sea. Se prefiere
    * un paso 1 impreciso a una pantalla muda.
    */
-  private sonarConRepuesto(slug: string, limite: number, escucha: Escucha): void {
+  private sonarConRepuesto(slug: string, limite: number, escucha: Escucha, inicioSeg = 0): void {
     let el = this.repuesto;
     if (!el) {
       try {
@@ -358,8 +374,11 @@ export class Reproductor {
     };
     // El mismo bucle mueve la barra y decide el corte: son la misma pregunta —cuánto
     // sonó de verdad— y separarlas fue justamente lo que dejó el corte contando otra cosa.
+    // El mismo corte que el camino bueno. Acá el largo es el nominal: un `<audio>` recién
+    // apuntado todavía no sabe cuánto dura.
+    const desde = ventana(limite, inicioSeg, DURACION_FRAGMENTO_SEG).desdeSeg;
     const vigilar = (): void => {
-      const t = el.currentTime;
+      const t = Math.max(0, el.currentTime - desde);
       escucha.alAvanzar?.(Math.min(t, limite));
       if (t >= limite) {
         cortar();
@@ -368,7 +387,7 @@ export class Reproductor {
       this.cuadro = requestAnimationFrame(vigilar);
     };
 
-    el.currentTime = 0;
+    el.currentTime = desde;
     const promesa = el.play();
     if (promesa) promesa.catch(() => this.terminar(escucha));
     // Tope de seguridad: el largo del paso más cinco segundos de gracia para que el

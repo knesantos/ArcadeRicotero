@@ -39,7 +39,7 @@ import { leerTemas, normalizarDuro, type Disco } from '../letra/temas.ts';
 import { FICHAS } from '../cancionero/banco.ts';
 import { slugDeTitulo } from '../texto.ts';
 import type { TemaBuscable } from './buscador.ts';
-import { DURACION_FRAGMENTO_SEG } from './escalera.ts';
+import { DURACION_FRAGMENTO_SEG, ESCALERA } from './escalera.ts';
 import { repartirEnVivo, type ConteoCitado, type NivelDificultad } from '../en-vivo.ts';
 
 export class CatalogoInvalido extends Error {}
@@ -52,6 +52,20 @@ export interface Fragmento {
   readonly duracionSeg: number;
   /** ¿Existe además el tema entero (`D-23`, nivel 2)? */
   readonly entero: boolean;
+  /**
+   * Dónde está el primer sonido real del archivo, en segundos (`CTR-03` v3, `T-533`).
+   * Lo mide `scripts/medir-fragmentos.mjs` con la regla de `arranque.ts`; no se escribe a
+   * mano. `null`: el fragmento nunca llega a sonar sobre el umbral. Si falta, vale 0.
+   */
+  readonly inicioSeg?: number | null;
+  /**
+   * ¿Entra al sorteo? `false` es un archivo que existe pero que no se puede jugar sin
+   * mentir: arranca demasiado tarde o suena demasiado bajo, y hay que recortarlo de nuevo
+   * desde el master. Sigue en el manifiesto porque el archivo sigue en disco. Si falta, entra.
+   */
+  readonly sorteo?: boolean;
+  /** Por qué quedó fuera del sorteo. Solo está cuando `sorteo` es `false`. */
+  readonly motivo?: string;
 }
 
 export interface Manifiesto {
@@ -66,6 +80,8 @@ export interface TemaDelJuego extends TemaBuscable {
   readonly anio: number;
   /** Solo los jugables entran al sorteo. Los demás existen para el buscador. */
   readonly jugable: boolean;
+  /** Desde dónde arranca el corte: el primer sonido real del fragmento (`T-533`). */
+  readonly inicioSeg: number;
   /** El tema entero, para el que ya lo adivinó (`D-22`). */
   readonly entero: boolean;
   /** Slug de la ficha de letra y acordes, si la tenemos. `null` es un hueco declarado. */
@@ -144,6 +160,19 @@ export function indexarFragmentos(
           `${DURACION_FRAGMENTO_SEG} s: el último paso sonaría a silencio`,
       );
     }
+    // `T-533`: un tema del sorteo tiene que tener, después de su primer sonido, lo que
+    // dura el penúltimo paso. Si no, los pasos cortos ya no arrancan donde suena.
+    if (f.sorteo !== false) {
+      const inicio = f.inicioSeg ?? 0;
+      const resto = ESCALERA[ESCALERA.length - 2]!.segundos;
+      if (f.inicioSeg === null || !(inicio >= 0) || DURACION_FRAGMENTO_SEG - inicio < resto) {
+        throw new CatalogoInvalido(
+          `el fragmento "${f.slug}" está en el sorteo con inicioSeg ${f.inicioSeg}: después ` +
+            `del arranque no quedan los ${resto} s del penúltimo paso. Corré ` +
+            `"npm run medir-fragmentos" en vez de editar el manifiesto a mano.`,
+        );
+      }
+    }
     indice.set(f.slug, f);
   }
 
@@ -191,6 +220,15 @@ export function catalogo(
 
   // `D-45` vía `CTR-19.5`: el nivel se deriva acá, en build, y no vive en el manifiesto
   // —que describe archivos de audio, no temas—. Sin conteo cae `dificil` para todos.
+  //
+  // El corte se sigue haciendo sobre **todos los fragmentos**, entren o no al sorteo
+  // (`T-533`): es el pozo que usan `BR-30`, `en-vivo.test.ts` y las otras pantallas que
+  // leen este manifiesto, y sacar siete temas de la cuenta movía los tercios de los demás.
+  // Lo que sí mira el sorteo es `faciles`, más abajo: cuenta solo los que se pueden jugar.
+  const seSortea = (slug: string): boolean => {
+    const f = fragmentos.get(slug);
+    return f !== undefined && f.sorteo !== false;
+  };
   const elPozo = new Set(conSlug.filter((t) => fragmentos.has(t.slug)).map((t) => t.slug));
   const corte = repartirEnVivo(elPozo, conteo);
 
@@ -205,7 +243,8 @@ export function catalogo(
       discoTitulo: ficha.titulo,
       pista: t.pista,
       anio: ficha.anio,
-      jugable: frag !== undefined,
+      jugable: seSortea(t.slug),
+      inicioSeg: frag?.inicioSeg ?? 0,
       entero: frag?.entero ?? false,
       letra: letraPorTitulo.get(normalizarDuro(t.titulo)) ?? null,
       dificultad: corte.porSlug.get(t.slug) ?? 'dificil',
@@ -227,7 +266,8 @@ export function catalogo(
     temas,
     discos,
     jugables: temas.filter((t) => t.jugable).length,
-    faciles: corte.faciles,
+    // Los Fáciles que de verdad pueden salir: uno fuera del sorteo no cuenta (`T-533`).
+    faciles: temas.filter((t) => t.jugable && t.dificultad === 'facil').length,
     conConteo: corte.conConteo,
     corteDeterminado: corte.determinado,
     conteoConsultado: conteo?.consultado ?? null,
