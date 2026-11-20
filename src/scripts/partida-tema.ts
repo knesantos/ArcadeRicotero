@@ -47,6 +47,8 @@ import { armarLink, leerDesafio } from '../lib/desafio.ts';
 import { Cronometro, duracion, total as sumarTiempos } from '../lib/tema/reloj.ts';
 import { claseDisco } from '../lib/tema/paleta.ts';
 import { armarVuelta } from '../lib/tema/vuelta.ts';
+import { anunciador } from '../lib/sitio/anunciar.ts';
+import { anuncioErrado, anuncioRevelacion } from '../lib/tema/anuncio.ts';
 import { nombreArchivo } from '../lib/tarjeta/plan.ts';
 import { dibujarTarjeta } from './tarjeta.ts';
 import { incrustado, postearEnX } from './en-x.ts';
@@ -87,6 +89,8 @@ const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as 
 const portada = $('portada');
 const zonaPartida = $<HTMLElement>('partida');
 const zonaResultado = $('resultado');
+/** T-534: lo que solo se ve —el intento errado, la revelación— se le dice a quien no ve. */
+const decir = anunciador();
 
 const catalogo: Tema[] = JSON.parse($('catalogo').textContent ?? '[]');
 const reproductor = new Reproductor();
@@ -969,6 +973,7 @@ function alTeclear(ev: KeyboardEvent): void {
 function arriesgar(): void {
   const tema = ronda[indice];
   if (!tema || !elegido) return;
+  if (!acierta(elegido, tema)) decir(anuncioErrado(elegido.titulo));
 
   if (acierta(elegido, tema)) {
     cerrarTema(true);
@@ -1096,6 +1101,7 @@ function cerrarTema(acerto: boolean): void {
 
 function pintarRevelacion(tema: Tema, acerto: boolean, ganados: number): void {
   revelacion.replaceChildren();
+  decir(anuncioRevelacion(acerto, tema.titulo, ganados));
   /*
    * La ficha viste **la tinta real del disco del tema**, no la de la seccion (`paleta.ts`).
    *
