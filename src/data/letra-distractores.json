@@ -1,0 +1,890 @@
+{
+  "_comentario": "Curaduria de distractores de 'Completa la letra' (T-532). letra.json lo escribe entero generar-letra.mjs: lo que una persona elige vive aca y el generador lo aplica, no lo pisa. Un item sin entrada aca NO se promueve a listo.",
+  "_como": "Una entrada por verso jugable. La llave es tema + verso (el renglon con la respuesta entre corchetes, igual que en letra-confirmaciones.json), no el id, que es posicional. `clase` (sustantivo|adjetivo|verbo|infinitivo|gerundio|otra), y `numero` (sg|pl) y `genero` (m|f) solo si el verso los fuerza. `distractores`: tres, en minuscula, del cancionero de la banda; el que no salga de ahi se declara en `fuera`. `baja` con el motivo si el verso no admite tres distractores dignos: no se juega. La vara que se mide a maquina esta en src/lib/letra/curaduria.ts; que ninguno sea tambien correcto lo mira quien cura. Despues: npm run generar-letra.",
+  "tarea": "T-532",
+  "items": [
+    {
+      "tema": "roto-y-mal-parado",
+      "verso": "Quemás tu [vida] en este día,",
+      "clase": "sustantivo",
+      "numero": "sg",
+      "distractores": [
+        "guita",
+        "suerte",
+        "plata"
+      ]
+    },
+    {
+      "tema": "te-voy-a-atornillar",
+      "verso": "Te voy a herir un [poquito] más.",
+      "clase": "sustantivo",
+      "numero": "sg",
+      "genero": "m",
+      "distractores": [
+        "ratito",
+        "huesito",
+        "pechito"
+      ],
+      "fuera": [
+        "ratito"
+      ]
+    },
+    {
+      "tema": "musica-para-pastillas",
+      "verso": "Muchachitas [fatales]",
+      "clase": "adjetivo",
+      "numero": "pl",
+      "genero": "f",
+      "distractores": [
+        "brutales",
+        "mortales",
+        "baratas"
+      ]
+    },
+    {
+      "tema": "musica-para-pastillas",
+      "verso": "La más hermosa niña del [mundo]",
+      "clase": "sustantivo",
+      "numero": "sg",
+      "genero": "m",
+      "distractores": [
+        "barrio",
+        "cielo",
+        "baile"
+      ]
+    },
+    {
+      "tema": "semen-up",
+      "verso": "Saludable y [católica]",
+      "clase": "adjetivo",
+      "numero": "sg",
+      "genero": "f",
+      "distractores": [
+        "fanática",
+        "fantástica",
+        "aristócrata"
+      ]
+    },
+    {
+      "tema": "jijiji",
+      "verso": "Y se [ofreció]",
+      "clase": "verbo",
+      "distractores": [
+        "despertó",
+        "olvidó",
+        "apagó"
+      ]
+    },
+    {
+      "tema": "jijiji",
+      "verso": "Mejor que [nunca]",
+      "clase": "otra",
+      "distractores": [
+        "nadie",
+        "siempre",
+        "antes"
+      ]
+    },
+    {
+      "tema": "jijiji",
+      "verso": "No mires, por [favor]",
+      "clase": "sustantivo",
+      "numero": "sg",
+      "distractores": [
+        "amor",
+        "temor",
+        "rencor"
+      ]
+    },
+    {
+      "tema": "aquella-solitaria-vaca-cubana",
+      "verso": "la civilización la amaba justo a [tiempo] )",
+      "clase": "sustantivo",
+      "numero": "sg",
+      "distractores": [
+        "punto",
+        "tiro",
+        "mano"
+      ]
+    },
+    {
+      "tema": "vencedores-vencidos",
+      "verso": "Vencedores [vencidos] !",
+      "clase": "adjetivo",
+      "numero": "pl",
+      "genero": "m",
+      "distractores": [
+        "queridos",
+        "escondidos",
+        "perdidos"
+      ]
+    },
+    {
+      "tema": "vencedores-vencidos",
+      "verso": "Te has fugado ! me hago [humo] !",
+      "clase": "sustantivo",
+      "numero": "sg",
+      "distractores": [
+        "polvo",
+        "cargo",
+        "hielo"
+      ],
+      "fuera": [
+        "cargo"
+      ]
+    },
+    {
+      "tema": "vencedores-vencidos",
+      "verso": "Ensayo general para la farsa [actual]",
+      "clase": "adjetivo",
+      "numero": "sg",
+      "genero": "f",
+      "distractores": [
+        "final",
+        "social",
+        "fatal"
+      ]
+    },
+    {
+      "tema": "ella-debe-estar-tan-linda",
+      "verso": "Y estoy a punto de tirar la [esponja]",
+      "clase": "sustantivo",
+      "numero": "sg",
+      "genero": "f",
+      "distractores": [
+        "toalla",
+        "moneda",
+        "botella"
+      ],
+      "fuera": [
+        "toalla"
+      ],
+      "nota": "toalla es la frase hecha de verdad (tirar la toalla): el que no se sabe el tema va ahí."
+    },
+    {
+      "tema": "todo-un-palo",
+      "verso": "El futuro ya [llegó]",
+      "clase": "verbo",
+      "distractores": [
+        "pasó",
+        "murió",
+        "nació"
+      ]
+    },
+    {
+      "tema": "todo-un-palo",
+      "verso": "¿Qué podría ser [peor] ?",
+      "clase": "otra",
+      "distractores": [
+        "mejor",
+        "mayor",
+        "igual"
+      ]
+    },
+    {
+      "tema": "rock-para-los-dientes",
+      "verso": "Sos un tipo pan comido, no es tu [culpa] , no.",
+      "clase": "sustantivo",
+      "numero": "sg",
+      "distractores": [
+        "suerte",
+        "noche",
+        "guerra"
+      ]
+    },
+    {
+      "tema": "un-pacman-en-el-savoy",
+      "verso": "A veces gana, a veces [pierde]",
+      "clase": "verbo",
+      "distractores": [
+        "muerde",
+        "duerme",
+        "miente"
+      ],
+      "fuera": [
+        "miente"
+      ]
+    },
+    {
+      "tema": "un-pacman-en-el-savoy",
+      "verso": "Un buen par de ojos de [vidrio] ,",
+      "clase": "sustantivo",
+      "numero": "sg",
+      "distractores": [
+        "cristal",
+        "hielo",
+        "tigre"
+      ]
+    },
+    {
+      "tema": "esa-estrella-era-mi-lujo",
+      "verso": "Mordí el [anzuelo] una vez más",
+      "clase": "sustantivo",
+      "numero": "sg",
+      "genero": "m",
+      "distractores": [
+        "consuelo",
+        "pañuelo",
+        "cordero"
+      ],
+      "fuera": [
+        "pañuelo"
+      ]
+    },
+    {
+      "tema": "esa-estrella-era-mi-lujo",
+      "verso": "Metió, metió mi rock 'n' [roll]",
+      "baja": "«rock 'n' [roll]» no admite tres distractores dignos: la locución completa la palabra sola y cualquier otra opción se descarta sin saberse el tema."
+    },
+    {
+      "tema": "nuestro-amo-juega-al-esclavo",
+      "verso": "Que se abre todos los [días]",
+      "clase": "sustantivo",
+      "numero": "pl",
+      "genero": "m",
+      "distractores": [
+        "años",
+        "meses",
+        "siglos"
+      ]
+    },
+    {
+      "tema": "nuestro-amo-juega-al-esclavo",
+      "verso": "Violencia es [mentir]",
+      "clase": "infinitivo",
+      "distractores": [
+        "morir",
+        "vivir",
+        "herir"
+      ]
+    },
+    {
+      "tema": "un-poco-de-amor-frances",
+      "verso": "Un poco de amor [francés]",
+      "clase": "adjetivo",
+      "numero": "sg",
+      "genero": "m",
+      "distractores": [
+        "cortés",
+        "feroz",
+        "burgués"
+      ],
+      "fuera": [
+        "burgués"
+      ]
+    },
+    {
+      "tema": "un-poco-de-amor-frances",
+      "verso": "De esa miel no comen las [hormigas]",
+      "clase": "sustantivo",
+      "numero": "pl",
+      "genero": "f",
+      "distractores": [
+        "abejas",
+        "almejas",
+        "moscas"
+      ],
+      "fuera": [
+        "abejas"
+      ]
+    },
+    {
+      "tema": "blues-de-la-artilleria",
+      "verso": "tu breto y tus ojos [grises] .",
+      "clase": "adjetivo",
+      "numero": "pl",
+      "genero": "m",
+      "distractores": [
+        "tristes",
+        "negros",
+        "verdes"
+      ]
+    },
+    {
+      "tema": "blues-de-la-artilleria",
+      "verso": "yo no soy de [aconsejar]",
+      "clase": "infinitivo",
+      "distractores": [
+        "exagerar",
+        "desafinar",
+        "preguntar"
+      ]
+    },
+    {
+      "tema": "tarea-fina",
+      "verso": "Sobrio no te puedo ni [hablar] .",
+      "clase": "infinitivo",
+      "distractores": [
+        "mirar",
+        "besar",
+        "bailar"
+      ]
+    },
+    {
+      "tema": "tarea-fina",
+      "verso": "Caída [libre] para dos.",
+      "clase": "adjetivo",
+      "numero": "sg",
+      "genero": "f",
+      "distractores": [
+        "doble",
+        "simple",
+        "suave"
+      ]
+    },
+    {
+      "tema": "el-pibe-de-los-astilleros",
+      "verso": "Ciertos reyes no viajan en [camellos]",
+      "clase": "sustantivo",
+      "numero": "pl",
+      "distractores": [
+        "caballos",
+        "coches",
+        "impalas"
+      ],
+      "fuera": [
+        "caballos"
+      ]
+    },
+    {
+      "tema": "salando-las-heridas",
+      "verso": "Y el premio a [pique] se fue",
+      "clase": "sustantivo",
+      "numero": "sg",
+      "distractores": [
+        "fondo",
+        "nado",
+        "pulso"
+      ],
+      "fuera": [
+        "nado"
+      ]
+    },
+    {
+      "tema": "rock-para-el-negro-atila",
+      "verso": "el peligro del gato [matón] .",
+      "clase": "adjetivo",
+      "numero": "sg",
+      "genero": "m",
+      "distractores": [
+        "ladrón",
+        "burlón",
+        "chillón"
+      ]
+    },
+    {
+      "tema": "rock-para-el-negro-atila",
+      "verso": "y compró matraca nueva, de [ocasión] .",
+      "clase": "sustantivo",
+      "numero": "sg",
+      "distractores": [
+        "cotillón",
+        "cartón",
+        "colección"
+      ],
+      "fuera": [
+        "colección"
+      ]
+    },
+    {
+      "tema": "sorpresa-de-shangai",
+      "verso": "risas que [duelen] !",
+      "clase": "verbo",
+      "distractores": [
+        "mienten",
+        "matan",
+        "muerden"
+      ],
+      "fuera": [
+        "muerden"
+      ]
+    },
+    {
+      "tema": "sorpresa-de-shangai",
+      "verso": "Mis penas como [piedras]",
+      "clase": "sustantivo",
+      "numero": "pl",
+      "distractores": [
+        "perlas",
+        "flechas",
+        "brasas"
+      ]
+    },
+    {
+      "tema": "un-angel-para-tu-soledad",
+      "verso": "Cuando [anochezca]",
+      "clase": "verbo",
+      "distractores": [
+        "amanezca",
+        "oscurezca",
+        "enloquezca"
+      ],
+      "fuera": [
+        "amanezca",
+        "oscurezca",
+        "enloquezca"
+      ],
+      "nota": "Las tres en subjuntivo, que es lo que pide «cuando»: el molde no lo distingue, lo miró quien curó."
+    },
+    {
+      "tema": "buenas-noticias",
+      "verso": "Llegan buenas nuevas de los [escondidos] ,",
+      "clase": "adjetivo",
+      "numero": "pl",
+      "genero": "m",
+      "distractores": [
+        "fugitivos",
+        "desterrados",
+        "prometidos"
+      ]
+    },
+    {
+      "tema": "buenas-noticias",
+      "verso": "para los fugitivos marcados a [fuego]",
+      "clase": "sustantivo",
+      "numero": "sg",
+      "distractores": [
+        "hierro",
+        "cuchillo",
+        "dedo"
+      ],
+      "fuera": [
+        "hierro"
+      ]
+    },
+    {
+      "tema": "espejismo",
+      "verso": "canciones tristes, dueñas del [corazón] .",
+      "clase": "sustantivo",
+      "numero": "sg",
+      "genero": "m",
+      "distractores": [
+        "callejón",
+        "rocanrol",
+        "rincón"
+      ],
+      "fuera": [
+        "callejón"
+      ]
+    },
+    {
+      "tema": "espejismo",
+      "verso": "Borra el rastro de tu dolor y ya no te [arrepentís] .",
+      "clase": "verbo",
+      "distractores": [
+        "escapás",
+        "encontrás",
+        "acordás"
+      ],
+      "fuera": [
+        "acordás"
+      ]
+    },
+    {
+      "tema": "el-lobo-caido",
+      "verso": "tanta [infidelidad] .",
+      "clase": "sustantivo",
+      "numero": "sg",
+      "genero": "f",
+      "distractores": [
+        "vulgaridad",
+        "fatalidad",
+        "enfermedad"
+      ]
+    },
+    {
+      "tema": "yo-canibal",
+      "verso": "Se amasan las fortunas, se cargan los [bolsillos] .",
+      "clase": "sustantivo",
+      "numero": "pl",
+      "genero": "m",
+      "distractores": [
+        "gatillos",
+        "colmillos",
+        "cuchillos"
+      ]
+    },
+    {
+      "tema": "yo-canibal",
+      "verso": "Me acaban el cerebro a [mordiscos]",
+      "clase": "sustantivo",
+      "numero": "pl",
+      "distractores": [
+        "pedazos",
+        "gritos",
+        "besos"
+      ],
+      "fuera": [
+        "pedazos"
+      ]
+    },
+    {
+      "tema": "yo-canibal",
+      "verso": "Mi racha de novato nunca [cambiará] .",
+      "clase": "verbo",
+      "distractores": [
+        "pasará",
+        "terminará",
+        "alcanzará"
+      ],
+      "fuera": [
+        "terminará"
+      ]
+    },
+    {
+      "tema": "ladron-de-mi-cerebro",
+      "verso": "él es el [peligro] ,",
+      "clase": "sustantivo",
+      "numero": "sg",
+      "genero": "m",
+      "distractores": [
+        "destino",
+        "enemigo",
+        "hechizo"
+      ]
+    },
+    {
+      "tema": "es-hora-de-levantarse-querido",
+      "verso": "Que iban al [grano]",
+      "clase": "sustantivo",
+      "numero": "sg",
+      "genero": "m",
+      "distractores": [
+        "alargue",
+        "frente",
+        "baño"
+      ]
+    },
+    {
+      "tema": "es-hora-de-levantarse-querido",
+      "verso": "Y el carozo del asunto es tu [temor]",
+      "clase": "sustantivo",
+      "numero": "sg",
+      "distractores": [
+        "dolor",
+        "rencor",
+        "humor"
+      ]
+    },
+    {
+      "tema": "es-hora-de-levantarse-querido",
+      "verso": "A vivir, que son dos [días]",
+      "clase": "sustantivo",
+      "numero": "pl",
+      "distractores": [
+        "noches",
+        "pesos",
+        "tragos"
+      ]
+    },
+    {
+      "tema": "es-hora-de-levantarse-querido",
+      "verso": "Tu negocio es muy difícil de [explicar]",
+      "clase": "infinitivo",
+      "distractores": [
+        "entender",
+        "soportar",
+        "olvidar"
+      ],
+      "fuera": [
+        "entender"
+      ]
+    },
+    {
+      "tema": "perdiendo-el-tiempo",
+      "verso": "Ella sí que bailaba en las [llamas]",
+      "clase": "sustantivo",
+      "numero": "pl",
+      "genero": "f",
+      "distractores": [
+        "brasas",
+        "calles",
+        "sombras"
+      ]
+    },
+    {
+      "tema": "perdiendo-el-tiempo",
+      "verso": "Por primera vez tengo [miedo]",
+      "clase": "sustantivo",
+      "numero": "sg",
+      "distractores": [
+        "frío",
+        "sueño",
+        "hambre"
+      ]
+    },
+    {
+      "tema": "perdiendo-el-tiempo",
+      "verso": "Recuerdos que mienten un [poco]",
+      "clase": "otra",
+      "distractores": [
+        "rato",
+        "montón",
+        "tanto"
+      ]
+    },
+    {
+      "tema": "fanfarria-del-cabrio",
+      "verso": "Ni cuando robó el [fuego]",
+      "clase": "sustantivo",
+      "numero": "sg",
+      "genero": "m",
+      "distractores": [
+        "oro",
+        "trono",
+        "cielo"
+      ],
+      "fuera": [
+        "trono"
+      ]
+    },
+    {
+      "tema": "fanfarria-del-cabrio",
+      "verso": "nada más la [prohibición] .",
+      "clase": "sustantivo",
+      "numero": "sg",
+      "genero": "f",
+      "distractores": [
+        "tentación",
+        "maldición",
+        "diversión"
+      ],
+      "fuera": [
+        "tentación"
+      ]
+    },
+    {
+      "tema": "nuotatori-professionisti",
+      "verso": "Sudar no les cambia la [racha] , no.",
+      "clase": "sustantivo",
+      "numero": "sg",
+      "genero": "f",
+      "distractores": [
+        "cara",
+        "suerte",
+        "marca"
+      ]
+    },
+    {
+      "tema": "nuotatori-professionisti",
+      "verso": "Llevan el juego en la [sangre] y van.",
+      "clase": "sustantivo",
+      "numero": "sg",
+      "genero": "f",
+      "distractores": [
+        "carne",
+        "calle",
+        "mente"
+      ],
+      "fuera": [
+        "mente"
+      ]
+    },
+    {
+      "tema": "blues-de-la-libertad",
+      "verso": "ha visto tanto hermano [muerto] ,",
+      "clase": "adjetivo",
+      "numero": "sg",
+      "genero": "m",
+      "distractores": [
+        "preso",
+        "ciego",
+        "herido"
+      ]
+    },
+    {
+      "tema": "blues-de-la-libertad",
+      "verso": "que ya no puede [soportar]",
+      "clase": "infinitivo",
+      "distractores": [
+        "escuchar",
+        "aguantar",
+        "perdonar"
+      ],
+      "fuera": [
+        "aguantar",
+        "perdonar"
+      ]
+    },
+    {
+      "tema": "mariposa-pontiac-rock-del-pais",
+      "verso": "Tuve temprano entre mis manos mi [boleto] y oí",
+      "clase": "sustantivo",
+      "numero": "sg",
+      "distractores": [
+        "billete",
+        "secreto",
+        "amuleto"
+      ]
+    },
+    {
+      "tema": "juguetes-perdidos",
+      "verso": "Que oímos cantar y nunca [vemos]",
+      "clase": "verbo",
+      "distractores": [
+        "tenemos",
+        "miramos",
+        "hallamos"
+      ],
+      "fuera": [
+        "miramos",
+        "hallamos"
+      ]
+    },
+    {
+      "tema": "juguetes-perdidos",
+      "verso": "La campana [sonó]",
+      "clase": "verbo",
+      "distractores": [
+        "cayó",
+        "quebró",
+        "tembló"
+      ],
+      "fuera": [
+        "tembló"
+      ]
+    },
+    {
+      "tema": "las-increibles-andanzas-del-capitan-buscapina-en-cybersiberia",
+      "verso": "Su princesita, ay, se transformó en [sapito]",
+      "clase": "sustantivo",
+      "numero": "sg",
+      "distractores": [
+        "zorrito",
+        "pavito",
+        "angelito"
+      ]
+    },
+    {
+      "tema": "las-increibles-andanzas-del-capitan-buscapina-en-cybersiberia",
+      "verso": "Sabe que la vida es [corta] .",
+      "clase": "adjetivo",
+      "numero": "sg",
+      "genero": "f",
+      "distractores": [
+        "bella",
+        "loca",
+        "dura"
+      ]
+    },
+    {
+      "tema": "las-increibles-andanzas-del-capitan-buscapina-en-cybersiberia",
+      "verso": "Abróchense los cinturones, mis [queridos] ,",
+      "clase": "adjetivo",
+      "numero": "pl",
+      "distractores": [
+        "amigos",
+        "angelitos",
+        "vampiros"
+      ]
+    },
+    {
+      "tema": "drogocop",
+      "verso": "La raya que separa vida y [muerte]",
+      "clase": "sustantivo",
+      "numero": "sg",
+      "distractores": [
+        "suerte",
+        "sueño",
+        "juego"
+      ]
+    },
+    {
+      "tema": "dr-saturno",
+      "verso": "Estoy hasta la [pasta] !",
+      "clase": "sustantivo",
+      "numero": "sg",
+      "genero": "f",
+      "distractores": [
+        "manija",
+        "nuca",
+        "médula"
+      ],
+      "fuera": [
+        "manija"
+      ]
+    },
+    {
+      "tema": "dr-saturno",
+      "verso": "Dr. Saturno, dame un [turno] !",
+      "clase": "sustantivo",
+      "numero": "sg",
+      "genero": "m",
+      "distractores": [
+        "trago",
+        "beso",
+        "gusto"
+      ]
+    },
+    {
+      "tema": "dr-saturno",
+      "verso": "Dulce cadena, dulce [condena]",
+      "clase": "sustantivo",
+      "numero": "sg",
+      "genero": "f",
+      "distractores": [
+        "sirena",
+        "colmena",
+        "morena"
+      ]
+    },
+    {
+      "tema": "murga-de-la-virgencita",
+      "verso": "No tiene nada que [perder]",
+      "clase": "infinitivo",
+      "distractores": [
+        "hacer",
+        "temer",
+        "decir"
+      ],
+      "fuera": [
+        "temer",
+        "decir"
+      ]
+    },
+    {
+      "tema": "murga-de-la-virgencita",
+      "verso": "Milagro más, milagro [menos]",
+      "clase": "otra",
+      "distractores": [
+        "nuevo",
+        "nuestro",
+        "viejo"
+      ]
+    },
+    {
+      "tema": "murga-de-la-virgencita",
+      "verso": "Otra polilla en [busca] de la luz",
+      "clase": "otra",
+      "distractores": [
+        "contra",
+        "nombre",
+        "medio"
+      ]
+    },
+    {
+      "tema": "pensando-como-una-acelga",
+      "verso": "Pero a veces, muy [pocas] veces",
+      "clase": "adjetivo",
+      "numero": "pl",
+      "genero": "f",
+      "distractores": [
+        "raras",
+        "buenas",
+        "malas"
+      ]
+    },
+    {
+      "tema": "pensando-como-una-acelga",
+      "verso": "Dicen que ya no hay [huevos] de oro",
+      "clase": "sustantivo",
+      "numero": "pl",
+      "genero": "m",
+      "distractores": [
+        "dientes",
+        "sueños",
+        "tiempos"
+      ]
+    }
+  ]
+}
