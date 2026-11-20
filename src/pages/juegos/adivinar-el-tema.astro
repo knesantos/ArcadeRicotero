@@ -173,10 +173,12 @@ const bajadaCorta = (() => {
               <p class="aviso-sonido">
                 {PARTIDA.sinSonido}
                 {sinSonidoVa && (
-                  <span class="sin-sonido-salida">
+                  <>
                     {' '}{SIN_SONIDO.sinSonidoAhora}{' '}
-                    <a href={sinSonidoVa.href}>{sinSonidoVa.titulo}</a>
-                  </span>
+                    {/* La clase es la del enlace del panel "¿No se escucha?": tinta del
+                        sistema y `--toque-min` de alto. Suelto salía en el azul del navegador. */}
+                    <a class="sin-sonido-diagnostico" href={sinSonidoVa.href}>{sinSonidoVa.titulo}</a>
+                  </>
                 )}
               </p>
               <div class="arranque">

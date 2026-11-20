@@ -18,7 +18,7 @@ export const PANTALLA_0 = {
   titulo: 'Adiviná el tema',
   subtitulo:
     'Con una décima te tiene que alcanzar. Si no, te damos más: medio segundo, dos, ' +
-    'cuatro, ocho, diez. Cuanto antes la pegues, más vale.',
+    'cuatro, ocho y el resto. Cuanto antes la pegues, más vale.',
   /**
    * La tabla de lo que vale cada escalón, impresa en la portada.
    *
@@ -68,7 +68,7 @@ export const PARTIDA = {
   escuchar: 'Escuchá',
   parar: 'Pará',
   /** Lo que anuncia el lector de pantalla cuando cambia el paso. */
-  pasoActual: (etiqueta: string) => `Tenés ${etiqueta} de audio`,
+  pasoActual: (deAudio: string) => `Tenés ${deAudio}`,
   buscar: 'Escribí el tema',
   /** El rótulo del botón de la cruz. Solo lo lee quien no ve la pantalla — y va en voseo
    *  igual: `D-17` no distingue entre texto a la vista y texto para el lector. */
@@ -90,6 +90,11 @@ export const PARTIDA = {
    * palabras.
    */
   pasarSuma: (extra: string) => `Dame ${extra} más`,
+  /**
+   * Del penúltimo paso al último no se promete una cantidad (`T-533`): lo que falta del
+   * fragmento depende de dónde arranca cada tema. El botón pide lo que hay.
+   */
+  pasarResto: 'Dame el resto',
   /** En el último intento no queda audio que comprar: pasar cierra el tema y lo muestra. */
   rendirse: 'Mirá cuál era',
   /** Lo que vale acertar en el paso en curso. Va al lado del audio que tenés. */
@@ -199,7 +204,7 @@ export const REVELACION = {
    * dos cosas distintas y por eso van juntas y separadas por el punto medio, no sumadas
    * en un número solo.
    */
-  costo: (audio: string, tiempo: string) => `Con ${audio} de audio · ${tiempo} de reloj`,
+  costo: (deAudio: string, tiempo: string) => `Con ${deAudio} · ${tiempo} de reloj`,
   /** Al que no la sacó también le corresponde su tiempo: jugó los seis intentos. */
   tardaste: (tiempo: string) => `${tiempo} de reloj`,
   escucharEntero: 'Escuchalo entero',
@@ -260,8 +265,7 @@ export const TARJETA = {
   juego: 'Adiviná el tema',
   rotuloTiempo: 'Tiempo total',
   /** El renglón de un tema que salió: disco, cuánto audio hizo falta y cuánto tardó. */
-  pieAcierto: (disco: string, audio: string, tiempo: string) =>
-    `${disco} · ${audio} de audio · ${tiempo}`,
+  pieAcierto: (disco: string, deAudio: string, tiempo: string) => `${disco} · ${deAudio} · ${tiempo}`,
   /**
    * El de un tema que no salió. Lleva "no salió" escrito además de la cruz: en una
    * imagen que se mira chiquita, un símbolo solo no alcanza — es `UX-01` aplicado a algo

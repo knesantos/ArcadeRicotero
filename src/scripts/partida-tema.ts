@@ -33,6 +33,7 @@ import {
   anchosDeTramos,
   etiquetaDeRegla,
   extraAlPasar,
+  RESTO,
   DURACION_FRAGMENTO_SEG,
 } from '../lib/tema/escalera.ts';
 import { Reproductor, urlDeTema } from '../lib/tema/audio.ts';
@@ -667,7 +668,7 @@ function pintarBarra(transcurrido: number): void {
   });
 
   const p = paso(pasoActual);
-  etiquetaPaso.textContent = PARTIDA.pasoActual(p.etiqueta);
+  etiquetaPaso.textContent = PARTIDA.pasoActual(p.deAudio);
   valeEl.textContent = PARTIDA.vale(p.puntos);
 }
 
@@ -682,7 +683,9 @@ function pintarBotonPrincipal(): void {
     botonPrincipal.textContent = PARTIDA.arriesgar;
   } else {
     const extra = extraAlPasar(pasoActual);
-    botonPrincipal.textContent = extra ? PARTIDA.pasarSuma(extra) : PARTIDA.rendirse;
+    // Del penúltimo al último no hay cantidad que prometer: se pide el resto (`T-533`).
+    botonPrincipal.textContent =
+      extra === null ? PARTIDA.rendirse : extra === RESTO ? PARTIDA.pasarResto : PARTIDA.pasarSuma(extra);
   }
   botonPrincipal.classList.toggle('arriesgar--listo', elegido !== null);
   botonPrincipal.disabled = false;
@@ -754,11 +757,13 @@ function abrirAyudaDeSonido(ancla: HTMLElement): void {
   // mirando. Cuál es lo dice la página, que lo saca del portal.
   const { sinSonidoHref, sinSonidoTitulo } = zonaPartida.dataset;
   if (sinSonidoHref && sinSonidoTitulo) {
-    const salida = el('p', 'sin-sonido-punto', `${SIN_SONIDO.sinSonidoAhora} `);
-    const va = el('a', undefined, sinSonidoTitulo);
+    // El enlace viste la clase del otro enlace del panel (`.sin-sonido-diagnostico`): la
+    // tinta del sistema y el alto de `--toque-min`. Suelto adentro del renglón salía en el
+    // azul del navegador y no se podía tocar.
+    panel.append(el('p', 'sin-sonido-punto', SIN_SONIDO.sinSonidoAhora));
+    const va = el('a', 'sin-sonido-diagnostico', sinSonidoTitulo);
     va.href = sinSonidoHref;
-    salida.append(va);
-    panel.append(salida);
+    panel.append(va);
   }
 
   const cerrar = el('button', 'sin-sonido-cerrar', SIN_SONIDO.cerrar);
@@ -1141,7 +1146,7 @@ function pintarRevelacion(tema: Tema, acerto: boolean, ganados: number): void {
    */
   const reloj = duracion(tiempos[tiempos.length - 1] ?? 0);
   if (acerto) {
-    const audio = paso(marcador[marcador.length - 1]!).etiqueta;
+    const audio = paso(marcador[marcador.length - 1]!).deAudio;
     // A la vista, lo que sumaste ya esta estampado arriba (`revelacion-suma`); este renglon
     // queda para el lector de pantalla, que el sello no le dice nada.
     revelacion.append(el('p', 'revelacion-puntos solo-lector', REVELACION.puntos(ganados)));
@@ -1281,7 +1286,7 @@ function pieDeTema(i: number): string {
   const p = marcador[i] ?? 0;
   const reloj = duracion(tiempos[i] ?? 0);
   return p > 0
-    ? TARJETA.pieAcierto(tema.discoTitulo, paso(p).etiqueta, reloj)
+    ? TARJETA.pieAcierto(tema.discoTitulo, paso(p).deAudio, reloj)
     : TARJETA.pieFallo(tema.discoTitulo, reloj);
 }
 
