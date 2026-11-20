@@ -71186,7 +71186,7 @@
       },
       "opciones": [
         {
-          "texto": "trago",
+          "texto": "rubio",
           "correcta": false
         },
         {
@@ -71194,11 +71194,11 @@
           "correcta": true
         },
         {
-          "texto": "gusto",
+          "texto": "pulso",
           "correcta": false
         },
         {
-          "texto": "beso",
+          "texto": "gusto",
           "correcta": false
         }
       ],
@@ -71216,12 +71216,8 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "listo",
-      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Estribillo que repite el titulo del tema, la linea mas citada de la cancion. Distractores elegidos a mano (T-532, letra-distractores.json).",
-      "cotejo": {
-        "regimen": "fuente-unica",
-        "decision": "D-25"
-      }
+      "estado": "borrador",
+      "notaInterna": "No se juega (T-532): La respuesta esta a la vista: la rima con «Saturno» en el mismo verso deja una sola opcion posible, sin saberse el tema (critico fresco, auditoria de R1, T-532)."
     },
     {
       "id": "CL-1159",
@@ -74388,15 +74384,15 @@
       },
       "opciones": [
         {
-          "texto": "nuestro",
+          "texto": "dejo",
           "correcta": false
         },
         {
-          "texto": "viejo",
+          "texto": "sebo",
           "correcta": false
         },
         {
-          "texto": "nuevo",
+          "texto": "hecho",
           "correcta": false
         },
         {
@@ -74418,12 +74414,8 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "listo",
-      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Par de opuestos ('milagro mas, milagro menos'); tema limpio, opciones sin erratas. Distractores elegidos a mano (T-532, letra-distractores.json).",
-      "cotejo": {
-        "regimen": "fuente-unica",
-        "decision": "D-25"
-      }
+      "estado": "borrador",
+      "notaInterna": "No se juega (T-532): La respuesta esta a la vista: «milagro mas, milagro [menos]» se completa por el opuesto de «mas», sin saberse el tema. Ningun distractor compite (critico fresco, auditoria de R1, T-532)."
     },
     {
       "id": "CL-1214",

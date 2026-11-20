@@ -807,14 +807,7 @@
     {
       "tema": "dr-saturno",
       "verso": "Dr. Saturno, dame un [turno] !",
-      "clase": "sustantivo",
-      "numero": "sg",
-      "genero": "m",
-      "distractores": [
-        "trago",
-        "beso",
-        "gusto"
-      ]
+      "baja": "La respuesta esta a la vista: la rima con «Saturno» en el mismo verso deja una sola opcion posible, sin saberse el tema (critico fresco, auditoria de R1, T-532)."
     },
     {
       "tema": "dr-saturno",
@@ -845,12 +838,7 @@
     {
       "tema": "murga-de-la-virgencita",
       "verso": "Milagro más, milagro [menos]",
-      "clase": "otra",
-      "distractores": [
-        "nuevo",
-        "nuestro",
-        "viejo"
-      ]
+      "baja": "La respuesta esta a la vista: «milagro mas, milagro [menos]» se completa por el opuesto de «mas», sin saberse el tema. Ningun distractor compite (critico fresco, auditoria de R1, T-532)."
     },
     {
       "tema": "murga-de-la-virgencita",
