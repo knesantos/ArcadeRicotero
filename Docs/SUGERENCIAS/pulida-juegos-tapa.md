@@ -163,3 +163,106 @@ es **la mesa de serigrafía**: un bastidor de madera con sus mordazas y sus gram
 4. **El vuelo se mide después de mover la hoja**: `scrollTo` primero, los rectángulos después.
 5. **`backwards` en un sello no esconde la pieza**: si algo tiene que aparecer recién en su
    turno, el primer cuadro tiene que decirlo (acá, la casilla hueca).
+
+---
+
+## Ronda 2 (2026-11-20): la pantalla compuesta, la soga que es soga y los tres cierres
+
+### 1. Decisiones del hilo principal, ya aplicadas (para las enmiendas)
+
+- **El botón principal no va en papel.** Vuelve a la tinta del disco de la página (`D-19`,
+  `D-54`): la plata vieja de *Último bondi*, ahora como chapa —un filete de la tinta del fondo
+  por adentro y el canto de goma abajo—. Un primario de papel se confundía con las hojas.
+- **Al errar, el pedazo se queda en color sobre la clave** (enmienda a `UX-22` §11, "al fallar
+  no queda"). Va como **recorte pegado con cinta**: su canto de papel, dos tiras de cinta y
+  apenas torcido. Enseña dónde estaba, y la tapa sigue sin completarse.
+- **El sello cae al final de la tirada, no en el toque** (distinto de los otros juegos pulidos).
+  En el toque ya hablan las opciones, la soga y el golpe; el sello es el visto de la prueba y
+  no tapa lo que se está imprimiendo.
+
+### 2. Qué se hizo
+
+1. **La partida está compuesta.** En el teléfono la mesa va al medio del aire que queda entre
+   la soga y la pregunta, y la pregunta con sus cuatro teclas, abajo. En un teléfono alto la
+   soga, la pregunta y las teclas crecen.
+2. **Al responder entran juntas la tapa terminada y "Seguí".** La pregunta se va de la vista
+   (el lector la conserva); la mesa pasa a la izquierda y lo que quedó de las opciones, a su
+   derecha; y **la isla mide** (`acomodarLaMesa`): si la ficha no entra, la mesa se achica lo
+   justo (nunca menos de 150 px); si ni así, o quedaría más chica que 176 px, **la explicación
+   se pliega a tres renglones con "Leé más"**. El rótulo de leyenda o testimonio no se pliega
+   nunca. Si entra, la hoja queda arriba; si no, se corre hasta el zócalo.
+3. **La soga es una soga**: un trazo que cuelga entre dos clavos, con los broches siguiendo la
+   panza. Lo que todavía no salió es un broche esperando, sin casilla; el de la tapa que está en
+   la mesa va más claro y abierto. En el resultado, una soga por renglón.
+4. **El bastidor de la portada** tiene malla (una trama impresa, de máscara) y manchas de tinta
+   vieja en la madera (también en la partida); y **la hoja impresa sale de abajo del bastidor**
+   antes de arrancar.
+5. **La compu, a escala**: la mesa a la izquierda (pegada arriba si hay que desplazar) y, a su
+   derecha, la pregunta con las cuatro teclas en columna; al responder, en ese lugar va la
+   ficha. La tapa no se achica: está al lado.
+6. **Tres cierres distintos.** La soga del resultado **se llena hoja por hoja**, cada una con
+   su clac, y **la cuenta sube con cada hoja que salió entera**. Después: la tirada entera
+   (doble filete, "¡Tirada entera!" y el sello); la mitad o más (la cuenta apoya como sello);
+   menos de la mitad (la cuenta queda torcida y de trazo cortado, y la hoja da un golpe).
+7. **La tarjeta se dibuja mientras se lee la última ficha**: al resultado llega hecha.
+8. **El ritmo del acierto**: la ficha llega con el sello todavía cayendo (antes esperaba una
+   pasada más). **Las cuatro teclas son el 1, el 2, el 3 y el 4 del teclado**; el número se ve
+   solo donde hay puntero fino.
+9. En un teléfono bajo (hasta 44 rem de alto), con la ficha a la vista la soga se guarda.
+
+### 3. Detalles vivos de la ronda 2
+
+| Detalle | Estado | Cómo | Con movimiento reducido |
+|---|---|---|---|
+| La hoja impresa sale de abajo del bastidor | "Empezá", después de las pasadas | `hoja-sale` | arranca la partida |
+| El recorte queda pegado con cinta | error, cuando el pedazo llegó a su lugar | `cinta-se-pega` | pegado |
+| La soga se llena hoja por hoja y la cuenta sube | resultado | relojes de la isla, `hoja-se-hamaca`, `estampar` | llena, y la cuenta en su valor |
+| La hoja da un golpe | resultado con menos de la mitad | `golpear` | quieta; la cuenta ya va de trazo cortado |
+
+### 4. Tests y copy
+
+- `movimiento.test.ts`: dos animaciones más (`hoja-sale`, `cinta-se-pega`, por token).
+  `estilos.test.ts`: cinco estados más en `ESTADOS_TAPA`. Ninguno se relajó. La suite sigue en
+  2511.
+- Copy nuevo: `IMPRENTA.leerMas` ("Leé más"), para el visto de `contenido`.
+- `scripts/mirar-juego.mjs`: el recorrido suma la ficha plegada y abierta.
+
+### 5. Diez tamaños, con los datos peores
+
+Guion fuera del repo (`tamanos-tapa.mjs`, en la carpeta temporal): le cambia al navegador el
+banco para que **todas** las tapas lleven la explicación más larga (324 letras), el rótulo más
+largo (178) y las opciones más largas. Contra el sitio construido, en 320 × 568, 360 × 640,
+375 × 667, 390 × 844, 412 × 915, 430 × 860, 768 × 1024, 1024 × 768, 1280 × 800 y 1440 × 900:
+
+- la hoja no desborda de costado en ningún estado, en los diez;
+- "Empezá" entra en la ventana en los diez, y la pregunta con sus cuatro teclas también;
+- "Seguí" y el zócalo quedan a la vista al llegar la ficha en los diez, con error y con acierto;
+- **la tapa entera queda a la vista junto con "Seguí" en siete de los diez**. En los tres
+  teléfonos bajos (320 × 568, 360 × 640 y 375 × 667) la ficha con el rótulo más largo mide
+  más que la ventana aunque la explicación vaya plegada: la mesa queda cortada arriba (a
+  375 × 667 asoma la mitad de abajo). Con el peor dato la mesa mide 150–157 px en los teléfonos
+  hasta 430 × 860, y 194 a 412 × 915.
+
+**Rendimiento** (CPU ×4, 430 × 860 a ×2, contra el sitio construido, dos tandas, control 16,7 ms
+en las dos). "Empezá": media 21–24, peor cuadro 217–250. Error con la ficha: media 20–25, peor
+217–350. Acierto: media 18,5–21,5, peor 117–233. El pase: media 18–21, peor 134–250. Llegar al
+resultado: sin esperar en la última ficha, un cuadro de 383–717; esperando 2,6 s (la tarjeta ya
+dibujada), 200–400. **Que adelantar la tarjeta saque ese cuadro no quedó demostrado**: una tanda
+dio 200 y la otra 400. Los cuadros del toque subieron respecto de la ronda 1 (183–283 el error):
+ahora en ese cuadro la isla además mide y acomoda la mesa.
+
+### 6. Lo que queda flojo
+
+- **En la compu la ficha queda angosta** (unos 190 px): "¡La tenías!" parte en dos renglones.
+- **Con rótulo, la tapa terminada queda chica en el teléfono** (unos 130 px de hoja a
+  430 × 860): entra con "Seguí", que era el pedido, pero el premio pierde tamaño. Sin rótulo y
+  con explicación corta queda en 47 % del ancho.
+- **En los teléfonos bajos, con el peor dato, la tapa no entra** (ver arriba).
+- **"Leé más" va adentro de la región que se anuncia**: el lector lee el texto entero (el
+  plegado es solo visual), y además el nombre del botón.
+- **La mesa se achica de un cuadro al otro** cuando llega la ficha: no hay transición.
+- **En la compu la columna sigue angosta** (la limita el cascarón con la carátula al costado):
+  las teclas miden unos 190 px.
+- **El botón en plata** tiene filete y canto, pero sigue siendo un gris sobre fondo oscuro.
+- Las manchas y la malla son esquemáticas; la malla solo está en la portada.
+- No se probó con dedo, teclado de verdad ni lector de pantalla, ni `?incrustado`.

@@ -313,6 +313,10 @@ const ANIMACIONES = [
   { nombre: 'hoja-se-hamaca', apaga: 'token', valor: '--duracion-inercia', hoja: 'src/styles/juego.css' },
   // Y la tinta de la tirada que se llena cuando pasa su racleta.
   { nombre: 'tinta-se-pone', apaga: 'token', valor: '--duracion-pasada', hoja: 'src/styles/juego.css' },
+  // Ronda 2: la hoja impresa que sale de abajo del bastidor en la portada, y el recorte que
+  // queda pegado con cinta en la prueba en una tinta.
+  { nombre: 'hoja-sale', apaga: 'token', valor: '--duracion-paso', hoja: 'src/styles/juego.css' },
+  { nombre: 'cinta-se-pega', apaga: 'token', valor: '--duracion-pasada', hoja: 'src/styles/juego.css' },
 ] as const;
 
 test('no hay ninguna animacion que esta lista no conozca', () => {

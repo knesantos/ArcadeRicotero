@@ -71,6 +71,8 @@ export const IMPRENTA = {
   ruidosApagar: 'Apagá los ruidos',
   ruidosPrender: 'Prendé los ruidos',
   ruidosTecla: 'Ruidos',
+  /** Abre la explicación cuando va plegada para que la tapa y "Seguí" entren juntas. */
+  leerMas: 'Leé más',
   /** El cartel de la mesa de la portada: lo que hace el botón, dicho con el objeto. */
   pasala: 'Pasá la racleta',
   /** El rótulo de la soga del resultado. Registro 3. */

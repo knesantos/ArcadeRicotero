@@ -1747,6 +1747,15 @@ async function adivinarLaTapa(ctx) {
       await foto(`ficha-${mirar.join('-')}-entera`, { entera: true });
       console.log(`   (${mirar.join(', ')}: ${JSON.stringify(await estado())})`);
     }
+    // La explicación plegada, y abierta con "Leé más" (una vez).
+    if (!vistos.has('leer-mas') && (await pagina.$('#partida .leer-mas'))) {
+      vistos.add('leer-mas');
+      await asentar();
+      await foto('ficha-plegada');
+      await pagina.$eval('#partida .leer-mas', (b) => b.click());
+      await ctx.espera(300);
+      await foto('ficha-abierta-entera', { entera: true });
+    }
     const ultima = await pagina.$eval('#partida .tablero-imprenta-paso', (p) => /^(\d+) de \1$/.test(p.textContent));
     if (ultima) {
       await asentar();

@@ -772,6 +772,13 @@ const ESTADOS_TAPA = [
   '.mesa-imprenta--imprime',
   '.tendedero--vuelta',
   '.puntaje--tirada',
+  // Ronda 2: la hoja que sale de la mesa de la portada, la explicación plegada, la hoja del
+  // resultado que todavía no se colgó, la segunda soga y la cuenta de una vuelta floja.
+  '.mesa-imprenta--sale',
+  '.explicacion--plegada',
+  '.colgada--espera',
+  '.tendedero-soga--segunda',
+  '.puntaje--floja',
 ];
 
 /**

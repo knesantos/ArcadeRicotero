@@ -167,8 +167,9 @@ function pasarLaRacleta(): void {
   mesa.classList.add('mesa-imprenta--imprime');
   void despierta.then(() => sonarEfecto('racleta'));
   relojes.push(window.setTimeout(() => sonarEfecto('racleta'), escalon));
-  // Las dos pasadas, y un respiro para ver la hoja impresa antes de que se vaya.
-  relojes.push(window.setTimeout(entrar, total + duracionDe('--duracion-paso')));
+  // Las dos pasadas; después la hoja impresa sale de abajo del bastidor, y arranca.
+  relojes.push(window.setTimeout(() => mesa.classList.add('mesa-imprenta--sale'), total));
+  relojes.push(window.setTimeout(entrar, total + duracionDe('--duracion-paso') + duracionDe('--duracion-toque')));
 }
 
 $('jugar').addEventListener('click', pasarLaRacleta);
@@ -179,6 +180,7 @@ function comenzar(): void {
   ronda = armarRonda(banco, largo);
   indice = 0;
   elegidas = [];
+  tarjetaAdelantada = null;
   mostrar(zonaPartida);
   zonaPartida.replaceChildren();
   armarTablero();
@@ -188,6 +190,34 @@ function comenzar(): void {
 }
 
 /* ---- La cabecera: por dónde vas, lo que llevás y la soga ---- */
+
+/**
+ * La soga, dibujada: una línea que cuelga un poco entre dos clavos. Es un trazo de SVG que se
+ * estira al ancho que haya (`preserveAspectRatio="none"`) sin engordar (`non-scaling-stroke`).
+ * Las hojas siguen la misma panza con `--panza`, que escribe `colgarEnLaPanza`.
+ */
+function dibujarSoga(): SVGSVGElement {
+  const NS = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(NS, 'svg');
+  svg.setAttribute('class', 'tendedero-soga');
+  svg.setAttribute('viewBox', '0 0 100 10');
+  svg.setAttribute('preserveAspectRatio', 'none');
+  svg.setAttribute('aria-hidden', 'true');
+  const trazo = document.createElementNS(NS, 'path');
+  // La curva pasa por y = 1 en las puntas y por y = 9 al medio (el control va al doble).
+  trazo.setAttribute('d', 'M0 1 Q50 17 100 1');
+  trazo.setAttribute('vector-effect', 'non-scaling-stroke');
+  svg.append(trazo);
+  return svg;
+}
+
+/** Cuánto baja la soga en cada hoja de un renglón de `cuantas`: 0 en las puntas, 1 al medio. */
+function colgarEnLaPanza(hojas: readonly HTMLElement[]): void {
+  hojas.forEach((hoja, i) => {
+    const t = (i + 0.5) / hojas.length;
+    hoja.style.setProperty('--panza', (4 * t * (1 - t)).toFixed(3));
+  });
+}
 
 /** Una hoja de la soga, vacía: el broche y el lugar donde va a colgar la impresa. */
 function hojaDeSoga(): HTMLElement {
@@ -223,8 +253,12 @@ function armarTablero(): void {
   // cuenta de "Llevás"—; cada hoja respondida lleva además su tilde o su cruz.
   sogaEl = dibujo('div', 'tendedero');
   for (let i = 0; i < ronda.length; i++) sogaEl.append(hojaDeSoga());
+  colgarEnLaPanza([...sogaEl.children] as HTMLElement[]);
+  // La soga va en una caja aparte: `sogaEl` tiene una hoja por hijo, y el pase cuenta con eso.
+  const tendido = dibujo('div', 'tendedero-tendido');
+  tendido.append(dibujarSoga(), sogaEl);
 
-  tableroEl.append(fila, sogaEl);
+  tableroEl.append(fila, tendido);
   zonaPartida.append(tableroEl);
 }
 
@@ -261,7 +295,13 @@ function anotarRacha(): void {
 function armarMesa(): void {
   mesaEl = el('figure', 'figura-tapa-juego mesa-imprenta');
   bastidorEl = el('div', 'bastidor');
-  bastidorEl.append(dibujo('span', 'bastidor-mordaza'), dibujo('span', 'bastidor-mordaza bastidor-mordaza--der'));
+  bastidorEl.append(
+    dibujo('span', 'bastidor-mordaza'),
+    dibujo('span', 'bastidor-mordaza bastidor-mordaza--der'),
+    // Las manchas de tinta vieja en la madera: una mesa que ya imprimió muchas.
+    dibujo('span', 'bastidor-mancha'),
+    dibujo('span', 'bastidor-mancha bastidor-mancha--der'),
+  );
   papelEl = el('span', 'estampa-papel estampa-papel--abre');
   carroEl = dibujo('span', 'racleta-carro');
   carroEl.append(el('span', 'racleta'));
@@ -293,6 +333,7 @@ function pintarPregunta(): void {
 
   // La mesa vuelve a como estaba: la racleta arriba, las tintas sin usar, ningún sello.
   mesaEl.classList.remove('figura-tapa-juego--abierta');
+  bastidorEl.style.removeProperty('width');
   carroEl.className = 'racleta-carro';
   for (const t of tintasEl.children) t.className = 'tinta';
   for (const resto of bastidorEl.querySelectorAll('.sello-cae, .sello-marca')) resto.remove();
@@ -330,7 +371,8 @@ function pintarPregunta(): void {
     b.type = 'button';
     b.dataset.texto = op.texto;
     b.style.setProperty('--orden', String(i + 1));
-    b.append(el('span', 'opcion-texto', op.texto));
+    // El número de la tecla: se ve solo donde hay teclado (lo decide la hoja de estilos).
+    b.append(dibujo('span', 'opcion-numero', String(i + 1)), el('span', 'opcion-texto', op.texto));
     b.addEventListener('pointerdown', () => (conPuntero = true));
     b.addEventListener('keydown', () => (conPuntero = false));
     b.addEventListener('click', () => responder(op.texto), { once: true });
@@ -338,7 +380,27 @@ function pintarPregunta(): void {
     listaEl.append(li);
   });
   zonaPartida.append(listaEl);
+
+  // Las cuatro teclas también son el 1, el 2, el 3 y el 4 del teclado.
+  soltarNumeros();
+  const alNumero = (ev: KeyboardEvent): void => {
+    if (ev.repeat || ev.ctrlKey || ev.metaKey || ev.altKey) return;
+    const n = Number(ev.key);
+    if (!Number.isInteger(n) || n < 1 || n > item.opciones.length) return;
+    if (papelEl !== papel || elegidas[indice] !== undefined || zonaPartida.hidden) return;
+    ev.preventDefault();
+    conPuntero = false;
+    responder(item.opciones[n - 1]!.texto);
+  };
+  document.addEventListener('keydown', alNumero);
+  soltarNumeros = () => {
+    document.removeEventListener('keydown', alNumero);
+    soltarNumeros = () => {};
+  };
 }
+
+/** Deja de escuchar los números de la pregunta en curso. */
+let soltarNumeros: () => void = () => {};
 
 /**
  * El sello grande del cierre: cae sobre la esquina de la hoja recién impresa, con la tilde o la
@@ -362,6 +424,7 @@ function responder(texto: string): void {
   const item = ronda[indice]!;
   if (elegidas[indice] !== undefined) return;
   elegidas[indice] = texto;
+  soltarNumeros();
   const correcta = correctaDe(item);
   const acerto = texto === correcta;
   const cual = indice;
@@ -413,7 +476,9 @@ function responder(texto: string): void {
   const arranque = seImprimio ? duracionDe('--duracion-paso') : 0;
   const pasadas = !seImprimio ? 0 : acerto ? 4 : 1;
   const hastaElSello = arranque + escalon * pasadas;
-  const hastaLaFicha = hastaElSello + duracionDe('--duracion-pasada');
+  // La ficha llega con el sello todavía cayendo: el ojo está en la esquina de la hoja, y lo
+  // que hay para leer ya está abajo cuando baja la vista.
+  const hastaLaFicha = hastaElSello + (hastaElSello > 0 ? duracionDe('--duracion-toque') : 0);
   const relojes: number[] = [];
   for (let i = 0; i < pasadas; i++) {
     relojes.push(window.setTimeout(() => vigente() && sonarEfecto('racleta'), arranque + escalon * i));
@@ -518,6 +583,15 @@ function abrirElRecorte(item: Item, disco: string, acerto: boolean): boolean {
   // La racleta: cuatro pasadas (ida y vuelta, dos veces), o una sola ida con su vuelta.
   carroEl.classList.add(acerto ? 'racleta-carro--tirada' : 'racleta-carro--prueba');
   if (!acerto) papelEl.classList.add('estampa-papel--prueba');
+  // En la prueba, el pedazo que mirabas queda pegado en su sitio con dos tiras de cinta: es un
+  // recorte puesto encima de la hoja, no parte de lo impreso. El marco y la cinta son dibujo.
+  if (!acerto && lugar) {
+    const pegado = dibujo('span', 'recorte-pegado');
+    pegado.style.setProperty('--recorte-x', `${lugar.x * 100}%`);
+    pegado.style.setProperty('--recorte-y', `${lugar.y * 100}%`);
+    pegado.style.setProperty('--recorte-lado', `${lugar.lado * 100}%`);
+    papelEl.append(pegado);
+  }
   // Las tintas que se usaron: las tres, una atrás de la otra, o la clave sola.
   [...tintasEl.children].forEach((t, i) => {
     if (!acerto && i < 2) return;
@@ -566,7 +640,8 @@ function pintarFicha(item: Item, acerto: boolean, correcta: string, seImprimio: 
     ),
   );
 
-  if (item.explicacion) dice.append(el('p', 'explicacion', item.explicacion));
+  const explicacion = item.explicacion ? el('p', 'explicacion', item.explicacion) : null;
+  if (explicacion) dice.append(explicacion);
 
   // El rótulo (`BR-08`, registro 3): frío, con su símbolo, sin adornos.
   if (item.rotulo) {
@@ -637,9 +712,77 @@ function pintarFicha(item: Item, acerto: boolean, correcta: string, seImprimio: 
     seguir.addEventListener('blur', () => seguir.classList.remove('seguir--sin-anillo'), { once: true });
   }
   seguir.focus({ preventScroll: true });
-  // Hasta el zócalo: así "Seguí" queda entero a la vista, en la zona del pulgar. Entre ver el
-  // premio y que el botón esté, gana el botón (`UX-22` §1.4).
-  zocalo.scrollIntoView({ block: 'nearest' });
+
+  /*
+   * Que entren juntas la tapa terminada y "Seguí". Primero se prueba con todo a la vista: si
+   * sobra lugar, la mesa queda como está; si falta, la mesa se achica hasta donde haga falta
+   * (nunca menos que `MESA_MINIMA`). Si ni así entra, o la tapa quedaría más chica que
+   * `MESA_COMODA`, y la explicación es larga, se pliega a tres renglones con su "Leé más" y se
+   * vuelve a medir. El rótulo no se pliega nunca.
+   */
+  let entra = acomodarLaMesa(zocalo);
+  if ((!entra || bastidorEl.offsetWidth < MESA_COMODA) && explicacion) {
+    explicacion.classList.add('explicacion--plegada');
+    // Solo se ofrece abrir si de verdad quedó texto escondido.
+    if (explicacion.scrollHeight > explicacion.clientHeight + 2) {
+      const mas = el('button', 'leer-mas', IMPRENTA.leerMas);
+      mas.type = 'button';
+      mas.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        explicacion.classList.remove('explicacion--plegada');
+        mas.remove();
+      });
+      explicacion.after(mas);
+      entra = acomodarLaMesa(zocalo);
+    } else {
+      explicacion.classList.remove('explicacion--plegada');
+      entra = acomodarLaMesa(zocalo);
+    }
+  }
+  // Si entra, la hoja queda arriba, con la tapa entera a la vista. Si no, hasta el zócalo: entre
+  // ver el premio y que el botón esté, gana el botón (`UX-22` §1.4).
+  if (entra) window.scrollTo({ top: 0 });
+  else zocalo.scrollIntoView({ block: 'nearest' });
+
+  // La tarjeta de la vuelta se dibuja ahora, mientras se lee la última ficha: al llegar al
+  // resultado ya está hecha y no le cuesta un cuadro largo a la entrada de la soga.
+  if (ultima) {
+    const cual = indice;
+    const estaRonda = ronda;
+    window.setTimeout(
+      () => {
+        if (ronda !== estaRonda || indice !== cual || tarjetaAdelantada) return;
+        tarjetaAdelantada = { ronda: estaRonda, imagen: dibujarLaTarjeta(total) };
+      },
+      duracionDe('--duracion-umbral') + duracionDe('--duracion-inercia'),
+    );
+  }
+}
+
+/** La tarjeta que se dibujó antes de tiempo, y de qué vuelta es. */
+let tarjetaAdelantada: { ronda: readonly Item[]; imagen: Promise<Blob | null> } | null = null;
+
+/** Lo mínimo que mide el bastidor con la ficha a la vista, en píxeles de CSS. */
+const MESA_MINIMA = 150;
+/** Por debajo de este ancho, antes de achicar más la tapa se pliega la explicación. */
+const MESA_COMODA = 176;
+
+/**
+ * Ajusta el ancho del bastidor para que la partida revelada termine adentro de la ventana.
+ * El bastidor es cuadrado más un marco fijo: cada píxel de ancho es un píxel de alto. Devuelve
+ * si todo entró. Una sola lectura de medidas y una escritura.
+ */
+function acomodarLaMesa(ultimo: HTMLElement): boolean {
+  bastidorEl.style.removeProperty('width');
+  const ancho = bastidorEl.offsetWidth;
+  const fin = ultimo.getBoundingClientRect().bottom + window.scrollY;
+  const sobra = window.innerHeight - fin - 6;
+  if (sobra >= 0) return true;
+  // En la compu la ficha va al lado de la mesa: achicar la mesa no le hace lugar a nada.
+  if (ultimo.getBoundingClientRect().left >= bastidorEl.getBoundingClientRect().right - 1) return false;
+  const nuevo = Math.max(MESA_MINIMA, ancho + sobra);
+  bastidorEl.style.width = `${Math.floor(nuevo)}px`;
+  return ancho + sobra >= MESA_MINIMA;
 }
 
 /**
@@ -663,7 +806,9 @@ function avanzar(): void {
     return;
   }
 
-  // Primero la hoja vuelve arriba: el vuelo se mide con la soga ya en su lugar.
+  // Primero la hoja vuelve arriba y la soga a la vista (en un teléfono bajo estaba guardada):
+  // el vuelo se mide con todo en su lugar.
+  zonaPartida.classList.remove('partida--revelada');
   window.scrollTo({ top: 0 });
   const desde = papelEl;
   if (e && lugar && desde.isConnected) {
@@ -725,33 +870,32 @@ function pintarResultado(): void {
   encabezado.setAttribute('aria-describedby', puntaje.id);
   zonaResultado.append(encabezado);
 
-  // La cuenta sube en escalones y apoya como un sello. El lector lee el valor final.
+  /*
+   * La soga se llena hoja por hoja, en el orden en que se jugó, cada una con su clac; y **la
+   * cuenta sube con cada hoja que salió entera**. Cuando colgó la última, el cierre, que son
+   * tres distintos:
+   *   - la tirada entera (la hazaña): doble filete, el sello "¡Tirada entera!" y el sello que suena;
+   *   - la mitad o más: la cuenta apoya como un sello;
+   *   - menos de la mitad: la cuenta queda torcida y de trazo cortado, y la hoja da un golpe.
+   * Ninguno se dice solo con color ni solo con movimiento: la cifra y las tildes ya lo dicen.
+   * Con movimiento reducido la soga aparece llena y la cuenta, en su valor.
+   */
+  const paso = duracionDe('--duracion-sello');
   const cuenta = entra(el('div', 'cuenta-vuelta'));
-  contar(puntaje, 0, aciertos, (n) => RESULTADO.puntaje(n, total));
+  puntaje.textContent = RESULTADO.puntaje(paso > 0 ? 0 : aciertos, total);
   cuenta.append(puntaje);
-  window.setTimeout(() => {
-    if (!puntaje.isConnected) return;
-    estampar(puntaje);
-    sonarEfecto('sello');
-  }, duracionDe('--duracion-cuenta'));
-  if (aciertos === total && total > 0) {
-    // La hazaña: la tirada entera. Doble filete y un segundo sello.
-    puntaje.classList.add('puntaje--hazana');
-    cuenta.append(el('p', 'hazana-sello', IMPRENTA.hazana));
-  }
   zonaResultado.append(cuenta);
 
-  // La soga, entera: las seis hojas en el orden en que se jugaron, cada una con su disco. Las
-  // que tenías, impresas del todo; las que no, en una tinta. Tilde o cruz además de la tinta.
+  // Cada hoja con su disco. Las que tenías, impresas del todo; las que no, en una tinta. Tilde
+  // o cruz además de la tinta.
   zonaResultado.append(entra(el('p', 'tendedero-rotulo', IMPRENTA.tirada)));
   const soga = el('ul', 'tendedero tendedero--vuelta');
   soga.setAttribute('aria-label', IMPRENTA.tiradaLeida(aciertos, total - aciertos));
-  ronda.forEach((item, i) => {
+  const hojas = ronda.map((item, i) => {
     const ok = acertada(i);
     const disco = correctaDe(item);
     const e = estampaDelItem(item);
-    const hoja = el('li', `colgada colgada--${ok ? 'ok' : 'no'} colgada--llega`);
-    hoja.style.setProperty('--orden', String(i));
+    const hoja = el('li', `colgada colgada--${ok ? 'ok' : 'no'}${paso > 0 ? ' colgada--espera' : ''}`);
     const papel = dibujo('span', 'colgada-papel');
     const lamina = el('span', 'colgada-hoja');
     if (e) lamina.append(miniatura(e, ok));
@@ -760,8 +904,59 @@ function pintarResultado(): void {
     hoja.append(dibujo('span', 'colgada-disco', disco));
     hoja.append(el('span', 'solo-lector', ok ? IMPRENTA.hojaEntera(disco) : IMPRENTA.hojaEnUnaTinta(disco)));
     soga.append(hoja);
+    return hoja;
   });
+  // Las sogas dibujadas, una por renglón: tres hojas por renglón en el teléfono, seis en la compu.
+  const porRenglon = window.matchMedia('(min-width: 46rem)').matches ? 6 : 3;
+  for (let r = 0; r * porRenglon < hojas.length; r++) {
+    colgarEnLaPanza(hojas.slice(r * porRenglon, (r + 1) * porRenglon));
+    const trazo = dibujarSoga();
+    if (r > 0) trazo.classList.add('tendedero-soga--segunda');
+    soga.prepend(trazo);
+  }
   zonaResultado.append(soga);
+
+  const cerrar = (): void => {
+    if (!puntaje.isConnected) return;
+    puntaje.textContent = RESULTADO.puntaje(aciertos, total);
+    if (aciertos === total && total > 0) {
+      puntaje.classList.add('puntaje--hazana');
+      cuenta.append(el('p', 'hazana-sello', IMPRENTA.hazana));
+      estampar(puntaje);
+      sonarEfecto('sello');
+    } else if (aciertos * 2 >= total) {
+      estampar(puntaje);
+      sonarEfecto('sello');
+    } else {
+      puntaje.classList.add('puntaje--floja');
+      golpear(zonaResultado);
+      sonarEfecto('golpe');
+    }
+  };
+  if (paso <= 0) {
+    sonarEfecto('clac');
+    cerrar();
+  } else {
+    const arranque = duracionDe('--duracion-umbral');
+    let van = 0;
+    hojas.forEach((hoja, i) => {
+      window.setTimeout(
+        () => {
+          if (!hoja.isConnected) return;
+          hoja.classList.remove('colgada--espera');
+          hoja.classList.add('colgada--llega');
+          sonarEfecto('clac');
+          if (acertada(i)) {
+            van += 1;
+            puntaje.textContent = RESULTADO.puntaje(van, total);
+            estampar(puntaje);
+          }
+        },
+        arranque + paso * i,
+      );
+    });
+    window.setTimeout(cerrar, arranque + paso * hojas.length + duracionDe('--duracion-toque'));
+  }
 
   /*
    * El pie del resultado (`.pie-resultado`): la misma pieza y el mismo orden que los otros
@@ -781,7 +976,9 @@ function pintarResultado(): void {
   if (urlDeLaTarjeta) URL.revokeObjectURL(urlDeLaTarjeta);
   urlDeLaTarjeta = '';
   archivoDeLaTarjeta = null;
-  const estaTarjeta = dibujarLaTarjeta(aciertos);
+  // Si se dibujó mientras se leía la última ficha, es esa; si no, se dibuja ahora.
+  const estaTarjeta = tarjetaAdelantada?.ronda === ronda ? tarjetaAdelantada.imagen : dibujarLaTarjeta(aciertos);
+  tarjetaAdelantada = null;
   tarjetaDeLaVuelta = estaTarjeta;
   void estaTarjeta.then((imagen) => {
     if (tarjetaDeLaVuelta !== estaTarjeta || !asoma.isConnected) return;
