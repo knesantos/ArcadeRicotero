@@ -221,18 +221,17 @@ function meterLaFicha(): void {
   };
   entrando = entrar;
   void despierta.then(() => sonarEfecto('tecla'));
-  const baja = (ficha.parentElement?.getBoundingClientRect().height ?? 90) + 4;
-  // La pose de reposo va en `rotate`; los cuadros dicen solo adónde va. En saltos: de frente,
-  // de tres cuartos, de canto, y de canto para abajo hasta que la ranura se la traga.
+  const entra = Math.round(ficha.getBoundingClientRect().width + 6);
+  // La ficha está de canto, a medio meter. El dedo la empuja: retrocede un pelo, y la boca se
+  // la traga en saltos (la recorta `.ranura-caida`, a la altura de la hendija).
   const caida = ficha.animate(
     [
-      { rotate: '-8deg', scale: '1 1', translate: '0 0', offset: 0 },
-      { rotate: '-3deg', scale: '0.55 1', translate: '0 0', offset: 0.14 },
-      { rotate: '0deg', scale: '0.14 1', translate: '0 0', offset: 0.28 },
-      { rotate: '0deg', scale: '0.14 1', translate: '0 0', offset: 0.4 },
-      { rotate: '0deg', scale: '0.14 1', translate: `0 ${Math.round(baja)}px`, offset: 1 },
+      { translate: '0 0', offset: 0 },
+      { translate: '-5px 0', offset: 0.2 },
+      { translate: '-5px 0', offset: 0.3 },
+      { translate: `${entra}px 0`, offset: 1 },
     ],
-    { duration: ms, easing: 'steps(9, end)', fill: 'forwards' },
+    { duration: ms, easing: 'steps(8, end)', fill: 'forwards' },
   );
   caida.addEventListener(
     'finish',
@@ -370,15 +369,16 @@ function armarTablero(): void {
   rachaEl.hidden = true;
   llevasEl = el('span', 'restantes restantes--llevas', FICHIN.llevas(0));
   llevasEl.setAttribute('aria-live', 'polite');
-  fila.append(vidasEl, numero, llevasEl);
+  // La tecla de los ruidos va en la cabecera, junto a lo que llevás, como en los otros juegos.
+  const ruidos = armarInterruptorDeRuidos({ apagar: FICHIN.ruidosTecla, prender: FICHIN.ruidosTecla });
+  ruidos.classList.add('ruidos-tecla');
+  fila.append(vidasEl, numero, ruidos, llevasEl);
 
   rielEl = riel(partida, false);
 
   const pie = el('div', 'tablero-pie');
-  const ruidos = armarInterruptorDeRuidos({ apagar: FICHIN.ruidosTecla, prender: FICHIN.ruidosTecla });
-  ruidos.classList.add('ruidos-tecla');
   retiradaEl = disparadorRetirada();
-  pie.append(ruidos, rachaEl, retiradaEl);
+  pie.append(rachaEl, retiradaEl);
 
   tableroEl.append(fila, rielEl, pie);
   zonaPartida.append(tableroEl);
@@ -430,7 +430,9 @@ function pintarPregunta(): void {
   zonaPartida.classList.remove('partida--revelada');
   ponerTableroAlDia(false);
 
-  const ficha = el('article', `ficha-pregunta ficha-pregunta--${item.categoria}`);
+  // La pregunta es **la pantalla del fichín**: ocupa el alto libre, se prende de una línea al
+  // medio (`pantalla-prende`) y las cuatro teclas quedan abajo, donde está el pulgar.
+  const ficha = el('article', `ficha-pregunta ficha-pregunta--${item.categoria} ficha-pregunta--prende`);
   fichaEl = ficha;
 
   const sellos = el('div', 'ficha-sellos');
@@ -449,7 +451,15 @@ function pintarPregunta(): void {
   // El aviso de escalon aparece una sola vez por salto y no corta el ritmo con una
   // pantalla intermedia: `UX-07` descarto el "¡subiste de nivel!" por ese motivo. Va
   // adentro de la ficha, como una franja estampada: el rotulo seco y la linea que canta.
-  if (abreEscalon(partida)) {
+  const abre = abreEscalon(partida);
+  if (abre) {
+    // El escalón es un momento, sin pantalla aparte (`UX-07`): el cartel cae sobre la pantalla
+    // cuando ya prendió, suena el sello y el tramo nuevo del riel apoya.
+    window.setTimeout(() => {
+      if (fichaEl !== ficha) return;
+      sonarEfecto('sello');
+      estampar(rielEl.querySelector('.riel-paso--ahora')?.parentElement);
+    }, duracionDe('--duracion-umbral'));
     const aviso = el('div', 'escalon');
     aviso.setAttribute('role', 'status');
     aviso.append(el('span', 'escalon-rotulo', avisoEscalon(pos.nivel)));
@@ -458,7 +468,8 @@ function pintarPregunta(): void {
     ficha.append(aviso);
   }
 
-  const enunciado = el('h2', 'enunciado', item.enunciado);
+  // Un enunciado largo baja un cuerpo: la pantalla tiene que entrar con sus cuatro teclas.
+  const enunciado = el('h2', item.enunciado.length > 120 ? 'enunciado enunciado--largo' : 'enunciado', item.enunciado);
   // El foco aterriza en la pregunta, pero las vidas, el numero, la categoria y —sobre todo—
   // la insignia de rotulo tienen que llegar con ella (`UX-01` v2).
   // Las vidas, el numero y los sellos, y no el tablero entero: el tablero tambien tiene el
@@ -472,7 +483,8 @@ function pintarPregunta(): void {
   item.opciones.forEach((op, i) => {
     const b = el('button', 'opcion jugo-pega');
     b.type = 'button';
-    b.style.setProperty('--orden', String(i + 1));
+    // Las teclas se apoyan cuando la pantalla ya prendió (y el cartel del escalón ya cayó).
+    b.style.setProperty('--orden', String(i + (abre ? 9 : 5)));
     // El texto se compara por el dato y no por `textContent`: la letra vive adentro.
     b.dataset.texto = op.texto;
     const letra = el('span', 'opcion-letra', LETRAS[i]);
@@ -749,7 +761,7 @@ function pintarFicha(item: Item, acerto: boolean, correcta: string): void {
    * `spotify.ts` y esta llamada saca Spotify del sitio entero sin romper nada más—, y a la
    * derecha el botón de corrección (`BR-21` criterio 4).
    */
-  const zocalo = el('div', 'ficha-pie');
+  const zocalo = el('div', 'ficha-pie ficha-zocalo');
   const spot = botonSpotify(item.spotify?.trackId);
   if (spot) {
     const linea = el('p', 'fuente-verso');
@@ -805,13 +817,36 @@ function pintarFicha(item: Item, acerto: boolean, correcta: string): void {
   zocalo.scrollIntoView({ block: 'nearest' });
 }
 
+/**
+ * El pase, que es una sola historia: la ficha de la respuesta se va, **la pantalla se apaga**
+ * (se cierra a una línea, como un tubo), la rueda del contador da la vuelta y la pantalla
+ * vuelve a prender con la pregunta nueva; recién ahí se apoyan las teclas. Un sub-paso cada
+ * mitad. Con movimiento reducido el sub-paso vale cero y la pregunta nueva aparece puesta.
+ */
 function avanzar(): void {
   sonarEfecto('tecla');
   // Quien decide si la partida sigue es `vidas.ts`, no esta funcion.
-  if (partida.desenlace === 'jugando') {
+  if (partida.desenlace !== 'jugando') {
+    pintarResultado();
+    return;
+  }
+  const vieja = fichaEl;
+  const ms = duracionDe('--duracion-umbral');
+  if (ms <= 0 || !vieja?.isConnected) {
     pintarPregunta();
     window.scrollTo({ top: 0 });
-  } else pintarResultado();
+    return;
+  }
+  for (const hijo of [...zonaPartida.children]) if (hijo !== tableroEl && hijo !== vieja) hijo.remove();
+  window.scrollTo({ top: 0 });
+  vieja.classList.remove('ficha-pregunta--prende');
+  vieja.classList.add('ficha-pregunta--apaga');
+  // El foco no se queda en un botón que ya no está.
+  enfocar(vieja);
+  window.setTimeout(() => {
+    if (fichaEl !== vieja) return;
+    pintarPregunta();
+  }, ms * 0.6);
 }
 
 /* ---- El resultado ---- */
@@ -841,7 +876,10 @@ function planilla(p: Partida<Item>): HTMLElement {
     const casillas = el('div', 'planilla-casillas');
     for (const i of g.indices) {
       const estado = i < h.length ? (h[i] ? 'ok' : 'no') : 'resto';
-      casillas.append(el('span', `planilla-casilla planilla-casilla--${estado}`, estado === 'ok' ? '✔︎' : estado === 'no' ? '✕︎' : '·'));
+      const casilla = el('span', `planilla-casilla planilla-casilla--${estado}`, estado === 'ok' ? '✔︎' : estado === 'no' ? '✕︎' : '·');
+      // La planilla se llena casilla por casilla, en el orden en que se jugó.
+      if (estado !== 'resto') casilla.style.setProperty('--orden', String(i));
+      casillas.append(casilla);
     }
     tramo.append(casillas);
     grilla.append(tramo);
@@ -920,6 +958,17 @@ function pintarResultado(): void {
   contar(numero, 0, r.pregunta, numeroDePregunta);
   cuenta.append(numero);
   window.setTimeout(() => sonarEfecto(r.desenlace === 'derrota' ? 'golpe' : 'sello'), duracionDe('--duracion-cuenta'));
+  // El crédito se gastó: el contador de la máquina vuelve a 00 cuando la cifra terminó de
+  // contar. "Jugá de nuevo" es poner otra ficha.
+  const creditos = dibujo('p', 'maquina-creditos');
+  const ruedas = armarContador(1, 2);
+  creditos.append(el('span', 'maquina-rotulo', FICHIN.creditos), ruedas);
+  window.setTimeout(
+    () => {
+      if (rodarContador(ruedas, 0)) sonarEfecto('tecla');
+    },
+    duracionDe('--duracion-cuenta') + duracionDe('--duracion-umbral'),
+  );
   if (r.desenlace !== 'victoria') {
     const fichas = marcadorVidas(partida.vidas);
     fichas.removeAttribute('id');
@@ -928,6 +977,7 @@ function pintarResultado(): void {
     fichas.classList.add('vidas--resultado');
     cuenta.append(fichas);
   }
+  cuenta.append(creditos);
   if (sinPerderUna) {
     // La hazaña: agotar el banco con las tres fichas en pie. Doble filete y un segundo sello.
     numero.classList.add('resultado-numero--hazana');

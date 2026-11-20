@@ -70,6 +70,16 @@ export async function dibujarFichin(datos: DatosDelFichin): Promise<Blob | null>
   ctx.fillStyle = c.fondo;
   ctx.fillRect(0, 0, W, H);
 
+  // La chapa: un marco atornillado, como el de la portada.
+  ctx.strokeStyle = c.borde;
+  ctx.lineWidth = 6;
+  ctx.strokeRect(34, 34, W - 68, H - 68 - 14);
+  for (const [x, y] of [[62, 62], [W - 62, 62], [62, H - 76], [W - 62, H - 76]] as const) {
+    ctx.beginPath();
+    ctx.arc(x, y, 9, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+
   /** Escribe achicando hasta que entre. Devuelve el ancho de lo escrito. */
   const escribir = (texto: string, x: number, y: number, cuerpo: number, familia: string, color: string, anchoMax: number): number => {
     let k = cuerpo;

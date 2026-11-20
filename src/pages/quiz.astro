@@ -61,19 +61,21 @@ const TITULO = 'Preguntas ricoteras — Fichín Ricotero';
         <!-- La linea que nombra (`D-71`, regla de las dos lineas): cuantas vidas y como sube.
              Las fichas son las mismas del tablero de la partida, para que se reconozcan. -->
         <!-- La chapa de la ranura (ronda de pulida, 2026-11-19): el objeto que nombra la
-             acotación. A la izquierda, la ficha apoyada sobre la ranura; a la derecha, el
-             contador de créditos y las tres vidas, que son tres fichas —las mismas del tablero
-             de la partida—. La ficha grande es un atajo de "Jugá" (mismo gesto, dicho con el
+             acotación. A la izquierda, la boca metálica con su labio y la ficha de canto, a
+             medio meter; a la derecha, el cartel, el contador de créditos y las tres vidas, que
+             son tres fichas —las mismas del tablero de la partida—. La ficha es un atajo de
+             "Jugá" (mismo gesto, dicho con el
              objeto): va fuera del orden de tabulación y escondida del lector, porque el botón
              ya está ahí y dice lo mismo. -->
         <div class="maquina">
           <div class="ranura" aria-hidden="true">
-            <div class="ranura-caida">
-              <button id="ficha-portada" class="ficha-grande" type="button" tabindex="-1"><span>FR</span></button>
-            </div>
-            <span class="ranura-boca"></span>
+            <span class="ranura-chapa"><span class="ranura-boca"></span></span>
+            <span class="ranura-caida">
+              <button id="ficha-portada" class="ficha-canto" type="button" tabindex="-1"><span>FR</span></button>
+            </span>
           </div>
           <div class="maquina-datos">
+            <p class="maquina-cartel" aria-hidden="true">{FICHIN.ponela}</p>
             <p class="maquina-creditos" aria-hidden="true">
               <span class="maquina-rotulo">{FICHIN.creditos}</span>
               <span id="creditos" class="contador"><span class="contador-cifra"><span class="contador-tira"><span>0</span></span></span><span class="contador-cifra"><span class="contador-tira"><span>0</span></span></span></span>

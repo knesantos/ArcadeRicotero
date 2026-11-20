@@ -325,6 +325,8 @@ export const FICHIN = {
   juego: 'Preguntas ricoteras',
   /** El rótulo del contador de la portada. Registro 3. */
   creditos: 'Créditos',
+  /** El cartel de la ranura: lo que en un fichín importado dice la chapa, dicho acá (`D-17`). */
+  ponela: 'Poné la ficha',
   /** Lo que llevás acertado, en la cabecera. Sube al acertar. */
   llevas: (n: number) => `Llevás ${n}`,
   /** Lo que suma un acierto: vuela de la ficha a la cuenta. */

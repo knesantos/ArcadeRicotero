@@ -300,6 +300,10 @@ const ANIMACIONES = [
   { nombre: 'cifra-rueda', apaga: 'token', valor: '--duracion-golpe', hoja: 'src/styles/juego.css' },
   { nombre: 'ficha-rompe-izq', apaga: 'token', valor: '--duracion-inercia', hoja: 'src/styles/juego.css' },
   { nombre: 'ficha-rompe-der', apaga: 'token', valor: '--duracion-inercia', hoja: 'src/styles/juego.css' },
+  // Ronda 2: la pantalla de la pregunta, que se prende y se apaga como un tubo (barridos de
+  // `clip-path`, en saltos), una vez por pregunta.
+  { nombre: 'pantalla-prende', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  { nombre: 'pantalla-apaga', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
 ] as const;
 
 test('no hay ninguna animacion que esta lista no conozca', () => {

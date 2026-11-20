@@ -144,3 +144,94 @@ pared no se corre al llegar la ficha salvo en teléfonos bajos, pero conviene mi
 - **La tarjeta** es correcta y sobria: con pocas preguntas respondidas queda mucho fondo.
 - No se probó con dedo, teclado ni lector de pantalla de verdad, ni el modo `?incrustado`.
 - `UX-01`, `UX-07` y `D-71` describen la pantalla de antes; el lienzo no tiene esta.
+
+---
+
+## Ronda 2 (2026-11-19): la pantalla del fichín, el pase y el peso
+
+### 1. Decisiones del hilo principal, ya aplicadas (para las enmiendas)
+
+- **"Seguí" va adentro de la ficha de la respuesta** (enmienda a `D-71`, que lo pedía pegado
+  abajo). Cierra la columna de la ficha y la hoja se corre hasta el zócalo, así queda entero a
+  la vista; avanzar lo sigue mandando el dedo, sin temporizador.
+- **Al llegar la ficha se van las dos opciones que no eran ni la tuya ni la buena** (enmienda a
+  `D-71`, "las otras dos se apagan"). Quedan la buena y, si erraste, la tuya tachada, en una
+  columna; es lo que deja entrar la respuesta en una pantalla.
+- **La racha va en el renglón de abajo del tablero**, con "Cerrá la partida". En el de arriba,
+  con las fichas, el contador, los ruidos y la cuenta, a 320 px desbordaba la hoja.
+- **El adelanto del cierre escucha `click` y no `pointerdown`**, también en "Completá la letra"
+  (`partida-letra.ts`, `apurar`): una línea.
+
+### 2. Qué se hizo
+
+1. **La portada es una ranura de fichín**: la boca metálica parada, con su labio (dos filetes
+   pegados) y dos tornillos; la hendija al medio; y **la ficha de canto, en escorzo, a medio
+   meter**, con el canto asomando por detrás. Al lado, el cartel de la chapa: **"← PONÉ LA
+   FICHA"** (lo que en un fichín importado dice la chapa, en voz nuestra; `D-17`). Al tocar
+   "Jugá" o la ficha, retrocede un pelo y la boca se la traga, en saltos; clac y créditos 01.
+2. **La pregunta es la pantalla del fichín.** En el teléfono la partida ocupa el alto de la
+   ventana: arriba el tablero, al medio la pantalla —marco de la tinta de la categoría con un
+   segundo filete por adentro, la pregunta grande al medio— que crece hasta donde haya, y
+   **abajo las cuatro teclas, en la zona del pulgar**. A 430 × 860 la pantalla mide 350 px
+   (antes, un recorte de ~110 y media ventana vacía). Un enunciado de más de 120 letras baja un
+   cuerpo. En la compu la pantalla mide lo suyo (no hay alto que repartir).
+3. **Las teclas llevan la letra en tapa llena** (la tinta del fondo sobre la del texto; verde o
+   roja cuando la tecla dice cómo salió). Dos pares nuevos en `contraste.test.ts`.
+4. **El sello grande cae entero adentro de la pantalla** y su marca chica queda adentro, abajo
+   a la derecha (medido en diez tamaños: siempre adentro).
+5. **"RUIDOS" está en la cabecera**, junto a "LLEVÁS N".
+6. **El zócalo va pegado debajo de la ficha**, de su ancho y con su filete: "Escuchalo en
+   Spotify →" a la izquierda y "Corregí esto" a la derecha (sola, también a la derecha).
+7. **El pase es una sola historia**: la ficha se va, **la pantalla se apaga** (se cierra a una
+   línea, como un tubo, en saltos), la rueda del contador da la vuelta, la pantalla **prende**
+   con la pregunta nueva y recién ahí se apoyan las teclas. Con movimiento reducido, la
+   pregunta nueva aparece puesta.
+8. **El escalón es un momento, sin pantalla aparte** (`UX-07` sigue en pie): el cartel
+   "NIVEL MEDIA" —más grande, con doble filete— cae sobre la pantalla cuando ya prendió, suena
+   el sello, el tramo nuevo del riel apoya, y las teclas esperan a que caiga.
+9. **El resultado tiene peso**: el desenlace es un sello grande; debajo del `Nº` el contador de
+   la máquina vuelve de 01 a 00 (el crédito se gastó: "Jugá de nuevo" es poner otra ficha); y
+   **la planilla se llena casilla por casilla**, en el orden en que se jugó.
+10. **La tarjeta lleva el marco atornillado de la chapa.**
+11. **A 380 px de ancho para abajo, la tapa va chica al lado de la respuesta y el dato debajo a
+    todo el ancho**: con la tapa al costado de todo, a 320 la ficha medía 767 px; ahora 593.
+
+### 3. Detalles vivos de la ronda 2
+
+| Detalle | Estado | Cómo | Con movimiento reducido |
+|---|---|---|---|
+| La boca se traga la ficha | "Jugá" | `animate()` en saltos, recorte de `.ranura-caida` | arranca la partida |
+| La pantalla prende | pregunta nueva | `pantalla-prende` (recorte, en saltos) | puesta |
+| La pantalla se apaga | "Seguí" | `pantalla-apaga` | no hay apagado |
+| El cartel del escalón cae | abre un nivel | `sello-golpe`, con espera | puesto |
+| El contador vuelve a 00 | resultado | `rodarContador` | 00 de una |
+| La planilla se llena | resultado | `sello-golpe` por casilla, con `--orden` | llena |
+
+### 4. Tests y copy
+
+- `movimiento.test.ts`: dos animaciones más (`pantalla-prende`, `pantalla-apaga`, por
+  `--duracion-umbral`). `contraste.test.ts`: dos pares más (`fondo` sobre `texto`, la letra de
+  la tecla; `fondo` sobre `acento-2`, la FR de la ficha). Ninguno se relajó.
+- Copy nuevo: `FICHIN.ponela` ("Poné la ficha"), para el visto de `contenido`.
+
+### 5. Diez tamaños, con los datos peores
+
+Guion fuera del repo (`q-tamanos.mjs`, en la carpeta temporal): le cambia al navegador el
+banco para que **todas** las preguntas lleven el enunciado, las cuatro opciones y la
+explicación más largos de lo publicado, con rótulo de leyenda, tapa y enlace. En 320 × 568,
+360 × 640, 375 × 667, 390 × 844, 412 × 915, 430 × 860, 768 × 1024, 1024 × 768, 1280 × 800 y
+1440 × 900: la hoja no desborda de costado en ningún estado; "Jugá" queda arriba del pliegue
+(a 320 × 568 termina en 526 de 568; a 375 × 667, en 647 de 667); la pregunta con sus cuatro
+teclas entra en la ventana (a 320 × 568 termina en 558); el sello cae adentro de la pantalla y
+la marca queda adentro; "Seguí" queda a la vista al llegar la ficha.
+
+### 6. Lo que queda flojo
+
+- **La ficha en escorzo se lee, pero es un óvalo plano**: le falta el canto estriado.
+- A 375 × 667 "Jugá" termina a 20 px del pliegue: entra, justo.
+- **En la compu la partida no cambió de escala**: la pantalla mide ~160 px y sobra ventana.
+- Con el peor dato a 320 la ficha de la respuesta mide 593 px: hay que desplazar para leerla
+  entera (la hoja se corre sola hasta "Seguí").
+- El apagado de la pantalla dura 230 ms antes de que entre la nueva: se nota en la ráfaga, y
+  jugando rápido puede sentirse como una espera.
+- No se probó con dedo, teclado ni lector de pantalla de verdad, ni `?incrustado`.

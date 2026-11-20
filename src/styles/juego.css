@@ -5390,49 +5390,109 @@ html.incrustado .juego-tema #partida .cabina {
 }
 
 .ranura {
-  display: grid;
-  justify-items: center;
-  width: 4.4rem;
+  position: relative;
+  width: 6.4rem;
+  height: 6.2rem;
 }
 
+/* La boca: una chapa parada, con su labio (dos filetes pegados por adentro, no sombra) y un
+   tornillo arriba y otro abajo. La hendija va al medio. */
+.ranura-chapa {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 3.5rem;
+  height: 100%;
+  border: var(--linea) solid var(--borde);
+  border-radius: 3px;
+  background: var(--fondo);
+  box-shadow:
+    inset 0 0 0 4px var(--fondo),
+    inset 0 0 0 6px var(--acento-2);
+}
+
+.ranura-chapa::before,
+.ranura-chapa::after {
+  content: '';
+  position: absolute;
+  top: 0.62rem;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  margin-left: -4.5px;
+  border: 2px solid var(--acento-2);
+  border-radius: 50%;
+}
+
+.ranura-chapa::after {
+  top: auto;
+  bottom: 0.62rem;
+}
+
+.ranura-boca {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0.62rem;
+  height: 3.5rem;
+  margin: -1.75rem 0 0 -0.31rem;
+  border: 2px solid var(--acento-2);
+  border-radius: 2px;
+  background: var(--borde);
+}
+
+/* Por dónde entra la ficha: una ventana que termina en el medio de la hendija. Lo que pasa
+   de ahí, la máquina ya se lo tragó. */
 .ranura-caida {
+  position: absolute;
+  top: 0;
+  right: 1.75rem;
+  bottom: 0;
+  left: 0;
   display: grid;
-  align-items: start;
-  justify-items: center;
-  width: 100%;
-  height: 5.3rem;
-  padding-top: 0.2rem;
+  align-items: center;
+  justify-items: end;
   overflow: hidden;
 }
 
-.ficha-grande {
+/* La ficha, de canto: se ve en escorzo (un óvalo), con el canto asomando por detrás, y a
+   medio meter. La pose de reposo va en `translate` y `rotate`; la isla solo la empuja. */
+.ficha-canto {
+  position: relative;
   display: grid;
   place-items: center;
-  width: 4rem;
-  height: 4rem;
+  width: 2.5rem;
+  height: 4.2rem;
   padding: 0;
   border: none;
   border-radius: 50%;
   background: var(--acento-2);
   color: var(--fondo);
   box-shadow:
-    inset 0 0 0 4px var(--acento-2),
-    inset 0 0 0 7px var(--fondo);
+    inset 0 0 0 3px var(--acento-2),
+    inset 0 0 0 5px var(--fondo);
   font-family: var(--fuente-rotulada);
-  font-size: 1.2rem;
-  letter-spacing: 0.02em;
-  rotate: -8deg;
+  font-size: 1.15rem;
+  translate: 0.95rem 0;
+  rotate: -3deg;
   cursor: pointer;
   touch-action: manipulation;
 }
 
-.ranura-boca {
-  display: block;
-  width: 0.95rem;
-  height: 2.3rem;
-  margin-top: -1.15rem;
-  border: 3px solid var(--acento-2);
-  border-radius: 3px;
+.ficha-canto > span {
+  scale: 0.58 1;
+}
+
+/* El canto: el mismo óvalo, corrido para atrás, con su filete. Es el grosor de la ficha. */
+.ficha-canto::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--acento-2);
+  box-shadow: inset 0 0 0 2px var(--fondo);
+  translate: -7px 0;
 }
 
 .maquina-datos {
@@ -5468,8 +5528,383 @@ html.incrustado .juego-tema #partida .cabina {
   margin-top: var(--espacio-1);
 }
 
-/* Teléfonos bajos (320 × 568): la chapa se aprieta para que "Jugá" quede arriba del pliegue.
-   Va al final del bloque: con el mismo peso de selector, antes de la regla base no pisa nada. */
+/* El cartel de la chapa: lo que dice la ranura de un fichín, en voz nuestra. Con su flecha. */
+.maquina-cartel {
+  width: fit-content;
+  margin: 0;
+  padding: 0.18rem 0.55rem 0.1rem;
+  border: 2px solid var(--acento-2);
+  border-radius: 3px;
+  color: var(--acento-2);
+  font-family: var(--fuente-rotulada);
+  font-size: 0.82rem;
+  letter-spacing: 0.1em;
+  line-height: 1.3;
+  text-transform: uppercase;
+  rotate: -1.5deg;
+}
+
+.maquina-cartel::before {
+  content: '\2190\00a0';
+}
+
+/* ==========================================================================
+   Preguntas ricoteras, ronda 2 (2026-11-19): la pregunta es la pantalla del fichín
+
+   La partida ocupa el alto de la ventana: arriba el tablero, al medio **la pantalla** —el
+   recorte de la pregunta, que crece hasta donde haya— y abajo las cuatro teclas, en la zona
+   del pulgar. La pantalla se prende de una línea al medio y se apaga igual al pasar de
+   pregunta. Cuando llega la ficha de la respuesta, la pantalla vuelve a su alto justo.
+   ========================================================================== */
+
+@media (max-width: 45.99rem) {
+  .juego-quiz #partida:not([hidden]) {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100svh - var(--espacio-3) * 2);
+  }
+
+  .juego-quiz #partida .ficha-pregunta {
+    flex: 1 1 auto;
+    max-height: 24rem;
+  }
+
+  .juego-quiz #partida.partida--revelada .ficha-pregunta {
+    flex: 0 0 auto;
+  }
+}
+
+/* La pantalla: marco de la tinta de la categoría con un segundo filete por adentro, y la
+   pregunta al medio, grande. El alto mínimo es el del sello del cierre, que cae entero. */
+.juego-quiz .ficha-pregunta {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 9.5rem;
+  padding: 1.6rem 1.1rem 1.1rem;
+  box-shadow:
+    inset 0 0 0 5px var(--fondo),
+    inset 0 0 0 6px var(--tinta-ficha, var(--borde));
+  transform: none;
+  rotate: -0.4deg;
+  animation: none;
+}
+
+.juego-quiz .ficha-pregunta .enunciado {
+  font-size: clamp(1.4rem, 6.3vw, 1.9rem);
+  line-height: 1.22;
+  text-wrap: balance;
+}
+
+.juego-quiz .ficha-pregunta .enunciado--largo {
+  font-size: clamp(1.12rem, 4.9vw, 1.45rem);
+  line-height: 1.28;
+  text-wrap: pretty;
+}
+
+.juego-quiz .ficha-pregunta .enunciado:focus-visible {
+  outline: none;
+}
+
+/* Se prende y se apaga como un tubo: de una línea al medio a la pantalla entera, en saltos.
+   Abierta, el recorte queda más ancho que la pieza (para no comerse las pestañas), y la
+   animación no deja recorte al terminar (`backwards`). */
+.juego-quiz .ficha-pregunta--prende {
+  animation: pantalla-prende var(--duracion-umbral) linear backwards;
+}
+
+.juego-quiz .ficha-pregunta--apaga {
+  animation: pantalla-apaga var(--duracion-umbral) linear forwards;
+}
+
+@keyframes pantalla-prende {
+  0%,
+  24% {
+    clip-path: inset(49% 35% 49% 35%);
+  }
+
+  25%,
+  49% {
+    clip-path: inset(48% -1rem 48% -1rem);
+  }
+
+  50%,
+  74% {
+    clip-path: inset(28% -1rem 28% -1rem);
+  }
+
+  75%,
+  100% {
+    clip-path: inset(-2rem -1rem -2rem -1rem);
+  }
+}
+
+@keyframes pantalla-apaga {
+  0%,
+  19% {
+    clip-path: inset(-2rem -1rem -2rem -1rem);
+  }
+
+  20%,
+  39% {
+    clip-path: inset(28% -1rem 28% -1rem);
+  }
+
+  40%,
+  59% {
+    clip-path: inset(48% -1rem 48% -1rem);
+  }
+
+  60%,
+  100% {
+    clip-path: inset(49% 35% 49% 35%);
+  }
+}
+
+/* El sello del cierre cae entero sobre la pantalla, y su marca chica queda adentro, en la
+   esquina de abajo. */
+.juego-quiz .ficha-pregunta .sello-cae {
+  top: 50%;
+  width: 6.4rem;
+  height: 6.4rem;
+  margin: -3.2rem 0 0 -3.2rem;
+  font-size: 3rem;
+}
+
+.juego-quiz .ficha-pregunta .sello-marca {
+  top: auto;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  margin: 0;
+}
+
+.juego-quiz .partida--revelada .ficha-pregunta {
+  min-height: 0;
+  padding-right: 3.6rem;
+}
+
+/* El escalón, como momento: el cartel cae sobre la pantalla cuando ya prendió, con doble
+   filete. Sin pantalla aparte y sin festejo (`UX-07`): dice el nivel y quién pregunta. */
+.juego-quiz .ficha-pregunta .escalon {
+  align-self: flex-start;
+  margin-bottom: var(--espacio-2);
+  padding: 0.5rem 0.85rem 0.4rem;
+  outline: 2px solid var(--acento-2);
+  outline-offset: 3px;
+  animation: sello-golpe var(--duracion-pasada) var(--curva-cinta) var(--duracion-umbral) backwards;
+}
+
+.juego-quiz .ficha-pregunta .escalon-rotulo {
+  font-size: 1.15rem;
+}
+
+/* ---- Las teclas ----
+   La letra va en tapa llena, como el botón de un fichín: la tinta del fondo sobre la del texto
+   (y sobre el verde o el rojo cuando la tecla dice cómo salió). */
+.juego-quiz .opciones--letradas {
+  gap: 0.55rem;
+  margin-top: var(--espacio-2);
+}
+
+.juego-quiz .opciones--letradas .opcion {
+  min-height: 3.9rem;
+  border-color: var(--texto-tenue);
+  border-bottom-width: 6px;
+  font-size: 1.08rem;
+}
+
+.juego-quiz .opcion-letra {
+  width: 2.2rem;
+  height: 2.2rem;
+  background: var(--texto);
+  border-color: var(--texto);
+  color: var(--fondo);
+  font-size: 1.05rem;
+}
+
+.juego-quiz .opcion.es-correcta {
+  border-color: var(--acento-3);
+}
+
+.juego-quiz .opcion.es-correcta .opcion-letra {
+  background: var(--acento-3);
+  border-color: var(--acento-3);
+}
+
+.juego-quiz .opcion.es-elegida {
+  border-color: var(--acento-4);
+}
+
+.juego-quiz .opcion.es-elegida .opcion-letra {
+  background: var(--acento-4);
+  border-color: var(--acento-4);
+}
+
+.juego-quiz .opcion.es-otra {
+  border-color: var(--borde);
+}
+
+.juego-quiz .opcion.es-otra .opcion-letra {
+  background: none;
+  border-color: currentColor;
+  color: inherit;
+}
+
+/* Con la ficha a la vista, lo que queda de las teclas va en una columna: una sola en media
+   columna, en la compu, quedaba colgada. */
+.juego-quiz .opciones--cerradas {
+  grid-template-columns: 1fr;
+}
+
+.juego-quiz .opciones--cerradas .opcion {
+  min-height: 3.2rem;
+}
+
+/* ---- El tablero, con la tecla de los ruidos en la cabecera ---- */
+.juego-quiz .tablero-fila .ruidos-tecla {
+  align-self: center;
+  margin-left: auto;
+}
+
+.juego-quiz .tablero .restantes--llevas {
+  margin-left: 0;
+}
+
+.juego-quiz .tablero-pie .racha {
+  margin-left: 0;
+}
+
+.juego-quiz .tablero-pie {
+  min-height: 1.3rem;
+}
+
+.juego-quiz .tablero-pie .retirada {
+  margin-left: auto;
+}
+
+/* ---- El zócalo de la ficha ----
+   Pegado debajo de la ficha, del mismo ancho y con su mismo filete: el enlace a la izquierda
+   y la puerta para corregir a la derecha (sola, también a la derecha). */
+.juego-quiz .ficha-respuesta {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.juego-quiz .ficha-zocalo {
+  position: relative;
+  justify-content: flex-end;
+  margin: 0 0.25rem;
+  padding: 0 var(--espacio-2);
+  border: 2px solid var(--borde);
+  border-top: 0;
+  border-radius: 0 0 3px 3px;
+  background: var(--fondo);
+}
+
+.juego-quiz .ficha-zocalo .fuente-verso {
+  margin-right: auto;
+}
+
+.juego-quiz .ficha-zocalo .correccion-disparador {
+  border-bottom: 0;
+}
+
+/* ---- El resultado con peso ----
+   El desenlace es un sello grande; el contador de la máquina vuelve a 00; la planilla se
+   llena casilla por casilla, en el orden en que se jugó. */
+.juego-quiz #resultado .rotulo-desenlace {
+  padding: 0.3em 0.8em 0.22em;
+  border-width: var(--linea);
+  font-size: 1.25rem;
+  letter-spacing: 0.16em;
+}
+
+.juego-quiz .cuenta-fichin .maquina-creditos {
+  flex-basis: 100%;
+  font-size: 1.2rem;
+}
+
+.juego-quiz .planilla-casilla--ok,
+.juego-quiz .planilla-casilla--no {
+  animation: sello-golpe var(--duracion-pasada) var(--curva-cinta)
+    calc(var(--duracion-cuenta) + var(--escalon-umbral) * var(--orden, 0) * 0.6) backwards;
+}
+
+.juego-quiz .planilla-casilla {
+  width: 1.3rem;
+  height: 1.3rem;
+  font-size: 0.78rem;
+}
+
+/* Angosto (380 px para abajo): el renglón de arriba se aprieta. La palabra `Nº` se va —el
+   lector la sigue leyendo— y las fichas y la cuenta bajan un punto. */
+@media (max-width: 23.75rem) {
+  .juego-quiz .tablero-fila {
+    gap: 0.45rem;
+  }
+
+  .juego-quiz .tablero .vida {
+    width: 1.35rem;
+    height: 1.35rem;
+    font-size: 0.62rem;
+  }
+
+  .juego-quiz .tablero .vidas-fichas {
+    gap: 0.2rem;
+  }
+
+  .tablero-numero-rotulo {
+    display: none;
+  }
+
+  .juego-quiz .tablero-numero {
+    font-size: 1.15rem;
+  }
+
+  .juego-quiz .tablero .restantes--llevas {
+    font-size: 0.72rem;
+    letter-spacing: 0.03em;
+  }
+
+  .juego-quiz .ranura {
+    width: 5.6rem;
+  }
+
+  .juego-quiz .maquina-cartel {
+    font-size: 0.64rem;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  /* La tapa al lado de la respuesta, chica, y el dato debajo a todo el ancho: con la tapa al
+     costado de todo, a 320 px el texto quedaba en una columna de quince letras. */
+  .juego-quiz .respuesta-cuerpo:has(.respuesta-tapa) {
+    grid-template-columns: 3.6rem minmax(0, 1fr);
+    align-items: center;
+    row-gap: 0.6rem;
+  }
+
+  .juego-quiz .respuesta-texto {
+    display: contents;
+  }
+
+  .juego-quiz .respuesta-tapa {
+    width: 3.6rem;
+    height: 3.6rem;
+  }
+
+  .juego-quiz .respuesta-cuerpo .respuesta-dato {
+    margin: 0;
+  }
+
+  .juego-quiz .respuesta-cuerpo .explicacion {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Teléfonos bajos (hasta 640 px de alto): la chapa de la portada se aprieta para que "Jugá"
+   quede arriba del pliegue, y en la partida la pantalla y las teclas pierden aire. Va al final
+   del bloque: con el mismo peso de selector, antes de la regla base no pisa nada. */
 @media (max-height: 40rem) {
   .juego-quiz #portada .marca {
     width: 5.2rem;
@@ -5483,39 +5918,76 @@ html.incrustado .juego-tema #partida .cabina {
   }
 
   .juego-quiz .ranura {
-    width: 3.3rem;
+    height: 5.2rem;
   }
 
-  .juego-quiz .ranura-caida {
-    height: 4rem;
-  }
-
-  .juego-quiz .ficha-grande {
-    width: 3rem;
-    height: 3rem;
+  .juego-quiz .ficha-canto {
+    width: 2.1rem;
+    height: 3.5rem;
     font-size: 0.95rem;
   }
 
   .juego-quiz .ranura-boca {
-    height: 1.8rem;
-    margin-top: -0.9rem;
+    height: 2.9rem;
+    margin-top: -1.45rem;
   }
 
   .juego-quiz .maquina .como-se-juega {
-    font-size: 0.88rem;
+    gap: 0.2rem 0.5rem;
+    font-size: 0.82rem;
+    line-height: 1.25;
+  }
+
+  .juego-quiz .maquina-datos {
+    gap: 0.3rem;
+  }
+
+  .juego-quiz .maquina-cartel {
+    font-size: 0.7rem;
+  }
+
+  .juego-quiz .maquina-creditos {
+    font-size: 1.1rem;
+  }
+
+  .juego-quiz .maquina .vida {
+    width: 1.3rem;
+    height: 1.3rem;
+    font-size: 0.6rem;
   }
 
   .juego-quiz #portada #jugar {
     margin-top: var(--espacio-2);
   }
-}
 
-/* La fuente del verso en el panel de respuesta (`T-145`, `D-25`). Registro 3: letra
-   chica y tenue — informa, no decora. El subrayado fino es el idioma de enlace del
-   sitio, no una barra de acento. */
-.fuente-verso {
-  margin: var(--espacio-1) 0 0;
-  font-size: 0.8rem;
+  .juego-quiz .tablero {
+    gap: 0.35rem;
+    margin-bottom: 0;
+  }
+
+  .juego-quiz .ficha-pregunta {
+    min-height: 8rem;
+    padding: 1.3rem 0.9rem 0.8rem;
+  }
+
+  .juego-quiz .opciones--letradas {
+    gap: 0.4rem;
+  }
+
+  .juego-quiz .opciones--letradas .opcion {
+    min-height: 3.2rem;
+    padding-block: 0.35rem;
+    font-size: 1rem;
+  }
+
+  .juego-quiz .ficha-pregunta .enunciado {
+    font-size: clamp(1.2rem, 5.6vw, 1.5rem);
+  }
+
+  .juego-quiz .ficha-pregunta .enunciado--largo {
+    font-size: 0.98rem;
+    line-height: 1.24;
+  }
 }
 
 .fuente-verso-enlace {

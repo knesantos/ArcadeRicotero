@@ -1429,7 +1429,7 @@ async function preguntasRicoteras(ctx) {
   const fichaLista = () => pagina.waitForSelector('#partida .ficha-respuesta .seguir-ficha', { timeout: 8000 });
   const seguir = async () => {
     await pagina.click('#partida .ficha-respuesta .seguir-ficha');
-    await ctx.espera(quieto ? 120 : 520);
+    await ctx.espera(quieto ? 120 : 900);
     // Si el toque no pasó de pregunta, se dice qué había debajo del dedo: es un defecto del sitio.
     const trabado = await pagina.evaluate(() => {
       const b = document.querySelector('#partida .ficha-respuesta .seguir-ficha');
@@ -1471,9 +1471,9 @@ async function preguntasRicoteras(ctx) {
   await foto('error-ficha-entera', { entera: true });
   console.log(`   (error: ${JSON.stringify(await estado())})`);
 
-  // El pase: la rueda del contador da la vuelta.
-  await rafaga('pase-contador', () => pagina.click('#partida .ficha-respuesta .seguir-ficha'), { desde: 0, hasta: 520, sobre: '#partida .tablero', zoom: 2, cada: 2, tope: 8, porRenglon: 2 });
-  await ctx.espera(400);
+  // El pase: la pantalla se apaga, la rueda del contador da la vuelta, y la pantalla prende.
+  await rafaga('pase', () => pagina.click('#partida .ficha-respuesta .seguir-ficha'), { desde: 0, hasta: 1100, cada: 3, tope: 12 });
+  await ctx.espera(500);
   await foto('pregunta-2');
 
   // ---- pregunta 2: el acierto.
@@ -1574,7 +1574,13 @@ async function preguntasRicoteras(ctx) {
       await foto('racha-diez');
     }
     await pagina.$eval('#partida .ficha-respuesta .seguir-ficha', (b) => b.click());
-    await ctx.espera(quieto ? 30 : 120);
+    await pagina.waitForFunction(() => !document.querySelector('#partida .ficha-respuesta') || document.querySelector('#partida').hidden, { timeout: 8000 });
+    await pagina.waitForFunction(() => document.querySelector('#partida').hidden || document.querySelector('#partida .opcion:not(:disabled)'), { timeout: 8000 });
+    if (!vistos.has('escalon-cae') && (await pagina.$('#partida:not([hidden]) .escalon'))) {
+      vistos.add('escalon-cae');
+      await ctx.espera(quieto ? 100 : 900);
+      await foto('escalon-como-momento');
+    }
   }
   await pagina.waitForSelector('#resultado:not([hidden])', { timeout: 8000 });
   await ctx.espera(1400);
@@ -1589,7 +1595,7 @@ async function preguntasRicoteras(ctx) {
   await (await opcion(true)).evaluate((b) => b.click());
   await fichaLista();
   await pagina.$eval('#partida .ficha-respuesta .seguir-ficha', (b) => b.click());
-  await ctx.espera(quieto ? 100 : 500);
+  await ctx.espera(quieto ? 100 : 900);
   await pagina.$eval('#partida .retirada-disparador', (b) => b.click());
   await ctx.espera(300);
   await foto('retirada-confirma');

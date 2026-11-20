@@ -555,7 +555,7 @@ function responder(texto: string, boton: HTMLButtonElement): void {
     apurar();
   };
   const soltarElApuro = (): void => {
-    laPared.removeEventListener('pointerdown', apurar);
+    laPared.removeEventListener('click', apurar);
     document.removeEventListener('keydown', alTeclear);
   };
 
@@ -647,7 +647,10 @@ function responder(texto: string, boton: HTMLButtonElement): void {
   // El toque que eligió la plantilla no cuenta: se empieza a escuchar en la vuelta siguiente.
   window.setTimeout(() => {
     if (conFicha || !vigente()) return;
-    laPared.addEventListener('pointerdown', apurar);
+    // El `click` y no el `pointerdown`: la ficha puede correr la hoja, y con `pointerdown` el
+    // `click` de ese mismo toque caía después sobre lo que quedara bajo el dedo (visto en
+    // "Preguntas ricoteras" a 320 × 568: se tocaba "Seguí" sin querer).
+    laPared.addEventListener('click', apurar);
     document.addEventListener('keydown', alTeclear);
   }, 0);
 }

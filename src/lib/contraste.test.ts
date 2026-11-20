@@ -112,6 +112,10 @@ const PARES: Array<[string, string, string]> = [
   // Invertidos, como los botones: el token es el relleno.
   ['marca de acierto en la ficha de completar-la-letra', 'fondo', 'acento-3'],
   ['marca de error en la ficha de completar-la-letra', 'fondo', 'acento-4'],
+  // "Preguntas ricoteras" (ronda de pulida, 2026-11-19): la letra de cada tecla va en tapa
+  // llena, la tinta del fondo sobre la del texto, y la FR de la ficha sobre su amarillo.
+  ['letra de la tecla del quiz', 'fondo', 'texto'],
+  ['la FR de la ficha del quiz', 'fondo', 'acento-2'],
 ];
 
 /**
