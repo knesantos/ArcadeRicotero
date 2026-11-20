@@ -44,7 +44,7 @@ nombrar el disco ni usar una palabra de su título (el test lo frena).
 | `TP-005` | Ilustración a color. Un hombre de perfil, de barba oscura, con una gorra ocre de visera larga que le tapa la frente. Detrás, caras en violeta y verde; arriba, una franja roja. |
 | `TP-006` | Imagen hecha por computadora. Una figura de frente, de cara angulosa y torso oscuro, entre otras cabezas. A la derecha, una esfera roja; arriba, una máscara blanca con la boca abierta. |
 | `TP-007` | Dibujo de muy cerca, en tonos arena y gris. Un hocico de nariz negra, con dos colmillos blancos que asoman hacia abajo. |
-| `TP-008` | Dibujo de muy cerca. Una pupila verde entre pelaje marrón oscuro. En la esquina de arriba a la derecha, un triángulo naranja liso. |
+| `TP-008` | Dibujo de muy cerca. Un ojo de iris verde, con el blanco a la vista, en medio de una textura marrón granulada. En la esquina de arriba a la derecha, un triángulo naranja liso. |
 | `TP-009` | Imagen en grises, sin color. Un relieve que parece de metal labrado: una cara de frente, con cejas en surcos, dos ojos redondos y una nariz larga y recta. |
 | `TP-010` | Recorte muy cerrado y fuera de foco. Una curva blanca gruesa cruza una franja negra horizontal. Arriba hay amarillo; abajo, marrón. No se distingue una figura. |
 
@@ -53,10 +53,11 @@ nombrar el disco ni usar una palabra de su título (el test lo frena).
 - **`TP-001`**: el recorte es letra pintada, pero del nombre de la banda ("PATRIC… REY"), no
   del título. La descripción lo dice así y no transcribe las letras. No regala el disco: las
   diez tapas son de la misma banda.
-- **`TP-007` y `TP-008`**: "hocico con colmillos" y "pelaje" acercan a un animal, y el otro
-  disco del doble es distractor en los dos ítems. No dicen más que lo que ve el que mira, pero
-  son los dos donde la descripción pesa más. Si te parece que inclinan, son los que hay que
-  reescribir.
+- **`TP-007`**: "hocico con colmillos" acerca a un animal, y el otro disco del doble es
+  distractor. No dice más que lo que ve el que mira, pero es donde la descripción pesa más. Si
+  te parece que inclina, es la que hay que reescribir.
+- **`TP-008`**: reescrita en la auditoría de `T-534`. Decía "pupila" y "pelaje", que elegían
+  especie; ahora describe el ojo, el blanco, la textura y el triángulo, sin nombrar animal.
 - **`TP-010`**: no pude identificar qué objeto es el del recorte, y la descripción lo declara
   ("no se distingue una figura") en vez de adivinarlo. Quien conozca la tapa de memoria puede
   decirlo mejor. Para quien no ve, hoy es el ítem más difícil del banco.
