@@ -28,9 +28,10 @@ import '../../styles/skayboy.css';
 import Cabeza from '../../components/Cabeza.astro';
 import PieImprenta from '../../components/PieImprenta.astro';
 import { PORTAL } from '../../lib/sitio/copy.ts';
-import { CASETE, FIN_DE_NIVEL, MENU, PANTALLA, PANTALLA_COMPLETA, PIE_HOMENAJE, TECLAS } from '../../lib/skayboy/copy.ts';
+import { CASETE, FIN_DE_NIVEL, FINAL, MENU, PANTALLA, PANTALLA_COMPLETA, PIE_HOMENAJE, TECLAS } from '../../lib/skayboy/copy.ts';
 import { nivelesASembrar, problemasDelBanco, type Banco } from '../../lib/skayboy/niveles.ts';
 import { planoDelNivel } from '../../lib/skayboy/menu.ts';
+import { marquesinaDe, problemasDeLaMarquesina } from '../../lib/skayboy/marquesina.ts';
 import { teclaDelBoton } from '../../lib/skayboy/teclado.ts';
 import datos from '../../data/skayboy.json';
 
@@ -54,6 +55,15 @@ const SEMBRADO: Banco = {
 };
 
 const TITULO = `${CASETE.titulo} — Fichín Ricotero`;
+
+/**
+ * La marquesina del mueble: el título en pixel, armado acá, en el build (`marquesina.ts`). Si el
+ * título pide una letra que el abecedario no tiene, la página no se construye.
+ */
+const faltan = problemasDeLaMarquesina(CASETE.titulo);
+if (faltan.length > 0) throw new Error(`La marquesina no puede escribir el título: ${faltan.join(' · ')}`);
+const MARQUESINA = marquesinaDe(CASETE.titulo);
+const PALABRAS_DE_LA_MARQUESINA = Array.from({ length: MARQUESINA.palabras }, (_, i) => MARQUESINA.pixeles.filter((px) => px.palabra === i));
 
 /**
  * Las dos columnas de mando, que son **iguales**: tres teclas cada una, y cada una maneja
@@ -139,8 +149,51 @@ const PISO = [
             borde de la ventana, que es justo lo que `D-41` punto 3 no quiere.
           */}
           <div class="gabinete">
+            {/*
+              La marquesina (ronda de pulida, 2026-11-18): el título del fichín en pixel, en el
+              frente del mueble y arriba del tubo. Es para el ojo —el título de verdad es el `<h1>`—
+              y nace apagada: se prende una vez, palabra por palabra, cuando el motor ya dibuja.
+              Dónde se ve lo decide la hoja: parado, que es donde reemplaza al renglón del título.
+            */}
+            <p class="marquesina" aria-hidden="true">
+              <svg
+                class="marquesina-letras"
+                viewBox={`0 0 ${MARQUESINA.ancho} ${MARQUESINA.alto}`}
+                style={`--marquesina-ancho:${MARQUESINA.ancho};--marquesina-alto:${MARQUESINA.alto}`}
+                focusable="false"
+              >
+                {PALABRAS_DE_LA_MARQUESINA.map((palabra, i) => (
+                  <g class="marquesina-palabra" style={`--palabra:${i}`}>
+                    {palabra.map((px) => (
+                      <rect x={px.x} y={px.y} width="1" height="1" />
+                    ))}
+                  </g>
+                ))}
+              </svg>
+            </p>
             <div class="recorte">
               <canvas id="juego" width="240" height="144" aria-label={CASETE.titulo}></canvas>
+              {/*
+                La sensación (ronda de pulida, 2026-11-18): tres capas de HTML encima del área, del
+                tamaño del canvas, solo para el ojo y **sin toques**. Van primero, así todo lo que se
+                lee —el contador, el rótulo, la tarjeta— se pinta encima.
+
+                - `#chispas`: el polvo y los destellos de pixel duro (`chispas.ts`); la isla le arma
+                  adentro una fila fija de cuadraditos y los reusa.
+                - `#pasada-area`: el rodillo que cruza el área cuando alguien vuelve a la entrada
+                  (`UX-29 §3`, fila 2).
+                - `#telon`: nueve franjas, una por fila de la sala, que destapan el nivel que empieza.
+
+                Son `<p>` con `<i>` adentro, y no `<div>`: el primer `</div>` después del recorte
+                tiene que seguir siendo el del recorte.
+              */}
+              <p id="chispas" class="chispas" aria-hidden="true"></p>
+              {/* El tubo que se prende: dos persianas que se abren desde la línea del medio, una vez. */}
+              <p class="encendido" aria-hidden="true"><i></i><i></i></p>
+              <p id="pasada-area" class="pasada-area" aria-hidden="true" hidden><i></i></p>
+              <p id="telon" class="telon" aria-hidden="true" hidden>
+                {Array.from({ length: SEMBRADO.alto }, (_, fila) => <i style={`--fila:${fila}`} />)}
+              </p>
               {/*
                 Lo que juntó cada uno, **solo en la victoria** (`UX-33 §2.5`, `BR-31` punto 2): una
                 capa de HTML encima del área —la misma categoría que el botón de seguir, nunca
@@ -207,6 +260,23 @@ const PISO = [
                   <button type="button" id="fin-repetir" class="secundario">{FIN_DE_NIVEL.repetir}</button>
                   <button type="button" id="fin-menu" class="secundario" aria-haspopup="dialog" aria-controls="menu-juego">{FIN_DE_NIVEL.menu}</button>
                   <button type="button" id="fin-seguir" class="primario">{PANTALLA.seguir}</button>
+                </span>
+              </section>
+              {/*
+                El final del juego (ronda de pulida, 2026-11-18): al pasar el último nivel de la fila.
+                Una capa de HTML encima del área, del lado contrario a las puertas —así los dos, que
+                bailan en las suyas, quedan a la vista—: la que canta, la que nombra, los créditos
+                que suben (los nombres de los niveles) y dos salidas. Sin Compartí: todavía no hay
+                tarjeta (`BR-27`). Reemplaza a la tarjeta de fin de nivel en ese único caso (la
+                esconde la hoja); el toque sobre el área sigue siendo seguir. Va última, y sin `<div>`.
+              */}
+              <section id="final-juego" class="final-juego juego--historia" hidden aria-labelledby="final-titulo">
+                <span id="final-titulo" class="final-titulo">{FINAL.titulo}</span>
+                <span class="final-rotulo"></span>
+                <span class="final-creditos" aria-hidden="true"><span class="final-creditos-lista"></span></span>
+                <span class="final-botones">
+                  <button type="button" id="final-volver" class="primario">{FIN_DE_NIVEL.volverAlPrimero}</button>
+                  <a class="secundario final-salir" href="/">{FINAL.volverAlFichin}</a>
                 </span>
               </section>
             </div>

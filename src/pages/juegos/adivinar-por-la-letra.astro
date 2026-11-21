@@ -97,10 +97,12 @@ const bajadaCorta = (() => {
           <a class="volver" href="/">← {PORTAL.volverAlArcade}</a>
         </header>
         <p class="marca"><img src="/marca/fichin-ricotero.svg" alt="Fichín Ricotero" width="1540" height="1450" /></p>
-        <h1>{PANTALLA_0.titulo}</h1>
-        <p class="donde-estas">{LUGARES.porLaLetra}</p>
+        {/* El papel doblado: el objeto del juego, que viaja a la partida al tocar "Jugá". Lo arma la isla. */}
+        <div id="heroe" class="portada-papel" aria-hidden="true"></div>
+        <h1 class="jugo-entra" style="--orden:0">{PANTALLA_0.titulo}</h1>
+        <p class="donde-estas jugo-entra" style="--orden:1">{LUGARES.porLaLetra}</p>
         {/* La isla reemplaza esta bajada cuando alguien llega por un desafío (`ADR-02`). */}
-        <p id="subtitulo" class="tenue">{bajadaCorta}</p>
+        <p id="subtitulo" class="tenue jugo-entra" style="--orden:2">{bajadaCorta}</p>
 
         {/*
             **La chapa de puntajes**, la misma pieza que el hermano de audio: lo que vale cada
@@ -108,7 +110,7 @@ const bajadaCorta = (() => {
             que el lector de pantalla diga "1 verso, vale 100". Los números salen de
             `escalera.ts`, la única fuente de la escalera (`BR-20`).
         */}
-        <table class="premios">
+        <table class="premios jugo-pega" style="--orden:3">
           <caption class="solo-lector">{PANTALLA_0.premios.titulo}</caption>
           <tbody>
             <tr>
@@ -122,9 +124,11 @@ const bajadaCorta = (() => {
           </tbody>
         </table>
 
-        <div class="arranque">
+        <div class="arranque jugo-entra" style="--orden:4">
           <p class="tenue">{PANTALLA_0.hay(items.length)}</p>
           <button id="jugar" class="primario" type="button">{PANTALLA_0.boton}</button>
+          {/* El interruptor de los ruidos de la partida: lo arma la isla (`jugo.ts`). */}
+          <p id="ruidos" class="arranque-ruidos"></p>
         </div>
       </section>
 
@@ -184,6 +188,12 @@ const bajadaCorta = (() => {
       #jugar {
         margin: var(--espacio-1) 0 5px;
         font-size: 1.35rem;
+        /* La chapa: un filete del fondo por adentro, como el canto grabado de una placa. Son dos
+           anillos pegados (contorno, no sombra): sin esto la plata de *Momo Sampler* se leía
+           como un botón lavado y no como la tecla del juego. */
+        box-shadow:
+          inset 0 0 0 4px var(--tinte-accion),
+          inset 0 0 0 6px var(--fondo);
         transition:
           translate var(--duracion-toque) var(--curva-cinta),
           filter var(--duracion-toque) var(--curva-cinta);

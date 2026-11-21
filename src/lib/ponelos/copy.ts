@@ -50,6 +50,16 @@ export const ELECCION = {
   /** El renglón chico de cada conjunto. Se invoca con un número. */
   cuantas: (n: number) => `${n} fichas`,
   /**
+   * La batea (ronda de pulida, 2026-11-19): los diez discos, tapa por tapa, para repartir el
+   * tracklist de uno. Registro 3: el rótulo de la pestaña dice qué hay adentro y se calla.
+   */
+  batea: 'Disco por disco',
+  /**
+   * El nombre accesible de cada disco de la batea. La tapa se mira, pero el nombre se dice:
+   * quien no la ve, o no la reconoce, tiene que saber qué va a repartir antes de tocar.
+   */
+  discoDeLaBatea: (conjunto: string, anio: number, n: number) => `${conjunto}, de ${anio}: ${n} fichas`,
+  /**
    * La partida que quedó a medias (`D-69`). Con los ciento cinco temas, repartir de un saque
    * no es la regla: se sigue otro día, y la elección lo ofrece arriba de todo.
    */
@@ -204,6 +214,28 @@ export const PARTIDA = {
   deshiciste: 'La última jugada, deshecha.',
   /** El renglón chico de una ficha de tema en la carta: el disco y la pista. */
   pieDeTema: (disco: string, pista: string) => `${disco} · pista ${pista}`,
+  /**
+   * El interruptor de los ruidos de interfaz (ronda 2 de la pulida): el golpe de cartón de la
+   * funda al apoyar. No toca lo que suena de la banda, que tiene su tecla. Dice lo que va a
+   * hacer el toque; la tecla chica del tablero lleva una palabra sola.
+   */
+  ruidosApagar: 'Apagá los ruidos',
+  ruidosPrender: 'Prendé los ruidos',
+  ruidosTecla: 'Ruidos',
+  /**
+   * La tecla de lo que suena de la banda (ronda 3), en el mazo, pegada al disco. Prendida, cada
+   * ficha que te toca suena sola. Una palabra, distinta de la de los ruidos: son dos cosas.
+   */
+  musicaTecla: 'Música',
+  /**
+   * Una fila larga, plegada (ronda 3): la pestaña dice cuántas no se ven. El número solo se
+   * lee de un vistazo; quien no lo ve escucha la frase entera.
+   */
+  masEnLaFila: (n: number) => `+${n}`,
+  verLasQueFaltan: (n: number, fila: string) =>
+    n === 1 ? `Mostrá la que no se ve de ${fila}` : `Mostrá las ${n} que no se ven de ${fila}`,
+  /** La misma pestaña con la fila abierta entera. (El nombre de la fila se lo suma la isla, para el lector.) */
+  plegala: 'Plegala',
 
   /* ---- Las filas propias (`D-69`) ---- */
 

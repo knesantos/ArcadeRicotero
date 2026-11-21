@@ -62,7 +62,7 @@ import {
 const MARCA = 'FICHÍN RICOTERO';
 
 /** El valor de un token, tal como lo resolvió el navegador para esta página. */
-function tinta(nombre: string, repuesto = '#ffffff'): string {
+export function tinta(nombre: string, repuesto = '#ffffff'): string {
   const v = getComputedStyle(document.documentElement).getPropertyValue(nombre).trim();
   return v || repuesto;
 }
@@ -98,7 +98,7 @@ const GRANO_CUADRO = 3;
  * Se piden a un cuerpo cualquiera porque `document.fonts.load` resuelve la familia
  * entera; el cuerpo del pedido no cambia lo que se descarga.
  */
-async function esperarLetras(): Promise<void> {
+export async function esperarLetras(): Promise<void> {
   try {
     await Promise.all([
       document.fonts.load(`400 100px ${ROTULADA.split(',')[0]}`),
@@ -117,7 +117,7 @@ async function esperarLetras(): Promise<void> {
  * `UX-04` lo pide por nombre ("grano, imperfección de borde, nunca vector limpio") y
  * `RES-06` lo ficha como técnica real de Rocambole.
  */
-function granular(ctx: CanvasRenderingContext2D): void {
+export function granular(ctx: CanvasRenderingContext2D): void {
   const mosaico = document.createElement('canvas');
   mosaico.width = GRANO;
   mosaico.height = GRANO;
@@ -221,6 +221,10 @@ export async function dibujarTarjeta(datos: DatosTarjeta): Promise<Blob | null> 
     resultado: tinta('--cat-historia'),
     ok: tinta('--acento-3'),
     no: tinta('--acento-4'),
+    // El papel de las etiquetas, para la tarjeta de papeles.
+    papel: tinta('--papel'),
+    papelBorde: tinta('--papel-borde'),
+    papelTenue: tinta('--papel-tenue'),
   };
 
   ctx.fillStyle = colores.fondo;
@@ -250,6 +254,101 @@ export async function dibujarTarjeta(datos: DatosTarjeta): Promise<Blob | null> 
   datos.filas.forEach((fila, i) => {
     const slot = en(`fila-${i}`);
     const y = slot.y + 8;
+
+    if (datos.papeles) {
+      /*
+       * La fila es un papel (ronda de pulida, 2026-11-18): el mismo objeto que el resultado
+       * pone sobre el jean. Un recorte apenas torcido, con el sello a la izquierda —la tilde o
+       * la cruz, forma ademas de tinta—, el titulo en la tinta del fondo, las marcas de lo que
+       * se gasto a la derecha (la cruz si se arriesgo y no era, el punto si se paso) y, debajo,
+       * una tira por cada doblez que quedo sin abrir.
+       */
+      const alto = slot.alto - 22;
+      const recorrido = fila.recorrido ?? [];
+      const borde = 3;
+      const relleno = 22;
+      ctx.save();
+      ctx.translate(LIENZO.ancho / 2, slot.y + alto / 2);
+      ctx.rotate((i % 2 === 0 ? -1 : 1) * 0.007);
+      ctx.translate(-LIENZO.ancho / 2, -(slot.y + alto / 2));
+
+      // Los dobleces sin abrir, asomando debajo.
+      const sinAbrir = Math.max(0, 3 - recorrido.length);
+      for (let k = sinAbrir - 1; k >= 0; k--) {
+        const corre = 8 * (k + 1);
+        ctx.fillStyle = colores.papelBorde;
+        ctx.fillRect(MARGEN + corre, slot.y + alto - 2, ANCHO_UTIL - corre * 2, 6 * (k + 1));
+        ctx.fillStyle = colores.papel;
+        ctx.fillRect(MARGEN + corre + 2, slot.y + alto - 2, ANCHO_UTIL - corre * 2 - 4, 6 * (k + 1) - 2);
+      }
+
+      ctx.fillStyle = colores.papelBorde;
+      ctx.fillRect(MARGEN, slot.y, ANCHO_UTIL, alto);
+      ctx.fillStyle = colores.papel;
+      ctx.fillRect(MARGEN + borde, slot.y + borde, ANCHO_UTIL - borde * 2, alto - borde * 2);
+
+      // El sello: un disco de la tinta del fondo con su anillo y su simbolo.
+      const radio = 27;
+      const cx = MARGEN + relleno + radio;
+      const cy = slot.y + alto / 2;
+      ctx.fillStyle = colores.fondo;
+      ctx.beginPath();
+      ctx.arc(cx, cy, radio, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = fila.acerto ? colores.ok : colores.no;
+      ctx.lineWidth = 5;
+      ctx.stroke();
+      const simbolo = fila.acerto ? '✔' : '✕';
+      escribir(ctx, {
+        texto: simbolo,
+        cuerpo: 30,
+        familia: ROTULADA,
+        color: fila.acerto ? colores.ok : colores.no,
+        x: cx - medir(ctx, simbolo, 30, ROTULADA) / 2,
+        y: cy - 17,
+      });
+
+      // Las marcas de lo gastado, a la derecha: un quiebre por intento.
+      const anchoMarcas = recorrido.length * 38;
+      recorrido.forEach((gastado, k) => {
+        escribir(ctx, {
+          texto: gastado === 'fallo' ? '✕' : '·',
+          cuerpo: gastado === 'fallo' ? 30 : 46,
+          familia: ROTULADA,
+          color: colores.fondo,
+          x: MARGEN + ANCHO_UTIL - relleno - anchoMarcas + k * 38,
+          y: gastado === 'fallo' ? cy - 17 : cy - 29,
+        });
+      });
+
+      // El titulo y su renglon chico, en la tinta del fondo sobre papel.
+      const xTexto = cx + radio + 20;
+      const anchoTexto = MARGEN + ANCHO_UTIL - relleno - anchoMarcas - 16 - xTexto;
+      let lineasPapel = [fila.titulo];
+      let cuerpoPapel = cuerpoQueEntra(medir(ctx, fila.titulo, 38, ROTULADA), anchoTexto, 38, 28);
+      if (medir(ctx, fila.titulo, cuerpoPapel, ROTULADA) > anchoTexto) {
+        cuerpoPapel = 26;
+        lineasPapel = [...partirEnLineas(fila.titulo, anchoTexto, (t) => medir(ctx, t, cuerpoPapel, ROTULADA))];
+      }
+      const altoTexto = lineasPapel.length * cuerpoPapel * INTERLINEA + 4 + 22;
+      const yTexto = slot.y + Math.max(8, (alto - altoTexto) / 2);
+      lineasPapel.forEach((linea, k) => {
+        escribir(ctx, {
+          texto: linea,
+          cuerpo: cuerpoPapel,
+          familia: ROTULADA,
+          color: colores.fondo,
+          x: xTexto,
+          y: yTexto + k * cuerpoPapel * INTERLINEA,
+        });
+      });
+      escribirAjustado(
+        ctx, fila.pie, xTexto, yTexto + lineasPapel.length * cuerpoPapel * INTERLINEA + 4,
+        anchoTexto, ROTULADA, { base: 22, piso: 17 }, colores.papelTenue,
+      );
+      ctx.restore();
+      return;
+    }
 
     // La marca. Simbolo ademas de color, como en toda la pantalla: en una imagen que se
     // mira chiquita, el color solo no alcanza (`UX-01`).

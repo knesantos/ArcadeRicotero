@@ -5,7 +5,31 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-11-17
+**Última actualización:** 2026-11-21
+
+> ## 🎮 LOS DIEZ JUEGOS, PULIDOS (2026-11-17 a 2026-11-21) — `D-92`, `T-537`
+>
+> **Integrado** en `main` por el PR #119 (rama `pulida/juegos-ui`, sobre `main` en `bea8712`). Pedido del usuario: *"una ronda de pulida y subida de nivel de los juegos, a nivel
+> ui/ux [...] manteniendo la estetica y nuestra alma"*, *"que giren las ruedas del cassete"* y *"al menos 3 rondas por juego"*.
+>
+> - **Tres rondas por juego**, en el orden del menú. Construyó Fable (un agente por juego) y auditó el hilo principal con capturas
+>   antes y después. Una o dos rondas por commit.
+> - **El objeto de cada bajada es el protagonista**: el casete, la noche, el papel, el mueble del fichín, la pintada, la batea, la
+>   ficha, la mesa de serigrafía, las fichas y la hoja del setlist. La tabla está en `D-92`.
+> - **Gramática común**: sello grande que deja la marca chica, ficha con "Seguí" adentro, cierre que se adelanta con `click`,
+>   `.pie-resultado` con tarjeta que asoma, `conPuntero`, interruptor de ruidos (`efectos.ts`) y tarjeta propia por juego.
+> - **Piezas nuevas**: `src/scripts/jugo.ts`, `src/lib/audio/efectos.ts` y `scripts/mirar-juego.mjs` (recorrido por juego, tiras,
+>   ráfagas y diez tamaños). Correlo desde PowerShell: desde Git Bash el navegador dejó de arrancar.
+> - **Lo que hay que saber**:
+>   - Nadie escuchó los ruidos ni jugó con dedo en un teléfono real.
+>   - Hay cuadros largos sin aislar en el quiz, en el recital y en Completá la letra.
+>   - Hay tokens que no pasaron por el lienzo y textos sin el visto de `contenido`.
+>   - Las enmiendas a `D-69`, `D-71`, `D-32`, `UX-22`, `UX-34` y `D-48` están dichas en `D-92`, pero los documentos de cada rol no
+>     se pusieron al día.
+> - **Choque anunciado**: `worktree-pulida-jugabilidad` (`T-531`…`T-536`) toca `partida-tema.ts`, `partida.ts`, `partida-letra.ts`
+>   y `partida-tapa.ts`. La segunda rama que se integre va a tener que resolverlo.
+> - **Verde:** `npm test` 2636/2636 (`D-91/t6` de `aire.test.ts` ahora normaliza los fines de línea: buscaba `'</svg>
+'` y en Windows el archivo llega con CRLF), `npm run check` 0 errores, `npm run build` verde con 200 páginas.
 
 > ## 🔦 EL BESTIARIO, REGIÓN POR REGIÓN, Y EL PLANO CON SUS TÍTERES (2026-11-17) — `D-91`, `T-530`
 >

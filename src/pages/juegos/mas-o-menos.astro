@@ -53,9 +53,23 @@ const TITULO = 'Más o menos — Fichín Ricotero';
         <p class="marca"><img src="/marca/fichin-ricotero.svg" alt="Fichín Ricotero" width="1540" height="1450" /></p>
         <h1>{PANTALLA_0.titulo}</h1>
         <p class="donde-estas">{LUGARES.masOMenos}</p>
-        <p id="subtitulo" class="tenue">{PANTALLA_0.subtitulo}</p>
+        {/* La ficha boca abajo de la acotación, en la mano. Es un atajo de "Jugá" (sin foco y
+            escondida al lector, como la ficha de "Preguntas ricoteras"): al tocarla se tira. */}
+        <div class="en-mano">
+          <div class="en-mano-ficha" aria-hidden="true">
+            <button id="ficha-portada" class="ficha-mm ficha-mm--portada" type="button" tabindex="-1">
+              <span class="ficha-mm-cara ficha-mm-cara--signos"><span>+</span><span>−</span></span>
+              <span class="ficha-mm-dorso"><span class="ficha-mm-trama"></span><span class="ficha-mm-medalla"></span></span>
+            </button>
+          </div>
+          <div class="en-mano-texto">
+            <p id="subtitulo" class="tenue">{PANTALLA_0.subtitulo}</p>
+            <div id="mejor-portada" class="mejor-portada" hidden></div>
+          </div>
+        </div>
         <p class="fuentes-del-juego">{PANTALLA_0.fuentes}</p>
         <button id="jugar" class="primario" type="button">{PANTALLA_0.boton}</button>
+        <p id="ruidos" class="arranque-ruidos"></p>
       </section>
 
       <section id="partida" class="pantalla" hidden>

@@ -97,7 +97,7 @@ const PARES: Array<[string, string, string]> = [
   // "Adiviná la tapa" (Último bondi). Entran con el cambio, invertidos como los de arriba.
   ['boton primario de dos-ejes', 'fondo', 'disco-luzbelito-tinta'],
   ['boton primario de completar-la-letra', 'fondo', 'cat-letras'],
-  ['boton primario de adivinar-la-tapa', 'fondo', 'cat-discos'],
+  ['boton primario de adivinar-la-tapa', 'fondo', 'disco-momo-sampler-tinta'],
   // `D-85`: la chapita del nombre en el afiche de noviembre y la de la última parada, letra
   // `--fondo` sobre la plata de *Último bondi*. Es la tinta del disco por su nombre, no el alias
   // de la categoría: si un día se separan, este par se entera.
@@ -107,6 +107,15 @@ const PARES: Array<[string, string, string]> = [
   // fondo —el contraste no tiene dirección—, pero la lista dice dónde se usa cada par.
   ['boton primario de adivinar-el-tema', 'fondo', 'cat-mitologia'],
   ['boton primario de mas-o-menos', 'fondo', 'disco-un-baion-para-el-ojo-idiota-tinta'],
+  // "Completá la letra", la ficha de papel (ronda de pulida, 2026-11-18): la tilde y el "+1"
+  // van en la tinta del fondo sobre el verde del acierto, y la cruz sobre el rojo del error.
+  // Invertidos, como los botones: el token es el relleno.
+  ['marca de acierto en la ficha de completar-la-letra', 'fondo', 'acento-3'],
+  ['marca de error en la ficha de completar-la-letra', 'fondo', 'acento-4'],
+  // "Preguntas ricoteras" (ronda de pulida, 2026-11-19): la letra de cada tecla va en tapa
+  // llena, la tinta del fondo sobre la del texto, y la FR de la ficha sobre su amarillo.
+  ['letra de la tecla del quiz', 'fondo', 'texto'],
+  ['la FR de la ficha del quiz', 'fondo', 'acento-2'],
 ];
 
 /**

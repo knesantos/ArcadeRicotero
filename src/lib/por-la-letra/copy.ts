@@ -80,6 +80,23 @@ export const PARTIDA = {
   paso: 'pasaste',
   ok: '¡Lo sacaste!',
   /**
+   * La hazaña: sacarlo con el primer verso, sin desdoblar el papel. Grita porque es un acierto,
+   * y es el eco de la línea de arriba del resultado (`TRAMOS.alto`).
+   */
+  hazana: '¡Con un renglón!',
+  /** La racha: dos o más temas sacados uno atrás del otro. Sello en la cabecera, como en el hermano. */
+  racha: (n: number) => `${n} al hilo`,
+  /** Con el tema cerrado, la cabecera deja de contar intentos y dice cuánto llevás. */
+  llevas: (n: number) => (n === 1 ? 'Llevás 1 punto' : `Llevás ${n} puntos`),
+  /** El interruptor de los ruidos de interfaz: dice lo que va a hacer el toque. */
+  ruidosApagar: 'Apagá los ruidos',
+  ruidosPrender: 'Prendé los ruidos',
+  /**
+   * La tecla chica de la cabecera de la partida. Dice siempre lo mismo: el estado va en
+   * `aria-pressed` y en la forma (apagada, tachada). En la portada van las dos frases enteras.
+   */
+  ruidosTecla: 'Ruidos',
+  /**
    * El desenlace cuando el tema no salió.
    *
    * Decía *"No era ese."*, y eso **presupone un acto que puede no haber ocurrido**: quien
@@ -94,6 +111,12 @@ export const PARTIDA = {
   puntos: (p: number, versos: number) =>
     p > 0 ? `${p} puntos · Con ${versos === 1 ? '1 verso' : `${versos} versos`}` : 'Esta vez no salió',
   verLetra: 'Mirá la letra y los acordes',
+  /**
+   * Con el tema cerrado el papel se pliega a un renglón para que la ficha entre en la pantalla.
+   * Estas dos lo abren y lo vuelven a doblar: los versos que se leyeron no se pierden.
+   */
+  releer: 'Releé los versos',
+  plegar: 'Doblá el papel',
   seguir: 'Seguí',
   /** El último tema de la vuelta no sigue nada: entrega el resultado, y lo dice. */
   ultimo: 'Mirá cómo te fue',
@@ -119,12 +142,16 @@ export const RESULTADO = {
   sacaste: (n: number, total: number) => `${n} de ${total} temas`,
   /** El detalle tema por tema. Es la pieza central del resultado, no una nota al pie. */
   detalle: 'Los temas de esta vuelta',
+  /** El sello de la vuelta, al lado de la línea que canta: la cuenta de temas, como en el hermano. */
+  selloVuelta: (n: number, total: number) => `${n} de ${total}`,
   /** El renglón chico de un tema que salió. Registro 3. */
   pieAcierto: (disco: string, versos: string) => `${disco} · con ${versos}`,
   /** El de uno que no salió. Lleva "no salió" escrito además de la cruz (`UX-01`). */
   pieFallo: (disco: string) => `${disco} · no salió`,
-  compartir: 'COMPARTÍ',
-  deNuevo: 'JUGÁ DE NUEVO',
+  /** El pie del resultado, escrito como en los otros juegos pulidos: sin versales forzadas. */
+  compartir: 'Compartí',
+  deNuevo: 'Jugá de nuevo',
+  volver: 'Volvé al fichín',
   /** Mientras el canvas dibuja. Un botón mudo se toca dos veces. */
   armando: 'Armando la tarjeta',
   bajarTarjeta: 'Bajá la tarjeta',

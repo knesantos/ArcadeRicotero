@@ -210,6 +210,12 @@ export const MENU = {
   pasado: 'PASADO',
   estasAca: 'ACÁ ESTÁS',
   /**
+   * La tecla de los ruidos, en el tablero del menú (ronda de pulida, 2026-11-18). Dice lo que hace
+   * el toque, en voseo, igual que en los otros juegos: es el mismo interruptor (`efectos.ts`).
+   */
+  ruidosApagar: 'Apagá los ruidos',
+  ruidosPrender: 'Prendé los ruidos',
+  /**
    * El `aria-label` de cada ficha (`CNT-40` §1.1): `Nivel {n}, {nombre}. {estado}.`, donde el estado
    * es lo que dicen los sellos de esa ficha —`Pasado`, `Acá estás` o `Pasado, acá estás`—, y sin
    * estado, sin el segundo tramo. El lector dice lo mismo que el sello, no una paráfrasis.
@@ -238,6 +244,22 @@ export const FIN_DE_NIVEL = {
   repetir: 'Repetí',
   menu: 'Elegí otro',
   ultimo: 'Último nivel.',
+} as const;
+
+/**
+ * El final del juego (ronda de pulida, 2026-11-18): pasar el último nivel de la fila. No hay
+ * tarjeta para compartir todavía (`BR-27`), así que no hay Compartí: el título, los créditos —que
+ * son los nombres de los niveles, en orden, y un renglón de cierre— y dos salidas. Volver a
+ * empezar usa el `volverAlPrimero` de `FIN_DE_NIVEL`: es el mismo toque.
+ *
+ * `titulo` es la que canta (registro 1: segunda persona, cuatro palabras); `rotulo` es la que
+ * nombra (registro 3). El cierre es el pie del sitio, sin la palabra "sitio": acá firma el fichín.
+ */
+export const FINAL = {
+  titulo: 'Abriste todas las puertas',
+  rotulo: (total: number) => `${total} DE ${total} · PASADOS`,
+  cierre: 'Hecho por ricoteros, para ricoteros.',
+  volverAlFichin: '← Volvé al fichín',
 } as const;
 
 /**

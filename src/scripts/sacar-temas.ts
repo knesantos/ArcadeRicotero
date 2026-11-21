@@ -102,11 +102,17 @@ export function armarEstampa(tema: DiscoDelTema, acerto: boolean): HTMLElement |
   hoja.setAttribute('aria-pressed', 'false');
   hoja.setAttribute('aria-label', REVELACION.girar);
   hoja.append(frente, dorso);
-  figura.append(hoja);
+  // La hoja y su sello de "dala vuelta" viven en una caja: el sello se pega sobre la esquina
+  // de la tapa, y la caja es contra lo que se ubica.
+  const caja = el('span', 'estampa-caja');
   const girar = el('span', 'estampa-girar', REVELACION.girar);
   girar.setAttribute('aria-hidden', 'true');
-  figura.append(girar);
+  caja.append(hoja, girar);
+  figura.append(caja);
   hoja.addEventListener('click', () => darVuelta(hoja, dorso, girar, e.trasera, tema.discoTitulo));
+  // El sello tambien se puede tocar: hace lo mismo que tocar la tapa. El boton de verdad
+  // —el que tiene nombre y estado para el lector de pantalla— sigue siendo la hoja.
+  girar.addEventListener('click', () => hoja.click());
 
   // El pie nombra el disco en su letra.
   const pie = el('figcaption', 'estampa-pie');

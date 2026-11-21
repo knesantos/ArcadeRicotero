@@ -52,6 +52,43 @@ export const PARTIDA = {
   progreso: (n: number, total: number) => `${n} de ${total}`,
 } as const;
 
+/**
+ * Lo que dice la mesa de imprenta (ronda de pulida, 2026-11-20). Las mismas palabras que la
+ * cabecera de los otros juegos pulidos —"Llevás N", "N al hilo", los ruidos—, más lo propio:
+ * la tirada colgada a secar. Para el visto de `contenido`.
+ */
+export const IMPRENTA = {
+  /** El nombre del juego, para la tarjeta. Es el del casete del portal. */
+  juego: 'Adiviná la tapa',
+  /** Lo que llevás acertado, en la cabecera. Sube al acertar. */
+  llevas: (n: number) => `Llevás ${n}`,
+  /** Lo que suma un acierto: vuela de la ficha a la cuenta. */
+  suma: '+1',
+  /** La racha: dos o más seguidas. */
+  racha: (n: number) => `${n} al hilo`,
+  /** El paso al resultado, cuando la última tapa ya se respondió. */
+  alResultado: 'Mirá cómo te fue',
+  ruidosApagar: 'Apagá los ruidos',
+  ruidosPrender: 'Prendé los ruidos',
+  ruidosTecla: 'Ruidos',
+  /** Abre la explicación cuando va plegada para que la tapa y "Seguí" entren juntas. */
+  leerMas: 'Leé más',
+  /** El cartel de la mesa de la portada: lo que hace el botón, dicho con el objeto. */
+  pasala: 'Pasá la racleta',
+  /** El rótulo de la soga del resultado. Registro 3. */
+  tirada: 'La tirada',
+  /** Lo que lee quien no ve la soga: cuántas salieron enteras y cuántas en una tinta. */
+  tiradaLeida: (enteras: number, enUnaTinta: number) =>
+    `${enteras} ${enteras === 1 ? 'tapa entera' : 'tapas enteras'}, ${enUnaTinta} en una tinta`,
+  /** Cómo quedó cada hoja de la soga, para el lector. */
+  hojaEntera: (disco: string) => `${disco}: la tenías`,
+  hojaEnUnaTinta: (disco: string) => `${disco}: en una tinta`,
+  /** La hazaña: las seis. */
+  hazana: '¡Tirada entera!',
+  /** El crédito que viaja en la tarjeta, que no tiene pie de imprenta (`D-21`). */
+  creditoTarjeta: (autor: string) => `Tapas: ${autor}, en baja resolución.`,
+} as const;
+
 export const RESULTADO = {
   titulo: 'Cómo te fue',
   puntaje: (aciertos: number, total: number) => `${aciertos} de ${total}`,

@@ -32,6 +32,21 @@ export const PANTALLA_0 = {
     'El recital que te gustaría, esta noche. Elegí dónde —un estadio, un teatro, un descampado o donde digas—, ' +
     'poné los temas en orden y guardá algunos para los bises. Suena un pedazo de cada uno. No hay lista correcta.',
   boton: 'Elegí dónde',
+  /**
+   * La hoja en blanco de la portada (ronda de pulida, 2026-11-21): el mecanismo, escrito en la
+   * lista misma. Son las mismas cuatro cosas que dice `subtitulo`, una por renglón; el párrafo
+   * queda para el lector de pantalla y para la descripción de la página.
+   */
+  pasos: ['Elegí dónde tocan', 'Poné los temas en orden', 'Guardá algunos para los bises'],
+  /** El renglón de los bises de esa hoja. Registro 3. */
+  pasoBis: 'Suena un pedazo de cada uno',
+  /** El sello de la hoja. Registro 3: la regla del juego, seca (`BR-22`). */
+  sello: 'No hay lista correcta',
+  /** Lo que la hoja de la portada dice cuando quedó una lista a medio armar: cuántos más hay. */
+  yMas: (n: number) => (n === 1 ? 'y uno más' : `y ${n} más`),
+  /** El interruptor de los ruidos de interfaz, en la portada. Los mismos textos de los otros juegos. */
+  ruidosApagar: 'Apagá los ruidos',
+  ruidosPrender: 'Prendé los ruidos',
 } as const;
 
 export const LUGAR = {
@@ -61,6 +76,12 @@ export const LUGAR = {
   ciudad: 'La ciudad, si querés',
   elegirOtro: 'Elegí ese lugar',
   faltaNombre: 'Escribí el lugar.',
+  /** Lo que dice cada entrada, arriba del nombre. Registro 3. */
+  entrada: 'Esta noche',
+  /** El nombre accesible de una entrada: el lugar y la ciudad, y qué hace el toque. */
+  entradaAria: (nombre: string, ciudad: string) => `${nombre}, ${ciudad}. Elegilo.`,
+  /** Cuántos lugares junta una ciudad, en el talón del grupo. */
+  cuantos: (n: number) => `${n} lugares`,
 } as const;
 
 export const ARMADO = {
@@ -90,12 +111,15 @@ export const ARMADO = {
   renglon: (n: number, titulo: string, bis: boolean) => `${bis ? 'Bis' : 'Tema'} ${n}: ${titulo}. Tocalo para moverlo.`,
   /** El cajón de temas. */
   cajon: 'Los temas',
-  todos: 'Todos',
   /** El nombre del grupo de tapas que filtra el cajón (lector de pantalla). */
   discos: 'Los discos',
-  /** La línea debajo de la tira de tapas: qué se está mirando. */
-  discoElegido: (titulo: string, anio: number) => `${titulo} · ${anio}`,
-  losCiento: 'Los ciento cinco, disco por disco',
+  /** Lo que dice cada funda del cajón debajo del título: el año y cuántos temas trae. */
+  funda: (anio: number, n: number) => `${anio} · ${n} temas`,
+  /** Cuántos temas de ese disco ya están en la lista. Registro 3. */
+  enLaLista: (n: number) => `${n} en la lista`,
+  /** El doblez de la hoja: abrirla entera y volver a plegarla. */
+  desplegar: (n: number) => (n === 1 ? 'Mirá el otro' : `Mirá los otros ${n}`),
+  plegar: 'Plegala',
   buscar: 'Buscá un tema',
   sinResultados: (q: string) => `Ningún tema dice «${q}».`,
   /** El sello de lo que suena, en el pie y en la hoja de la noche. Registro 3. */
@@ -106,6 +130,10 @@ export const ARMADO = {
   sortear: 'Sorteá uno',
   silenciar: 'Silenciá',
   queSuene: 'Que suene',
+  /** El pie, cuando nada suena: qué hace un toque. Registro 3. */
+  pieQuieto: 'Tocá un tema y suena.',
+  /** La palabra debajo del contador de ruedas del pie. */
+  temas: (n: number) => (n === 1 ? 'tema' : 'temas'),
   /** El botón que cierra la lista. Registro 1: un imperativo físico. */
   cerrar: 'SALÍ A TOCAR',
   /** La región viva: lo que pasa, dicho seco. Dice en qué tira quedó (`FIND-164`). */
@@ -132,6 +160,8 @@ export const NOCHE = {
   sonando: (n: number, total: number) => `Suena el ${n} de ${total}.`,
   /** Registro 3, seco: solo cuando sonó hasta el final (`FIND-165`). */
   termino: 'Terminó la lista.',
+  /** El sello que cae en la hoja cuando la lista sonó entera. Registro 3. */
+  finSello: 'Sonó entera',
   compartir: 'Compartí',
   copiado: 'La dirección quedó copiada.',
   aManoTitulo: 'La dirección, para copiarla a mano:',

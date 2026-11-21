@@ -1725,7 +1725,9 @@ test('D-91/t5v2: las galerías altas fugan con el pasillo, el haz une la ventana
    ------------------------------------------------------------------ */
 
 test('D-91/t6: el plano tiene aire: nubes quietas en bancos con huecos, y la lechuza que cruza cada tanto', async () => {
-  const pagina = readFileSync('src/pages/redondopedia/bestiario.astro', 'utf-8');
+  // Los fines de línea se normalizan: en un checkout de Windows el archivo llega con CRLF y la
+  // búsqueda de abajo pide un salto de línea suelto.
+  const pagina = readFileSync('src/pages/redondopedia/bestiario.astro', 'utf-8').replace(/\r\n/g, '\n');
   // Van arriba del dibujo y debajo de la luz y de los carteles, que son lo que se toca; y no se tocan.
   const [mapa, aire, luz, rotulos] = ['</svg>\n      {/* El aire del plano', 'class="plano-nubes"', 'class="portal-luz"', 'class="bestiario-rotulos"'].map((x) => pagina.indexOf(x));
   assert.ok(mapa > 0 && aire > mapa && luz > aire && rotulos > luz, 'el aire del plano no está entre el dibujo y los carteles');

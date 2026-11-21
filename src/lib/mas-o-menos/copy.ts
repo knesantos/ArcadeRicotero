@@ -99,6 +99,36 @@ export const RESULTADO = {
 } as const;
 
 /**
+ * Las fichas (ronda de pulida, 2026-11-20). El objeto del juego es la ficha boca abajo de la
+ * acotación de la portada: la racha es la pila de las que ganaste, y la respuesta es darla
+ * vuelta. Lo audita `voz.test.ts` con el resto del módulo.
+ */
+export const FICHAS = {
+  /** El nombre del juego, para la tarjeta. */
+  juego: PANTALLA_0.titulo,
+  /** El rótulo del contador de la cabecera y de la tarjeta. Registro 3. */
+  racha: 'Racha',
+  /** Lo que suma un acierto: vuela de la ficha de la respuesta al contador. */
+  suma: '+1',
+  /** El paso al resultado, cuando esa respuesta cortó la racha. */
+  alResultado: 'Mirá cómo te fue',
+  /** El interruptor de los ruidos: la frase entera en la portada, la tecla en la cabecera. */
+  ruidosApagar: 'Apagá los ruidos',
+  ruidosPrender: 'Prendé los ruidos',
+  ruidosTecla: 'Ruidos',
+  /** La hazaña: pasar tu mejor racha de este aparato. */
+  hazana: '¡Tu mejor racha!',
+  /** La puerta de lo que se plegó en la ficha de la respuesta, en ventanas bajas. */
+  leerMas: 'Leé más',
+  /** La chapa de la cabecera: la marca a pasar, en corto. Registro 3. */
+  mejorCorta: (n: number) => `Mejor: ${n}`,
+  /** Lo que lee el lector de pantalla donde la vista ve el dorso de la ficha. */
+  tapada: 'Ficha boca abajo.',
+  /** Lo que lee el lector de la pila de la cabecera. */
+  pila: (n: number) => (n === 1 ? '1 ficha ganada' : `${n} fichas ganadas`),
+} as const;
+
+/**
  * El detalle auditable de una palabra (`UX-34` §3.4): en el revelado de cada paso y en el
  * panel de lo que te cortó. No empieza con "Ver": `voz.test.ts` lo lee como infinitivo.
  */

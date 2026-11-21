@@ -98,6 +98,22 @@ export const PARTIDA = {
   /** El renglón de un intento fallado. El título es el que eligió el jugador. */
   fallado: (titulo: string) => titulo,
   ultimoIntento: 'Último intento',
+  /**
+   * El interruptor de los ruidos de interfaz (las teclas, el golpe, el sello). El botón dice
+   * lo que va a hacer el toque. No apaga la música.
+   */
+  ruidosApagar: 'Apagá los ruidos',
+  ruidosPrender: 'Prendé los ruidos',
+  /**
+   * La racha: dos o más temas sacados uno atrás del otro. Va de sello en la cabecera, al lado
+   * de las casillas. Registro 1, corto: es lo que se dice en la tribuna cuando salen seguidas.
+   */
+  racha: (n: number) => `${n} al hilo`,
+  /**
+   * Lo que dice la cabecera con el tema ya revelado, en el lugar de los intentos que quedan:
+   * cuánto sumaste en la vuelta hasta acá. Registro 3. Al acertar, el número sube hasta ahí.
+   */
+  llevas: (n: number) => (n === 1 ? 'Llevás 1 punto' : `Llevás ${n} puntos`),
   intentosRestantes: (n: number) => (n === 1 ? 'Te queda 1 intento' : `Te quedan ${n} intentos`),
   sinSonido:
     'Ojo: si no escuchás nada, fijate el volumen o poné auriculares. El juego es de oído ' +
@@ -146,6 +162,8 @@ export const SIN_SONIDO = {
 
 export const REVELACION = {
   acerto: '¡La sacaste!',
+  /** El acierto con la primera décima: la hazaña del juego. Es el otro grito del sitio. */
+  hazana: '¡Con una décima!',
   /**
    * `CNT-14` §2.1: la tapa que no sacaste se imprime en una sola tinta, y la línea lo
    * dice sin explicar el truco. Antes: "Se te escapó."
@@ -172,6 +190,11 @@ export const REVELACION = {
   eraEl: 'Era',
   /** Disco y año, para que el que no la sacó se lleve el dato. */
   ficha: (disco: string, anio: number, pista: number) => `${disco} (${anio}), pista ${pista}`,
+  /**
+   * La ficha sin el disco, para cuando la estampa ya lo nombra en su pie: año y pista.
+   * Decirlo dos veces, una arriba de la otra, era ruido.
+   */
+  fichaCorta: (anio: number, pista: number) => `${anio} · pista ${pista}`,
   puntos: (n: number) => (n === 1 ? '1 punto' : `${n} puntos`),
   /**
    * El segundo sello del acierto: lo que sumaste, grande. Va aparte de `puntos` porque
@@ -190,6 +213,12 @@ export const REVELACION = {
   /** Al que no la sacó también le corresponde su tiempo: jugó los seis intentos. */
   tardaste: (tiempo: string) => `${tiempo} de reloj`,
   escucharEntero: 'Escuchalo entero',
+  /** El nombre de la cinta del tema entero, para quien no la ve: es un control de avance. */
+  avanceEntero: 'Avance del tema',
+  /** Por dónde va y cuánto dura, en minutos: `1:23 de 4:56`. Lo ve y lo oye todo el mundo. */
+  tiempoEntero: (va: string, dura: string) => `${va} de ${dura}`,
+  /** Cuando el archivo del tema no carga. Registro 3: dice qué pasó y se calla. */
+  enteroNoCarga: 'No cargó',
   verLetra: 'Mirá la letra y los acordes',
   seguir: 'Seguí',
   ultimo: 'Mirá cómo te fue',
@@ -216,6 +245,8 @@ export const RESULTADO = {
   detalle: 'Los temas de esta vuelta',
   /** Cuántos sacaste, dicho al lado del puntaje: el número que se cuenta en la previa. */
   sacaste: (n: number, total: number) => `${n} de ${total} temas`,
+  /** El sello de la vuelta, al lado de la línea que canta: la misma cuenta, estampada. */
+  selloVuelta: (n: number, total: number) => `${n} de ${total}`,
   denuevo: 'Otra vuelta',
   volver: 'Volvé al fichín',
   compartir: 'Compartí',

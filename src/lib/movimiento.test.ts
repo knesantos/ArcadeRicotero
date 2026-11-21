@@ -194,9 +194,63 @@ const ANIMACIONES = [
   // El grito estampado de "adivina el tema": el sello del acierto y el de lo que sumaste.
   // Corre en el compas de una pasada, asi que el mismo token lo apaga.
   { nombre: 'sello-golpe', apaga: 'token', valor: '--duracion-pasada', hoja: 'src/styles/juego.css' },
+  // El jugo de los juegos (ronda de pulida, 2026-11-17), en `juego.css`. El golpe del error
+  // va en saltos duros; la hoja de la revelacion que se apoya; las piezas de una pantalla
+  // que entran una atras de la otra, y el papel que se pega.
+  { nombre: 'jugo-golpe', apaga: 'token', valor: '--duracion-golpe', hoja: 'src/styles/juego.css' },
+  { nombre: 'hoja-cae', apaga: 'token', valor: '--duracion-paso', hoja: 'src/styles/juego.css' },
+  { nombre: 'jugo-entra', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  { nombre: 'jugo-pega', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  // Los dos bucles del casete, atados a que la cinta corra: la aguja que tiembla y el piloto
+  // que parpadea. Como el carrete, se apagan con `animation: none`.
+  { nombre: 'aguja-tiembla', apaga: 'regla', valor: '.reproductor--sonando .barra-aguja-fiel', hoja: 'src/styles/juego.css' },
+  { nombre: 'piloto', apaga: 'regla', valor: '.casete-vivo--play .casete-piloto', hoja: 'src/styles/juego.css' },
+  // Ronda 2: la cinta que corre por la boca del casete (otro bucle atado a que suene), y el
+  // error que cae sobre la regla: el sello rojo y el marco, en el tiempo del golpe.
+  { nombre: 'cinta-pasa', apaga: 'regla', valor: '.casete-vivo--rebobina .casete-pasa', hoja: 'src/styles/juego.css' },
+  // Ronda 3: el casete que expulsa al acertar, en saltos y en el tiempo del golpe.
+  { nombre: 'casete-expulsa', apaga: 'token', valor: '--duracion-golpe', hoja: 'src/styles/juego.css' },
+  { nombre: 'sello-error', apaga: 'token', valor: '--duracion-golpe', hoja: 'src/styles/juego.css' },
+  { nombre: 'marco-error', apaga: 'token', valor: '--duracion-golpe', hoja: 'src/styles/juego.css' },
   // El sello del momento de "¿Qué tipo de ricotero sos?" (`UX-36` §4.5): se apoya en la hoja
-  // cuando cambia el momento, cinco veces por noche. Es el único movimiento de ese juego.
+  // cuando cambia el momento, cinco veces por noche. Hasta la ronda de pulida del 2026-11-18
+  // era el único movimiento de ese juego.
   { nombre: 'momento-entra', apaga: 'token', valor: '--duracion-paso', hoja: 'src/styles/juego.css' },
+  // La noche que se ve (ronda de pulida, 2026-11-18). Lo que pasa una vez: la hoja que se va
+  // y la que vuelve, el sello grande del momento sobre el cielo, el nombre que cae en el
+  // resultado y los dos ejes del plano que se trazan.
+  { nombre: 'hoja-se-va', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  { nombre: 'hoja-vuelve', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  { nombre: 'hoja-entra', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  // Ronda 3: el sello grande del momento, que cae sobre el cielo y se va; y la última luz del
+  // barrio de la vuelta, que titila una vez y se apaga. Las dos pasan una sola vez.
+  { nombre: 'cartel-sello', apaga: 'token', valor: '--duracion-inercia', hoja: 'src/styles/juego.css' },
+  { nombre: 'se-apaga', apaga: 'token', valor: '--duracion-inercia', hoja: 'src/styles/juego.css' },
+  { nombre: 'ejes-sello-cae', apaga: 'token', valor: '--duracion-pasada', hoja: 'src/styles/juego.css' },
+  { nombre: 'eje-vertical', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  { nombre: 'eje-horizontal', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  // Y lo que vive en cada momento, mientras dura el momento: el fuego de la previa, los postes
+  // y el traqueteo del micro en la ida, el pogo y los haces cuando suena. Son bucles, atados a
+  // la clase del momento: como el carrete, se apagan con `animation: none`.
+  { nombre: 'llama', apaga: 'regla', valor: '.ejes-lugar--previa .ejes-lugar-fuego', hoja: 'src/styles/juego.css' },
+  { nombre: 'ruta-pasa', apaga: 'regla', valor: '.ejes-lugar--ida .ejes-lugar-postes', hoja: 'src/styles/juego.css' },
+  { nombre: 'traqueteo', apaga: 'regla', valor: '.ejes-lugar--ida .ejes-lugar-micro-caja', hoja: 'src/styles/juego.css' },
+  { nombre: 'onda', apaga: 'regla', valor: '.ejes-lugar--vereda .ejes-lugar-onda', hoja: 'src/styles/juego.css' },
+  { nombre: 'pogo', apaga: 'regla', valor: '.ejes-lugar--adentro .ejes-lugar-gente-salta', hoja: 'src/styles/juego.css' },
+  { nombre: 'haz-barre', apaga: 'regla', valor: '.ejes-lugar--adentro .ejes-lugar-haz', hoja: 'src/styles/juego.css' },
+  // El papel de "Sacalo por la letra" (ronda de pulida, 2026-11-18): el doblez que se abre, la
+  // letra que se escribe palabra por palabra, el tachon de lapiz sobre lo que se erro y el papel
+  // del tema nuevo que sale del bolsillo. Las cuatro pasan una vez, atadas a un intento o a un tema.
+  { nombre: 'pliego-abre', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  { nombre: 'palabra-escribe', apaga: 'token', valor: '--duracion-sello', hoja: 'src/styles/juego.css' },
+  { nombre: 'tachon-pasa', apaga: 'token', valor: '--duracion-golpe', hoja: 'src/styles/juego.css' },
+  { nombre: 'papel-sale', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  // Ronda 3 (el respiro del papel salio: no se veia): el sello grande que cae sobre el papel al
+  // cerrar el tema, la birome del bolsillo que baja la punta cuando se anota algo, y el papel
+  // usado que se guarda antes de que salga el nuevo. Pasan una vez, atadas a su gesto.
+  { nombre: 'sello-cae', apaga: 'token', valor: '--duracion-pasada', hoja: 'src/styles/juego.css' },
+  { nombre: 'birome-anota', apaga: 'token', valor: '--duracion-golpe', hoja: 'src/styles/juego.css' },
+  { nombre: 'papel-se-guarda', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
   // Los sellos del bestiario que se asientan (`D-83`): el bocadillo, el «Anotado» y la libreta
   // terminan de apoyar; la hoja de la ficha baja los últimos píxeles. Un solo token los apaga.
   { nombre: 'sello-apoya', apaga: 'token', valor: '--duracion-sello', hoja: 'src/styles/sitio.css' },
@@ -206,6 +260,75 @@ const ANIMACIONES = [
   { nombre: 'velo-sube', apaga: 'token', valor: '--duracion-velo', hoja: 'src/styles/sitio.css' },
   { nombre: 'velo-baja', apaga: 'token', valor: '--duracion-velo', hoja: 'src/styles/sitio.css' },
   { nombre: 'velo-corre', apaga: 'token', valor: '--duracion-velo', hoja: 'src/styles/sitio.css' },
+  // La sensación de Skayboy y Poligirl (ronda de pulida, 2026-11-18), en capas de HTML encima del
+  // área: la pasada del rodillo cuando alguien vuelve a la entrada (`UX-29 §3`), el telón de líneas
+  // que destapa cada nivel, el golpe del tubo cuando algo pesado apoya, y el sello con que caen el
+  // rótulo, la tarjeta y el contador. Las cuatro pasan una vez, atadas a un hecho de la partida.
+  { nombre: 'area-pasada', apaga: 'token', valor: '--duracion-pasada', hoja: 'src/styles/skayboy.css' },
+  { nombre: 'telon-abre', apaga: 'token', valor: '--duracion-pasada', hoja: 'src/styles/skayboy.css' },
+  { nombre: 'tubo-golpe', apaga: 'token', valor: '--duracion-sello', hoja: 'src/styles/skayboy.css' },
+  { nombre: 'tubo-sella', apaga: 'token', valor: '--duracion-sello', hoja: 'src/styles/skayboy.css' },
+  // Ronda 2: el fichín se prende, una vez, cuando el motor ya dibuja. El tubo abre desde la línea
+  // del medio y la marquesina enciende sus palabras con un parpadeo.
+  { nombre: 'tubo-prende', apaga: 'token', valor: '--duracion-pasada', hoja: 'src/styles/skayboy.css' },
+  { nombre: 'marquesina-prende', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/skayboy.css' },
+  // Ronda 3: el final del juego. Los créditos suben renglón por renglón y la marquesina titila,
+  // una vez, al pasar el último nivel. Con el token en cero los créditos quedan en su último
+  // renglón y la marquesina, prendida.
+  { nombre: 'creditos-suben', apaga: 'token', valor: '--duracion-creditos', hoja: 'src/styles/skayboy.css' },
+  { nombre: 'marquesina-titila', apaga: 'token', valor: '--duracion-golpe', hoja: 'src/styles/skayboy.css' },
+  // "Completá la letra", la pintada (ronda de pulida, 2026-11-18): la palabra que era llega
+  // despues del tachon; la pintura fresca chorrea; el rodillo tapa la pintada vieja y destapa la nueva.
+  { nombre: 'pintada-aparece', apaga: 'token', valor: '--duracion-pasada', hoja: 'src/styles/juego.css' },
+  { nombre: 'chorrea', apaga: 'token', valor: '--duracion-inercia', hoja: 'src/styles/juego.css' },
+  { nombre: 'rodillo-tapa', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  { nombre: 'rodillo-destapa', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  // Ronda 2: el polvo de revoque que salta cuando el sello apoya en la pared, cae y se va.
+  { nombre: 'polvo-cae', apaga: 'token', valor: '--duracion-cuenta', hoja: 'src/styles/juego.css' },
+  // "Ponelos en fila", la batea (ronda de pulida, 2026-11-19). Lo que pasa una vez: la pila de la
+  // portada que cae tapa por tapa, la carta que sube del mazo, la ficha que apoya en su fila y la
+  // fila que acusa el peso. Y un bucle atado a que suene el recorte: el vinilo que gira afuera de
+  // la funda; como el carrete, se apaga con `animation: none`.
+  { nombre: 'pila-cae', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  { nombre: 'carta-llega', apaga: 'token', valor: '--duracion-paso', hoja: 'src/styles/juego.css' },
+  { nombre: 'pieza-apoya', apaga: 'token', valor: '--duracion-sello', hoja: 'src/styles/juego.css' },
+  { nombre: 'fila-recibe', apaga: 'token', valor: '--duracion-sello', hoja: 'src/styles/juego.css' },
+  { nombre: 'disco-gira', apaga: 'regla', valor: '.carta--suena .carta-vinilo-cara', hoja: 'src/styles/juego.css' },
+  // "Armá tu recital" (ronda de pulida, 2026-11-21): el renglón que se escribe con el fibrón
+  // adelante, y el pie de la noche, que espera a que la lista termine de escribirse.
+  { nombre: 'renglon-se-escribe', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  { nombre: 'fibron-escribe', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  { nombre: 'noche-pie-llega', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  { nombre: 'sello-hoja-cae', apaga: 'token', valor: '--duracion-pasada', hoja: 'src/styles/juego.css' },
+  // "Preguntas ricoteras", la ficha del fichín (ronda de pulida, 2026-11-19): la rueda del
+  // contador que da la vuelta, y las dos mitades de la ficha de vida que se parte y se cae.
+  // Las tres pasan una vez, en saltos.
+  { nombre: 'cifra-rueda', apaga: 'token', valor: '--duracion-golpe', hoja: 'src/styles/juego.css' },
+  { nombre: 'ficha-rompe-izq', apaga: 'token', valor: '--duracion-inercia', hoja: 'src/styles/juego.css' },
+  { nombre: 'ficha-rompe-der', apaga: 'token', valor: '--duracion-inercia', hoja: 'src/styles/juego.css' },
+  // Ronda 2: la pantalla de la pregunta, que se prende y se apaga como un tubo (barridos de
+  // `clip-path`, en saltos), una vez por pregunta.
+  { nombre: 'pantalla-prende', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  { nombre: 'pantalla-apaga', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  // "Adiviná la tapa", la mesa de serigrafía (ronda de pulida, 2026-11-20): el pedazo que se
+  // achica hasta su lugar en la tapa, la racleta que va y viene (cuatro pasadas, o una ida y
+  // vuelta) y la hoja recién colgada que se hamaca en la soga. Las cuatro pasan una vez.
+  { nombre: 'recorte-a-su-lugar', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  { nombre: 'racleta-tirada', apaga: 'token', valor: '--escalon-pasada', hoja: 'src/styles/juego.css' },
+  { nombre: 'racleta-ida-y-vuelta', apaga: 'token', valor: '--escalon-pasada', hoja: 'src/styles/juego.css' },
+  { nombre: 'hoja-se-hamaca', apaga: 'token', valor: '--duracion-inercia', hoja: 'src/styles/juego.css' },
+  // Y la tinta de la tirada que se llena cuando pasa su racleta.
+  { nombre: 'tinta-se-pone', apaga: 'token', valor: '--duracion-pasada', hoja: 'src/styles/juego.css' },
+  // Ronda 2: la hoja impresa que sale de abajo del bastidor en la portada, y el recorte que
+  // queda pegado con cinta en la prueba en una tinta.
+  { nombre: 'hoja-sale', apaga: 'token', valor: '--duracion-paso', hoja: 'src/styles/juego.css' },
+  { nombre: 'cinta-se-pega', apaga: 'token', valor: '--duracion-pasada', hoja: 'src/styles/juego.css' },
+  // "Más o menos", las fichas (ronda de pulida, 2026-11-20): la ficha que se da vuelta —se
+  // afina hasta el canto y se abre del otro lado, con el dorso que se va en el medio— y el
+  // canto que cae en la pila de la racha. Las tres pasan una vez, en saltos.
+  { nombre: 'ficha-voltea', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  { nombre: 'ficha-dorso-se-va', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  { nombre: 'ficha-apila', apaga: 'token', valor: '--duracion-sello', hoja: 'src/styles/juego.css' },
   // `D-91`: la tinta de abajo del velo, su respaldo y lo que avisa que está cargando. No se mueven:
   // cambian `visibility` u `opacity` una vez. El mismo token los deja en un corte.
   { nombre: 'velo-tinta', apaga: 'token', valor: '--duracion-velo', hoja: 'src/styles/sitio.css' },
