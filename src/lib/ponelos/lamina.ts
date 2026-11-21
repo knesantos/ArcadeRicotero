@@ -160,6 +160,13 @@ export interface DatosLamina {
    * hoja de siempre.
    */
   readonly batea?: boolean;
+  /**
+   * La lámina como hoja de papel (ronda de pulida de "Armá tu recital", 2026-11-21): la lista
+   * escrita con tinta sobre una hoja pegada con cinta al piso, apenas torcida, que es lo que se
+   * ve en la pantalla. La planta es la misma; cambian el papel de fondo, la tinta de la letra y
+   * la raya entre bandas, que pasa a ser de puntos (el corte de los bises).
+   */
+  readonly hoja?: boolean;
 }
 
 export class LaminaImposible extends Error {}

@@ -294,6 +294,12 @@ const ANIMACIONES = [
   { nombre: 'pieza-apoya', apaga: 'token', valor: '--duracion-sello', hoja: 'src/styles/juego.css' },
   { nombre: 'fila-recibe', apaga: 'token', valor: '--duracion-sello', hoja: 'src/styles/juego.css' },
   { nombre: 'disco-gira', apaga: 'regla', valor: '.carta--suena .carta-vinilo-cara', hoja: 'src/styles/juego.css' },
+  // "Armá tu recital" (ronda de pulida, 2026-11-21): el renglón que se escribe con el fibrón
+  // adelante, y el pie de la noche, que espera a que la lista termine de escribirse.
+  { nombre: 'renglon-se-escribe', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  { nombre: 'fibron-escribe', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  { nombre: 'noche-pie-llega', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  { nombre: 'sello-hoja-cae', apaga: 'token', valor: '--duracion-pasada', hoja: 'src/styles/juego.css' },
   // "Preguntas ricoteras", la ficha del fichín (ronda de pulida, 2026-11-19): la rueda del
   // contador que da la vuelta, y las dos mitades de la ficha de vida que se parte y se cae.
   // Las tres pasan una vez, en saltos.

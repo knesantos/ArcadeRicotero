@@ -40,12 +40,14 @@ import {
   type Armado,
   type TemaDelCatalogo,
 } from '../lib/recital/armado.ts';
-import { LUGAR, ARMADO, NOCHE, IMPRESO } from '../lib/recital/copy.ts';
+import { PANTALLA_0, LUGAR, ARMADO, NOCHE, IMPRESO } from '../lib/recital/copy.ts';
 import { armarLinkRecital, leerRecital, limpiarLugar, LUGAR_DESCAMPADO, LUGAR_OTRO, type RecitalDelLink } from '../lib/desafio.ts';
 import { claseDisco } from '../lib/tema/paleta.ts';
 import { normalizar } from '../lib/texto.ts';
 import { rutaFicha } from '../lib/tapa/pasadas.ts';
-import { crearRocola } from './rocola.ts';
+import { armarCasete, correrCasete, frenarCasete, ponerAvance, ponerContador } from '../lib/tema/casete.ts';
+import { crearRocola, SEGUNDOS_POR_TEMA } from './rocola.ts';
+import { armarContador, estampar, pegar, rodarContador, volarPieza } from './jugo.ts';
 import { botonCompartir } from './compartir.ts';
 import { dibujarLamina } from './lamina.ts';
 
@@ -160,7 +162,7 @@ function mostrar(zona: HTMLElement): void {
 }
 
 function enfocarTitulo(zona: HTMLElement): void {
-  const titulo = zona.querySelector<HTMLElement>('h2, .recital-sello');
+  const titulo = zona.querySelector<HTMLElement>('h2, .recital-entrada--elegida');
   if (!titulo) return;
   titulo.tabIndex = -1;
   titulo.focus({ preventScroll: true });
@@ -241,14 +243,74 @@ function leerPartida(): { lugar: LugarElegido; armado: Armado } | null {
 function tocarTema(i: number): void {
   const t = catalogo.temas[i];
   if (!t || !conAudio.has(t.slug)) return;
+  sonandoDesde = Date.now();
   rocola.tocar(t.slug, () => pintarSonido());
+  pintarSonido();
 }
+
+/** Cuándo arrancó el recorte que suena en el armado: de ahí sale cuánta cinta pasó. */
+let sonandoDesde = 0;
 
 function pararTodo(): void {
   if (rocola.sonando) rocola.parar();
 }
 
+/**
+ * El casete que anda mientras suena un recorte (ronda de pulida, 2026-11-21). Es el de
+ * "Adiviná el tema" (`lib/tema/casete.ts`): toma velocidad, la cinta se pasa de un carrete al
+ * otro y frena con inercia. Acá lo mueve un reloj propio y no el audio, porque la rocola es un
+ * `<audio>` que no cuenta por dónde va: `avance` dice cuánta cinta pasó (de 0 a 1) y
+ * `segundos`, lo que marca el contador. Con movimiento reducido el carrete no gira; que suena
+ * lo dice siempre un texto al lado.
+ */
+function armarCabina(casete: HTMLElement): { correr(avance: () => number, segundos: () => number): void; frenar(): void } {
+  let anda = false;
+  let reloj = 0;
+  return {
+    correr(avance, segundos) {
+      if (!anda) {
+        anda = true;
+        correrCasete(casete);
+      }
+      window.clearInterval(reloj);
+      const paso = (): void => {
+        if (!casete.isConnected) return window.clearInterval(reloj);
+        ponerAvance(casete, avance());
+        ponerContador(casete, segundos());
+      };
+      paso();
+      reloj = window.setInterval(paso, 200);
+    },
+    frenar() {
+      window.clearInterval(reloj);
+      if (!anda) return;
+      anda = false;
+      frenarCasete(casete);
+    },
+  };
+}
+
+/**
+ * Un renglón escrito con fibra: el texto, y el fibrón que lo va escribiendo. El fibrón es
+ * dibujo (un `span` vacío) y solo se ve mientras el renglón se escribe; cuándo se escribe lo
+ * dice la hoja de estilos (`renglon-se-escribe`), no este nodo.
+ */
+function escrito(texto: string): HTMLElement {
+  const caja = el('span', 'recital-escrito');
+  caja.append(el('span', 'recital-tema', texto), el('span', 'recital-fibron'));
+  return caja;
+}
+
 // ------------------------------------------------------------------ la puerta
+
+/** La hoja de la portada: dibujo, y atajo del botón de al lado. */
+const hojaPortada = document.getElementById('hoja-portada');
+
+function retomarGuardada(guardada: { lugar: LugarElegido; armado: Armado }): void {
+  lugar = guardada.lugar;
+  armado = guardada.armado;
+  irAlArmado();
+}
 
 function pintarInicio(): void {
   const retomar = $('retomar');
@@ -256,15 +318,36 @@ function pintarInicio(): void {
   const guardada = leerPartida();
   if (guardada) {
     retomar.append(
-      boton('secundario', ARMADO.retomar(lugarEnUnaLinea(guardada.lugar)), () => {
-        lugar = guardada.lugar;
-        armado = guardada.armado;
-        irAlArmado();
-      }),
+      boton('secundario', ARMADO.retomar(lugarEnUnaLinea(guardada.lugar)), () => retomarGuardada(guardada)),
       el('p', 'recital-retomar-cuenta', ARMADO.cuenta(cuantos(guardada.armado), formatoDuracion(duracion(guardada.armado, catalogo.temas).segundos))),
     );
+    // Con una lista a medio armar, la hoja de la portada es esa lista: lo que ya escribiste.
+    if (hojaPortada) {
+      const orden = enOrden(guardada.armado);
+      const A_LA_VISTA = 4;
+      const ol = el('ol', 'recital-pasos');
+      orden.slice(0, A_LA_VISTA).forEach((i, k) => {
+        const li = el('li', 'recital-paso');
+        li.style.setProperty('--orden', String(k + 1));
+        li.append(el('span', 'recital-numero', String(k + 1)), escrito(catalogo.temas[i]!.titulo));
+        ol.append(li);
+      });
+      hojaPortada.replaceChildren(el('p', 'recital-rotulo', lugarEnUnaLinea(guardada.lugar)), ol);
+      if (orden.length > A_LA_VISTA) {
+        const mas = el('p', 'recital-paso recital-paso--bis');
+        mas.style.setProperty('--orden', String(A_LA_VISTA + 1));
+        mas.append(escrito(PANTALLA_0.yMas(orden.length - A_LA_VISTA)));
+        hojaPortada.append(mas);
+      }
+    }
   }
 }
+
+hojaPortada?.addEventListener('click', () => {
+  const guardada = leerPartida();
+  if (guardada) retomarGuardada(guardada);
+  else $('empezar').click();
+});
 
 $('empezar').addEventListener('click', () => {
   // Con una lista guardada, elegir lugar no la borra (`FIND-156`): la lista es de quien la
@@ -283,10 +366,27 @@ function irAlLugar(): void {
   enfocarTitulo(zonaLugar);
 }
 
-function elegirLugar(l: LugarElegido): void {
+/**
+ * Elegir el lugar. Si se eligió tocando una entrada (`origen`), **esa entrada viaja** a la
+ * cabecera del armado: es la que queda en la mano toda la noche. Se mide dónde estaba antes de
+ * cambiar de pantalla, y una copia suelta vuela hasta la de arriba, que espera escondida.
+ */
+function elegirLugar(l: LugarElegido, origen?: HTMLElement): void {
+  const desde = origen?.getBoundingClientRect();
+  const copia = origen ? (origen.cloneNode(true) as HTMLElement) : null;
   lugar = l;
   guardarPartida();
   irAlArmado();
+  const destino = partes?.cabecera.querySelector<HTMLElement>('.recital-entrada');
+  if (!destino) return;
+  if (!copia || !desde) return pegar(destino);
+  copia.removeAttribute('aria-current');
+  copia.removeAttribute('data-clave');
+  destino.style.visibility = 'hidden';
+  volarPieza(copia, { getBoundingClientRect: () => desde } as Element, destino, () => {
+    destino.style.visibility = '';
+    pegar(destino);
+  });
 }
 
 /**
@@ -321,17 +421,55 @@ function pintarLugar(): void {
   zonaLugar.append(pestanas);
 
   if (pestana === 'estadio' || pestana === 'teatro') {
+    // La boletería (ronda de pulida, 2026-11-21). Eran veinte cajas iguales, una abajo de la
+    // otra: 1800 px de formulario. Ahora las ciudades con más de un lugar son un talonario
+    // —el nombre de la ciudad una sola vez, en el talón de arriba, y sus entradas en dos
+    // columnas— y las demás son entradas sueltas, con su ciudad en el talón de cada una. Va en
+    // el orden del catálogo, que no se toca.
     const tipo = pestana;
-    const lista = el('ul', 'recital-lugares');
+    const porCiudad = new Map<string, LugarDelCatalogo[]>();
     for (const l of catalogo.lugares.filter((x) => x.tipo === tipo)) {
+      const lista = porCiudad.get(l.ciudad) ?? [];
+      lista.push(l);
+      porCiudad.set(l.ciudad, lista);
+    }
+    const boleteria = el('div', 'recital-boleteria');
+    let orden = 0;
+    const entrada = (l: LugarDelCatalogo, conCiudad: boolean): HTMLLIElement => {
       const li = el('li');
-      const b = boton('recital-entrada', '', () => elegirLugar({ slug: l.slug, nombre: l.nombre, ciudad: l.ciudad }));
-      b.append(el('span', 'recital-entrada-cuerpo', l.nombre), el('span', 'recital-entrada-talon', l.ciudad));
+      const b = boton('recital-entrada', '', () => elegirLugar({ slug: l.slug, nombre: l.nombre, ciudad: l.ciudad }, b));
+      b.dataset.clave = `lugar-${l.slug}`;
+      b.setAttribute('aria-label', LUGAR.entradaAria(l.nombre, l.ciudad));
+      b.append(el('span', 'recital-entrada-cuerpo', l.nombre));
+      if (conCiudad) b.append(el('span', 'recital-entrada-talon', l.ciudad));
       if (lugar?.slug === l.slug) b.setAttribute('aria-current', 'true');
       li.append(b);
-      lista.append(li);
+      return li;
+    };
+    let sueltas: HTMLUListElement | null = null;
+    for (const [ciudad, lista] of porCiudad) {
+      if (lista.length > 1) {
+        sueltas = null;
+        const talonario = el('section', 'recital-talonario jugo-pega');
+        talonario.style.setProperty('--orden', String(Math.min(orden++, 8)));
+        const cabeza = el('h3', 'recital-talonario-ciudad');
+        cabeza.append(el('span', '', ciudad), el('span', 'recital-talonario-cuantos', LUGAR.cuantos(lista.length)));
+        const ul = el('ul', 'recital-lugares');
+        for (const l of lista) ul.append(entrada(l, false));
+        talonario.append(cabeza, ul);
+        boleteria.append(talonario);
+      } else {
+        if (!sueltas) {
+          sueltas = el('ul', 'recital-lugares recital-lugares--sueltas');
+          boleteria.append(sueltas);
+        }
+        const li = entrada(lista[0]!, true);
+        li.className = 'jugo-pega';
+        li.style.setProperty('--orden', String(Math.min(orden++, 8)));
+        sueltas.append(li);
+      }
     }
-    zonaLugar.append(lista);
+    zonaLugar.append(boleteria);
   } else if (pestana === 'descampado') {
     const ya = lugar?.slug === LUGAR_DESCAMPADO ? lugar.ciudad : '';
     zonaLugar.append(
@@ -429,11 +567,23 @@ interface PartesArmado {
   readonly etiqueta: HTMLElement;
   readonly temas: HTMLUListElement;
   readonly pie: HTMLElement;
+  /** El pie se arma una vez (ronda de pulida): el casete tiene que seguir girando y el contador, rodar. */
+  readonly cabina: ReturnType<typeof armarCabina>;
+  readonly suenaTitulo: HTMLElement;
+  readonly faltan: HTMLElement;
+  readonly parar: HTMLButtonElement;
+  readonly cuenta: HTMLElement;
+  readonly contador: HTMLElement;
+  readonly cuentaRotulo: HTMLElement;
+  readonly cuentaLector: HTMLElement;
+  readonly cerrar: HTMLButtonElement;
 }
 
 let partes: PartesArmado | null = null;
 /** Lo escrito en el buscador del cajón. */
 let busqueda = '';
+/** Hay un papelito volando a la cuenta del pie: la rueda gira cuando llega, no antes. */
+let cuentaEnVuelo = false;
 /** El último tema sumado: su renglón entra a la hoja como un papel que se pega. */
 let recienSumado: number | null = null;
 
@@ -459,7 +609,7 @@ function montarArmado(): PartesArmado {
   const cabezaCajon = el('div', 'recital-cajon-cabeza');
   const sorteo = boton('recital-chico', ARMADO.sortear, () => {
     const i = sortear(armado, visibles());
-    if (i !== null) sumar(i);
+    if (i !== null) sumar(i, sorteo);
   });
   sorteo.dataset.clave = 'sortear';
   const silencio = boton('recital-chico', '', () => {
@@ -521,9 +671,49 @@ function montarArmado(): PartesArmado {
   const temas = el('ul', 'recital-temas');
   cajon.append(cabezaCajon, buscador, discos, etiqueta, temas);
 
+  // El pie: el casete, lo que suena, cuántos van y salir a tocar. Mide siempre lo mismo: lo que
+  // está debajo del pulgar no se corre cuando algo empieza a sonar.
   const pie = el('div', 'recital-pie');
+  const fila = el('div', 'recital-suena');
+  const casete = armarCasete();
+  casete.classList.add('recital-casete');
+  const textos = el('div', 'recital-suena-textos');
+  const suenaTitulo = el('p', 'recital-suena-titulo');
+  const faltan = el('p', 'recital-faltan');
+  textos.append(suenaTitulo, faltan);
+  const parar = boton('recital-suena-parar', ARMADO.parar, () => rocola.parar());
+  parar.dataset.clave = 'pie-parar';
+  const cuenta = el('div', 'recital-cuenta');
+  const contador = armarContador(cuantos(armado), 2);
+  const cuentaRotulo = el('span', 'recital-cuenta-rotulo');
+  cuentaRotulo.setAttribute('aria-hidden', 'true');
+  const cuentaLector = el('span', 'solo-lector');
+  cuenta.append(contador, cuentaRotulo, cuentaLector);
+  fila.append(casete, textos, parar, cuenta);
+  const cerrar = boton('primario', ARMADO.cerrar, () => irALaNoche());
+  cerrar.dataset.clave = 'cerrar';
+  pie.append(fila, cerrar);
   zonaArmado.append(cabecera, hoja, cajon, pie);
-  return { cabecera, hoja, sorteo, silencio, buscador, discos, etiqueta, temas, pie };
+  return {
+    cabecera,
+    hoja,
+    sorteo,
+    silencio,
+    buscador,
+    discos,
+    etiqueta,
+    temas,
+    pie,
+    cabina: armarCabina(casete),
+    suenaTitulo,
+    faltan,
+    parar,
+    cuenta,
+    contador,
+    cuentaRotulo,
+    cuentaLector,
+    cerrar,
+  };
 }
 
 /** Los temas que muestra el cajón: los del disco elegido y los que dicen lo buscado. */
@@ -540,6 +730,7 @@ function visibles(): number[] {
 function renglon(i: number, n: number, bis: boolean): HTMLLIElement {
   const t = catalogo.temas[i]!;
   const li = el('li', `recital-renglon ${claseDisco(t.disco)}`);
+  li.dataset.slug = t.slug;
   if (marcado === i) li.classList.add('recital-renglon--marcado');
   if (rocola.sonando === t.slug) li.classList.add('recital-renglon--sonando');
   if (recienSumado === i) li.classList.add('recital-renglon--entra');
@@ -551,7 +742,7 @@ function renglon(i: number, n: number, bis: boolean): HTMLLIElement {
   b.dataset.clave = `renglon-${i}`;
   b.setAttribute('aria-expanded', String(marcado === i));
   b.setAttribute('aria-label', ARMADO.renglon(n, t.titulo, bis));
-  b.append(el('span', 'recital-numero', String(n)), el('span', 'recital-tema', t.titulo), el('span', 'recital-disco', tituloDeDisco.get(t.disco) ?? ''));
+  b.append(el('span', 'recital-numero', String(n)), escrito(t.titulo), el('span', 'recital-disco', tituloDeDisco.get(t.disco) ?? ''));
   li.append(b);
   if (marcado === i) li.append(acciones(i));
   return li;
@@ -569,7 +760,10 @@ function acciones(i: number): HTMLElement {
     const tira = tiraDe(armado, i);
     const pos = tira === 'lista' ? armado.lista.indexOf(i) + 1 : armado.bises.indexOf(i) + 1;
     avisar(zonaArmado, ARMADO.movido(t.titulo, pos, tira === 'bises'));
-    zonaArmado.querySelector<HTMLElement>('.recital-renglon--marcado .recital-renglon-boton')?.focus();
+    const movido = zonaArmado.querySelector<HTMLElement>('.recital-renglon--marcado .recital-renglon-boton');
+    movido?.focus();
+    // El renglón que cambió de lugar termina de apoyar: se ve cuál fue y a dónde llegó.
+    pegar(movido);
   };
   const enBis = tiraDe(armado, i) === 'bises';
   const sonando = rocola.sonando === t.slug;
@@ -588,7 +782,6 @@ function acciones(i: number): HTMLElement {
       accion('escuchar', sonando ? ARMADO.parar : ARMADO.escuchar, () => {
         if (rocola.sonando === t.slug) rocola.parar();
         else tocarTema(i);
-        pintarSonido();
       }),
     );
   }
@@ -605,16 +798,54 @@ function acciones(i: number): HTMLElement {
   return caja;
 }
 
-function sumar(i: number): void {
+/**
+ * Suma un tema. `origen` es lo que se tocó (el tema del cajón, o "Sorteá uno"): de ahí sale el
+ * papelito que vuela hasta la cuenta del pie cuando la hoja no está a la vista, que es casi
+ * siempre —se elige con el cajón en pantalla y la hoja arriba—. Si el renglón nuevo sí se ve,
+ * no vuela nada: se lo ve escribirse.
+ *
+ * **Se rehace solo lo que cambió** (lo aprendido en "Ponelos en fila"): la hoja, y del cajón,
+ * el tema tocado. Los ciento cinco se rehacen solo cuando la lista se llena, que los apaga a todos.
+ */
+function sumar(i: number, origen?: HTMLElement): void {
   const t = catalogo.temas[i]!;
   const antes = armado;
   armado = agregar(armado, i);
   if (armado === antes) return;
   guardarPartida();
+  const p = partes!;
+  // El papelito sale del título tocado, a la medida de sus letras (no del ancho del renglón).
+  const letras = origen?.querySelector('.recital-tema-texto strong');
+  let desde = origen?.getBoundingClientRect();
+  if (letras) {
+    const rango = document.createRange();
+    rango.selectNodeContents(letras);
+    desde = rango.getBoundingClientRect();
+  }
   recienSumado = i;
-  if (sonido) tocarTema(i);
-  pintarArmado();
+  conFoco(() => {
+    pintarHoja();
+    pintarControles();
+    if (!hayLugar(armado) || !parcharTema(i)) pintarTemas();
+  });
   recienSumado = null;
+  cuentaEnVuelo = true;
+  pintarPie();
+  if (sonido) tocarTema(i);
+
+  const renglonNuevo = p.hoja.querySelector<HTMLElement>(`[data-clave="renglon-${i}"]`)?.getBoundingClientRect();
+  const techo = p.pie.getBoundingClientRect().top;
+  const seVe = renglonNuevo !== undefined && renglonNuevo.top >= 0 && renglonNuevo.bottom <= techo;
+  const llegar = (): void => {
+    cuentaEnVuelo = false;
+    if (rodarContador(p.contador, cuantos(armado))) estampar(p.cuenta);
+  };
+  if (seVe || !desde || desde.width === 0) llegar();
+  else {
+    const papelito = el('span', 'recital-papelito', t.titulo);
+    volarPieza(papelito, { getBoundingClientRect: () => desde } as Element, p.contador, llegar);
+  }
+
   // El botón tocado vuelve deshabilitado y no puede tener el foco (`FIND-154`): pasa al tema
   // que sigue en el cajón, así el teclado no vuelve al principio de los 105.
   const libres = [...zonaArmado.querySelectorAll<HTMLButtonElement>('.recital-tema-cajon:not(:disabled)')];
@@ -622,6 +853,20 @@ function sumar(i: number): void {
   siguiente?.focus({ preventScroll: true });
   const bis = tiraDe(armado, i) === 'bises';
   avisar(zonaArmado, ARMADO.sumado(t.titulo, bis ? armado.bises.length : armado.lista.length, bis));
+}
+
+/** Marca en el cajón el tema recién sumado, sin rehacer los demás. `false` si no lo encontró. */
+function parcharTema(i: number): boolean {
+  const b = partes!.temas.querySelector<HTMLButtonElement>(`[data-clave="tema-${i}"]`);
+  if (!b) return false;
+  const t = catalogo.temas[i]!;
+  b.disabled = true;
+  b.setAttribute('aria-label', `${t.titulo}. ${ARMADO.yaEsta}`);
+  b.querySelector('.recital-sin-recorte')?.remove();
+  const sello = el('span', 'recital-ya', ARMADO.yaEsta);
+  b.append(sello);
+  estampar(sello);
+  return true;
 }
 
 /** Repinta todo el armado. El foco vuelve al control que lo tenía, si se rehízo. */
@@ -637,13 +882,20 @@ function pintarArmado(): void {
   });
 }
 
-/** Lo que cambia cuando algo empieza o deja de sonar: la hoja y el pie, nada más. */
+/**
+ * Lo que cambia cuando algo empieza o deja de sonar: qué renglón va subrayado, lo que dice su
+ * "Escuchala" y el pie. **La hoja no se rehace**: rehacerla cortaba el renglón que se estaba
+ * escribiendo.
+ */
 function pintarSonido(): void {
   if (!partes || zonaArmado.hidden) return;
-  conFoco(() => {
-    pintarHoja();
-    pintarPie();
-  });
+  const suena = rocola.sonando;
+  for (const li of partes.hoja.querySelectorAll<HTMLElement>('.recital-renglon')) {
+    li.classList.toggle('recital-renglon--sonando', suena !== null && li.dataset.slug === suena);
+  }
+  const escuchar = partes.hoja.querySelector<HTMLElement>('[data-clave="accion-escuchar"]');
+  if (escuchar && marcado !== null) escuchar.textContent = catalogo.temas[marcado]?.slug === suena ? ARMADO.parar : ARMADO.escuchar;
+  pintarPie();
 }
 
 function conFoco(pintar: () => void): void {
@@ -655,10 +907,15 @@ function conFoco(pintar: () => void): void {
 
 function pintarCabecera(): void {
   const p = partes!;
-  p.cabecera.replaceChildren(
-    el('p', 'recital-sello', ARMADO.sello(lugarEnUnaLinea(lugar!))),
-    boton('recital-cambiar', ARMADO.cambiarLugar, () => irAlLugar()),
-  );
+  // La entrada que se eligió, en la mano: el nombre en el cuerpo y la ciudad en el talón.
+  const l = lugar!;
+  const entrada = el('p', 'recital-entrada recital-entrada--elegida');
+  entrada.setAttribute('aria-label', ARMADO.sello(lugarEnUnaLinea(l)));
+  const cuerpo = el('span', 'recital-entrada-cuerpo');
+  cuerpo.append(el('span', 'recital-entrada-rotulo', LUGAR.entrada), el('span', '', l.nombre));
+  entrada.append(cuerpo);
+  if (l.ciudad) entrada.append(el('span', 'recital-entrada-talon', l.ciudad));
+  p.cabecera.replaceChildren(entrada, boton('recital-cambiar', ARMADO.cambiarLugar, () => irAlLugar()));
 }
 
 function pintarHoja(): void {
@@ -670,13 +927,20 @@ function pintarHoja(): void {
     armado.lista.forEach((i, k) => ol.append(renglon(i, k + 1, false)));
     hoja.append(ol);
   }
-  hoja.append(el('p', 'recital-rotulo recital-rotulo--bis', ARMADO.rotuloBises));
+  hoja.append(corte());
   if (armado.bises.length === 0) hoja.append(el('p', 'recital-vacia', ARMADO.sinBises));
   else {
     const ol = el('ol', 'recital-lista');
     armado.bises.forEach((i, k) => ol.append(renglon(i, k + 1, true)));
     hoja.append(ol);
   }
+}
+
+/** El corte de la hoja: la raya de fibra y la palabra, que separa la lista de los bises. */
+function corte(): HTMLElement {
+  const p = el('p', 'recital-corte');
+  p.append(el('span', '', ARMADO.rotuloBises));
+  return p;
 }
 
 function pintarControles(): void {
@@ -723,7 +987,7 @@ function pintarTemas(): void {
     }
     const li = el('li', claseDisco(t.disco));
     const esta = tiraDe(armado, i) !== null;
-    const b = boton('recital-tema-cajon', '', () => sumar(i));
+    const b = boton('recital-tema-cajon', '', () => sumar(i, b));
     b.dataset.clave = `tema-${i}`;
     b.disabled = esta || !hayLugar(armado);
     b.setAttribute('aria-label', esta ? `${t.titulo}. ${ARMADO.yaEsta}` : ARMADO.agregarAria(t.titulo));
@@ -751,28 +1015,34 @@ function minutos(segundos: number): string {
  * se sepa cuál es.
  */
 function pintarPie(): void {
-  const pie = partes!.pie;
-  pie.replaceChildren();
+  const p = partes!;
   const suena = rocola.sonando;
   const i = suena ? indicePorSlug.get(suena) : undefined;
+  p.pie.classList.toggle('recital-pie--suena', i !== undefined);
+  p.suenaTitulo.replaceChildren();
   if (i !== undefined) {
-    const fila = el('div', 'recital-suena');
-    const parar = boton('recital-suena-parar', ARMADO.parar, () => rocola.parar());
-    parar.dataset.clave = 'pie-parar';
-    fila.append(el('span', 'recital-suena-sello', ARMADO.suenaSello), el('span', 'recital-suena-titulo', catalogo.temas[i]!.titulo), parar);
-    pie.append(fila);
+    p.suenaTitulo.append(el('span', 'recital-suena-sello', ARMADO.suenaSello), el('span', '', catalogo.temas[i]!.titulo));
+    p.cabina.correr(
+      () => (Date.now() - sonandoDesde) / (SEGUNDOS_POR_TEMA * 1000),
+      () => Math.min((Date.now() - sonandoDesde) / 1000, SEGUNDOS_POR_TEMA),
+    );
+  } else {
+    p.suenaTitulo.textContent = ARMADO.pieQuieto;
+    p.cabina.frenar();
   }
+  // "Pará" guarda su lugar aunque nada suene: el pie no cambia de ancho ni de alto.
+  p.parar.disabled = i === undefined;
+  const n = cuantos(armado);
   const faltan = MIN_TEMAS_RECITAL - armado.lista.length;
   const { segundos } = duracion(armado, catalogo.temas);
-  const partesDeLinea = [
-    cuantos(armado) > 0 ? ARMADO.cuenta(cuantos(armado), formatoDuracion(segundos)) : '',
-    faltan > 0 ? ARMADO.faltan(faltan) : !hayLugar(armado) ? ARMADO.lleno : '',
-  ].filter(Boolean);
-  pie.append(el('p', 'recital-faltan', partesDeLinea.join(' · ')));
-  const cerrar = boton('primario', ARMADO.cerrar, () => irALaNoche());
-  cerrar.dataset.clave = 'cerrar';
-  cerrar.disabled = !sePuedeCerrar(armado);
-  pie.append(cerrar);
+  p.faltan.textContent = [n > 0 ? formatoDuracion(segundos) : '', faltan > 0 ? ARMADO.faltan(faltan) : !hayLugar(armado) ? ARMADO.lleno : '']
+    .filter(Boolean)
+    .join(' · ');
+  // La cuenta de ruedas: al sumar un tema la gira quien lo suma, cuando llega el papelito.
+  if (!cuentaEnVuelo) rodarContador(p.contador, n);
+  p.cuentaRotulo.textContent = ARMADO.temas(n);
+  p.cuentaLector.textContent = ARMADO.cuenta(n, formatoDuracion(segundos));
+  p.cerrar.disabled = !sePuedeCerrar(armado);
 }
 
 // ------------------------------------------------------------------ la noche
@@ -810,14 +1080,35 @@ function irALaNoche(): void {
   enfocarTitulo(zonaNoche);
 }
 
+/**
+ * La noche: la hoja terminada, que es lo que se comparte.
+ *
+ * **Se cierra en dos tiempos** (ronda de pulida, 2026-11-21): primero la lista se escribe sola,
+ * renglón por renglón, con el fibrón; cuando termina, entra el pie con la hoja que asoma y
+ * "Compartí". Un toque en cualquier lado lo adelanta: todo queda escrito y a la vista. Con
+ * movimiento reducido no hay primer tiempo.
+ */
 function pintarNoche(): void {
   if (!lugar) return;
   zonaNoche.replaceChildren();
+  zonaNoche.classList.add('recital-noche--escribe');
+  const orden = enOrden(armado);
+  zonaNoche.style.setProperty('--renglones', String(orden.length));
+  // Un renglón atrás del otro, con un solo fibrón a la vista. Hasta doce van al paso; con más,
+  // se apura el paso para que la lista entera se escriba en lo mismo que doce.
+  zonaNoche.style.setProperty('--ritmo', String(Math.min(1, 12 / orden.length)));
   if (ajena) zonaNoche.append(el('p', 'recital-ajena', NOCHE.ajena));
-  // El botón de escuchar va arriba de la hoja: con veinte temas la hoja es larga, y lo primero
-  // que se hace con una lista cerrada es oírla. Se arma más abajo, cuando existen los renglones.
-  const controles = el('div', 'recital-noche-controles');
-  zonaNoche.append(controles);
+
+  // La cabina va arriba de la hoja: con veinte temas la hoja es larga, y lo primero que se hace
+  // con una lista cerrada es oírla. El casete anda mientras suena y la cinta pasa de un carrete
+  // al otro con la lista entera.
+  const cabinaCaja = el('div', 'recital-cabina');
+  const casete = armarCasete();
+  casete.classList.add('recital-casete');
+  const cabina = armarCabina(casete);
+  const lado = el('div', 'recital-cabina-lado');
+  cabinaCaja.append(casete, lado);
+  zonaNoche.append(cabinaCaja, el('p', 'recital-como-suena', NOCHE.comoSuena));
 
   const hoja = el('div', 'recital-hoja recital-hoja--noche');
   hoja.append(el('h2', 'recital-noche-titulo', NOCHE.titulo), el('p', 'recital-noche-lugar', lugarEnUnaLinea(lugar)));
@@ -827,7 +1118,8 @@ function pintarNoche(): void {
     tira.forEach((i) => {
       const t = catalogo.temas[i]!;
       const li = el('li', `recital-renglon ${claseDisco(t.disco)}`);
-      li.append(el('span', 'recital-tema', t.titulo), el('span', 'recital-disco', tituloDeDisco.get(t.disco) ?? ''));
+      li.style.setProperty('--orden', String(renglones.length));
+      li.append(escrito(t.titulo), el('span', 'recital-disco', tituloDeDisco.get(t.disco) ?? ''));
       if (!conAudio.has(t.slug)) li.append(el('span', 'recital-sin-recorte', ARMADO.sinRecorte));
       renglones.push(li);
       destino.append(li);
@@ -836,7 +1128,7 @@ function pintarNoche(): void {
   pintarTira(armado.lista, ol);
   hoja.append(ol);
   if (armado.bises.length > 0) {
-    hoja.append(el('p', 'recital-rotulo recital-rotulo--bis', ARMADO.rotuloBises));
+    hoja.append(corte());
     const olBis = el('ol', 'recital-lista recital-lista--noche');
     olBis.start = armado.lista.length + 1;
     pintarTira(armado.bises, olBis);
@@ -847,7 +1139,6 @@ function pintarNoche(): void {
   zonaNoche.append(hoja);
 
   // Escuchar la noche: los temas con recorte, en orden, marcando el renglón que suena.
-  const orden = enOrden(armado);
   const conRecorte = orden.map((i, k) => ({ i, k })).filter(({ i }) => conAudio.has(catalogo.temas[i]!.slug));
   const estado = el('p', 'recital-estado');
   estado.setAttribute('aria-live', 'polite');
@@ -857,10 +1148,16 @@ function pintarNoche(): void {
       return;
     }
     escuchar.textContent = NOCHE.parar;
+    let va = 0;
+    let desde = Date.now();
+    const pasado = (): number => Math.min((Date.now() - desde) / 1000, SEGUNDOS_POR_TEMA);
     rocola.tocarLista(
       conRecorte.map(({ i }) => catalogo.temas[i]!.slug),
       (pos) => {
         const k = conRecorte[pos]!.k;
+        va = pos;
+        desde = Date.now();
+        cabina.correr(() => (va + pasado() / SEGUNDOS_POR_TEMA) / conRecorte.length, pasado);
         renglones.forEach((r, j) => r.classList.toggle('recital-renglon--sonando', j === k));
         // El sello "SUENA" se estampa en el renglón: el estado no es solo el subrayado.
         zonaNoche.querySelector('.recital-renglon .recital-suena-sello')?.remove();
@@ -869,6 +1166,7 @@ function pintarNoche(): void {
         estado.textContent = NOCHE.sonando(k + 1, orden.length);
       },
       (completa) => {
+        cabina.frenar();
         renglones.forEach((r) => r.classList.remove('recital-renglon--sonando'));
         zonaNoche.querySelector('.recital-renglon .recital-suena-sello')?.remove();
         escuchar.textContent = NOCHE.escuchar;
@@ -878,30 +1176,43 @@ function pintarNoche(): void {
       },
     );
   });
+  escuchar.dataset.clave = 'escuchar-noche';
   escuchar.disabled = conRecorte.length === 0;
-  controles.append(escuchar, estado, el('p', 'recital-como-suena', NOCHE.comoSuena));
+  lado.append(escuchar, estado);
 
-  // Compartir: la hoja como imagen y la dirección para abrirla.
+  // El pie, igual que en los otros juegos: la hoja que asoma, "Compartí", lo que compartir
+  // tenga para decir, y la otra vuelta. La hoja es la misma imagen que se comparte.
+  const pie = el('div', 'pie-resultado');
+  const asoma = el('div', 'tarjeta-asoma');
+  asoma.setAttribute('aria-hidden', 'true');
   let imagen: File | null = null;
   const { boton: compartir, salida } = botonCompartir(
     { compartir: NOCHE.compartir, copiado: NOCHE.copiado, aManoTitulo: NOCHE.aManoTitulo },
     () => ({ texto: (ajena ? NOCHE.paraReenviar : NOCHE.paraCompartir)(lugarEnUnaLinea(lugar!)), url: linkDeLaNoche(), archivo: imagen }),
   );
-  zonaNoche.append(compartir, salida);
+  asoma.addEventListener('click', () => compartir.click());
+  pie.append(asoma, compartir, salida);
   // La hoja también se baja, para el que no tiene menú de compartir (una compu, casi siempre).
   // Entra recién cuando la imagen existe: `.secundario` pisa el `hidden` del navegador.
   const bajar = el('a', 'secundario compartir-bajar', NOCHE.bajar);
-  void armarImagen().then((f) => {
+  // Se dibuja un momento después: pintar la hoja en el mismo cuadro del toque de "SALÍ A TOCAR"
+  // lo alargaba justo cuando la lista empieza a escribirse.
+  const dibujada = new Promise<File | null>((listo) => window.setTimeout(() => void armarImagen().then(listo), 500));
+  void dibujada.then((f) => {
     imagen = f;
-    if (!f || !salida.isConnected) return;
-    bajar.href = URL.createObjectURL(f);
+    if (!f || !salida.isConnected) return asoma.remove();
+    const url = URL.createObjectURL(f);
+    const foto = el('img', 'jugo-pega');
+    foto.alt = '';
+    foto.src = url;
+    asoma.append(foto);
+    bajar.href = url;
     bajar.download = f.name;
-    bajar.addEventListener('click', () => setTimeout(() => URL.revokeObjectURL(bajar.href), 60_000), { once: true });
     salida.after(bajar);
   });
 
   if (ajena) {
-    zonaNoche.append(
+    pie.append(
       boton('secundario', NOCHE.laTuya, () => {
         armado = VACIO;
         lugar = null;
@@ -909,8 +1220,7 @@ function pintarNoche(): void {
       }),
     );
   } else {
-    zonaNoche.append(
-      boton('secundario', NOCHE.cambiar, () => irAlArmado()),
+    pie.append(
       boton('secundario', NOCHE.otra, () => {
         armado = VACIO;
         guardarPartida();
@@ -918,12 +1228,24 @@ function pintarNoche(): void {
       }),
     );
   }
-  const deVerdad = el('a', 'secundario', NOCHE.deVerdad);
+  zonaNoche.append(pie);
+
+  // Las salidas, chicas y al final: volver al fichín, retocar la lista y las listas de verdad.
+  const salidas = el('p', 'salida-resultado recital-salidas');
+  const volver = el('a', 'volver', `← ${NOCHE.volver}`);
+  volver.href = '/';
+  salidas.append(volver);
+  if (!ajena) salidas.append(boton('recital-cambiar', NOCHE.cambiar, () => irAlArmado()));
+  const deVerdad = el('a', 'recital-cambiar', NOCHE.deVerdad);
   deVerdad.href = '/redondopedia/en-vivo/';
-  zonaNoche.append(deVerdad);
+  salidas.append(deVerdad);
+  zonaNoche.append(salidas);
 }
 
-/** La hoja que sale del sitio: la misma lámina de "Ponelos en fila", con la tinta de *Oktubre*. */
+// Un toque adelanta el cierre: la lista queda escrita y el pie, a la vista.
+zonaNoche.addEventListener('click', () => zonaNoche.classList.remove('recital-noche--escribe'), true);
+
+/** La hoja que sale del sitio: la planta de la lámina de "Ponelos en fila", pintada como la hoja de papel de la pantalla. */
 async function armarImagen(): Promise<File | null> {
   if (!lugar) return null;
   try {
@@ -940,6 +1262,7 @@ async function armarImagen(): Promise<File | null> {
       sitio: location.host + location.pathname,
       tintaJuego: '--disco-oktubre-tinta',
       renglonPorFicha: true,
+      hoja: true,
     });
     return blob ? new File([blob], `fichin-ricotero-arma-tu-recital-${lugar.slug}.png`, { type: 'image/png' }) : null;
   } catch {

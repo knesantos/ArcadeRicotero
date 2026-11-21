@@ -13,6 +13,8 @@
  *   --sin-dedo            En las ventanas angostas el navegador se presenta como un teléfono
  *                         (pantalla táctil, sin mouse): así no sale lo que el sitio muestra solo
  *                         con puntero fino. Con esto, se presenta como una compu angosta.
+ *   --peor                En "Más o menos" y en "Armá tu recital": el peor dato (lo más largo
+ *                         que el juego puede mostrar), para mirarlo en los diez tamaños.
  *   --entero              Hace de cuenta que todos los temas tienen el archivo entero (`D-22`),
  *                         para mirar cómo queda la revelación con el reproductor del tema.
  *
@@ -2131,6 +2133,312 @@ async function masOMenos(ctx) {
   await foto('resultado-cero');
 }
 
+/**
+ * "Armá tu recital": la portada con la hoja en blanco, la boletería (las cuatro pestañas), la
+ * entrada que viaja, el armado (un tema que se escribe, el papelito a la cuenta, mover, bises,
+ * el casete del pie), el cierre en dos tiempos, la noche sonando, la tarjeta, y la vuelta a la
+ * portada con la lista guardada.
+ *
+ * Con `--peor`, arma el peor caso: el lugar de nombre más largo y los veinticinco temas de
+ * título más largo, con los bises llenos. Es lo que se mira en los diez tamaños.
+ */
+async function armaTuRecital(ctx) {
+  const { pagina, foto, tira, rafaga, quieto, ancho } = ctx;
+  const peor = bandera('--peor');
+  const url = `${base}/juegos/arma-tu-recital/`;
+  const prefijo = `${ancho}${quieto ? '-quieto' : ''}`;
+  const pausa = (ms) => ctx.espera(quieto ? Math.min(ms, 200) : ms);
+
+  // Sin menú del sistema para compartir: en el navegador de las capturas se queda esperando.
+  await pagina.evaluateOnNewDocument(() => {
+    try {
+      delete Navigator.prototype.share;
+      delete Navigator.prototype.canShare;
+    } catch {
+      /* queda el del navegador */
+    }
+  });
+  /** Un toque que no desplaza la hoja: el pie va pegado abajo y un clic "de verdad" la corre. */
+  const tocar = (selector) => pagina.evaluate((s) => document.querySelector(s)?.click(), selector);
+  const arriba = async () => {
+    await pagina.evaluate(() => window.scrollTo(0, 0));
+    await ctx.espera(120);
+  };
+  const medidas = () =>
+    pagina.evaluate(() => {
+      const visible = [...document.querySelectorAll('main > section.pantalla')].find((s) => !s.hidden);
+      const chicos = [...(visible?.querySelectorAll('button, a[href], input') ?? [])]
+        .filter((n) => n.offsetParent !== null && getComputedStyle(n).visibility !== 'hidden')
+        .map((n) => ({ n, r: n.getBoundingClientRect() }))
+        .filter(({ r }) => r.width > 0 && (r.height < 47.5 || r.width < 47.5))
+        .map(({ n, r }) => `${(n.textContent ?? '').trim().slice(0, 18) || n.className}:${Math.round(r.width)}x${Math.round(r.height)}`);
+      return {
+        pantalla: visible?.id,
+        alto: document.documentElement.scrollHeight,
+        desborda: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        chicos: [...new Set(chicos)].slice(0, 6),
+      };
+    });
+  const anotar = async (que) => console.log(`   (${que}: ${JSON.stringify(await medidas())})`);
+
+  await pagina.goto(url, { waitUntil: 'networkidle0' });
+  await pagina.evaluate(() => {
+    try {
+      for (const k of Object.keys(localStorage)) if (k.startsWith('fichin.recital.')) localStorage.removeItem(k);
+    } catch {
+      /* sin almacenamiento */
+    }
+  });
+
+  // ---- el peor caso: se entra por la dirección, que es como llega una lista compartida
+  if (peor) {
+    const armado = await pagina.evaluate(() => {
+      const c = JSON.parse(document.getElementById('catalogo').textContent);
+      const porLargo = c.temas.map((t, i) => ({ i, n: t.titulo.length })).sort((a, b) => b.n - a.n).map((t) => t.i);
+      const lugar = [...c.lugares].sort((a, b) => (b.nombre + b.ciudad).length - (a.nombre + a.ciudad).length)[0];
+      return { lugar, temas: porLargo };
+    });
+    // Se arma a mano, tocando: así el peor caso pasa también por el armado.
+    await pagina.click('#empezar');
+    await pagina.waitForSelector('#eleccion:not([hidden]) .recital-entrada', { timeout: 8000 });
+    await anotar('peor, la boletería');
+    if (armado.lugar.tipo === 'teatro') await tocar('[data-clave="pestana-teatro"]');
+    await ctx.espera(200);
+    await tocar(`[data-clave="lugar-${armado.lugar.slug}"]`);
+    await pagina.waitForSelector('#tablero:not([hidden]) .recital-tema-cajon', { timeout: 8000 });
+    await tocar('[data-clave="sonido"]');
+    for (const i of armado.temas) {
+      const pudo = await pagina.evaluate((i) => {
+        const b = document.querySelector(`[data-clave="tema-${i}"]`);
+        if (!b || b.disabled) return false;
+        b.click();
+        return true;
+      }, i);
+      if (!pudo) break;
+      await ctx.espera(30);
+    }
+    // Los últimos de la lista bajan a los bises hasta llenarlos.
+    for (let k = 0; k < 8; k++) {
+      const pudo = await pagina.evaluate(() => {
+        const ultimo = [...document.querySelectorAll('.recital-hoja .recital-lista')][0]?.lastElementChild?.querySelector('.recital-renglon-boton');
+        if (!ultimo) return false;
+        ultimo.click();
+        const alBis = document.querySelector('.recital-accion--tira');
+        const antes = document.querySelectorAll('.recital-hoja .recital-renglon').length;
+        alBis?.click();
+        document.querySelector('.recital-renglon--marcado .recital-renglon-boton')?.click();
+        return antes > 0;
+      });
+      if (!pudo) break;
+      await ctx.espera(40);
+    }
+    await ctx.espera(500);
+    await arriba();
+    await foto('peor-armado');
+    await foto('peor-armado-entera', { entera: true });
+    await anotar('peor, el armado');
+    console.log(
+      `   (peor, el pie: ${JSON.stringify(
+        await pagina.evaluate(() => {
+          const pie = document.querySelector('.recital-pie')?.getBoundingClientRect();
+          const cerrar = document.querySelector('[data-clave="cerrar"]')?.getBoundingClientRect();
+          return { pie: Math.round(pie?.height ?? 0), cerrarAbajo: Math.round(cerrar?.bottom ?? 0), ventana: innerHeight, cuenta: document.querySelector('.recital-cuenta .solo-lector')?.textContent };
+        }),
+      )})`,
+    );
+    await tocar('[data-clave="cerrar"]');
+    await pagina.waitForSelector('#resultado:not([hidden]) .recital-hoja--noche', { timeout: 8000 });
+    await pagina.click('#resultado .recital-noche-titulo');
+    await pagina.waitForSelector('#resultado .tarjeta-asoma img', { timeout: 15000 }).catch(() => console.log('   (¡la hoja no asomó!)'));
+    await ctx.espera(600);
+    await arriba();
+    await foto('peor-noche');
+    await foto('peor-noche-entera', { entera: true });
+    await anotar('peor, la noche');
+    return;
+  }
+
+  // ---- la portada: la hoja en blanco se escribe
+  await tira('portada-entra', () => pagina.reload({ waitUntil: 'domcontentloaded' }), { ms: 2400, lento: 0.25 });
+  await ctx.espera(quieto ? 300 : 1500);
+  await foto('portada');
+  await foto('portada-entera', { entera: true });
+  await anotar('portada');
+  console.log(
+    `   (portada, el botón: ${JSON.stringify(await pagina.evaluate(() => ({ abajo: Math.round(document.getElementById('empezar').getBoundingClientRect().bottom), ventana: innerHeight })))})`,
+  );
+
+  // ---- dónde tocan: las cuatro pestañas
+  await pagina.click('#empezar');
+  await pagina.waitForSelector('#eleccion:not([hidden]) .recital-entrada', { timeout: 8000 });
+  await pausa(900);
+  await foto('lugar-estadios');
+  await foto('lugar-estadios-entera', { entera: true });
+  await anotar('estadios');
+  await tocar('[data-clave="pestana-teatro"]');
+  await pausa(700);
+  await foto('lugar-teatros-entera', { entera: true });
+  await anotar('teatros');
+  await tocar('[data-clave="pestana-descampado"]');
+  await pausa(300);
+  await foto('lugar-descampado');
+  await tocar('[data-clave="pestana-otro"]');
+  await pausa(300);
+  await foto('lugar-otro');
+  await tocar('[data-clave="pestana-estadio"]');
+  await pausa(700);
+  await arriba();
+
+  // ---- la entrada viaja a la cabecera del armado
+  await rafaga('la-entrada-viaja', () => tocar('[data-clave="lugar-obras"], .recital-talonario .recital-entrada'), { desde: 0, hasta: 900, cada: 4, tope: 12 });
+  await pagina.waitForSelector('#tablero:not([hidden]) .recital-tema-cajon', { timeout: 8000 });
+  await pausa(700);
+  await foto('armado-vacio');
+  await foto('armado-vacio-entera', { entera: true });
+  await anotar('armado vacío');
+
+  // ---- el primer tema: la hoja está a la vista y el renglón se escribe
+  const libres = () => pagina.$$eval('#tablero .recital-tema-cajon:not(:disabled)', (bs) => bs.map((b) => b.dataset.clave));
+  const sumar = async (k = 0) => {
+    const claves = await libres();
+    const clave = claves[Math.min(k, claves.length - 1)];
+    await tocar(`[data-clave="${clave}"]`);
+    return clave;
+  };
+  if (await pagina.$('#tablero .recital-hoja')) {
+    await tira('renglon-se-escribe', () => sumar(0), { ms: 420, sobre: '#tablero .recital-hoja' });
+  } else await sumar(0);
+  await pausa(600);
+  await foto('un-tema-sonando');
+  // El casete del pie, girando mientras suena (a velocidad real: lo mueve un reloj).
+  await tira('casete-del-pie', async () => {}, { ms: 1000, lento: 1, sobre: '#tablero .recital-pie' });
+  await anotar('un tema');
+
+  // ---- con el cajón en pantalla: el papelito vuela a la cuenta y la rueda gira
+  await pagina.evaluate(() => document.querySelector('#tablero .recital-temas')?.scrollIntoView({ block: 'start' }));
+  await ctx.espera(300);
+  await rafaga('papelito-a-la-cuenta', () => sumar(2), { desde: 0, hasta: 900, cada: 4, tope: 12 });
+  await pausa(400);
+  await foto('cajon-eligiendo');
+  for (const k of [3, 5, 8, 9, 12]) {
+    await sumar(k);
+    await pausa(260);
+  }
+  await pausa(600);
+  await foto('cajon-siete-temas');
+  // "Pará": el casete frena con inercia. (Con la hoja arriba de todo: el recorte de la tira se
+  // mide en la hoja, y con la página corrida saca otra cosa.)
+  await arriba();
+  await tira('casete-frena', () => tocar('[data-clave="pie-parar"]'), { ms: 1100, lento: 1, sobre: '#tablero .recital-pie' });
+  await pausa(300);
+
+  // ---- la hoja: marcar, mover y mandar a los bises
+  await arriba();
+  await foto('hoja-siete-temas');
+  await pagina.evaluate(() => document.querySelectorAll('#tablero .recital-renglon-boton')[2]?.click());
+  await pausa(400);
+  await foto('renglon-marcado');
+  await rafaga('renglon-sube', () => tocar('.recital-accion--subir'), { desde: 0, hasta: 500, cada: 3, tope: 12, sobre: '#tablero .recital-hoja' });
+  await pausa(300);
+  await pagina.evaluate(() => document.querySelector('.recital-renglon--marcado .recital-renglon-boton')?.click());
+  for (let k = 0; k < 2; k++) {
+    await pagina.evaluate(() => {
+      const lista = document.querySelector('#tablero .recital-hoja .recital-lista');
+      lista?.lastElementChild?.querySelector('.recital-renglon-boton')?.click();
+      document.querySelector('.recital-accion--tira')?.click();
+      document.querySelector('.recital-renglon--marcado .recital-renglon-boton')?.click();
+    });
+    await pausa(300);
+  }
+  await arriba();
+  await foto('hoja-con-bises');
+  await foto('armado-entera', { entera: true });
+  await anotar('armado con bises');
+
+  // ---- buscar y filtrar por disco
+  await pagina.type('#tablero .recital-buscador', 'ji');
+  await pausa(400);
+  await pagina.evaluate(() => document.querySelector('#tablero .recital-buscador')?.scrollIntoView({ block: 'start' }));
+  await ctx.espera(200);
+  await foto('buscando');
+  await pagina.evaluate(() => {
+    const b = document.querySelector('#tablero .recital-buscador');
+    b.value = '';
+    b.dispatchEvent(new Event('input', { bubbles: true }));
+    document.querySelectorAll('#tablero .recital-disco-boton')[2]?.click();
+  });
+  await pausa(400);
+  await foto('un-disco');
+  await pagina.evaluate(() => document.querySelector('#tablero .recital-disco-boton')?.click());
+  await arriba();
+
+  // ---- el cierre en dos tiempos: la lista se escribe sola y después entra el pie
+  await rafaga('la-noche-se-escribe', () => tocar('[data-clave="cerrar"]'), { desde: 0, hasta: 2400, cada: 9, tope: 12 });
+  await pagina.waitForSelector('#resultado:not([hidden]) .recital-hoja--noche', { timeout: 8000 });
+  await pausa(1800);
+  await pagina.waitForSelector('#resultado .tarjeta-asoma img', { timeout: 15000 }).catch(() => console.log('   (¡la hoja no asomó!)'));
+  await pausa(600);
+  await foto('noche');
+  await foto('noche-entera', { entera: true });
+  await anotar('la noche');
+
+  // ---- suena la lista: el casete de la cabina y el sello en el renglón
+  await tocar('[data-clave="escuchar-noche"]');
+  await pausa(1500);
+  await arriba();
+  await foto('noche-sonando');
+  await tira('casete-de-la-noche', async () => {}, { ms: 1000, lento: 1, sobre: '#resultado .recital-cabina' });
+  await tira('casete-de-la-noche-frena', () => tocar('[data-clave="escuchar-noche"]'), { ms: 1100, lento: 1, sobre: '#resultado .recital-cabina' });
+  await pausa(300);
+
+  // ---- la tarjeta, tal cual se comparte
+  const tarjeta = await pagina.evaluate(async () => {
+    const img = document.querySelector('#resultado .tarjeta-asoma img');
+    if (!img) return null;
+    const bytes = new Uint8Array(await (await fetch(img.src)).arrayBuffer());
+    let crudo = '';
+    for (const b of bytes) crudo += String.fromCharCode(b);
+    return btoa(crudo);
+  });
+  if (tarjeta) {
+    const destino = join(salida, `${prefijo}-tarjeta.png`);
+    await sharp(Buffer.from(tarjeta, 'base64')).png().toFile(destino);
+    console.log('tarjeta', destino);
+  } else console.log('   (no hubo hoja que mirar)');
+  await pagina.$eval('#resultado .pie-resultado .primario', (b) => b.click());
+  await ctx.espera(600);
+  await pagina.$eval('#resultado .pie-resultado', (n) => n.scrollIntoView({ block: 'center' }));
+  await ctx.espera(200);
+  await foto('compartido');
+
+  // ---- la lista que te pasaron: se abre por la dirección, en otra pestaña sin nada guardado
+  const direccion = pagina.url();
+  await pagina.evaluate(() => {
+    try {
+      localStorage.removeItem('fichin.recital.partida');
+    } catch {
+      /* sin almacenamiento */
+    }
+  });
+  await tira('lista-ajena-se-escribe', () => pagina.goto(direccion, { waitUntil: 'domcontentloaded' }), { ms: 1600, lento: 0.5 });
+  await pausa(1500);
+  await foto('lista-ajena');
+
+  // ---- y la portada con una lista a medio armar: la hoja ya no está en blanco
+  await pagina.evaluate(() => document.querySelector('#resultado .pie-resultado button.secundario')?.click());
+  await pagina.waitForSelector('#eleccion:not([hidden]) .recital-entrada', { timeout: 8000 });
+  await tocar('.recital-talonario .recital-entrada');
+  await pagina.waitForSelector('#tablero:not([hidden]) .recital-tema-cajon', { timeout: 8000 });
+  await tocar('[data-clave="sonido"]');
+  for (const k of [0, 1, 2, 3, 4, 5]) {
+    await sumar(k);
+    await ctx.espera(60);
+  }
+  await pagina.goto(url, { waitUntil: 'networkidle0' });
+  await pausa(2600);
+  await foto('portada-con-lista-guardada');
+}
+
 /** Cualquier otra ruta: la portada, y lo que aparece al tocar el botón de empezar. */
 async function generico(ctx, ruta) {
   const { pagina, foto, tira } = ctx;
@@ -2176,6 +2484,7 @@ const RECORRIDOS = {
   'preguntas-ricoteras': preguntasRicoteras,
   'adivinar-la-tapa': adivinarLaTapa,
   'mas-o-menos': masOMenos,
+  'arma-tu-recital': armaTuRecital,
 };
 
 // ---------------------------------------------------------------- correr

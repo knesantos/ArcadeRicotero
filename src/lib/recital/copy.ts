@@ -32,6 +32,18 @@ export const PANTALLA_0 = {
     'El recital que te gustaría, esta noche. Elegí dónde —un estadio, un teatro, un descampado o donde digas—, ' +
     'poné los temas en orden y guardá algunos para los bises. Suena un pedazo de cada uno. No hay lista correcta.',
   boton: 'Elegí dónde',
+  /**
+   * La hoja en blanco de la portada (ronda de pulida, 2026-11-21): el mecanismo, escrito en la
+   * lista misma. Son las mismas cuatro cosas que dice `subtitulo`, una por renglón; el párrafo
+   * queda para el lector de pantalla y para la descripción de la página.
+   */
+  pasos: ['Elegí dónde tocan', 'Poné los temas en orden', 'Guardá algunos para los bises'],
+  /** El renglón de los bises de esa hoja. Registro 3. */
+  pasoBis: 'Suena un pedazo de cada uno',
+  /** El sello de la hoja. Registro 3: la regla del juego, seca (`BR-22`). */
+  sello: 'No hay lista correcta',
+  /** Lo que la hoja de la portada dice cuando quedó una lista a medio armar: cuántos más hay. */
+  yMas: (n: number) => (n === 1 ? 'y uno más' : `y ${n} más`),
 } as const;
 
 export const LUGAR = {
@@ -61,6 +73,12 @@ export const LUGAR = {
   ciudad: 'La ciudad, si querés',
   elegirOtro: 'Elegí ese lugar',
   faltaNombre: 'Escribí el lugar.',
+  /** Lo que dice cada entrada, arriba del nombre. Registro 3. */
+  entrada: 'Esta noche',
+  /** El nombre accesible de una entrada: el lugar y la ciudad, y qué hace el toque. */
+  entradaAria: (nombre: string, ciudad: string) => `${nombre}, ${ciudad}. Elegilo.`,
+  /** Cuántos lugares junta una ciudad, en el talón del grupo. */
+  cuantos: (n: number) => `${n} lugares`,
 } as const;
 
 export const ARMADO = {
@@ -106,6 +124,10 @@ export const ARMADO = {
   sortear: 'Sorteá uno',
   silenciar: 'Silenciá',
   queSuene: 'Que suene',
+  /** El pie, cuando nada suena: qué hace un toque. Registro 3. */
+  pieQuieto: 'Tocá un tema y suena.',
+  /** La palabra debajo del contador de ruedas del pie. */
+  temas: (n: number) => (n === 1 ? 'tema' : 'temas'),
   /** El botón que cierra la lista. Registro 1: un imperativo físico. */
   cerrar: 'SALÍ A TOCAR',
   /** La región viva: lo que pasa, dicho seco. Dice en qué tira quedó (`FIND-164`). */

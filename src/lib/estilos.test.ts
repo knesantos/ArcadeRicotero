@@ -961,7 +961,7 @@ const ISLAS: Readonly<Record<string, Tablero | SinTablero>> = {
   'partida-recital.ts': {
     juego: 'D-72, armá tu recital',
     fuente: leer('src/scripts/partida-recital.ts'),
-    estados: ['.recital-renglon--marcado', '.recital-renglon--sonando', '.recital-renglon--entra'],
+    estados: ['.recital-renglon--marcado', '.recital-renglon--sonando', '.recital-renglon--entra', '.recital-pie--suena', '.recital-noche--escribe'],
   },
   // `D-72`: la página "En vivo" de la Redondopedia, que vive en `sitio.css` como el resto de la
   // Redondopedia. Su único estado es el tema que suena.
