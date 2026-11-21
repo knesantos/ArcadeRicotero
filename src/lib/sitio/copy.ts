@@ -278,7 +278,10 @@ export const JUEGOS: readonly Casete[] = [
   },
   {
     titulo: 'Preguntas ricoteras',
-    baja: 'Ocho preguntas y ninguna piadosa. Historia, discos, letras y mitología, en dos minutos.',
+    // `T-535`: decía "Ocho preguntas y ninguna piadosa […] en dos minutos". Desde `BR-19` la
+    // partida no son ocho: es el banco entero, hasta que se apagan las tres vidas. La promesa
+    // dice lo que hay, que es además lo que dice la portada del juego (`quiz/copy.ts`, A2').
+    baja: 'Tres vidas y ninguna pregunta piadosa. Historia, discos, letras y mitología: arranca fácil y dura lo que aguantes.',
     variante: 'marca',
     // *Oktubre* entero: es el disco que viste la portada y la sección de marca (`D-19`), y el
     // del mes en que se cambió (`D-49`).
@@ -543,6 +546,19 @@ export const CARATULA = {
   /* "Los otros casetes" decía algo falso: la lista trae también el de la página, marcado
      (`UX-35` §6.5). */
   lista: 'Los casetes',
+} as const;
+
+/**
+ * La puerta del que sacó poco (`T-535`, `lib/puerta.ts`).
+ *
+ * Un resultado bajo no puede ser un callejón: al lado de la línea que canta va un enlace a
+ * algo concreto. Registro 1: imperativo voseado, ocho palabras como techo, sin punto final
+ * porque es un enlace. El primero lleva al artículo del disco de lo que se falló; el segundo,
+ * al juego que se juega mirando, cuando lo que se falló no tiene disco.
+ */
+export const PUERTAS = {
+  alDisco: 'Entrá al disco que se te escapó',
+  aLasTapas: 'Probá con las tapas',
 } as const;
 
 export const REDONDOPEDIA = {
