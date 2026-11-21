@@ -64,6 +64,12 @@ export interface ImagenCruda {
   readonly edicion: string;
   readonly auditoria: Auditoria;
   readonly credito: Credito;
+  /**
+   * Qué se ve en el recorte, para quien no lo ve (`CTR-05` v2, `T-534`). Es el `alt` de la
+   * imagen mientras se juega: no nombra el disco ni usa una palabra de su título. Obligatoria
+   * en un ítem `listo`; un borrador puede no tenerla todavía.
+   */
+  readonly descripcion?: string;
 }
 
 export interface OpcionCruda {
@@ -111,6 +117,8 @@ export interface Imagen {
   readonly encuadre: Encuadre;
   readonly edicion: string;
   readonly credito: Credito;
+  /** El `alt` del recorte mientras se juega. Nunca nombra el disco. */
+  readonly descripcion: string;
 }
 
 /** Lo que efectivamente viaja al navegador. Sin notas internas. */
@@ -147,12 +155,73 @@ export function aPayload(item: ItemCrudo): Item {
       encuadre: item.imagen.encuadre,
       edicion: item.imagen.edicion,
       credito: item.imagen.credito,
+      descripcion: item.imagen.descripcion ?? '',
     },
     opciones: item.opciones.map((o) => ({ texto: o.texto, correcta: o.correcta })),
     ...(item.explicacion ? { explicacion: item.explicacion } : {}),
     ...(item.rotulo ? { rotulo: item.rotulo } : {}),
   };
 }
+
+/** Los diez títulos, para que ninguna descripción nombre un disco, sea o no opción del ítem. */
+export const TITULOS_DE_DISCO: readonly string[] = [
+  'Gulp!',
+  'Oktubre',
+  'Un baión para el ojo idiota',
+  '¡Bang! ¡Bang!... Estás liquidado',
+  'La mosca y la sopa',
+  'Lobo suelto',
+  'Cordero atado',
+  'Luzbelito',
+  'Último bondi a Finisterre',
+  'Momo Sampler',
+];
+
+/** Palabras de un título que no delatan nada: artículos y preposiciones. */
+const VACIAS = new Set(['a', 'el', 'la', 'las', 'los', 'para', 'un', 'una', 'y']);
+
+/** Minúsculas, sin tildes y sin signos: así "¡Bang!" y "bang" son la misma palabra. */
+function palabras(texto: string): string[] {
+  return texto
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .split(/[^a-z0-9ñ]+/)
+    .filter(Boolean);
+}
+
+/**
+ * Lo que una descripción del recorte regala (`T-534`). Devuelve la lista de fugas; vacía si
+ * no hay ninguna.
+ *
+ * Dos reglas, porque hay dos maneras de contar la respuesta:
+ *
+ *  1. **El título entero de cualquiera de los diez discos**, esté o no entre las opciones.
+ *  2. **Una palabra con peso del título de alguna de las cuatro opciones del ítem** —"lobo",
+ *     "sopa", "bondi"—: describir un hocico como "de lobo" es elegir por el jugador. Se
+ *     compara palabra entera: "ojos" no es "ojo", pero "ojo" sí, cuando el baión es opción.
+ *
+ * Lo que esto **no** puede ver: una descripción que cuenta la respuesta sin usar sus palabras
+ * ("un animal que aúlla"). Eso lo audita quien lee, con esta regla como piso.
+ */
+export function fugasDeDescripcion(descripcion: string, opciones: readonly string[]): readonly string[] {
+  const dichas = palabras(descripcion);
+  const corrida = ` ${dichas.join(' ')} `;
+  const fugas: string[] = [];
+  for (const titulo of TITULOS_DE_DISCO) {
+    if (corrida.includes(` ${palabras(titulo).join(' ')} `)) fugas.push(`el titulo "${titulo}"`);
+  }
+  const vistas = new Set(dichas);
+  for (const opcion of opciones) {
+    for (const p of palabras(opcion)) {
+      if (!VACIAS.has(p) && vistas.has(p)) fugas.push(`"${p}", de "${opcion}"`);
+    }
+  }
+  return [...new Set(fugas)];
+}
+
+/** Lo mínimo para que una descripción describa algo. El schema fija el mismo piso. */
+export const DESCRIPCION_MIN = 30;
 
 /**
  * Invariantes que el código necesita. Fallan ruidoso en build, no en la cara del jugador.
@@ -189,6 +258,16 @@ export function verificarInvariantes(items: readonly ItemCrudo[]): void {
     // vuelve honesta a una reedicion. Sin ella, el jugador no sabe que esta mirando.
     if (!it.imagen.edicion?.trim()) {
       throw new BancoInvalido(`${it.id}: la imagen no declara que edicion es`);
+    }
+    // `CTR-05` v2 (`T-534`): el recorte se describe, y la descripcion no cuenta la respuesta.
+    // Va aca y no solo en el schema: `cargarBanco` es lo que corre el build.
+    const descripcion = it.imagen.descripcion?.trim() ?? '';
+    if (it.estado === 'listo' && descripcion.length < DESCRIPCION_MIN) {
+      throw new BancoInvalido(`${it.id}: el recorte no trae descripcion y no se puede jugar sin ver`);
+    }
+    const fugas = fugasDeDescripcion(descripcion, it.opciones.map((o) => o.texto));
+    if (fugas.length > 0) {
+      throw new BancoInvalido(`${it.id}: la descripcion del recorte regala la respuesta: ${fugas.join('; ')}`);
     }
     if (it.fuentes.length === 0) {
       throw new BancoInvalido(`${it.id}: no cita ninguna ficha`);

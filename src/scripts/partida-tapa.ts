@@ -17,6 +17,7 @@ import { PANTALLA_0, PARTIDA, RESULTADO } from '../lib/tapa/copy.ts';
 import { armarLink, leerDesafio } from '../lib/desafio.ts';
 import { botonCompartir } from './compartir.ts';
 import { estampaDe, slugDeRecorte } from '../lib/tapa/pasadas.ts';
+import { protegerDeRebote } from '../lib/sitio/rebote.ts';
 
 const LARGO_RONDA = 6; // US-04: banco chico, ronda mas corta que la del quiz
 
@@ -84,7 +85,7 @@ function pintarPregunta(): void {
   const figura = el('figure', 'figura-tapa-juego');
   const img = el('img', 'tapa-juego');
   img.src = item.imagen.ruta;
-  img.alt = PARTIDA.altImagen;
+  img.alt = PARTIDA.altRecorte(item.imagen.descripcion); // T-534: se puede jugar sin ver
   img.loading = 'eager';
   figura.append(img);
   figura.append(el('figcaption', 'credito-tapa', PARTIDA.credito(item.imagen.credito.autor)));
@@ -103,6 +104,7 @@ function pintarPregunta(): void {
     li.append(b);
     lista.append(li);
   }
+  protegerDeRebote(lista); // T-534: el doble toque sobre "Seguí" no contesta esta pregunta
   zonaPartida.append(lista);
 }
 

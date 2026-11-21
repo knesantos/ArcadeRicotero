@@ -138,7 +138,15 @@ test('el manifiesto que está en el repo es válido', () => {
   const real = JSON.parse(readFileSync('src/data/adivinar-tema.json', 'utf-8')) as Manifiesto;
   const cat = catalogo(real);
   assert.equal(cat.temas.length, 105);
-  assert.equal(cat.jugables, real.fragmentos.length);
+  // `T-533`: jugable es el que tiene fragmento **y** entra al sorteo. Los que arrancan
+  // demasiado tarde o suenan demasiado bajo siguen en el manifiesto, pero no se sortean.
+  const sorteables = real.fragmentos.filter((f) => f.sorteo !== false).length;
+  assert.equal(cat.jugables, sorteables);
+  for (const f of real.fragmentos) {
+    const tema = cat.temas.find((t) => t.slug === f.slug)!;
+    assert.equal(tema.jugable, f.sorteo !== false, f.slug);
+    assert.equal(tema.inicioSeg, f.inicioSeg ?? 0, f.slug);
+  }
 });
 
 // ------------------------------------------------- la dificultad (CTR-03.11, FIND-29)
@@ -229,4 +237,36 @@ test('🔴 el pozo real trae dificultad en todos, así la isla puede escalonar',
   const jugables = cat.temas.filter((t) => t.jugable);
   assert.ok(jugables.length >= 30, `US-02 pide un piso de 30 y hay ${jugables.length}`);
   assert.ok(jugables.every((t) => typeof t.dificultad === 'string' && t.dificultad.length > 0));
+});
+
+// ---------------------------------------------------------------- el sorteo (T-533)
+
+test('un fragmento fuera del sorteo no es jugable, pero sigue en el buscador', () => {
+  const [uno, otro] = catalogo(VACIO).temas;
+  const m: Manifiesto = {
+    ...VACIO,
+    fragmentos: [
+      { slug: uno!.slug, titulo: uno!.titulo, duracionSeg: 10, entero: false, inicioSeg: 0.4, sorteo: true },
+      { slug: otro!.slug, titulo: otro!.titulo, duracionSeg: 10, entero: false, inicioSeg: 9.3, sorteo: false, motivo: 'arranque-tardio' },
+    ],
+  };
+  const cat = catalogo(m);
+  assert.equal(cat.jugables, 1);
+  assert.equal(cat.temas.find((t) => t.slug === uno!.slug)!.inicioSeg, 0.4);
+  assert.equal(cat.temas.find((t) => t.slug === otro!.slug)!.jugable, false);
+  assert.deepEqual(pozo(cat, null).map((t) => t.slug), [uno!.slug]);
+});
+
+test('un fragmento en el sorteo con un arranque que no deja el penúltimo paso rompe el build', () => {
+  // Es la guarda contra editar el manifiesto a mano: poner `sorteo: true` en un tema que
+  // arranca a los 9 s lo devolvería al juego con cinco pasos de silencio.
+  const alguno = catalogo(VACIO).temas[0]!;
+  const con = (inicioSeg: number | null): Manifiesto => ({
+    ...VACIO,
+    fragmentos: [{ slug: alguno.slug, titulo: alguno.titulo, duracionSeg: 10, entero: false, inicioSeg, sorteo: true }],
+  });
+  assert.throws(() => catalogo(con(9.29)), CatalogoInvalido);
+  assert.throws(() => catalogo(con(null)), CatalogoInvalido);
+  assert.throws(() => catalogo(con(-1)), CatalogoInvalido);
+  assert.doesNotThrow(() => catalogo(con(2)));
 });

@@ -291,3 +291,68 @@ test('🔴 frenar antes de que vuelva el contexto frena de verdad, y no deja un 
     e.restaurar();
   }
 });
+
+// ---------------------------------------------------------------- el arranque (T-533)
+
+/** Carga un buffer de `largo` segundos y anota con qué argumentos arranca la fuente. */
+async function conBufferDe(largo: number, jugar: (r: Reproductor) => void): Promise<number[][]> {
+  const e = conEntorno('running');
+  const fetchPrevio = globalThis.fetch;
+  const arranques: number[][] = [];
+  try {
+    (globalThis as Record<string, unknown>).fetch = async () => ({
+      ok: true,
+      arrayBuffer: async () => new ArrayBuffer(8),
+    });
+    e.ctx.decodeAudioData = async () => ({ duration: largo }) as AudioBuffer;
+    const fabricar = e.ctx.createBufferSource.bind(e.ctx);
+    e.ctx.createBufferSource = () => {
+      const fuente = fabricar();
+      fuente.start = (...args: number[]) => {
+        arranques.push(args);
+      };
+      return fuente;
+    };
+    const r = new Reproductor();
+    r.despertar();
+    await r.precargar('un-tema');
+    arranques.length = 0; // el buffer mudo del desbloqueo no cuenta
+    jugar(r);
+    r.detener();
+    return arranques;
+  } finally {
+    (globalThis as Record<string, unknown>).fetch = fetchPrevio;
+    e.restaurar();
+  }
+}
+
+test('🔴 el corte arranca en el primer sonido del fragmento, no en el segundo 0', async () => {
+  // El defecto de `T-533`: un recorte con 0,84 s de silencio adelante sonaba [0, 0,1] en
+  // el paso 1 y [0, 0,5] en el paso 2. Los dos, silencio.
+  const arranques = await conBufferDe(10, (r) => {
+    r.sonar('un-tema', 0.1, {}, 0.84);
+    r.sonar('un-tema', 0.5, {}, 0.84);
+  });
+  assert.deepEqual(
+    arranques.map(([, desde, dura]) => [desde, dura]),
+    [
+      [0.84, 0.1],
+      [0.84, 0.5],
+    ],
+  );
+});
+
+test('🔴 el último paso es el resto: arranca en el primer sonido y llega al final', async () => {
+  // El techo son 10 s en un buffer de 10 s que arranca en 0,84: suenan los 9,16 que quedan.
+  // Nunca [0, 10]: eso metía la entrada muda adentro del paso (`T-533`).
+  const arranques = await conBufferDe(10, (r) => r.sonar('un-tema', 10, {}, 0.84));
+  assert.equal(arranques.length, 1);
+  const [, desde, dura] = arranques[0]!;
+  assert.equal(desde, 0.84);
+  assert.ok(Math.abs(dura! - 9.16) < 1e-9);
+});
+
+test('sin arranque medido, suena desde 0 como siempre', async () => {
+  const arranques = await conBufferDe(10, (r) => r.sonar('un-tema', 2, {}));
+  assert.deepEqual(arranques.map(([, desde, dura]) => [desde, dura]), [[0, 2]]);
+});

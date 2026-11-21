@@ -18,7 +18,7 @@ export const PANTALLA_0 = {
   titulo: 'Adiviná el tema',
   subtitulo:
     'Con una décima te tiene que alcanzar. Si no, te damos más: medio segundo, dos, ' +
-    'cuatro, ocho, diez. Cuanto antes la pegues, más vale.',
+    'cuatro, ocho y el resto. Cuanto antes la pegues, más vale.',
   /**
    * La tabla de lo que vale cada escalón, impresa en la portada.
    *
@@ -68,7 +68,7 @@ export const PARTIDA = {
   escuchar: 'Escuchá',
   parar: 'Pará',
   /** Lo que anuncia el lector de pantalla cuando cambia el paso. */
-  pasoActual: (etiqueta: string) => `Tenés ${etiqueta} de audio`,
+  pasoActual: (deAudio: string) => `Tenés ${deAudio}`,
   buscar: 'Escribí el tema',
   /** El rótulo del botón de la cruz. Solo lo lee quien no ve la pantalla — y va en voseo
    *  igual: `D-17` no distingue entre texto a la vista y texto para el lector. */
@@ -80,11 +80,21 @@ export const PARTIDA = {
   arriesgar: 'Arriesgá',
   pasar: 'Pasá',
   /**
-   * El botón de pasar dice cuánto audio compra (`extraAlPasar`), como el juego de
-   * referencia. Pasar no es rendirse: es pedir más cinta, y el que llega sin idea tiene
-   * que saber que ese botón le da algo antes de apretarlo.
+   * El botón de pedir más audio dice lo que hace y cuánto da (`extraAlPasar`). Pedir no es
+   * rendirse: es pedir más cinta, y el que llega sin idea tiene que saber que ese botón le
+   * da algo antes de apretarlo.
+   *
+   * Decía "Pasá (+0,4 s)", calcado del "Skip (+1s)" del juego de referencia, y la gente que
+   * lo probó (`T-533`) lo leyó como **saltear el tema**: nadie quiere apretar un botón que
+   * parece tirar la pregunta. "Dame" dice quién le da qué a quién, en voseo y en cuatro
+   * palabras.
    */
-  pasarSuma: (extra: string) => `Pasá (+${extra})`,
+  pasarSuma: (extra: string) => `Dame ${extra} más`,
+  /**
+   * Del penúltimo paso al último no se promete una cantidad (`T-533`): lo que falta del
+   * fragmento depende de dónde arranca cada tema. El botón pide lo que hay.
+   */
+  pasarResto: 'Dame el resto',
   /** En el último intento no queda audio que comprar: pasar cierra el tema y lo muestra. */
   rendirse: 'Mirá cuál era',
   /** Lo que vale acertar en el paso en curso. Va al lado del audio que tenés. */
@@ -94,7 +104,8 @@ export const PARTIDA = {
    * elegir: gastar un intento en algo que ya sabés que no es no le sirve a nadie.
    */
   yaProbado: 'Ya lo probaste',
-  pasado: 'Pasaste',
+  /** El renglón de un intento gastado en pedir audio. Va con el botón: "Dame… más". */
+  pasado: 'Pediste más',
   /** El renglón de un intento fallado. El título es el que eligió el jugador. */
   fallado: (titulo: string) => titulo,
   ultimoIntento: 'Último intento',
@@ -141,6 +152,13 @@ export const SIN_SONIDO = {
     'Con auriculares se escucha mejor: el primer paso dura una décima de segundo y por ' +
     'el parlante del teléfono puede pasar de largo.',
   verDiagnostico: 'Revisá el audio de este aparato',
+  /**
+   * La salida del que no puede poner sonido ahora —en el bondi, sin auriculares— (`T-533`).
+   * Antes el aviso terminaba en "sin sonido no se puede jugar" y lo dejaba en la puerta: un
+   * molinete. Va seguida del enlace a un juego que se juega mirando; el nombre del juego lo
+   * pone la página desde el portal, no esta cadena.
+   */
+  sinSonidoAhora: 'Si ahora no podés poner sonido, este se juega mirando:',
   cerrar: 'Cerrá',
 } as const;
 
@@ -186,7 +204,7 @@ export const REVELACION = {
    * dos cosas distintas y por eso van juntas y separadas por el punto medio, no sumadas
    * en un número solo.
    */
-  costo: (audio: string, tiempo: string) => `Con ${audio} de audio · ${tiempo} de reloj`,
+  costo: (deAudio: string, tiempo: string) => `Con ${deAudio} · ${tiempo} de reloj`,
   /** Al que no la sacó también le corresponde su tiempo: jugó los seis intentos. */
   tardaste: (tiempo: string) => `${tiempo} de reloj`,
   escucharEntero: 'Escuchalo entero',
@@ -247,8 +265,7 @@ export const TARJETA = {
   juego: 'Adiviná el tema',
   rotuloTiempo: 'Tiempo total',
   /** El renglón de un tema que salió: disco, cuánto audio hizo falta y cuánto tardó. */
-  pieAcierto: (disco: string, audio: string, tiempo: string) =>
-    `${disco} · ${audio} de audio · ${tiempo}`,
+  pieAcierto: (disco: string, deAudio: string, tiempo: string) => `${disco} · ${deAudio} · ${tiempo}`,
   /**
    * El de un tema que no salió. Lleva "no salió" escrito además de la cruz: en una
    * imagen que se mira chiquita, un símbolo solo no alcanza — es `UX-01` aplicado a algo
@@ -257,9 +274,38 @@ export const TARJETA = {
   pieFallo: (disco: string, tiempo: string) => `${disco} · no salió · ${tiempo}`,
 } as const;
 
-/** Los tres tramos del resultado, con la voz del proyecto. Espeja `quiz/copy.ts`. */
+/**
+ * Los tramos del resultado, con la voz del proyecto. Espeja `quiz/copy.ts`.
+ *
+ * **Cuál sale lo decide `veredicto.ts`, no la isla** (`T-535`). «Te falta escuchar disco.» se
+ * queda (`voz-ricotera.md` §4.4 la pone de ejemplo), pero sale solo cuando corresponde: sin
+ * ningún tema sacado, o con pocos y todos a fuerza de audio. Y nunca sola: al lado van la
+ * cuenta (`TITULAR`) y una puerta (`PUERTAS`, en `sitio/copy.ts`).
+ *
+ * `oido` es de `T-535`: el que sacó pocos pero alguno con dos segundos o menos. Antes caía
+ * en `bajo`, y decirle que le falta escuchar disco al que sacó uno con una décima era falso.
+ */
 export const TRAMOS = {
   bajo: 'Te falta escuchar disco.',
+  oido: 'Sacaste pocos, pero de oído.',
   medio: 'Los conocés, tardaste un poco.',
   alto: 'Los tenés de memoria.',
+} as const;
+
+/**
+ * El número grande del resultado cuando **no** es el tiempo (`T-535`, `veredicto.ts`).
+ *
+ * El tiempo es el titular desde el 2026-08-27 porque es lo que se cuenta al salir. Pero al que
+ * sacó menos de la mitad le ponía «TARDASTE 1 m 14 s» en lo más grande de la pantalla: el
+ * reloj de alguien que estuvo apretando «Pasá». Para esa vuelta lo grande es lo que sacó, y
+ * el reloj baja al renglón de abajo. Registro 3: dice qué hay y se calla.
+ */
+export const TITULAR = {
+  /** El rótulo de la cuenta. Nombra de qué es el «1 de 4», que solo no lo dice. */
+  rotuloSacaste: 'Temas que sacaste',
+  cuenta: (n: number, total: number) => `${n} de ${total}`,
+  /** Con cuánto audio salió el único que salió: `deAudio` viene de la escalera. */
+  conAudio: (deAudio: string) => `Con ${deAudio}`,
+  /** El reloj, de dato menor. */
+  enTiempo: (tiempo: string) => `en ${tiempo}`,
 } as const;

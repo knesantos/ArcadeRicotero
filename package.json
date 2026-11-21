@@ -17,6 +17,7 @@
     "generar-marca-social": "node scripts/generar-marca-social.mjs",
     "ingerir-popularidad": "node --experimental-strip-types scripts/ingerir-popularidad.mjs",
     "ingerir-fragmentos": "node --experimental-strip-types scripts/ingerir-fragmentos.mjs",
+    "medir-fragmentos": "node --experimental-strip-types scripts/medir-fragmentos.mjs",
     "generar-por-la-letra": "node --experimental-strip-types scripts/generar-por-la-letra.mjs",
     "medir-mas-o-menos": "node --experimental-strip-types scripts/medir-mas-o-menos.mjs",
     "generar-dos-ejes": "node --experimental-strip-types scripts/generar-dos-ejes.mjs",

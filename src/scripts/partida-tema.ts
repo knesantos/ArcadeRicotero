@@ -33,6 +33,7 @@ import {
   anchosDeTramos,
   etiquetaDeRegla,
   extraAlPasar,
+  RESTO,
   DURACION_FRAGMENTO_SEG,
 } from '../lib/tema/escalera.ts';
 import { Reproductor, urlDeTema } from '../lib/tema/audio.ts';
@@ -41,11 +42,13 @@ import { PARTIDA, REVELACION, RESULTADO, TARJETA, TRAMOS, PANTALLA_0, SIN_SONIDO
 import { estampaDe } from '../lib/tapa/pasadas.ts';
 import { armarCasete } from '../lib/tema/casete.ts';
 import { esIOS, esMovil, navegadorIncrustado } from '../lib/sitio/aparato.ts';
-import { tramo } from '../lib/quiz/tramo.ts';
+import { tramoDeLaVuelta, titularDeLaVuelta, puertaDeLaVuelta } from '../lib/tema/veredicto.ts';
 import { armarLink, leerDesafio } from '../lib/desafio.ts';
 import { Cronometro, duracion, total as sumarTiempos } from '../lib/tema/reloj.ts';
 import { claseDisco } from '../lib/tema/paleta.ts';
 import { armarVuelta } from '../lib/tema/vuelta.ts';
+import { anunciador } from '../lib/sitio/anunciar.ts';
+import { anuncioErrado, anuncioRevelacion } from '../lib/tema/anuncio.ts';
 import { nombreArchivo } from '../lib/tarjeta/plan.ts';
 import { dibujarTarjeta } from './tarjeta.ts';
 import { incrustado, postearEnX } from './en-x.ts';
@@ -64,6 +67,8 @@ import {
 interface Tema extends TemaBuscable {
   readonly anio: number;
   readonly jugable: boolean;
+  /** Dónde está el primer sonido real del fragmento (`T-533`): de ahí arranca cada corte. */
+  readonly inicioSeg: number;
   readonly entero: boolean;
   readonly letra: string | null;
   /**
@@ -84,6 +89,8 @@ const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as 
 const portada = $('portada');
 const zonaPartida = $<HTMLElement>('partida');
 const zonaResultado = $('resultado');
+/** T-534: lo que solo se ve —el intento errado, la revelación— se le dice a quien no ve. */
+const decir = anunciador();
 
 const catalogo: Tema[] = JSON.parse($('catalogo').textContent ?? '[]');
 const reproductor = new Reproductor();
@@ -665,22 +672,24 @@ function pintarBarra(transcurrido: number): void {
   });
 
   const p = paso(pasoActual);
-  etiquetaPaso.textContent = PARTIDA.pasoActual(p.etiqueta);
+  etiquetaPaso.textContent = PARTIDA.pasoActual(p.deAudio);
   valeEl.textContent = PARTIDA.vale(p.puntos);
 }
 
 function pintarBotonPrincipal(): void {
   /*
    * Con un tema elegido, "Arriesgá". Sin nada elegido, **pasar dice cuánto audio compra**:
-   * "Pasá (+0,4 s)". Es el mismo boton que el juego de referencia escribe como "Skip
-   * (+1s)", y le saca al que llega sin idea la duda de si pasar es perder. En el ultimo
+   * "Dame 0,4 s más" (`T-533`: "Pasá (+0,4 s)" se leia como saltear el tema). Es el mismo
+   * boton que el juego de referencia escribe como "Skip (+1s)", y le saca al que llega sin idea la duda de si pasar es perder. En el ultimo
    * intento ya no hay audio que comprar: el boton dice lo que va a pasar, que es ver cual era.
    */
   if (elegido) {
     botonPrincipal.textContent = PARTIDA.arriesgar;
   } else {
     const extra = extraAlPasar(pasoActual);
-    botonPrincipal.textContent = extra ? PARTIDA.pasarSuma(extra) : PARTIDA.rendirse;
+    // Del penúltimo al último no hay cantidad que prometer: se pide el resto (`T-533`).
+    botonPrincipal.textContent =
+      extra === null ? PARTIDA.rendirse : extra === RESTO ? PARTIDA.pasarResto : PARTIDA.pasarSuma(extra);
   }
   botonPrincipal.classList.toggle('arriesgar--listo', elegido !== null);
   botonPrincipal.disabled = false;
@@ -748,6 +757,19 @@ function abrirAyudaDeSonido(ancla: HTMLElement): void {
   diag.href = '/diagnostico-audio/';
   panel.append(diag);
 
+  // La salida del que no puede poner sonido ahora (`T-533`): un juego que se juega
+  // mirando. Cuál es lo dice la página, que lo saca del portal.
+  const { sinSonidoHref, sinSonidoTitulo } = zonaPartida.dataset;
+  if (sinSonidoHref && sinSonidoTitulo) {
+    // El enlace viste la clase del otro enlace del panel (`.sin-sonido-diagnostico`): la
+    // tinta del sistema y el alto de `--toque-min`. Suelto adentro del renglón salía en el
+    // azul del navegador y no se podía tocar.
+    panel.append(el('p', 'sin-sonido-punto', SIN_SONIDO.sinSonidoAhora));
+    const va = el('a', 'sin-sonido-diagnostico', sinSonidoTitulo);
+    va.href = sinSonidoHref;
+    panel.append(va);
+  }
+
   const cerrar = el('button', 'sin-sonido-cerrar', SIN_SONIDO.cerrar);
   cerrar.type = 'button';
   cerrar.addEventListener('click', () => {
@@ -788,10 +810,15 @@ function sonar(segundos: number): void {
   botonEscuchar.classList.add('escuchar--sonando');
   reproductorCaja.classList.add('reproductor--sonando');
   palabraCinta.hidden = false;
-  reproductor.sonar(tema.slug, segundos, {
-    alAvanzar: (t) => pintarBarra(t),
-    alTerminar: frenar,
-  });
+  reproductor.sonar(
+    tema.slug,
+    segundos,
+    {
+      alAvanzar: (t) => pintarBarra(t),
+      alTerminar: frenar,
+    },
+    tema.inicioSeg,
+  );
 }
 
 function frenar(): void {
@@ -946,6 +973,7 @@ function alTeclear(ev: KeyboardEvent): void {
 function arriesgar(): void {
   const tema = ronda[indice];
   if (!tema || !elegido) return;
+  if (!acierta(elegido, tema)) decir(anuncioErrado(elegido.titulo));
 
   if (acierta(elegido, tema)) {
     cerrarTema(true);
@@ -1073,6 +1101,7 @@ function cerrarTema(acerto: boolean): void {
 
 function pintarRevelacion(tema: Tema, acerto: boolean, ganados: number): void {
   revelacion.replaceChildren();
+  decir(anuncioRevelacion(acerto, tema.titulo, ganados));
   /*
    * La ficha viste **la tinta real del disco del tema**, no la de la seccion (`paleta.ts`).
    *
@@ -1123,7 +1152,7 @@ function pintarRevelacion(tema: Tema, acerto: boolean, ganados: number): void {
    */
   const reloj = duracion(tiempos[tiempos.length - 1] ?? 0);
   if (acerto) {
-    const audio = paso(marcador[marcador.length - 1]!).etiqueta;
+    const audio = paso(marcador[marcador.length - 1]!).deAudio;
     // A la vista, lo que sumaste ya esta estampado arriba (`revelacion-suma`); este renglon
     // queda para el lector de pantalla, que el sello no le dice nada.
     revelacion.append(el('p', 'revelacion-puntos solo-lector', REVELACION.puntos(ganados)));
@@ -1263,7 +1292,7 @@ function pieDeTema(i: number): string {
   const p = marcador[i] ?? 0;
   const reloj = duracion(tiempos[i] ?? 0);
   return p > 0
-    ? TARJETA.pieAcierto(tema.discoTitulo, paso(p).etiqueta, reloj)
+    ? TARJETA.pieAcierto(tema.discoTitulo, paso(p).deAudio, reloj)
     : TARJETA.pieFallo(tema.discoTitulo, reloj);
 }
 
@@ -1285,7 +1314,7 @@ function pieDeTema(i: number): string {
  */
 function pintarResultado(): void {
   const aciertos = marcador.filter((p) => p > 0).length;
-  const t = tramo(aciertos, ronda.length);
+  const t = tramoDeLaVuelta(marcador, ronda.length);
   const maximo = puntajeMaximo(ronda.length);
 
   zonaResultado.replaceChildren();
@@ -1298,13 +1327,12 @@ function pintarResultado(): void {
 
   // El reloj: el dato que el jugador cuenta cuando sale de la partida.
   const reloj = el('div', 'cifra');
-  reloj.append(el('p', 'cifra-rotulo', RESULTADO.rotuloTiempo));
-  reloj.append(el('p', 'cifra-numero', duracion(sumarTiempos(tiempos))));
-  // Abajo del tiempo, las dos cuentas que se dicen en la previa: cuantos sacaste y cuanto
-  // sumaste. El punto medio las separa sin sumarlas, igual que en la revelacion.
-  reloj.append(
-    el('p', 'cifra-pie', `${RESULTADO.sacaste(aciertos, ronda.length)} · ${RESULTADO.puntos(puntaje, maximo)}`),
-  );
+  // `T-535`: que numero es el grande lo decide `veredicto.ts`. El tiempo, si sacaste al menos
+  // la mitad; si no, cuantos sacaste, y el reloj baja al renglon de abajo.
+  const titular = titularDeLaVuelta(marcador, ronda.length, duracion(sumarTiempos(tiempos)));
+  reloj.append(el('p', 'cifra-rotulo', titular.rotulo));
+  reloj.append(el('p', 'cifra-numero', titular.numero));
+  reloj.append(el('p', 'cifra-pie', titular.pie));
   zonaResultado.append(reloj);
 
   // La linea que canta del afiche (`CNT-14` §2.6): la vuelta se pega en la pared. La que
@@ -1335,6 +1363,17 @@ function pintarResultado(): void {
    * lugares — de eso se encarga `acreditarTapas` (`sacar-temas.ts`).
    */
   acreditarTapas(ronda.map((t) => t.discoTitulo));
+
+  // `T-535`: «Te falta escuchar disco.» nunca va sola. Con el tramo bajo, la puerta al
+  // disco del primer tema que se escapo (`veredicto.ts`).
+  const puerta = puertaDeLaVuelta(ronda.map((t) => t.disco), marcador);
+  if (puerta) {
+    const va = el('a', 'volver', `${puerta.texto} →`);
+    va.href = puerta.href;
+    const renglon = el('p', 'salida-resultado');
+    renglon.append(va);
+    zonaResultado.append(renglon);
+  }
 
 
   // 'Compartí' va en la letra de la firma con su tilde: desde `D-65` la tiene, derivada de la
@@ -1405,7 +1444,7 @@ async function compartirResultado(boton: HTMLButtonElement): Promise<void> {
     total: maximo,
   });
   const aciertos = marcador.filter((p) => p > 0).length;
-  const t = tramo(aciertos, ronda.length);
+  const t = tramoDeLaVuelta(marcador, ronda.length);
   const tiempoTotal = duracion(sumarTiempos(tiempos));
   const texto = `${TRAMOS[t]} ${tiempoTotal} · ${RESULTADO.puntos(puntaje, maximo)}`;
 
@@ -1431,8 +1470,8 @@ async function compartirResultado(boton: HTMLButtonElement): Promise<void> {
         pie: pieDeTema(i),
         disco: tema.disco,
       })),
-      rotuloHero: TARJETA.rotuloTiempo,
-      hero: tiempoTotal,
+      rotuloHero: titularDeLaVuelta(marcador, ronda.length, tiempoTotal).rotuloTarjeta,
+      hero: titularDeLaVuelta(marcador, ronda.length, tiempoTotal).numero,
       puntaje: RESULTADO.puntos(puntaje, maximo),
       sitio: location.host + location.pathname,
     });

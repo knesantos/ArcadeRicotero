@@ -24,6 +24,7 @@ const base: ItemCrudo = {
     archivo: 'oktubre',
     encuadre: 'entera',
     disco: 'Oktubre',
+    descripcion: 'Dibujo en blanco y negro de una multitud de caras, con banderas rojas arriba.',
     edicion: 'LP argentino, 1986',
     auditoria: 'original confirmada',
     credito: { autor: 'Rocambole (Ricardo Cohen)' },

@@ -355,6 +355,10 @@ test('voz 4.1: la linea grande no pasa de ocho palabras', () => {
     // lo notó `contenido` al escribir el undécimo (`CNT-26`).
     ...Object.entries(sitio.LUGARES).map(([k, v]) => [`lugar ${k}`, v] as [string, string]),
     ...Object.entries(quiz.TRAMOS).map(([k, v]) => [`quiz tramo ${k}`, v.titulo] as [string, string]),
+    // `T-535`: la línea que canta del resultado de "Adiviná el tema" (con la nueva, `oido`) y
+    // las puertas del que sacó poco. Las dos son registro 1 y no estaban en esta lista.
+    ...Object.entries(tema.TRAMOS).map(([k, v]) => [`tema tramo ${k}`, v] as [string, string]),
+    ...Object.entries(sitio.PUERTAS).map(([k, v]) => [`puerta ${k}`, v] as [string, string]),
     // `T-167` del ciclo 10. Los seis `h1` de portada faltaban en esta lista, y no por
     // olvido: sumarlos rompia el build por **una sola linea** — el `h1` del quiz, que
     // tenia diez palabras. Cerrar el auditor dejando afuera al unico que fallaba habria

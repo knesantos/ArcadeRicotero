@@ -312,6 +312,9 @@ const manifiesto = {
 };
 
 writeFileSync(MANIFIESTO, `${JSON.stringify(manifiesto, null, 2)}\n`, 'utf-8');
+// `T-533`: este manifiesto sale sin `inicioSeg` ni `sorteo`. Los pone la medición, que
+// necesita un navegador para decodificar los mp3; hasta entonces `arranque.test.ts` falla.
+console.log('\nFalta medir dónde arranca cada fragmento: npm run medir-fragmentos');
 
 const pesoKB = fragmentos.length * 180;
 console.log(`

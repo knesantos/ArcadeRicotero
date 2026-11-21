@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://ricotaarcade.local/schema/tapa/1",
+  "$id": "https://ricotaarcade.local/schema/tapa/2",
   "title": "CTR-05 — Banco de adivinar la tapa",
   "type": "object",
   "additionalProperties": false,
@@ -16,7 +16,7 @@
       "const": "CTR-05"
     },
     "contratoVersion": {
-      "const": 1
+      "const": 2
     },
     "juego": {
       "const": "adivinar-tapa"
@@ -205,6 +205,28 @@
               "explicacion"
             ]
           }
+        },
+        {
+          "$comment": "CTR-05 v2, T-534. Un item que se juega trae la descripcion de su recorte: sin ella el juego no se puede jugar sin ver. Un borrador puede no tenerla todavia. Es lo que sube la version: un item listo de la v1 deja de validar.",
+          "if": {
+            "required": [
+              "estado"
+            ],
+            "properties": {
+              "estado": {
+                "const": "listo"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "imagen": {
+                "required": [
+                  "descripcion"
+                ]
+              }
+            }
+          }
         }
       ]
     },
@@ -243,6 +265,12 @@
         },
         "disco": {
           "$ref": "#/$defs/tituloDeDisco"
+        },
+        "descripcion": {
+          "$comment": "CTR-05 v2, T-534 (2026-11-20). Que se ve en el recorte, para quien no lo ve: es el alt de la imagen mientras se juega. Registro 3. No nombra el disco ni usa una palabra con peso del titulo de ninguna de las cuatro opciones del item; eso no se puede decir en JSON Schema y lo hace cumplir fugasDeDescripcion en src/lib/tapa/banco.ts, que corre en el build.",
+          "type": "string",
+          "minLength": 30,
+          "maxLength": 240
         },
         "edicion": {
           "type": "string",

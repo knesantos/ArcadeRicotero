@@ -26,6 +26,13 @@ export const PANTALLA_0 = {
 export const PARTIDA = {
   /** No nombra el disco: nombrarlo sería contar la respuesta. */
   altImagen: 'Arte de tapa sin identificar: es lo que hay que adivinar.',
+  /**
+   * El `alt` del recorte mientras se juega (`T-534`, `CTR-05` v2). Primero dice qué es —un
+   * pedazo de la tapa que hay que adivinar— y después lo que se ve, que viene del banco
+   * (`imagen.descripcion`) y no nombra el disco. Registro 3. `altImagen` queda de repuesto.
+   */
+  altRecorte: (descripcion: string) =>
+    descripcion ? `Pedazo de la tapa a adivinar. ${descripcion}` : 'Arte de tapa sin identificar: es lo que hay que adivinar.',
   pregunta: '¿De qué disco es esta tapa?',
   preguntaDetalle: '¿De qué disco es este pedazo de tapa?',
   seguir: 'Seguí',

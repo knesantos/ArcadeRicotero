@@ -5,7 +5,57 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-11-17
+**Última actualización:** 2026-11-21
+
+> ## 🎯 LA PULIDA DE JUGABILIDAD, RONDAS 0 A 4 (2026-11-19/21) — `REV-24`, `T-531`..`T-535`
+>
+> **Criterio nuevo del usuario (2026-11-21), manda sobre todo lo de abajo:** *"no me gustaría que por querer integrar a los que
+> no saben nada empeoremos los juegos, prefiero que sea más de nicho, si entrás es porque te gustan los Redondos"*. El molinete
+> es acceso (sin cuenta, sin login), **no dificultad**. `T-535` se construyó antes de ese criterio: **está commiteado en
+> commits separados y pendiente de que el usuario elija qué se queda** (`bbb867e`..`fbba020`). Va hacia el novato, y por eso
+> está en duda: la frase "Te falta escuchar disco" sacada de los errores del quiz (`0e0eecc`), el titular del resultado del
+> tema que cambia el tiempo por la cuenta cuando sacaste poco (`b24c1c0`), y las puertas a la Redondopedia en la derrota.
+> Neutro (dice la verdad): las 8 dificultades del quiz reclasificadas (5 suben a media, 3 bajan a fácil) y el casete del quiz,
+> que prometía "ocho preguntas". Sin crítico fresco de esta ronda: se frenó por el criterio nuevo. Sale en el artifact de revisión.
+>
+> **Sin integrar**: rama `worktree-pulida-jugabilidad`, sobre `main` en `7d0a22d`. Pedido del usuario del 2026-11-19 (la idea está
+> anotada en "Ideas guardadas" del `ESTADO.md` del checkout principal, todavía sin commitear ahí): siete perfiles critican los cuatro juegos; Opus orquesta y audita, Fable construye, un crítico fresco
+> juega cada ronda.
+>
+> - **Ronda 0 (`T-531`, `REV-24`)**: tres críticos Sonnet, siete perfiles anotados por separado, en el build real a 375×812.
+>   Hallazgos, plan de rondas y el arranque medido de los 95 mp3 en `Docs/REVISIONES/REV-24-pulida-jugabilidad/`.
+> - **R1, Completá la letra (`T-532`)**: los distractores de los listos se eligieron a mano para que suenen a la palabra (misma
+>   clase, número, género, sílabas, rima): `src/data/letra-distractores.json`, que manda sobre `generar-letra.mjs` (una corrida
+>   ya no la pisa; sin curar o con `baja`, el verso queda en borrador). **69 listos** (piso de `US-03`: 15); bajaron `CL-274`,
+>   `CL-1158` y `CL-1213` (la respuesta se completaba sola). Una ronda ya no trae dos versos del mismo tema (`armarRonda` con
+>   `grupo`; el quiz sin cambios, medido en 6000 rondas idénticas).
+> - **R2, Adiviná el tema (`T-533`)**: cada corte arranca en su primer sonido real (−30 dB; `inicioSeg` en el manifiesto v3,
+>   medido con `npm run medir-fragmentos`, envolventes en el repo y test que las recalcula). **88 temas en el sorteo**: salen
+>   `sheriff`, `susanita`, `criminal-mambo`, `murga-de-la-virgencita`, `gualicho`, `el-lobo-caido` y `dr-saturno` hasta que se
+>   recorten de los masters. El sexto paso es **"el resto"** (desde el arranque, igual para todos). "Pasá (+0,4 s)" pasó a "Dame
+>   0,4 s más"; el que no puede poner sonido tiene una salida a *Adiviná la tapa*, tocable (48 px).
+> - **R3, lector de pantalla y doble toque (`T-534`)**, cortado para no chocar con `pulida/juegos-ui` (rama **local** de otra
+>   sesión que rediseña las cuatro `partida-*.ts` y **ya trae** `role="status"` en el acierto/error de letra y tapa y el hueco de
+>   la letra leído "falta una palabra": eso no se hizo acá). Entró: los 10 recortes de *Adiviná la tapa* con descripción para quien
+>   no ve, sin nombrar el disco (`CTR-05` v2, test que falla si regala el título); la guarda del rebote (`src/lib/sitio/rebote.ts`:
+>   400 ms sin clic de puntero sobre las opciones nuevas en quiz y tapa; teclado y lector pasan siempre), y el tema que anuncia el
+>   errado y la revelación (`anunciar.ts`). Enganches en las islas: 2, 3 y 6 líneas. El crítico fresco probó el rebote a 50, 300 y
+>   500 ms; corregido después `TP-008` ("pelaje" empujaba al lobo). **Hasta que entre `pulida/juegos-ui`, la tapa y la letra
+>   siguen sin anunciar el acierto en esta rama.** Al fusionar las dos: choques triviales en `partida-tapa.ts` (el alt, y la lista
+>   se llama `listaEl` allá) y en el `append` de `partida.ts`; los tests de enganche fallan si se pierde alguna línea.
+> - **Descartado, con el porqué**: los distractores sinónimos (*toalla* por *esponja*, *aguantar* por *soportar*) **se quedan**:
+>   engañan al que no sabe y nunca al que sabe. Medido: ningún distractor se canta en el mismo tema después de las mismas palabras.
+> - **Verde:** `npm test` 2689 con **1 rojo ajeno** (`D-91/t6` de `aire.test.ts`, del bestiario: falla igual en `main`), `astro
+>   check` 0 errores, `astro build` 200 páginas. Visto a 375 px en la vista previa; **no oído en un teléfono**.
+> - **Para sus dueños**: Montevideo 1989/1990 (`TP-005` contra `QZ-066`), `TP-010` y `QZ-053` en
+>   `Docs/SUGERENCIAS/HILO-para-investigador-y-contenido-pulida-jugabilidad.md`; CTR-03 v3 y la curaduría de letra, en sus
+>   `HILO-` para `arquitectura` y `contenido`. **Falta un `D-`** que registre "el resto" y la curaduría que manda sobre el generador.
+> - **El top 5 que queda**, en orden: (1) el foco al cambiar de pantalla en letra, tapa y tema (queda en BODY y el lector pierde el
+>   lugar), mejor hecho **sobre** `pulida/juegos-ui` una vez integrada; (2) `T-535` los molinetes del que llega sin idea ("Te falta escuchar
+>   disco", las fáciles que no lo son, el tiempo en grande en el resultado del tema, una salida visible en cada partida); (3)
+>   `T-536` el que vuelve: preferir lo no visto, guardado en el navegador; (4) ganancia por fragmento (hay 15 dB entre temas;
+>   rescata `dr-saturno`); (5) el "Escuchá" que queda en ▶ sin texto al enfocar el buscador (toca `juego.css`, que otra sesión
+>   tiene abierto en `pulida/juegos-ui`).
 
 > ## 🔦 EL BESTIARIO, REGIÓN POR REGIÓN, Y EL PLANO CON SUS TÍTERES (2026-11-17) — `D-91`, `T-530`
 >

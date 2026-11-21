@@ -10,6 +10,7 @@ import {
   anchosDeTramos,
   etiquetaDeRegla,
   extraAlPasar,
+  RESTO,
   formatoSegundos,
 } from './escalera.ts';
 
@@ -28,6 +29,7 @@ const LA_QUE_PIDIO_EL_USUARIO: Array<[number, number]> = [
   [5, 8],
   // `D-26`: el sexto paso pedia 15; los fragmentos reales del PR #8 miden 10, y la
   // escalera no promete audio que el archivo no tiene. Vuelve a 15 con fragmentos de 15.
+  // `T-533`: esos 10 son el techo; lo que suena es "el resto", desde el primer sonido.
   [6, 10],
 ];
 
@@ -102,13 +104,26 @@ test('el puntaje máximo de una vuelta son todos los temas acertados en el paso 
   assert.equal(puntos(1), 100);
 });
 
-test('la regla numera los seis tramos, y la unidad va solo en el ultimo', () => {
+test('el último paso no promete un número: es "el resto", igual en todos los temas', () => {
+  // `T-533`. Un "10 s" fijo mentía en los temas con entrada larga, y un número por tema
+  // ("8,4 s") era una pista. Ni la etiqueta ni la frase pueden llevar una cifra.
+  const ultimo = ESCALERA[ESCALERA.length - 1]!;
+  assert.equal(ultimo.etiqueta, RESTO);
+  assert.equal(ultimo.deAudio, 'el resto del audio');
+  for (const texto of [ultimo.etiqueta, ultimo.deAudio, etiquetaDeRegla(ESCALERA.length - 1)]) {
+    assert.doesNotMatch(texto, /\d/);
+  }
+  // Los otros cinco sí son un número, y la frase lo repite.
+  for (const p of ESCALERA.slice(0, -1)) assert.equal(p.deAudio, `${p.etiqueta} de audio`);
+});
+
+test('la regla numera cinco tramos y nombra el ultimo, con la unidad una sola vez', () => {
   // Antes los dos primeros quedaban sin numero porque median tres pixeles y trece. Ahora el
   // CSS les da un ancho minimo que alcanza para el numero, y la forma entera de la escalera
   // se ve antes de gastarla.
   assert.deepEqual(
     ESCALERA.map((_, i) => etiquetaDeRegla(i)),
-    ['0,1', '0,5', '2', '4', '8', '10 s'],
+    ['0,1', '0,5', '2', '4', '8 s', 'resto'],
   );
   assert.equal(etiquetaDeRegla(99), '', 'fuera de rango no inventa un numero');
 });
@@ -118,7 +133,8 @@ test('pasar compra exactamente el audio que hay entre un escalon y el siguiente'
   assert.equal(extraAlPasar(2), '1,5 s');
   assert.equal(extraAlPasar(3), '2 s');
   assert.equal(extraAlPasar(4), '4 s');
-  assert.equal(extraAlPasar(5), '2 s');
+  // Del penúltimo al último no hay cantidad: lo que queda depende del tema (`T-533`).
+  assert.equal(extraAlPasar(5), RESTO);
   // En el ultimo paso no hay mas audio que comprar: pasar cierra el tema.
   assert.equal(extraAlPasar(6), null);
 });
