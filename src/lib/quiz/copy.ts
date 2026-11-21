@@ -54,13 +54,20 @@ export const ACIERTOS = [
   '¡Justo en el hueso!',
 ] as const;
 
-/** B2' — seis variantes, en voz baja (`CNT-41` §5). Ninguna dice "mal" ni "perdiste": el
- *  que pierde la vida ya lo ve en el marcador. */
+/**
+ * B2' — cinco variantes, en voz baja (`CNT-41` §5, que traía seis). Ninguna dice "mal" ni
+ * "perdiste": el que pierde la vida ya lo ve en el marcador.
+ *
+ * **Salió «Te falta escuchar disco.» (`T-535`).** Acá salía al azar tras cualquier error: en
+ * la primera pregunta del que llegó por un enlace y en la 40 del que llevaba 38 acertadas. Es
+ * un veredicto, y un error suelto no da para veredicto. La frase sigue en el sitio, en el
+ * resultado de «Adiviná el tema» y solo para la vuelta que la merece (`tema/veredicto.ts`),
+ * con la cuenta y una puerta al lado. `quiz/puerta.test.ts` falla si vuelve a esta lista.
+ */
 export const ERRORES = [
   'No era esa.',
   'Esa se te escapó.',
   'Pasó de largo.',
-  'Te falta escuchar disco.',
   'La próxima la sacás.',
   'Quedó para la vuelta.',
 ] as const;
