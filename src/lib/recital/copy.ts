@@ -44,6 +44,9 @@ export const PANTALLA_0 = {
   sello: 'No hay lista correcta',
   /** Lo que la hoja de la portada dice cuando quedó una lista a medio armar: cuántos más hay. */
   yMas: (n: number) => (n === 1 ? 'y uno más' : `y ${n} más`),
+  /** El interruptor de los ruidos de interfaz, en la portada. Los mismos textos de los otros juegos. */
+  ruidosApagar: 'Apagá los ruidos',
+  ruidosPrender: 'Prendé los ruidos',
 } as const;
 
 export const LUGAR = {
@@ -108,12 +111,15 @@ export const ARMADO = {
   renglon: (n: number, titulo: string, bis: boolean) => `${bis ? 'Bis' : 'Tema'} ${n}: ${titulo}. Tocalo para moverlo.`,
   /** El cajón de temas. */
   cajon: 'Los temas',
-  todos: 'Todos',
   /** El nombre del grupo de tapas que filtra el cajón (lector de pantalla). */
   discos: 'Los discos',
-  /** La línea debajo de la tira de tapas: qué se está mirando. */
-  discoElegido: (titulo: string, anio: number) => `${titulo} · ${anio}`,
-  losCiento: 'Los ciento cinco, disco por disco',
+  /** Lo que dice cada funda del cajón debajo del título: el año y cuántos temas trae. */
+  funda: (anio: number, n: number) => `${anio} · ${n} temas`,
+  /** Cuántos temas de ese disco ya están en la lista. Registro 3. */
+  enLaLista: (n: number) => `${n} en la lista`,
+  /** El doblez de la hoja: abrirla entera y volver a plegarla. */
+  desplegar: (n: number) => (n === 1 ? 'Mirá el otro' : `Mirá los otros ${n}`),
+  plegar: 'Plegala',
   buscar: 'Buscá un tema',
   sinResultados: (q: string) => `Ningún tema dice «${q}».`,
   /** El sello de lo que suena, en el pie y en la hoja de la noche. Registro 3. */

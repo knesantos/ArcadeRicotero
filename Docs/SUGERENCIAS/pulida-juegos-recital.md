@@ -114,3 +114,77 @@ tres objetos, y cada pantalla es uno:
    elemento lo acusa: se ve en `scrollWidth`, no en las cajas. `overflow-x: clip` en el juego.
 5. **`volarPieza` acepta un rectángulo guardado**: se mide el origen antes de cambiar de
    pantalla y se le pasa un objeto con `getBoundingClientRect`.
+
+---
+
+## Ronda 2 (2026-11-21): la hoja siempre a la vista, las fundas y el troquel
+
+### 1. Lo que marcó el hilo principal, y qué era
+
+1. **El pie tapaba y dejaba asomar cosas.** Su piso medía lo que la columna, y lo que pasaba por
+   abajo (la tira de tapas, que salía de los márgenes) asomaba por los costados. Ahora el piso
+   llega hasta los márgenes de la página con la raya arriba, y la tira de tapas ya no existe.
+2. **La ciudad en cajita punteada se leía como campo vacío.** Ahora es el troquel: una línea de
+   puntos **entre** la entrada y el talón, con dos muescas que le muerden el borde al papel. La
+   ciudad va en la misma fibra que el nombre, más chica, y no en gris.
+3. **"Estadio Marcelo Bielsa" en beige oscuro era el `:hover`**, que en el teléfono queda pegado
+   a lo último que se tocó (ahí cayó el toque de «Elegí dónde»). No era ningún estado. El papel
+   ya no cambia: con puntero, un contorno de tinta; con teclado, el contorno más grueso.
+4. **El armado medía ~8000 px.** Con el cajón cerrado mide lo que diez fundas (ver lo medido).
+5. **Las pestañas** van en un renglón a 430, cada una del ancho de su leyenda. Por debajo de
+   420 px, dos y dos.
+
+### 2. Qué se hizo
+
+1. **El cajón son diez fundas.** Cada disco es una funda con su tapa, el año, cuántos temas trae
+   y cuántos ya están en la lista. Se abre una por vez. Con algo escrito en el buscador no hay
+   fundas: van los temas que lo dicen, de todos los discos. «Sorteá uno» sortea de la funda
+   abierta, o de los ciento cinco si están todas cerradas.
+2. **La hoja se pliega y queda pegada arriba.** Plegada (como arranca) deja ver los dos últimos
+   de la lista, el corte y cuántos bises hay, y no se va de la pantalla mientras se elige: **el
+   tema que se suma se escribe siempre a la vista**. «Mirá los otros N» la abre entera; marcar
+   un renglón también. «Plegala» la vuelve a cerrar. En un teléfono bajo deja ver uno solo.
+3. **Mover es mover.** Al subir, bajar o mandar al bis, cada renglón se corre de donde estaba a
+   donde quedó (se mide antes y después y se anima la diferencia; solo `transform`).
+4. **Sacar es tachar.** La fibra cruza el título (el trazo de "Sacalo por la letra"), el tema
+   sale y los de abajo suben.
+5. **La hoja que se comparte tiene planta propia** (`lib/recital/hoja.ts`, con tests, y
+   `scripts/hoja-recital.ts`): el título en la letra de la banda, el lugar, los temas numerados en
+   fibra mayúscula, todos con la misma letra, el corte con la palabra adentro y los bises
+   enseguida. La letra crece con una lista corta y la hoja se alarga con una larga. `lamina.ts`
+   volvió a ser solo de "Ponelos en fila" (la bandera `hoja` de la ronda 1 salió; quedan
+   exportados `tinta` y `granular`, que la hoja nueva usa).
+6. **Ruidos**, detrás del interruptor de siempre («Apagá los ruidos», en la portada): el roce de
+   cartón al cortar la entrada, el trazo al escribir un renglón y al tachar, y el sello al salir
+   a tocar. Son efectos que ya existían (`carton`, `racleta`, `sello`); no hay ninguno nuevo.
+7. **Chicos:** el talonario va siempre de a dos y la entrada que queda sola ocupa el renglón.
+
+### 3. Tests y copy
+
+- Tests nuevos: `lib/recital/hoja.test.ts` (5). `estilos.test.ts` suma cuatro estados a la isla
+  y el censo de `hoja-recital.ts`. Ninguno relajado.
+- Copy nuevo: `PANTALLA_0.ruidosApagar`, `ruidosPrender`; `ARMADO.funda`, `enLaLista`,
+  `desplegar`, `plegar`. Salieron `ARMADO.todos`, `discoElegido` y `losCiento`.
+
+### 4. Lo medido (sitio construido)
+
+- **El armado**: 1525 px con el cajón cerrado a 430 × 860 (ronda 1: 7971) y 2263 con una funda
+  abierta. Eligiendo, con la hoja plegada y pegada: hoja 186 px, pie 133, y 541 libres para el cajón.
+- **Diez tamaños con el peor caso** (28 temas, el lugar más largo): nada desborda y nada tocable
+  baja de 48 px. Plegada, la hoja mide 189 px (106 en los dos teléfonos más bajos, donde deja
+  ver un renglón), y entre la hoja y el pie quedan de 330 px (320 × 568) a 702.
+- **Rendimiento** (CPU ×4, 430 × 860 a ×2, dos tandas, controles 16,7). Peor cuadro: abrir una
+  funda 33; sumar 117; sumar el 14 con la hoja plegada 50–67 (ronda 1, con la hoja entera:
+  117–133); «Subila» 67; «Sacala» 83; «Elegí dónde» 100–167; elegir el lugar 133–167 (ronda 1:
+  184–200, armaba los ciento cinco); «SALÍ A TOCAR» con 14 temas 217–267.
+- **Control de "Ponelos en fila"**: su lámina sale igual que antes.
+
+### 5. Lo que queda abierto
+
+- **Al subir o bajar, el renglón que cede el lugar cruza por encima de las teclas del marcado**;
+  y al sacar, el aviso de «Sin bises» sobresale un cuadro por abajo de la hoja, que ya se achicó.
+- **El trazo del fibrón suena encima del recorte que arranca en el mismo toque**, como pasó con
+  el cartón de "Ponelos en fila". Sin oír: el navegador de las capturas va mudo.
+- **El papelito que vuela a la cuenta casi no se ve más**: con la hoja pegada arriba, el
+  renglón nuevo siempre está a la vista y se escribe ahí. Queda para la hoja abierta y corrida.
+- `D-72` y los `UX-` del juego describen la pantalla de antes.

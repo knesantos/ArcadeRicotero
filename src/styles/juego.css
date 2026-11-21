@@ -15526,15 +15526,17 @@ html.incrustado .pila {
    llena de tinta: el estado es relleno y borde, no solo color. Las cuatro en un renglón, del
    mismo ancho; la leyenda de dos palabras va en dos renglones adentro de su tecla. */
 .recital-pestanas {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 6px;
+  display: flex;
+  gap: 5px;
   margin: 0 0 var(--espacio-2);
 }
 
+/* Cada una del ancho de su leyenda, en un solo renglón: con las cuatro iguales, "UN DESCAMPADO"
+   y "OTRO LUGAR" se partían en dos. */
 .recital-pestana {
+  flex: 1 1 auto;
   min-height: var(--toque-min);
-  padding: 2px 3px;
+  padding: 2px 5px;
   background: transparent;
   color: var(--texto);
   border: 2px solid var(--borde);
@@ -15542,6 +15544,7 @@ html.incrustado .pila {
   font-family: var(--fuente-rotulada);
   font-size: 0.75rem;
   line-height: 1.15;
+  white-space: nowrap;
   text-transform: uppercase;
   touch-action: manipulation;
 }
@@ -15552,9 +15555,10 @@ html.incrustado .pila {
   border-color: var(--texto);
 }
 
-/* En el teléfono más angosto, "DESCAMPADO" no entra en un cuarto del ancho: dos y dos. */
-@media (max-width: 23rem) {
+/* Por debajo de 420 px las cuatro no entran en un renglón: dos y dos. */
+@media (max-width: 26.2rem) {
   .recital-pestanas {
+    display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -15585,7 +15589,7 @@ html.incrustado .pila {
   gap: var(--espacio-1);
   margin: 0;
   padding: 6px 10px 4px;
-  border-bottom: 2px dashed var(--papel-borde);
+  border-bottom: 2px dashed var(--papel-tenue);
   font-family: var(--fuente-rotulada);
   font-size: 0.8rem;
   font-weight: 400;
@@ -15667,19 +15671,62 @@ html.incrustado .pila {
   text-transform: uppercase;
 }
 
+/* El talón: lo que se corta y queda en la mano. Va en la misma fibra que el nombre, más chica:
+   en letra gris y con un recuadro de puntos se leía como un campo vacío. */
 .recital-entrada-talon {
   display: block;
-  padding: 3px 10px 5px;
-  /* El talón: lo que se corta y queda en la mano. La raya va arriba, de lado a lado. */
-  border-top: 2px dashed var(--papel-borde);
-  font-size: 0.78rem;
+  padding: 5px 10px 6px;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.75rem;
   line-height: 1.2;
-  color: var(--papel-tenue);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fondo);
 }
 
-button.recital-entrada:hover,
+/* El troquel: la línea de puntos por donde se corta, **entre** la entrada y el talón, con las
+   dos muescas que le muerden el borde al papel (dos redondeles del color del piso). */
+.recital-entrada-troquel {
+  position: relative;
+  display: block;
+  flex: none;
+  height: 0;
+  margin: 0 7px;
+  border-top: 2px dashed var(--papel-tenue);
+}
+
+.recital-entrada-troquel::before,
+.recital-entrada-troquel::after {
+  content: "";
+  position: absolute;
+  top: -7px;
+  width: 12px;
+  height: 12px;
+  background: var(--fondo);
+  border-radius: 50%;
+}
+
+.recital-entrada-troquel::before {
+  left: -13px;
+}
+
+.recital-entrada-troquel::after {
+  right: -13px;
+}
+
+/* Con puntero, la entrada bajo el mouse se recorta con un contorno de tinta. No cambia de
+   papel: un beige más oscuro se leía como "elegida" o "apagada", y en el teléfono quedaba
+   pegado a la última que se tocó. */
+@media (hover: hover) {
+  button.recital-entrada:hover {
+    outline: 2px solid var(--fondo);
+    outline-offset: -4px;
+  }
+}
+
 button.recital-entrada:focus-visible {
-  background: var(--papel-borde);
+  outline: 3px solid var(--fondo);
+  outline-offset: -5px;
 }
 
 /* El lugar elegido: contorno doble y grueso de tinta, por adentro, y el nombre subrayado. No
@@ -15757,13 +15804,31 @@ button.recital-entrada:focus-visible {
   display: flex;
   align-items: center;
   flex: 0 1 34%;
-  margin: 4px 0;
-  padding: 2px 8px;
-  /* Acostada, el talón tiene su propio recuadro de puntos: entero y no solo el lado, que un
-     borde de un solo costado es la barra lateral que veta `diseno-marca.md`. */
-  border: 2px dashed var(--papel-borde);
-  border-radius: 2px;
-  margin-right: 4px;
+  padding: 2px 10px;
+}
+
+/* Acostada, el troquel va parado entre el cuerpo y el talón, con las muescas arriba y abajo. */
+.recital-entrada--elegida .recital-entrada-troquel {
+  width: 0;
+  height: auto;
+  margin: 7px 0;
+  border-top: 0;
+  border-right: 2px dashed var(--papel-tenue);
+}
+
+.recital-entrada--elegida .recital-entrada-troquel::before,
+.recital-entrada--elegida .recital-entrada-troquel::after {
+  left: -5px;
+  right: auto;
+}
+
+.recital-entrada--elegida .recital-entrada-troquel::before {
+  top: -13px;
+}
+
+.recital-entrada--elegida .recital-entrada-troquel::after {
+  top: auto;
+  bottom: -13px;
 }
 
 .recital-entrada-rotulo {
@@ -15802,6 +15867,108 @@ button.recital-entrada:focus-visible {
 }
 
 /* ---- La hoja ---- */
+
+/* La caja de la hoja del armado. Plegada, **queda pegada arriba** mientras se elige en el cajón:
+   el renglón nuevo se escribe a la vista. Lleva el piso por detrás, hasta los márgenes de la página, para que lo
+   que pasa por abajo no asome por los costados. */
+.recital-hoja-caja {
+  position: relative;
+}
+
+.recital-hoja-caja--pegada {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  padding-bottom: 8px;
+}
+
+.recital-hoja-caja--pegada::before {
+  content: "";
+  position: absolute;
+  inset: 0 calc(-1 * var(--espacio-2));
+  background: var(--fondo);
+}
+
+.recital-hoja-caja--pegada .recital-hoja {
+  margin-top: var(--espacio-2);
+}
+
+.recital-hoja-caja--plegada .recital-hoja {
+  padding: 14px var(--espacio-2) 6px;
+}
+
+/* Plegada, cada renglón es una línea: el título, sin el disco. */
+.recital-hoja-caja--plegada .recital-disco {
+  display: none;
+}
+
+.recital-hoja-caja--plegada .recital-corte {
+  margin: 6px 0 2px;
+}
+
+/* En un teléfono bajo, plegada deja ver solo el último. */
+@media (max-height: 640px) {
+  .recital-hoja-caja--plegada .recital-lista li:not(:last-child),
+  .recital-hoja-caja--plegada .recital-corte {
+    display: none;
+  }
+}
+
+.recital-hoja-cabeza {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-1);
+  min-height: 1.6rem;
+}
+
+.recital-hoja-cabeza .recital-rotulo {
+  margin: 0;
+}
+
+/* El doblez: abre la hoja entera y la vuelve a plegar. Escrito en la tinta del papel y
+   subrayado; el toque mide la zona de pulgar aunque la letra sea chica. */
+.recital-pliegue {
+  min-height: var(--toque-min);
+  margin: -10px 0;
+  padding: 0 4px;
+  background: transparent;
+  color: var(--fondo);
+  border: 0;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  touch-action: manipulation;
+}
+
+/* Cuántos bises hay, al lado de la palabra, cuando la hoja está plegada. */
+.recital-corte-cuenta {
+  order: 3;
+  padding: 0 6px;
+  border: 2px solid var(--fondo);
+  border-radius: 3px;
+  letter-spacing: 0;
+}
+
+/* El tachón: la fibra cruza el título antes de que el tema salga de la lista. Es el trazo de
+   "Sacalo por la letra" (`tachon-pasa`), en la tinta del papel. */
+.recital-renglon--tachado .recital-escrito::after {
+  content: "";
+  position: absolute;
+  inset: 22% -8px 18% -8px;
+  background: var(--fondo);
+  -webkit-mask: url('/arte/por-la-letra/tachon.webp') center / 100% 100% no-repeat;
+  mask: url('/arte/por-la-letra/tachon.webp') center / 100% 100% no-repeat;
+  transform-origin: 0 50%;
+  animation: tachon-pasa var(--duracion-golpe) var(--curva-cinta) both;
+  pointer-events: none;
+}
+
+.recital-renglon--tachado .recital-tema {
+  color: var(--papel-tenue);
+}
 
 .recital-hoja {
   position: relative;
@@ -16146,9 +16313,14 @@ button.recital-entrada:focus-visible {
   }
 }
 
-/* En el talonario las entradas se reparten el ancho: no quedan celdas vacías a la derecha. */
+/* En el talonario las entradas van siempre de a dos, y la que queda sola ocupa el renglón: no
+   quedan celdas vacías, tampoco en la compu. */
 .recital-talonario .recital-lugares {
-  grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.recital-talonario li:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
 }
 
 /* El tema marcado se recorta con un contorno de tinta: un estado es borde, no color. */
@@ -16277,95 +16449,85 @@ button.recital-entrada:focus-visible {
   box-sizing: border-box;
 }
 
-/* Los discos como una tira de tapas que se corre de costado: diez tapas en el ancho de un
-   pulgar, en vez de once botones de texto que se comían media pantalla. La elegida se recorta
-   con borde grueso de tinta y se baja un poco, como una tapa sacada de la pila. */
-.recital-discos {
-  display: flex;
-  gap: 8px;
-  margin: var(--espacio-2) calc(-1 * var(--espacio-2)) 0;
-  padding: 4px var(--espacio-2) 8px;
-  overflow-x: auto;
-  scroll-snap-type: x proximity;
-  scrollbar-width: thin;
-}
-
-.recital-disco-boton {
-  flex: none;
-  width: 60px;
-  height: 60px;
-  padding: 2px;
-  background: transparent;
-  color: var(--texto);
-  border: 2px solid var(--tinta-disco, var(--borde));
-  border-radius: 3px;
-  scroll-snap-align: start;
-  touch-action: manipulation;
-}
-
-.recital-disco-boton img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.recital-disco-boton--todos {
-  font-family: var(--fuente-rotulada);
-  font-size: 0.75rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.recital-disco-boton[aria-pressed="true"] {
-  border: 4px solid var(--texto);
-  translate: 0 4px;
-}
-
-.recital-disco-elegido {
-  margin: 4px 0 var(--espacio-1);
-  font-family: var(--fuente-rotulada);
-  font-size: 0.8rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--texto-tenue);
-}
-
 .recital-temas {
   display: grid;
-  gap: 4px;
-  margin: 0;
+  gap: 6px;
+  margin: var(--espacio-2) 0 0;
   padding: 0;
   list-style: none;
 }
 
-/* La cabecera de cada disco en el cajón: la tapa una sola vez, el título y el año. */
-.recital-temas-disco {
+/* La funda: un disco cerrado, con su tapa, el año y cuántos temas trae. El borde lo tiñe el
+   disco. Abierta, el borde se engruesa, la tapa se tuerce como recién sacada de la pila, y abajo
+   van sus temas: el estado es lo que se ve adentro, no un color. */
+.recital-funda-boton {
   display: flex;
   align-items: center;
   gap: var(--espacio-1);
-  margin-top: var(--espacio-2);
-  padding-bottom: 4px;
-  border-bottom: 2px solid var(--tinta-disco, var(--borde));
+  width: 100%;
+  min-height: 56px;
+  padding: 5px 8px 5px 5px;
+  background: transparent;
+  color: var(--texto);
+  border: 2px solid var(--tinta-disco, var(--borde));
+  border-radius: 3px;
+  font: inherit;
+  text-align: left;
+  touch-action: manipulation;
 }
 
-.recital-temas-disco img {
-  width: 36px;
-  height: 36px;
+.recital-funda-tapa {
+  flex: none;
+  width: 44px;
+  height: 44px;
   border-radius: 2px;
+  object-fit: cover;
 }
 
-.recital-temas-disco strong {
+.recital-funda-texto {
+  display: flex;
   flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.recital-funda-texto strong {
   font-family: var(--fuente-rotulada);
   font-weight: 400;
+  line-height: 1.15;
   letter-spacing: 0.03em;
   text-transform: uppercase;
 }
 
-.recital-temas-disco span {
-  font-size: 0.85rem;
+.recital-funda-texto span,
+.recital-funda-puestos {
+  font-size: 0.8rem;
   color: var(--texto-tenue);
+}
+
+.recital-funda-puestos {
+  flex: none;
+}
+
+.recital-funda-puestos:empty {
+  display: none;
+}
+
+.recital-funda--abierta .recital-funda-boton {
+  border-width: 4px;
+  padding: 3px 6px 3px 3px;
+}
+
+.recital-funda--abierta .recital-funda-tapa {
+  rotate: -6deg;
+}
+
+.recital-funda-temas {
+  display: grid;
+  gap: 4px;
+  margin: 6px 0 var(--espacio-2);
+  padding: 0 0 0 var(--espacio-1);
+  list-style: none;
 }
 
 .recital-temas-nada {
@@ -16448,9 +16610,18 @@ button.recital-entrada:focus-visible {
 .recital-pie {
   position: sticky;
   bottom: 0;
-  z-index: 2;
+  z-index: 4;
   margin-top: var(--espacio-3);
-  padding: var(--espacio-1) 0 calc(var(--espacio-1) + env(safe-area-inset-bottom, 0px));
+  padding: calc(var(--espacio-1) + var(--linea)) 0 calc(var(--espacio-1) + env(safe-area-inset-bottom, 0px));
+}
+
+/* El piso del pie va de lado a lado de la ventana, con su raya arriba: lo que pasa por abajo
+   (un tema, una tapa) no asoma por los costados ni entre sus piezas. */
+.recital-pie::before {
+  content: "";
+  position: absolute;
+  inset: 0 calc(-1 * var(--espacio-2));
+  z-index: -1;
   background: var(--fondo);
   border-top: var(--linea) solid var(--borde);
 }

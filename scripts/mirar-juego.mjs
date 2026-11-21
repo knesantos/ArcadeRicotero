@@ -2205,10 +2205,14 @@ async function armaTuRecital(ctx) {
     if (armado.lugar.tipo === 'teatro') await tocar('[data-clave="pestana-teatro"]');
     await ctx.espera(200);
     await tocar(`[data-clave="lugar-${armado.lugar.slug}"]`);
-    await pagina.waitForSelector('#tablero:not([hidden]) .recital-tema-cajon', { timeout: 8000 });
+    await pagina.waitForSelector('#tablero:not([hidden]) .recital-funda-boton', { timeout: 8000 });
     await tocar('[data-clave="sonido"]');
     for (const i of armado.temas) {
       const pudo = await pagina.evaluate((i) => {
+        // El cajón está plegado por disco: se abre la funda del tema antes de tocarlo.
+        const disco = JSON.parse(document.getElementById('catalogo').textContent).temas[i].disco;
+        const funda = document.querySelector(`[data-clave="funda-${disco}"]`);
+        if (funda?.getAttribute('aria-expanded') === 'false') funda.click();
         const b = document.querySelector(`[data-clave="tema-${i}"]`);
         if (!b || b.disabled) return false;
         b.click();
@@ -2220,7 +2224,7 @@ async function armaTuRecital(ctx) {
     // Los últimos de la lista bajan a los bises hasta llenarlos.
     for (let k = 0; k < 8; k++) {
       const pudo = await pagina.evaluate(() => {
-        const ultimo = [...document.querySelectorAll('.recital-hoja .recital-lista')][0]?.lastElementChild?.querySelector('.recital-renglon-boton');
+        const ultimo = [...document.querySelectorAll('#tablero .recital-hoja .recital-lista')][0]?.lastElementChild?.querySelector('.recital-renglon-boton');
         if (!ultimo) return false;
         ultimo.click();
         const alBis = document.querySelector('.recital-accion--tira');
@@ -2234,6 +2238,20 @@ async function armaTuRecital(ctx) {
     }
     await ctx.espera(500);
     await arriba();
+    await foto('peor-armado-abierto');
+    // Plegada, que es como se elige: la hoja pegada arriba, el cajón y el pie.
+    if ((await pagina.$eval('[data-clave="pliegue"]', (b) => b.getAttribute('aria-expanded'))) === 'true') await tocar('[data-clave="pliegue"]');
+    await pagina.evaluate(() => document.querySelector('#tablero .recital-cajon')?.scrollIntoView({ block: 'start' }));
+    await ctx.espera(300);
+    console.log(
+      `   (peor, plegada: ${JSON.stringify(
+        await pagina.evaluate(() => {
+          const hoja = document.querySelector('.recital-hoja-caja').getBoundingClientRect();
+          const pie = document.querySelector('.recital-pie').getBoundingClientRect();
+          return { hoja: Math.round(hoja.height), pie: Math.round(pie.height), libre: Math.round(pie.top - hoja.bottom), ventana: innerHeight };
+        }),
+      )})`,
+    );
     await foto('peor-armado');
     await foto('peor-armado-entera', { entera: true });
     await anotar('peor, el armado');
@@ -2291,13 +2309,22 @@ async function armaTuRecital(ctx) {
 
   // ---- la entrada viaja a la cabecera del armado
   await rafaga('la-entrada-viaja', () => tocar('[data-clave="lugar-obras"], .recital-talonario .recital-entrada'), { desde: 0, hasta: 900, cada: 4, tope: 12 });
-  await pagina.waitForSelector('#tablero:not([hidden]) .recital-tema-cajon', { timeout: 8000 });
+  await pagina.waitForSelector('#tablero:not([hidden]) .recital-funda-boton', { timeout: 8000 });
   await pausa(700);
   await foto('armado-vacio');
   await foto('armado-vacio-entera', { entera: true });
   await anotar('armado vacío');
 
-  // ---- el primer tema: la hoja está a la vista y el renglón se escribe
+  // ---- el cajón: diez fundas cerradas, y una que se abre
+  await pagina.evaluate(() => document.querySelector('#tablero .recital-cajon')?.scrollIntoView({ block: 'start' }));
+  await ctx.espera(250);
+  await foto('cajon-diez-fundas');
+  await arriba();
+  await rafaga('la-funda-se-abre', () => tocar('#tablero .recital-funda-boton'), { desde: 0, hasta: 600, cada: 3, tope: 12 });
+  await pausa(400);
+  await foto('funda-abierta');
+
+  // ---- el primer tema: el renglón se escribe
   const libres = () => pagina.$$eval('#tablero .recital-tema-cajon:not(:disabled)', (bs) => bs.map((b) => b.dataset.clave));
   const sumar = async (k = 0) => {
     const claves = await libres();
@@ -2305,42 +2332,71 @@ async function armaTuRecital(ctx) {
     await tocar(`[data-clave="${clave}"]`);
     return clave;
   };
-  if (await pagina.$('#tablero .recital-hoja')) {
-    await tira('renglon-se-escribe', () => sumar(0), { ms: 420, sobre: '#tablero .recital-hoja' });
-  } else await sumar(0);
+  await tira('renglon-se-escribe', () => sumar(0), { ms: 420, sobre: '#tablero .recital-hoja' });
   await pausa(600);
   await foto('un-tema-sonando');
   // El casete del pie, girando mientras suena (a velocidad real: lo mueve un reloj).
   await tira('casete-del-pie', async () => {}, { ms: 1000, lento: 1, sobre: '#tablero .recital-pie' });
   await anotar('un tema');
 
-  // ---- con el cajón en pantalla: el papelito vuela a la cuenta y la rueda gira
-  await pagina.evaluate(() => document.querySelector('#tablero .recital-temas')?.scrollIntoView({ block: 'start' }));
+  // ---- eligiendo, con la hoja plegada y pegada arriba: el renglón nuevo se escribe a la vista
+  for (const k of [1, 2]) {
+    await sumar(k);
+    await pausa(500);
+  }
+  await pagina.evaluate(() => document.querySelector('#tablero .recital-funda--abierta')?.scrollIntoView({ block: 'start' }));
   await ctx.espera(300);
-  await rafaga('papelito-a-la-cuenta', () => sumar(2), { desde: 0, hasta: 900, cada: 4, tope: 12 });
+  await rafaga('eligiendo-con-la-hoja-plegada', () => sumar(2), { desde: 0, hasta: 800, cada: 4, tope: 12 });
   await pausa(400);
-  await foto('cajon-eligiendo');
-  for (const k of [3, 5, 8, 9, 12]) {
+  await foto('eligiendo');
+  for (const k of [3, 4, 4]) {
     await sumar(k);
     await pausa(260);
   }
   await pausa(600);
-  await foto('cajon-siete-temas');
-  // "Pará": el casete frena con inercia. (Con la hoja arriba de todo: el recorte de la tira se
-  // mide en la hoja, y con la página corrida saca otra cosa.)
-  await arriba();
-  await tira('casete-frena', () => tocar('[data-clave="pie-parar"]'), { ms: 1100, lento: 1, sobre: '#tablero .recital-pie' });
-  await pausa(300);
+  await foto('eligiendo-siete-temas');
+  console.log(
+    `   (eligiendo: ${JSON.stringify(
+      await pagina.evaluate(() => {
+        const hoja = document.querySelector('.recital-hoja-caja').getBoundingClientRect();
+        const pie = document.querySelector('.recital-pie').getBoundingClientRect();
+        return { hojaArriba: Math.round(hoja.top), hoja: Math.round(hoja.height), pie: Math.round(pie.height), libre: Math.round(pie.top - hoja.bottom), ventana: innerHeight };
+      }),
+    )})`,
+  );
+  await tocar('[data-clave="pie-parar"]');
+  await pausa(900);
 
-  // ---- la hoja: marcar, mover y mandar a los bises
+  // ---- la hoja abierta: marcar, mover, tachar y mandar a los bises
   await arriba();
-  await foto('hoja-siete-temas');
+  await foto('hoja-plegada');
+  await tocar('[data-clave="pliegue"]');
+  await pausa(400);
+  await arriba();
+  await foto('hoja-abierta');
   await pagina.evaluate(() => document.querySelectorAll('#tablero .recital-renglon-boton')[2]?.click());
   await pausa(400);
   await foto('renglon-marcado');
-  await rafaga('renglon-sube', () => tocar('.recital-accion--subir'), { desde: 0, hasta: 500, cada: 3, tope: 12, sobre: '#tablero .recital-hoja' });
+  await rafaga('renglon-sube', () => tocar('.recital-accion--subir'), { desde: 0, hasta: 520, cada: 3, tope: 12, sobre: '#tablero .recital-hoja' });
   await pausa(300);
   await pagina.evaluate(() => document.querySelector('.recital-renglon--marcado .recital-renglon-boton')?.click());
+  // Sacar: la fibra tacha el título, el tema sale y los de abajo suben. Después se lo vuelve a sumar.
+  await pagina.evaluate(() => document.querySelectorAll('#tablero .recital-renglon-boton')[3]?.click());
+  await pausa(300);
+  // (En ráfaga y a velocidad real: el tachón dura lo que un reloj de la isla, que una tira lenta no frena.)
+  await rafaga('tachon', () => tocar('.recital-accion--sacar'), { desde: 0, hasta: 1000, cada: 4, tope: 12, sobre: '#tablero .recital-hoja' });
+  await pausa(700);
+  await rafaga('sale-y-suben', async () => {
+    await pagina.evaluate(() => document.querySelectorAll('#tablero .recital-renglon-boton')[1]?.click());
+    await ctx.espera(150);
+    await tocar('.recital-accion--sacar');
+  }, { desde: 150, hasta: 1300, cada: 5, tope: 12, sobre: '#tablero .recital-hoja' });
+  await pausa(500);
+  for (const k of [0, 0]) {
+    await sumar(k);
+    await pausa(300);
+  }
+  await tocar('[data-clave="pie-parar"]');
   for (let k = 0; k < 2; k++) {
     await pagina.evaluate(() => {
       const lista = document.querySelector('#tablero .recital-hoja .recital-lista');
@@ -2348,28 +2404,28 @@ async function armaTuRecital(ctx) {
       document.querySelector('.recital-accion--tira')?.click();
       document.querySelector('.recital-renglon--marcado .recital-renglon-boton')?.click();
     });
-    await pausa(300);
+    await pausa(450);
   }
   await arriba();
   await foto('hoja-con-bises');
   await foto('armado-entera', { entera: true });
   await anotar('armado con bises');
+  await tocar('[data-clave="pliegue"]');
+  await pausa(300);
+  await foto('hoja-plegada-con-bises');
 
-  // ---- buscar y filtrar por disco
+  // ---- buscar, y otra funda
   await pagina.type('#tablero .recital-buscador', 'ji');
   await pausa(400);
-  await pagina.evaluate(() => document.querySelector('#tablero .recital-buscador')?.scrollIntoView({ block: 'start' }));
-  await ctx.espera(200);
   await foto('buscando');
   await pagina.evaluate(() => {
     const b = document.querySelector('#tablero .recital-buscador');
     b.value = '';
     b.dispatchEvent(new Event('input', { bubbles: true }));
-    document.querySelectorAll('#tablero .recital-disco-boton')[2]?.click();
+    document.querySelectorAll('#tablero .recital-funda-boton')[2]?.click();
   });
   await pausa(400);
-  await foto('un-disco');
-  await pagina.evaluate(() => document.querySelector('#tablero .recital-disco-boton')?.click());
+  await foto('otra-funda');
   await arriba();
 
   // ---- el cierre en dos tiempos: la lista se escribe sola y después entra el pie
@@ -2428,8 +2484,9 @@ async function armaTuRecital(ctx) {
   await pagina.evaluate(() => document.querySelector('#resultado .pie-resultado button.secundario')?.click());
   await pagina.waitForSelector('#eleccion:not([hidden]) .recital-entrada', { timeout: 8000 });
   await tocar('.recital-talonario .recital-entrada');
-  await pagina.waitForSelector('#tablero:not([hidden]) .recital-tema-cajon', { timeout: 8000 });
+  await pagina.waitForSelector('#tablero:not([hidden]) .recital-funda-boton', { timeout: 8000 });
   await tocar('[data-clave="sonido"]');
+  await tocar('#tablero .recital-funda-boton');
   for (const k of [0, 1, 2, 3, 4, 5]) {
     await sumar(k);
     await ctx.espera(60);

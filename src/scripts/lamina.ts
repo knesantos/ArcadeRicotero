@@ -63,7 +63,7 @@ const GRANO_CUADRO = 3;
 const SEPARADOR = ' · ';
 
 /** El valor de un token, tal como lo resolvió el navegador para esta página. */
-function tinta(nombre: string, repuesto = '#ffffff'): string {
+export function tinta(nombre: string, repuesto = '#ffffff'): string {
   const v = getComputedStyle(document.documentElement).getPropertyValue(nombre).trim();
   return v || repuesto;
 }
@@ -81,7 +81,7 @@ async function esperarLetras(): Promise<void> {
 }
 
 /** El grano de serigrafía, como mosaico. La medición está en `tarjeta.ts`. */
-function granular(ctx: CanvasRenderingContext2D, alto: number): void {
+export function granular(ctx: CanvasRenderingContext2D, alto: number): void {
   const mosaico = document.createElement('canvas');
   mosaico.width = GRANO;
   mosaico.height = GRANO;
@@ -227,14 +227,6 @@ export async function dibujarLamina(datos: DatosLamina): Promise<Blob | null> {
     cajon: tinta('--disco-bang-bang-estas-liquidado-apoyo', tinta('--borde')),
   };
 
-  // La hoja de papel (`hoja`): la letra pasa a ser tinta sobre papel, el par del collage.
-  if (datos.hoja) {
-    colores.texto = tinta('--fondo');
-    colores.juego = tinta('--fondo');
-    colores.tenue = tinta('--papel-tenue');
-    colores.borde = tinta('--papel-borde');
-  }
-
   // Las tapas se bajan antes de planificar: una banda de tapas pide alto en función de
   // cuántas entran de ancho, y eso no se puede saber a mitad del dibujo.
   const tapas = await Promise.all(
@@ -267,37 +259,6 @@ export async function dibujarLamina(datos: DatosLamina): Promise<Blob | null> {
   lienzo.height = plan.alto;
   ctx.fillStyle = colores.fondo;
   ctx.fillRect(0, 0, LIENZO.ancho, plan.alto);
-
-  if (datos.hoja) {
-    /*
-     * El piso es la tinta del fondo; encima, la hoja: papel plano, apenas torcida, con cuatro
-     * tiras de cinta cruzadas en las esquinas. Todo lo escrito gira con ella (se suelta antes de
-     * la franja del pie). Sin sombra (`D-64`): la hoja se recorta por su borde y por la cinta.
-     */
-    const aire = 34;
-    const hoja = { x: aire, y: aire, ancho: LIENZO.ancho - aire * 2, alto: plan.alto - FRANJA - aire * 2 };
-    ctx.save();
-    ctx.translate(LIENZO.ancho / 2, plan.alto / 2);
-    ctx.rotate((-0.6 * Math.PI) / 180);
-    ctx.translate(-LIENZO.ancho / 2, -plan.alto / 2);
-    ctx.fillStyle = tinta('--papel');
-    ctx.fillRect(hoja.x, hoja.y, hoja.ancho, hoja.alto);
-    const cinta = (cx: number, cy: number, giro: number): void => {
-      ctx.save();
-      ctx.translate(cx, cy);
-      ctx.rotate((giro * Math.PI) / 180);
-      ctx.fillStyle = colores.borde;
-      ctx.fillRect(-80, -26, 160, 52);
-      ctx.strokeStyle = colores.tenue;
-      ctx.lineWidth = 2;
-      ctx.strokeRect(-80, -26, 160, 52);
-      ctx.restore();
-    };
-    cinta(hoja.x + 14, hoja.y + 18, -40);
-    cinta(hoja.x + hoja.ancho - 14, hoja.y + 18, 38);
-    cinta(hoja.x + 14, hoja.y + hoja.alto - 18, 37);
-    cinta(hoja.x + hoja.ancho - 14, hoja.y + hoja.alto - 18, -41);
-  }
 
   escribirAjustado(ctx, MARCA, MARGEN, en('marca').y, ANCHO_UTIL, CALCO, CUERPOS_LAMINA.marcaSitio, colores.marca);
   escribirAjustado(
@@ -404,18 +365,7 @@ export async function dibujarLamina(datos: DatosLamina): Promise<Blob | null> {
 
     // La raya que cierra la banda. Del color del borde y de ningún disco: acá la tinta
     // diría cuál fila vale más. (En la batea la cierra el cajón.)
-    if (datos.hoja) {
-      // En la hoja la raya es de fibra y de puntos: el corte entre la lista y los bises.
-      ctx.save();
-      ctx.strokeStyle = colores.texto;
-      ctx.lineWidth = 4;
-      ctx.setLineDash([16, 10]);
-      ctx.beginPath();
-      ctx.moveTo(MARGEN, slot.y + slot.alto - 6);
-      ctx.lineTo(MARGEN + ANCHO_UTIL, slot.y + slot.alto - 6);
-      ctx.stroke();
-      ctx.restore();
-    } else if (!datos.batea) {
+    if (!datos.batea) {
       ctx.fillStyle = colores.borde;
       ctx.fillRect(MARGEN, slot.y + slot.alto - 3, ANCHO_UTIL, 2);
     }
@@ -435,9 +385,6 @@ export async function dibujarLamina(datos: DatosLamina): Promise<Blob | null> {
     ctx, datos.sitio, MARGEN, en('sitio').y,
     ANCHO_UTIL, ROTULADA, CUERPOS_LAMINA.pie, colores.tenue,
   );
-
-  // Lo escrito en la hoja ya está: se suelta el giro antes de la franja, que va derecha.
-  if (datos.hoja) ctx.restore();
 
   // La franja del pie: el mismo rojo de Oktubre de `tarjeta.ts` y de `public/tarjeta.png`.
   // Es lo que hace que las tres piezas se reconozcan del mismo lugar.

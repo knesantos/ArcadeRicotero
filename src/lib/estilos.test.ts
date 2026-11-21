@@ -961,7 +961,7 @@ const ISLAS: Readonly<Record<string, Tablero | SinTablero>> = {
   'partida-recital.ts': {
     juego: 'D-72, armá tu recital',
     fuente: leer('src/scripts/partida-recital.ts'),
-    estados: ['.recital-renglon--marcado', '.recital-renglon--sonando', '.recital-renglon--entra', '.recital-pie--suena', '.recital-noche--escribe'],
+    estados: ['.recital-renglon--marcado', '.recital-renglon--sonando', '.recital-renglon--entra', '.recital-pie--suena', '.recital-noche--escribe', '.recital-renglon--tachado', '.recital-hoja-caja--plegada', '.recital-hoja-caja--pegada', '.recital-funda--abierta'],
   },
   // `D-72`: la página "En vivo" de la Redondopedia, que vive en `sitio.css` como el resto de la
   // Redondopedia. Su único estado es el tema que suena.
@@ -1002,6 +1002,7 @@ const ISLAS: Readonly<Record<string, Tablero | SinTablero>> = {
   'compartir.ts': { sinTablero: 'el boton de compartir de tapa, letra y dos ejes (con la tarjeta fija de su identidad, D-57); sus tres clases son las de compartir de juego.css' },
   'correccion.ts': { sinTablero: 'el boton de correccion compartido; abre un formulario, no pinta estado de partida' },
   'diagnostico-audio.ts': { sinTablero: 'pantalla de medicion; sus reglas viven en el <style> de su propia pagina y la cubre la red derivada' },
+  'hoja-recital.ts': { sinTablero: 'pincel de canvas de la hoja de "Armá tu recital" (D-72); dibuja pixeles, no crea nodos con clase' },
   'lamina.ts': { sinTablero: 'pincel de canvas (US-08); dibuja pixeles, no crea nodos con clase' },
   'mosca.ts': { sinTablero: 'la mosca del portal (D-49); su unica clase, la de tomada a mano, vive en sitio.css y la cubre la red derivada' },
   'almanaque.ts': { sinTablero: 'la estampa del cumpleanos en el afiche del mes (D-84); cambia un texto, no crea clases' },
