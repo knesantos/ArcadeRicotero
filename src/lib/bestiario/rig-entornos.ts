@@ -82,7 +82,7 @@ export const OJOS_DEL_ARBOL: Readonly<Record<string, Ojos>> = {
   'el-monito-que-trepa': [474, 374, 'papel'],
   'la-lechuza-que-circula': [800, 98, 'oro'],
   'el-angel-de-la-soledad': [372, 470, 'papel'],
-  'el-angel-guardian': [640, 472, 'papel'],
+  'el-angel-guardian': [556, 470, 'papel'],
   'los-angelitos-profesionales': [730, 526, 'papel'],
   'el-que-duerme-colgado': [612, 382, 'papel'],
   'el-angelito-frito': [176, 532, 'papel'],

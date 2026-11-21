@@ -164,6 +164,31 @@ Las mismas varas sirven para volver sobre el elenco viejo. Por dónde empezar co
   pone tiesa), sumar el elenco a `scripts/bestiario/mirada.ts` cuando esté en la rama, y darles filo de
   luz (el faro-ojo del taxi y los ojos del polizón son los que más lo piden).
 
+## 9. Lo que enseñó la vigesimonovena (planificar con uno, dibujar con otro)
+
+Salen de la vuelta 29 de `D-73`: el hilo principal planificó y criticó, tres diseñadores Fable dibujaron.
+
+- **Dos o tres ideas antes de dibujar, y que elija otro.** Las mejores de la vuelta (la fiera que no se
+  dibuja nunca, el as que cabe en la valija, el embalsamado con una radio en el pecho) eran la preferida
+  de su diseñador entre tres; las descartadas eran "un bicho con un detalle". Pedirlas cuesta poco y
+  ordena todo lo demás.
+- **Lo que mejor funciona es lo que falta.** Una jaula vacía con un collar flotando, un lugar vacío en
+  la repisa de blancos, una percha sin nadie: el hueco se lee quieto y deja la pregunta de la letra viva.
+- **El glow se cuela por los efectos.** Tajos, fogonazos, rayos y aureolas salieron los cuatro con halo
+  en la primera vuelta. Un efecto también es tinta plana con canto roto; si brilla, brilla duro.
+- **Lo tierno se cuela por la cara.** Nariz de pelota, ojos redondos saltones y sonrisa son el default
+  de cualquier mano: el ángel, el Sheriff, el pajarito y el embalsamado nacieron así. Ojeras, párpado a
+  media asta, ojos desparejos, piel picada o de yeso, y la boca floja en vez de la sonrisa.
+- **Un ícono no es un dibujo.** Las ondas "((( )))" de una radio o unas estrellitas de golpe son interfaz.
+  El sonido se muestra en lo que tiembla: la antena, la paja que salta, las patas que repiquetean.
+- **Un hocico largo y gris es una trompa.** La prueba del nombre tapado falla por proporción más que por
+  detalle: el perro necesitó el escalón de la frente, un hocico de un tercio de la cabeza y la boca a la
+  vista. Lo mismo un casco que de lejos es gorra, o un trofeo con los brazos en punta, que es un bolo.
+- **El texto dibujado entra en su soporte.** Una cifra que se sale del cartón parece un error de
+  diagramación; si el chiste es que se sale, que se salga a algo físico (una tira abrochada).
+- **Varios dibujando a la vez**: un andamio en `elenco.ts` y `vivos.ts` con una tanda por diseñador
+  evita los choques, y se pliega al cerrar.
+
 ---
 
 Si algo de acá te queda chico o te frena una buena idea, rompelo y contá por qué en la enmienda de

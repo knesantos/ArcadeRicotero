@@ -1008,8 +1008,8 @@ function barbazulDeLaPrision(svg: Raiz, ctx: Contexto, laDracula: () => number, 
  * vuelve a caminar; cada taco que apoya suena en el piso con dos cortes blancos. Tocada, abre la
  * capa como dos puertas de papel —la mitad negra se achica contra el hombro y del otro lado se
  * despliega el forro, rojo como las banderas de la ventana— y muestra los colmillos. Afuera, las
- * banderas de *Oktubre* flamean detrás de la reja, y la puerta de la jaula vacía de la fiera se
- * mece; tocada la jaula, chirría.
+ * banderas de *Oktubre* flamean detrás de la reja. La jaula de la fiera y su puerta son del elenco
+ * (`scripts/bestiario/fiera.ts`).
  */
 function recintoDeLaPrision(svg: Raiz, ctx: Contexto): Vida {
   const deMapa = recintoDeMapa(svg, ctx);
@@ -1019,7 +1019,6 @@ function recintoDeLaPrision(svg: Raiz, ctx: Contexto): Vida {
   const p = partes(g);
   const sombra = svg.querySelector<SVGEllipseElement>('[data-parte="sombra"]');
   const taco = svg.querySelector<SVGPathElement>('[data-parte="taco"]');
-  const puerta = svg.querySelector<SVGGElement>('[data-parte="puerta-jaula"]');
   const banderas = [...svg.querySelectorAll<SVGGElement>('[data-bandera]')].map((b) => ({
     g: b,
     asta: (b.dataset.asta ?? '0 0').split(' ').map(Number) as [number, number],
@@ -1038,7 +1037,6 @@ function recintoDeLaPrision(svg: Raiz, ctx: Contexto): Vida {
   let parpadeo = 1.5;
   let tacoEn = -10;
   let tacoX = 0;
-  let chirria = -10;
   let ultimoPaso = 0;
   // Quieta, hace una de dos: se acomoda la capa (asoma el forro) o mira para la ventana.
   let acomodaDesde = -10;
@@ -1165,8 +1163,7 @@ function recintoDeLaPrision(svg: Raiz, ctx: Contexto): Vida {
     taco?.setAttribute('opacity', golpe > 0 ? golpe.toFixed(2) : '0');
     if (golpe > 0) taco?.setAttribute('transform', `translate(${tacoX.toFixed(1)} ${piso}) scale(${escala})`);
 
-    // Afuera flamean las banderas, más fuerte cuando ella abre la capa; y la puerta de la jaula
-    // se mece: tocada, chirría y va y viene.
+    // Afuera flamean las banderas, más fuerte cuando ella abre la capa.
     const viento = 1 + 1.6 * k;
     soplo += dt * viento;
     for (const b of banderas) {
@@ -1174,13 +1171,6 @@ function recintoDeLaPrision(svg: Raiz, ctx: Contexto): Vida {
       const rota = Math.sin(soplo * 1.6 + b.fase) * 2.6 * viento;
       const tuerce = Math.sin(soplo * 2.4 + b.fase * 1.7) * 5 * viento;
       b.g.setAttribute('transform', `translate(${ax} ${ay}) rotate(${rota.toFixed(2)}) skewY(${tuerce.toFixed(2)}) translate(${-ax} ${-ay})`);
-    }
-    if (puerta) {
-      const bx = Number(puerta.dataset.bisagra);
-      const u = t - chirria;
-      const vaivien = u >= 0 && u < 4 ? Math.sin(u * 5.5) * 0.36 * Math.exp(-u * 1.1) : 0;
-      const abre = 0.9 + Math.sin(t * 0.7) * 0.05 + vaivien;
-      puerta.setAttribute('transform', `translate(${bx} 0) scale(${Math.min(1, Math.max(0.25, abre)).toFixed(3)} 1) translate(${-bx} 0)`);
     }
   }
 
@@ -1228,10 +1218,7 @@ function recintoDeLaPrision(svg: Raiz, ctx: Contexto): Vida {
     reaccionar: (id, t) => {
       if (id === 'la-dracula-con-tacones') abrirLaCapa(t);
       else if (id === 'barbazul') barbazul.reverencia(t);
-      else if (id === 'la-fiera-mas-fiera') {
-        chirria = t;
-        if (ctx.quieto()) pintar(t + 0.3, 0);
-      } else deMapa.reaccionar(id, t);
+      else deMapa.reaccionar(id, t);
     },
   };
 }

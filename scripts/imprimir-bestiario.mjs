@@ -36,11 +36,15 @@ const { PIEZAS } = await importar('src/lib/bestiario/arte.ts');
 // La séptima vuelta: las tiras largas del camino con cruces, que se caminan de costado.
 const { PIEZAS_CAMINO, piezasDeLosCruces } = await importar('src/lib/bestiario/arte-camino.ts');
 // Y los cruces de `D-77`: necesitan saber quién es vecino de quién, que está en el JSON.
-const { regiones } = JSON.parse(readFileSync(resolve(raiz, 'src/data/bestiario.json'), 'utf-8'));
+const { regiones, bestias } = JSON.parse(readFileSync(resolve(raiz, 'src/data/bestiario.json'), 'utf-8'));
 const CRUCES = piezasDeLosCruces(regiones);
 // La entrada (`D-79`): el portal, el cartel y la tierra del plano, que pinta cada región del JSON.
 const { piezasDelPortal, tierrasDe } = await importar('src/lib/bestiario/arte-portal.ts');
 const PORTAL = piezasDelPortal(tierrasDe(regiones));
+// Los títeres del plano (`D-91`, tanda 6): las dos figuras de cada zona, impresas como cartón recortado.
+const { piezasDeLosTiteres } = await importar('src/lib/bestiario/arte-plano.ts');
+const { tintaDe } = await importar('src/lib/bestiario/mapa.ts');
+const TITERES = piezasDeLosTiteres(bestias, (region) => tintaDe(regiones.find((r) => r.id === region).disco));
 // El aire (`D-90`): la bruma, la niebla rasante y lo pegado a la cámara, en baldosas que se repiten.
 const { PIEZAS_AIRE, PIEZAS_DE_LUZ, PIEZAS_DE_VIDA, PIEZAS_DE_FILO } = await importar('src/lib/bestiario/arte-aire.ts');
 // Los velos de llegada (`D-90`, octava ronda): lo que tapa la pantalla al entrar a una región y se va.
@@ -82,7 +86,7 @@ const hoja = process.argv.includes('--hoja') ? process.argv[process.argv.indexOf
 const solo = process.argv.includes('--solo') ? process.argv[process.argv.indexOf('--solo') + 1].split(',') : null;
 const impresas = [];
 
-for (const p of [...PIEZAS, ...PIEZAS_CAMINO, ...CRUCES, ...PORTAL, ...PIEZAS_AIRE, ...PIEZAS_DE_LUZ, ...PIEZAS_DE_VIDA, ...PIEZAS_DE_FILO, ...PIEZAS_DE_VELO]) {
+for (const p of [...PIEZAS, ...PIEZAS_CAMINO, ...CRUCES, ...PORTAL, ...TITERES, ...PIEZAS_AIRE, ...PIEZAS_DE_LUZ, ...PIEZAS_DE_VIDA, ...PIEZAS_DE_FILO, ...PIEZAS_DE_VELO]) {
   if (solo && !solo.some((prefijo) => p.nombre.startsWith(prefijo))) continue;
   const [x, y, ancho, alto] = p.caja;
   const densidad = p.densidad ?? 2.5;

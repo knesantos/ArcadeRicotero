@@ -1,0 +1,57 @@
+---
+/**
+ * El velo de llegada (`D-90`, octava ronda), que desde `D-91` (`T-530`) hace de loader: la tinta
+ * sólida de abajo, la hoja impresa del destino, y lo que dice que está cargando: el signo de espera
+ * de la región, si tiene (los ojos del monte, los faros de la ruta, la rueda del molino de la
+ * pastura), y un aviso seco si tarda. Los números, en `lib/bestiario/velos.ts`; cómo se mueve, en
+ * `styles/sitio.css`; quién lo suelta, `scripts/bestiario/llegada.ts`.
+ *
+ * Sin JavaScript no hay quien lo suelte: el `<noscript>` lo deja irse enseguida, como antes
+ * (`ADR-03`, molinetes abiertos).
+ */
+import { rutaDePieza } from '../../lib/bestiario/aerografo.ts';
+import { ACECHOS, LUCES } from '../../lib/bestiario/aire.ts';
+import { CAMINO } from '../../lib/bestiario/copy.ts';
+import { SOBRA, VELOS, rutaDelVelo } from '../../lib/bestiario/velos.ts';
+
+interface Props {
+  /** La región a la que se llega, o `EL_PLANO`. */
+  destino: string;
+}
+
+const { destino } = Astro.props;
+const velo = VELOS[destino]!;
+/** Los ojos sin dueño del monte, y la rueda del molino de la pastura: las mismas piezas impresas de la escena. */
+const ojos = velo.signo === 'ojos' ? ACECHOS[destino]! : null;
+const rueda = velo.signo === 'molino' ? LUCES[destino]![0]! : null;
+---
+
+<div
+  class="velo-de-llegada"
+  aria-hidden="true"
+  data-rumbo={velo.rumbo}
+  style={`--velo: url(${rutaDelVelo(destino)}); --sobra: ${SOBRA / 100}; --tinta-velo: ${velo.tinta}`}
+>
+  {ojos && <img class="velo-signo velo-signo--ojos" src={rutaDePieza(ojos.pieza)} width={ojos.ancho} height={ojos.alto} alt="" />}
+  {rueda && <img class="velo-signo velo-signo--molino" src={rutaDePieza(rueda.pieza)} width={rueda.caja[2]} height={rueda.caja[3]} alt="" />}
+  {velo.signo === 'faros' && <span class="velo-signo velo-signo--faros"><i /><i /></span>}
+  <p class="velo-aviso">{CAMINO.cargando}</p>
+</div>
+<noscript>
+  <style is:inline>
+    .velo-de-llegada::before,
+    .velo-de-llegada::after {
+      animation-play-state: running;
+    }
+    .velo-signo,
+    .velo-aviso {
+      display: none;
+    }
+    /* Con movimiento reducido la hoja no se anima: sin nadie que la suelte, no va. */
+    @media (prefers-reduced-motion: reduce) {
+      .velo-de-llegada {
+        display: none;
+      }
+    }
+  </style>
+</noscript>

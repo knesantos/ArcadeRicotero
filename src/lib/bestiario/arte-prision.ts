@@ -534,13 +534,13 @@ function pelo(): string {
    con el blanco: así la drácula, tallada en blanco, se despega de la pared sin un contorno.
 */
 
-const { fuga: [VX, VY], fondo: F, ventana: V, jaula: J } = PRISION;
+const { fuga: [VX, VY], fondo: F, ventana: V } = PRISION;
 const ANCHO = 900;
 const ALTO = 640;
 /**
  * La prisión se agrandó para los dos lados (`MARCO_DEL_RECINTO`): el pasillo de 900 queda igual, y
  * para afuera siguen las paredes de los costados, ya pegadas al que mira, con una celda más de cada
- * lado. La jaulita del pajarito se descolgó de arriba de Barbazul y cuelga en el ala de la izquierda.
+ * lado. La jaulita del pajarito, que colgaba en el ala de la izquierda, es títere del elenco (`arte-pajarito.ts`).
  */
 const SALA = marcoDelRecinto('la-prision');
 const [S0, S1] = [SALA.x, SALA.x + SALA.ancho];
@@ -548,8 +548,6 @@ const [S0, S1] = [SALA.x, SALA.x + SALA.ancho];
 const U_DEL_ALA = Math.min((S0 - 10) / F.x0, (ANCHO - (S1 + 10)) / (ANCHO - F.x1));
 /** Las celdas de las alas, en el `u` de `enPared`: la reja grande, de tan cerca. */
 export const CELDAS_DE_LAS_ALAS = { u0: -0.9, u1: -0.3, alto: 0.6 } as const;
-/** La jaulita del pajarito del Lavi-rap: el medio, de dónde cuelga y lo que mide. */
-export const JAULITA = { x: -130, arriba: 124, alto: 56, ancho: 44 } as const;
 
 /** La ventana: el hueco con el arco. */
 function hueco(): string {
@@ -607,25 +605,6 @@ function celda(lado: number, u0: number, u1: number, alto: number, tinta: string
     `<g filter="url(#gubia)"><path d="${barrotes + travesanio(alto * 0.18) + travesanio(alto * 0.82)}" fill="${tinta}"/>` +
     `<path d="${trazo([enPared(lado, u0, 0), enPared(lado, u0, alto), enPared(lado, u1, alto)], 4 * (1 - u0 * 0.6), semilla + 50, () => 1)}" fill="${tinta}"/></g>`
   );
-}
-
-/** Una jaulita colgada, de las lindas: la del pajarito del Lavi-rap. */
-function jaulita(cx: number, arriba: number, alto: number, ancho: number, semilla: number): string {
-  const r = ancho / 2;
-  let d = trazo([[cx, 0], [cx + 1, arriba / 2], [cx, arriba - 10]], 1.6, semilla, () => 1);
-  // El aro de colgar, la cúpula y los barrotes que bajan de la cúpula.
-  d += trazo([[cx - 5, arriba - 8], [cx, arriba - 16], [cx + 5, arriba - 8]], 1.6, semilla + 1, () => 1);
-  for (let i = 0; i <= 8; i++) {
-    const t = i / 8;
-    const x = cx - r + ancho * t;
-    const tope = arriba + r * (1 - Math.sin(Math.PI * t)) * 0.9;
-    d += trazo([[cx, arriba], [(cx + x) / 2, (arriba + tope) / 2 - 3], [x, tope + 4], [x, arriba + alto]], 1.3, semilla + 2 + i, () => 1);
-  }
-  d += trazo([[cx - r - 3, arriba + alto], [cx, arriba + alto + 2], [cx + r + 3, arriba + alto]], 3, semilla + 20, () => 1);
-  d += trazo([[cx - r, arriba + r * 0.9 + 4], [cx, arriba + r * 0.9 + 5], [cx + r, arriba + r * 0.9 + 4]], 1.4, semilla + 21, () => 1);
-  // El palito adentro, donde se para.
-  d += trazo([[cx - r + 6, arriba + alto - 16], [cx + r - 6, arriba + alto - 16]], 1.4, semilla + 22, () => 1);
-  return `<path d="${d}" fill="${T.papel}" filter="url(#gubia)"/>`;
 }
 
 /**
@@ -738,12 +717,12 @@ function prisionLejos(): string {
     `<path d="M604 ${F.piso} L604 262 L640 262 L640 ${F.piso} Z" fill="${T.negro}"/>` +
     `<path d="${trazo([[600, F.piso], [600, 258], [644, 258], [644, F.piso]], 3, 372, () => 1)}" fill="${T.gris}" filter="url(#gubia)"/>` +
     `<path d="${[612, 622, 632].map((x, i) => trazo([[x, 276], [x, 300]], 1.8, 373 + i, () => 1)).join('') + trazo([[608, 276], [636, 276]], 1.8, 377, () => 1) + trazo([[608, 300], [636, 300]], 1.8, 378, () => 1)}" fill="${T.gris}" filter="url(#gubia)"/>` +
-    // El foco y la jaulita, colgados del techo.
+    // El foco, colgado del techo.
     // La luz del foco va sobre todo, menos sobre la calle.
     `<clipPath id="pr-sin-calle"><path d="M0 0 H${ANCHO} V${ALTO} H0 Z ${hueco()}" clip-rule="evenodd"/></clipPath>` +
     `<g clip-path="url(#pr-sin-calle)" filter="url(#gubia)"><path d="${tallar(rayosDelFoco, luzDelFoco, { ancho: 1.6, umbral: [0.12, 0.9], punta: 14, semilla: 321 })}" fill="${T.papel}"/></g>` +
-    `<path d="${trazo([[foco[0], 0], [foco[0], foco[1] - 10]], 1.6, 322, () => 1) + curva([[foco[0] - 4.5, foco[1] - 4], [foco[0], foco[1] - 10], [foco[0] + 4.5, foco[1] - 4], [foco[0] + 3.6, foco[1] + 3], [foco[0], foco[1] + 6], [foco[0] - 3.6, foco[1] + 3]])}" fill="${T.papel}" filter="url(#gubia)"/>` +
-    jaulita(JAULITA.x, JAULITA.arriba, JAULITA.alto, JAULITA.ancho, 380)
+    `<path d="${trazo([[foco[0], 0], [foco[0], foco[1] - 10]], 1.6, 322, () => 1) + curva([[foco[0] - 4.5, foco[1] - 4], [foco[0], foco[1] - 10], [foco[0] + 4.5, foco[1] - 4], [foco[0] + 3.6, foco[1] + 3], [foco[0], foco[1] + 6], [foco[0] - 3.6, foco[1] + 3]])}" fill="${T.papel}" filter="url(#gubia)"/>`
+    // La jaulita del pajarito ya no se talla acá: es títere del elenco (`arte-pajarito.ts`), colgada en el mismo lugar.
   );
 }
 
@@ -780,52 +759,15 @@ function bandera(i: number): string {
   );
 }
 
-/** La jaula vacía de la fiera más fiera: abierta, con la cadena rota y un hueso. Sin la puerta, que es aparte. */
+/** La columna de adelante a la izquierda, con una cadena colgando. La jaula de la fiera es del elenco (`arte-fiera.ts`). */
 function prisionFrente(): string {
-  const { x0, x1, arriba, piso } = J;
-  const cx = (x0 + x1) / 2;
-  const r = (x1 - x0) / 2;
-  let barrotes = '';
-  let filos = '';
-  for (let i = 0; i <= 9; i++) {
-    const t = i / 9;
-    const x = x0 + (x1 - x0) * t;
-    if (i === 1 || i === 2) continue; // el hueco de la puerta
-    const tope = arriba + r * 0.55 * (1 - Math.sin(Math.PI * t));
-    barrotes += trazo([[cx, arriba - 6], [(cx + x) / 2, (arriba + tope) / 2 - 8], [x, tope + 10], [x, piso]], 5, 430 + i, () => 1);
-    filos += trazo([[x + 1.4, tope + 14], [x + 1.6, (tope + piso) / 2], [x + 1.4, piso - 4]], 1.6, 440 + i);
-  }
-  for (const y of [arriba + r * 0.55 + 6, piso - 70]) barrotes += trazo([[x0 - 4, y], [cx, y + 1], [x1 + 4, y]], 5, 450 + y, () => 1);
-  // El piso de la jaula y la argolla de arriba.
-  const base = trazo([[x0 - 10, piso], [cx, piso + 1], [x1 + 10, piso]], 12, 460, () => 1);
-  const argolla: P[] = [];
-  for (let k = 0; k <= 16; k++) argolla.push([cx + Math.cos((k / 16) * Math.PI * 2) * 8, arriba - 14 + Math.sin((k / 16) * Math.PI * 2) * 8]);
-  // Adentro: la cadena rota, tirada, y un hueso roído.
-  const cadena = Array.from({ length: 6 }, (_, i) => {
-    const [x, y] = [x1 - 24 - i * 13, piso - 6 - Math.sin(i * 0.9) * 4];
-    return `M${x - 6} ${y} a6 3.6 ${i % 2 ? 20 : -20} 1 0 12 0 a6 3.6 ${i % 2 ? 20 : -20} 1 0 -12 0 Z`;
-  }).join('');
-  const hueso = trazo([[cx - 22, piso - 10], [cx - 4, piso - 14], [cx + 14, piso - 12]], 5, 470, () => 1) + `M${cx - 26} ${piso - 10} a4 4 0 1 0 8 -3 a4 4 0 1 0 -8 3 Z M${cx + 12} ${piso - 12} a4 4 0 1 0 8 -1 a4 4 0 1 0 -8 1 Z`;
-  // La columna de adelante a la izquierda, con una cadena colgando.
   const columna: P[] = [[0, 0], [34, 0], [30, ALTO], [0, ALTO]];
   const luzColumna = tono(0, [{ c: [30, 320], r: [8, 340], peso: 0.7, blando: 0.8 }]);
   const colgando = Array.from({ length: 9 }, (_, i) => `M${44} ${i * 15 - 2} a3.4 7 ${i % 2 ? 0 : 90} 1 0 0.1 0 Z`).join('');
   return (
-    `<g filter="url(#gubia)"><path d="${barrotes + base}" fill="${T.papel}"/><path d="${filos}" fill="${T.negro}"/>` +
-    `<path d="${trazo(argolla, 2.6, 461, () => 1)}" fill="${T.papel}"/>` +
-    `<path d="${cadena}" fill="none" stroke="${T.papel}" stroke-width="1.8"/><path d="${hueso}" fill="${T.papel}"/></g>` +
     plancha('pr-columna', poli(columna), { negro: T.negro, papel: T.papel, tallas: tallar(siguiendo([[24, 0], [26, 200], [26, 420], [24, ALTO]], { n: 5, separacion: 3, semilla: 480 }), luzColumna, { ancho: 2.4, umbral: [0.1, 0.9], punta: 30, semilla: 481 }), caja: [0, 0, 60, ALTO] }) +
     `<path d="${colgando}" fill="none" stroke="${T.papel}" stroke-width="2" filter="url(#gubia)"/>`
   );
-}
-
-/** La puerta de la jaula, abierta: gira en su bisagra, del lado de adentro de la jaula. */
-function puertaDeJaula(): string {
-  const { x, arriba, abajo, ancho } = J.puerta;
-  let d = '';
-  for (let i = 0; i <= 3; i++) d += trazo([[x - (ancho * i) / 3, arriba], [x - (ancho * i) / 3, abajo]], 4.4, 490 + i, () => 1);
-  for (const y of [arriba, (arriba + abajo) / 2, abajo]) d += trazo([[x + 2, y], [x - ancho - 2, y]], 4.4, 495 + y, () => 1);
-  return `<g filter="url(#gubia)"><path d="${d}" fill="${T.papel}"/><path d="${trazo([[x - ancho + 1.4, arriba + 6], [x - ancho + 1.6, abajo - 6]], 1.4, 499)}" fill="${T.negro}"/></g>`;
 }
 
 /* ------------------------------------------------------------------
@@ -851,14 +793,10 @@ export const PIEZAS_DRACULA: readonly Pieza[] = [
   { nombre: 'dracula-cabeza', caja: cajaDe(PELO_ATRAS, 8), dibujo: cabeza(), densidad: 4 },
 ];
 
-const { puerta: PJ } = PRISION.jaula;
-
 export const PIEZAS_PRISION: readonly Pieza[] = [
   { nombre: 'prision-lejos', caja: [S0, 0, S1 - S0, ALTO], dibujo: prisionLejos(), opaca: true, densidad: 1.7, calidad: 72 },
   ...BANDERAS.map((b, i): Pieza => ({ nombre: `prision-bandera-${i + 1}`, caja: cajaDe(b.poligono.map(deLaTapa), 2), dibujo: bandera(i), densidad: 3 })),
   { nombre: 'prision-reja', caja: [V.x0 - 22, V.clave - 26, V.x1 - V.x0 + 44, V.abajo - V.clave + 48], dibujo: prisionReja(), densidad: 2 },
   { nombre: 'prision-columna', caja: [0, 0, 64, ALTO], dibujo: prisionFrente(), densidad: 2 },
-  { nombre: 'prision-jaula', caja: [J.x0 - 16, J.arriba - 30, J.x1 - J.x0 + 32, ALTO - J.arriba + 30], dibujo: prisionFrente(), densidad: 2 },
-  { nombre: 'prision-puerta', caja: [PJ.x - PJ.ancho - 8, PJ.arriba - 8, PJ.ancho + 16, PJ.abajo - PJ.arriba + 16], dibujo: puertaDeJaula(), densidad: 2 },
   ...PIEZAS_DRACULA,
 ];

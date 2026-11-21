@@ -63,10 +63,23 @@ export interface CapaDeAire {
   /** Lo que se hamaca de costado, en unidades, y a qué ritmo: la ropa tendida, los juncos. */
   mece: number;
   ritmoMece: number;
+  /**
+   * Lo que salta (`D-91`, tanda 2): cuánto baja y vuelve a subir, en unidades, y a qué ritmo. Es el pogo
+   * del galpón: la gente está impresa arriba del salto y cae `salta` unidades; el borde de abajo se pierde
+   * afuera de la pantalla. `faseSalta` corre el compás, así dos filas no saltan juntas.
+   */
+  salta: number;
+  ritmoSalta: number;
+  faseSalta: number;
   /** La pieza ya la pinta y la imprime otro (`arte-entornos.ts`): acá solo se la mueve. */
   ajena?: boolean;
   /** Si suena (`entorno.ts`): el viento sube y baja con el alfa de la capa. */
   suena?: 'viento';
+  /**
+   * Una capa de `fondo` que el alivio no apaga (`D-91`): no es bruma, es dibujo. Los troncos gordos del
+   * monte son la mitad del bosque; un teléfono flojo se queda sin la niebla, no sin los árboles.
+   */
+  firme?: boolean;
 }
 
 const capa = (c: Partial<CapaDeAire> & Pick<CapaDeAire, 'pieza' | 'plano' | 'f' | 'y' | 'alto' | 'ancho'>): CapaDeAire => ({
@@ -78,17 +91,33 @@ const capa = (c: Partial<CapaDeAire> & Pick<CapaDeAire, 'pieza' | 'plano' | 'f' 
   abre: 0,
   mece: 0,
   ritmoMece: 0.8,
+  salta: 0,
+  ritmoSalta: 6,
+  faseSalta: 0,
   ...c,
 });
 
 /**
- * La bruma de atrás, la niebla rasante y lo pegado a la cámara del monte. La pastura es un claro
- * del mismo monte (`camino.ts`): respira el mismo aire.
+ * El monte (`D-91`): atrás del piso ya no hay una bruma suelta sino **los troncos de adelante** del
+ * bosque, impresos en una baldosa que se corre más rápido que lo lejano y más despacio que el piso.
+ * Es lo que da el fondo de verdad al caminar: tres planos de árboles que se cruzan. La bruma de atrás
+ * está impresa entre los planos de lo lejano. La rasante y lo pegado a la cámara siguen.
  */
 const DEL_MONTE: readonly CapaDeAire[] = [
-  capa({ pieza: 'aire-monte-bruma', plano: 'fondo', f: 0.72, y: 110, alto: 320, ancho: 1200, deriva: 5, alfa: 0.7, late: 0.12, ritmo: 0.23 }),
+  capa({ pieza: 'aire-monte-troncos', plano: 'fondo', f: 0.72, y: 0, alto: 360, ancho: 1400, firme: true }),
   capa({ pieza: 'aire-monte-rasante', plano: 'medio', f: 1.12, y: 300, alto: 340, ancho: 1400, deriva: -9, alfa: 0.82, late: 0.1, ritmo: 0.31, abre: 0.6 }),
   capa({ pieza: 'aire-monte-cerca', plano: 'cerca', f: 1.75, y: 380, alto: 260, ancho: 1600 }),
+];
+
+/**
+ * La pastura (`D-91`) dejó de respirar el aire del monte: es campo abierto. **La ola**: el viento que
+ * pasa por el pasto, frentes de puntas claras que cruzan rápido y se pierden. **La rasante**: niebla
+ * baja, chata, que lame el piso y se abre al caminar. Y pegado a la cámara, pasto alto que se hamaca.
+ */
+const DE_LA_PASTURA: readonly CapaDeAire[] = [
+  capa({ pieza: 'aire-pastura-ola', plano: 'medio', f: 1.04, y: 330, alto: 270, ancho: 1300, deriva: -64, alfa: 0.6, late: 0.3, ritmo: 0.43, suena: 'viento' }),
+  capa({ pieza: 'aire-pastura-rasante', plano: 'medio', f: 1.12, y: 380, alto: 260, ancho: 1400, deriva: 8, alfa: 0.8, late: 0.1, ritmo: 0.27, abre: 0.6 }),
+  capa({ pieza: 'aire-pastura-cerca', plano: 'cerca', f: 1.75, y: 420, alto: 220, ancho: 1600, mece: 5, ritmoMece: 0.8 }),
 ];
 
 /**
@@ -97,7 +126,7 @@ const DEL_MONTE: readonly CapaDeAire[] = [
  */
 export const AIRE: Readonly<Record<string, readonly CapaDeAire[]>> = {
   'el-monte': DEL_MONTE,
-  'la-pastura': DEL_MONTE,
+  'la-pastura': DE_LA_PASTURA,
   // Cybersiberia: el vaho helado contra la chapa, la ventisca que cruza el piso y los médanos de nieve pegados a la cámara.
   cybersiberia: [
     capa({ pieza: 'aire-cyber-vaho', plano: 'fondo', f: 0.8, y: 110, alto: 320, ancho: 1200, deriva: -12, alfa: 0.75, late: 0.15, ritmo: 0.19 }),
@@ -112,19 +141,25 @@ export const AIRE: Readonly<Record<string, readonly CapaDeAire[]>> = {
   ],
   // Los astilleros: la bruma del río detrás del muelle, el vaho que sube del agua y los fierros del muelle fuera de foco.
   'los-astilleros': [
-    capa({ pieza: 'aire-astillero-bruma', plano: 'fondo', f: 0.7, y: 110, alto: 320, ancho: 1200, deriva: 7, alfa: 0.7, late: 0.1, ritmo: 0.21 }),
+    // Tanda 3 de `D-91`: la bruma de atrás ahora está impresa en lo lejano, entre la otra orilla y el carguero.
+    // En su lugar va **el río**: una franja angosta, pegada al muelle, de destellos de sodio y rayas de tiza
+    // que la corriente lleva de costado. Es chica: es agua que se mueve, no una capa de pantalla. Tercera vuelta: llega
+    // hasta la otra orilla (128 de alto), y el carguero va pintado encima de ella, así no le corre por el casco.
+    capa({ pieza: 'aire-astillero-rio', plano: 'fondo', f: 0.9, y: 312, alto: 128, ancho: 1200, deriva: 20, alfa: 0.86, late: 0.14, ritmo: 0.9 }),
     capa({ pieza: 'aire-astillero-vaho', plano: 'medio', f: 1.1, y: 300, alto: 340, ancho: 1400, deriva: 11, alfa: 0.75, late: 0.14, ritmo: 0.29, abre: 0.45 }),
     capa({ pieza: 'aire-astillero-cerca', plano: 'cerca', f: 1.75, y: 420, alto: 220, ancho: 1600 }),
   ],
   // El infierno: el humo que se arrastra por el damero y la ceniza encendida que sube. Es un recinto (una sola capa), y el aire le da el fondo que no tenía.
   'el-infierno': [
+    // El calor que tiembla (hebras claras que vibraban contra la pared) se probó en la segunda vuelta de la
+    // tanda 2 de `D-91` y se sacó en la tercera: en una tira de seis cuadros no se leía, y era una capa más.
     capa({ pieza: 'aire-infierno-humo', plano: 'medio', f: 1.15, y: 250, alto: 390, ancho: 1300, deriva: 8, alfa: 0.8, late: 0.14, ritmo: 0.27, abre: 0.4 }),
     capa({ pieza: 'aire-infierno-ceniza', plano: 'cerca', f: 1.5, y: 0, alto: ALTO, ancho: 800, deriva: 9, cae: -34, alfa: 0.9, late: 0.1, ritmo: 0.9 }),
   ],
   // La ruta (tercera ronda): la bruma baja del horizonte, el polvo que levantan los fierros y los pastos de la banquina.
   'la-ruta': [
     capa({ pieza: 'aire-ruta-bruma', plano: 'fondo', f: 0.6, y: 110, alto: 320, ancho: 1200, deriva: 4, alfa: 0.7, late: 0.1, ritmo: 0.2 }),
-    capa({ pieza: 'aire-ruta-polvo', plano: 'medio', f: 1.2, y: 250, alto: 390, ancho: 1300, deriva: 46, alfa: 0.55, late: 0.25, ritmo: 0.41, abre: 0.2 }),
+    capa({ pieza: 'aire-ruta-polvo', plano: 'medio', f: 1.2, y: 410, alto: 230, ancho: 1300, deriva: 46, alfa: 0.55, late: 0.25, ritmo: 0.41, abre: 0.2 }),
     capa({ pieza: 'aire-ruta-cerca', plano: 'cerca', f: 1.75, y: 420, alto: 220, ancho: 1600, mece: 3, ritmoMece: 0.9 }),
   ],
   // Los tres recintos que siguen son de una sola capa y cada uno viste la mano de su disco: el aire
@@ -132,6 +167,8 @@ export const AIRE: Readonly<Record<string, readonly CapaDeAire[]>> = {
   // sobre el agua y juncos.
   'el-bajo': [
     capa({ pieza: 'aire-bajo-vaho', plano: 'medio', f: 1.1, y: 380, alto: 260, ancho: 1300, deriva: 7, alfa: 0.7, late: 0.16, ritmo: 0.3, abre: 0.4 }),
+    // La niebla al ras (una franja de rayas claras en la línea de Pierre) entró en la segunda vuelta de la tanda 4 de `D-91`
+    // y se fue en la tercera: en las capturas casi no se leía, y el bajo venía midiendo más caro que en main.
     capa({ pieza: 'aire-bajo-cerca', plano: 'cerca', f: 1.75, y: 440, alto: 200, ancho: 1600, mece: 4, ritmoMece: 0.7 }),
   ],
   // Los techos (rehechos en la cuarta ronda): el humo de las chimeneas, a rayas de pastel claras como
@@ -140,6 +177,9 @@ export const AIRE: Readonly<Record<string, readonly CapaDeAire[]>> = {
   'los-techos': [
     capa({ pieza: 'aire-techos-ropa', plano: 'medio', f: 0.72, y: 150, alto: 190, ancho: 1600, mece: 5, ritmoMece: 0.9, alfa: 0.9 }),
     capa({ pieza: 'aire-techos-humo', plano: 'medio', f: 0.85, y: 40, alto: 380, ancho: 1300, deriva: -11, alfa: 0.55, late: 0.14, ritmo: 0.33, mece: 6, ritmoMece: 0.5 }),
+    // Tanda 4 de `D-91`, segunda vuelta: la niebla baja del baldío, en tandas de rayas de pastel acostadas. Anda a ras
+    // de la tierra, más rápido que el piso, y se abre al caminar.
+    capa({ pieza: 'aire-techos-rasante', plano: 'medio', f: 1.12, y: 410, alto: 210, ancho: 1300, deriva: 9, alfa: 0.6, late: 0.14, ritmo: 0.29, abre: 0.55 }),
   ],
   // La prisión es madera tallada (*Oktubre*): el frío es un rayado de gubia a ras del piso, y lo
   // pegado a la cámara son los barrotes, de arriba abajo. Se mira desde otra celda.
@@ -149,7 +189,12 @@ export const AIRE: Readonly<Record<string, readonly CapaDeAire[]>> = {
   ],
   // Las cuatro que faltaban (quinta ronda). La mesa: el humo que sube, fino, del lado de la olla. Es
   // tinta plana con grano, como el afiche de *La mosca y la sopa*: volutas de papel, no una nube.
-  'la-mesa': [capa({ pieza: 'aire-mesa-humo', plano: 'medio', f: 1.1, y: 0, alto: ALTO, ancho: 900, deriva: 4, cae: -15, alfa: 0.55, late: 0.12, ritmo: 0.3, mece: 5, ritmoMece: 0.5 })],
+  'la-mesa': [
+    capa({ pieza: 'aire-mesa-humo', plano: 'medio', f: 1.1, y: 0, alto: ALTO, ancho: 900, deriva: 4, cae: -15, alfa: 0.55, late: 0.12, ritmo: 0.3, mece: 5, ritmoMece: 0.5 }),
+    // Las moscas en capa (un puñado suelto que derivaba sobre la mesa) entraron en la primera vuelta de la tanda 2
+    // de `D-91` y se fueron en la tercera, por la cuenta: medida en pares contra main, la mesa pasaba del +15 %.
+    // Quedan las moscas que importan: la del elenco, el moscón del vaso y el moscardón que cruza (`VIDAS`).
+  ],
   // El templo: el incienso, que sube en hebras tibias entre los focos de la guirnalda.
   'el-templo': [
     // Las ofrendas (sexta ronda): velas, platitos y el humo que baja, en el piso, entre el medallón y el
@@ -161,11 +206,26 @@ export const AIRE: Readonly<Record<string, readonly CapaDeAire[]>> = {
   ],
   // El árbol: las hojas que se le caen, y la racha que las lleva de costado cuando sopla en la copa.
   'el-arbol': [
+    // Lo que cuelga de las ramas grandes se hamacó en una capa de aire en la segunda vuelta de la tanda 3 de `D-91`,
+    // y en la tercera salió de acá: son piezas del piso que la isla gira desde su nudo (`COLGANTES`, `arte-bonete.ts`).
     capa({ pieza: 'aire-arbol-racha', plano: 'medio', f: 1.2, y: 60, alto: 400, ancho: 1300, deriva: -70, alfa: 0.34, late: 0.3, ritmo: 0.37, mece: 10, ritmoMece: 0.6, suena: 'viento' }),
     capa({ pieza: 'aire-arbol-hojas', plano: 'cerca', f: 1.4, y: 0, alto: ALTO, ancho: 900, deriva: -16, cae: 30, alfa: 0.95, mece: 12, ritmoMece: 0.9 }),
   ],
-  // El galpón: el polvo del recital, que se ve donde le pega el seguidor.
-  'el-galpon': [capa({ pieza: 'aire-galpon-polvo', plano: 'medio', f: 1.15, y: 40, alto: 420, ancho: 1300, deriva: 9, alfa: 0.6, late: 0.2, ritmo: 0.33 })],
+  // El galpón (`D-91`, tanda 2): la gente es la mitad del recital. El humo del escenario, que baja sobre
+  // los del fondo (trae adentro el polvo que ya había), y el pogo, la fila del medio, que salta. La fila
+  // grande va en `frente`.
+  // Segunda vuelta: el pogo son **dos capas que se alternan**, montón por medio, y saltan a contratiempo:
+  // el de al lado siempre está en otro momento del salto. Se probó partir una sola capa en ocho gajos con
+  // su salto cada uno (una ola de verdad): medido con control, duplicaba el tiempo de cuadro, y se sacó.
+  // Para hacerle lugar a la segunda se fue lo pegado a la cámara, que eran bultos negros y era lo que menos sumaba.
+  'el-galpon': [
+    // Tercera vuelta, por la cuenta: las tres capas se achicaron un tercio (lo que cuesta una capa es su
+    // superficie). El humo ya no baja de la tercera fila, y el pogo termina donde lo tapa la fila grande:
+    // de ahí para abajo era gente negra detrás de gente negra.
+    capa({ pieza: 'aire-galpon-humo', plano: 'medio', f: 1.06, y: 296, alto: 176, ancho: 1300, deriva: -7, alfa: 0.74, late: 0.16, ritmo: 0.29, abre: 0.35 }),
+    capa({ pieza: 'aire-galpon-pogo', plano: 'medio', f: 1.12, y: 400, alto: 164, ancho: 1400, salta: 13, ritmoSalta: 5.6 }),
+    capa({ pieza: 'aire-galpon-pogo-b', plano: 'medio', f: 1.17, y: 400, alto: 164, ancho: 1400, salta: 15, ritmoSalta: 5.6, faseSalta: 1.25 }),
+  ],
 };
 
 /** Las capas de aire de una región, de atrás para adelante adentro de cada plano; vacío si no tiene. */
@@ -189,6 +249,17 @@ export function corridaDeAire(c: CapaDeAire, cam: number, t: number, suelta: boo
   const hamaca = c.mece ? Math.sin(t * c.ritmoMece) * c.mece : 0;
   const x = -resto(paralaje - c.deriva * t - hamaca, c.ancho);
   return { x: x === 0 ? 0 : x, y: alto ? resto(c.cae * t, alto) : 0 };
+}
+
+/**
+ * Cuánto bajó una capa que salta, en unidades de escena: de 0 (arriba, donde está impresa) a `salta`
+ * (apoyada). Es el rebote de una pelota: sube rápido, cuelga y cae; y la fuerza va y viene, porque un
+ * pogo no salta parejo toda la noche. Las que no saltan, cero.
+ */
+export function saltoDeAire(c: CapaDeAire, t: number): number {
+  if (!c.salta) return 0;
+  const ganas = 0.45 + 0.55 * Math.sin(t * 0.21 + c.faseSalta * 1.7) ** 2;
+  return c.salta * (1 - Math.abs(Math.sin(t * c.ritmoSalta + c.faseSalta)) * ganas);
 }
 
 /**
@@ -251,7 +322,43 @@ export interface Luz {
    * cuando les pasa por encima, con qué pieza, y hasta qué ángulo (en grados, a cada lado del haz).
    */
   filo?: { pieza: string; cuantos: number; abre: number };
+  /**
+   * Lo que la luz le prende a lo impreso (`D-91`, tanda 2, tercera vuelta): piezas con el canto encendido
+   * de algo que no es un títere (la gente del galpón), cada una en su zona. La isla le sube el alfa a la
+   * zona a la que apunta el haz (`angulo`, en grados; `abre`, a cada lado). `f` y `caja`: la capa con la
+   * que va y dónde, en unidades de esa capa.
+   */
+  cantos?: readonly { pieza: string; f: number; caja: readonly [number, number, number, number] }[];
+  /** La altura, en unidades del piso, a la que el haz llega a lo que prende (las cabezas de la fila grande). */
+  cantosEn?: number;
 }
+
+/**
+ * Dónde cae el haz de una luz, en unidades de una capa que va a velocidad `f` (cuarta vuelta de la tanda 2
+ * de `D-91`). El haz sale de `(x, y)` del piso apuntando `grados` (0, para abajo; positivo, para la
+ * izquierda) y llega a la altura `hasta`. La luz va con el piso y lo que prende con otra capa: lo que en
+ * el piso está en `x` se ve, con la cámara en `cam` (unidades de escena), donde esa capa tiene `x + (f − 1)·cam`.
+ */
+export function dondeCaeElHaz(x: number, y: number, grados: number, hasta: number, f: number, cam: number): number {
+  return x - Math.tan((grados * Math.PI) / 180) * (hasta - y) + (f - 1) * cam;
+}
+
+/** Cuánto le toca a una zona de canto, de 0 a 1, con el haz cayendo en `xf` de su capa: de lleno en el medio y nada a tres cuartos de su ancho. */
+export function tocaLaZona(xf: number, caja: readonly [number, number, number, number]): number {
+  const k = 1 - Math.abs(xf - (caja[0] + caja[2] / 2)) / (caja[2] * 0.7);
+  return k <= 0 ? 0 : k * k * (3 - 2 * k);
+}
+
+/**
+ * Las zonas de la fila grande del galpón que el seguidor alcanza a barrer, en unidades de la capa de
+ * adelante (que va a 1,3). Cubren todo lo que puede caer bajo el haz: el seguidor barre del 1640 al 2060
+ * del piso, y eso, según por dónde vaya la cámara, es del 1880 al 2660 de la capa de adelante (lo mide el test, en un teléfono y a 1280).
+ */
+const CANTOS_DEL_GALPON = [
+  { pieza: 'canto-galpon-0', f: 1.3, caja: [1830, 400, 380, 240] },
+  { pieza: 'canto-galpon-1', f: 1.3, caja: [2110, 400, 380, 240] },
+  { pieza: 'canto-galpon-2', f: 1.3, caja: [2390, 400, 380, 240] },
+] as const;
 
 /**
  * Las luces de cada región, una por región como mucho: es una superficie más que el teléfono compone.
@@ -262,11 +369,24 @@ export interface Luz {
 export const LUCES: Readonly<Record<string, readonly Luz[]>> = {
   // El farol está en `ASTILLERO.farol` (440 de 900, a lo largo ×2400/900), y su boca a 30 a la derecha del poste.
   'los-astilleros': [{ pieza: 'luz-astillero-cono', f: 1, x: 1203, y: 244, caja: [-170, -14, 340, 380], vaiven: 8, ritmo: 0.55, alfa: 0.62, late: 0.16, pulso: 'titila', crece: 0, suena: 'zumbido', rumbo: -24, filo: { pieza: 'filo-sodio', cuantos: 3, abre: 60 } }],
-  'el-infierno': [{ pieza: 'luz-infierno-brasa', f: 1, x: 452, y: 486, caja: [-260, -110, 520, 220], vaiven: 0, ritmo: 3.9, alfa: 0.56, late: 0.36, pulso: 'late', crece: 0.07, suena: 'chispa' }],
+  'el-infierno': [{ pieza: 'luz-infierno-brasa', f: 1, x: 452, y: 486, caja: [-260, -230, 520, 340], vaiven: 0, ritmo: 3.9, alfa: 0.56, late: 0.36, pulso: 'late', crece: 0.07, suena: 'chispa' }],
   cybersiberia: [{ pieza: 'luz-cyber-haz', f: 1, x: 1560, y: -6, caja: [-190, -14, 380, 600], vaiven: 15, ritmo: 0.33, alfa: 0.34, late: 0.05, pulso: 'barre', crece: 0 }],
   // La ruta: los faros del último bondi, que van con él y alumbran el polvo. El bondi anda para la derecha.
-  'la-ruta': [{ pieza: 'luz-ruta-faros', f: 1, x: 286, y: 446, caja: [-110, -14, 220, 300], vaiven: 1.6, ritmo: 6.5, alfa: 0.72, late: 0.06, pulso: 'barre', crece: 0, rumbo: -90, sigue: 'el-zumba' }],
+  'la-ruta': [{ pieza: 'luz-ruta-faros', f: 1, x: 286, y: 446, caja: [-110, -14, 220, 300], vaiven: 1.6, ritmo: 6.5, alfa: 0.72, late: 0.06, pulso: 'barre', crece: 0, rumbo: -90, sigue: 'el-zumba', filo: { pieza: 'filo-sodio', cuantos: 3, abre: 44 } }],
   // El bajo: el reflejo del pucho de Pierre en el agua, una escalerita de rayas de crayón que tiembla. Pierre está en 486, y el recinto arranca en -250.
+  // La pastura (`D-91`, segunda vuelta): no es una luz, es la rueda del primer molino, que gira. Va clavada en
+  // lo lejano (`f` de `VELOCIDAD.lejos`), en el eje (`EJE_DEL_MOLINO`, `arte-arboles.ts`). El vaivén es tan
+  // ancho y tan lento que es una vuelta tras otra, y cada tanto afloja y cambia de mano, como con el viento.
+  'la-pastura': [{ pieza: 'luz-pastura-rueda', f: 0.45, x: 188, y: 220, caja: [-24, -24, 48, 48], vaiven: 1500, ritmo: 0.03, alfa: 1, late: 0, pulso: 'barre', crece: 0 }],
+  // La mesa (`D-91`, tanda 2): la lámpara que cuelga del techo y se hamaca. Es de papel, como todo ahí: el
+  // cono cortado a mano y casi sin tinta. Segunda vuelta: va clavada en la pared (`f` de lo lejano), en el
+  // paño libre entre la puerta del fondo y la ventana, así no le cruza por delante a la ventana ni a un
+  // retrato en ninguna pantalla. Tanda 3, cuarta vuelta: el cono ya no llega a la línea de la mesa: termina arriba de
+  // las cabezas de los comensales (a 1280, y más con la lupa, le cruzaba la cara a uno).
+  'la-mesa': [{ pieza: 'luz-mesa-lampara', f: 0.8, x: 952, y: -8, caja: [-96, -4, 192, 224], vaiven: 5.5, ritmo: 0.66, alfa: 0.94, late: 0.04, pulso: 'barre', crece: 0 }],
+  // El árbol (`D-91`, tanda 3): el farol de cobre que cuelga de la rama grande, en la primera pantalla. Se
+  // hamaca apenas y titila como una llama. La boca es `FAROL` (`arte-bonete.ts`); el test mira que coincidan.
+  'el-arbol': [{ pieza: 'luz-arbol-farol', f: 1, x: 322, y: 225, caja: [-100, -14, 200, 330], vaiven: 5, ritmo: 0.5, alfa: 0.46, late: 0.14, pulso: 'titila', crece: 0 }],
   'el-bajo': [{ pieza: 'luz-bajo-reflejo', f: 1, x: 806, y: 492, caja: [-70, -12, 140, 140], vaiven: 2.5, ritmo: 1.7, alfa: 0.62, late: 0.2, pulso: 'titila', crece: 0 }],
   // Los techos: el farol del baldío (650, 130 en su recinto), que titila.
   'los-techos': [{ pieza: 'luz-techos-farol', f: 1, x: 650, y: 140, caja: [-180, -14, 360, 420], vaiven: 2.5, ritmo: 0.7, alfa: 0.4, late: 0.16, pulso: 'titila', crece: 0, suena: 'zumbido', filo: { pieza: 'filo-lila', cuantos: 4, abre: 34 } }],
@@ -275,10 +395,13 @@ export const LUCES: Readonly<Record<string, readonly Luz[]>> = {
   'la-prision': [{ pieza: 'luz-prision-reflector', f: 1, x: 1010, y: -6, caja: [-220, -14, 440, 660], vaiven: 26, ritmo: 0.44, alfa: 0.32, late: 0.05, pulso: 'barre', crece: 0, filo: { pieza: 'filo-papel', cuantos: 4, abre: 18 } }],
   // El templo (quinta ronda): un foco de la guirnalda, el del medio, que cae sobre el medallón de Momo y
   // titila. La guirnalda está en (450, 240) de su recinto, que arranca en -300.
-  'el-templo': [{ pieza: 'luz-templo-foco', f: 1, x: 556, y: 218, caja: [-170, -14, 340, 400], vaiven: 3, ritmo: 0.6, alfa: 0.42, late: 0.14, pulso: 'titila', crece: 0, suena: 'zumbido' }],
+  // Tanda 4 de `D-91`, tercera vuelta: el cono medía 340 de ancho y, clavado, se leía como una carpa. Ahora es un haz
+  // angosto (180), y a las dos columnas de atrás que tiene justo debajo les prende el canto (`cantos`, como el seguidor
+  // del galpón): titilan con él. La caja del canto es la de `CANTO_DE_LAS_COLUMNAS` (`arte-corso.ts`), corrida al piso.
+  'el-templo': [{ pieza: 'luz-templo-foco', f: 1, x: 556, y: 218, caja: [-90, -14, 180, 410], vaiven: 3, ritmo: 0.6, alfa: 0.46, late: 0.14, pulso: 'titila', crece: 0, suena: 'zumbido', cantos: [{ pieza: 'canto-templo-columnas', f: 1, caja: [516, 300, 80, 226] }], cantosEn: 420 }],
   // El galpón: el seguidor de atrás, arriba a la derecha (`GALPON.luz`, a lo largo), que barre el
   // escenario y le pega al polvo.
-  'el-galpon': [{ pieza: 'luz-galpon-seguidor', f: 1, x: 2027, y: 64, caja: [-200, -14, 400, 460], vaiven: 22, ritmo: 0.36, alfa: 0.4, late: 0.06, pulso: 'barre', crece: 0, rumbo: 18 }],
+  'el-galpon': [{ pieza: 'luz-galpon-seguidor', f: 1, x: 2027, y: 64, caja: [-200, -14, 400, 460], vaiven: 22, ritmo: 0.36, alfa: 0.4, late: 0.06, pulso: 'barre', crece: 0, rumbo: 18, cantos: CANTOS_DEL_GALPON, cantosEn: 530 }],
 };
 
 /**
@@ -299,11 +422,54 @@ export const FILO_PROPIO: Readonly<Record<string, { prefijos: readonly string[];
   // El botija es moreno y de remera azul, bajo una luz naranja: un canto naranja se le perdía. Va en
   // la tiza clara de los astilleros, que es la que dibuja los cantos de todo el muelle (octava ronda).
   'los-astilleros': { prefijos: ['botija-'], tinta: 'var(--entorno-astillero-tiza-clara)' },
+  // `D-91`, segunda vuelta: los faros del bondi le prenden el canto a los que están en la banquina.
+  'la-ruta': { prefijos: ['taxi-', 'desencarnada-', 'piba-'], tinta: 'var(--entorno-templo-foco)' },
+};
+
+/**
+ * Lo que asoma lejos (`D-91`, tanda 2, segunda vuelta): una figura impresa, clavada en lo lejano, que no
+ * se ve hasta que quien mira se queda quieto `espera` segundos. En la mesa, alguien que se para en la
+ * puerta del fondo. Es una imagen más, chica, que se corre con la capa de atrás (`f`).
+ */
+export interface Visita {
+  pieza: string;
+  f: number;
+  caja: readonly [number, number, number, number];
+  espera: number;
+}
+
+export const VISITAS: Readonly<Record<string, Visita>> = {
+  'la-mesa': { pieza: 'camino-mesa-visita', f: 0.8, caja: [644, 132, 84, 192], espera: 6 },
+  // Tanda 3 de `D-91`, las tres en la primera pantalla. Los astilleros: un gato que se sube a la pila de
+  // containers (va con el piso, y asoma de atrás del canto de la pila). Cybersiberia: algo enorme que camina
+  // en el blanco del horizonte. El árbol: a la luna se le abre un ojo. Las cajas son las de `arte-puerto.ts`,
+  // `arte-tundra.ts` y `arte-bonete.ts`, y `aire.test.ts` mira que coincidan.
+  'los-astilleros': { pieza: 'camino-astillero-gato', f: 1, caja: [112, 138, 66, 62], espera: 6 },
+  cybersiberia: { pieza: 'camino-cyber-coloso', f: 0.6, caja: [620, 160, 96, 176], espera: 6 },
+  'el-arbol': { pieza: 'camino-arbol-ojo', f: 0.5, caja: [638, 210, 104, 104], espera: 7 },
+};
+
+/**
+ * Lo que se va si lo mirás de cerca (cuarta vuelta): al revés que la visita, está siempre, y se apaga
+ * cuando se saca la lupa. En la mesa, los dos ojos que miran para adentro por la ventana. `espera` no se usa.
+ */
+export const HUIDIZOS: Readonly<Record<string, Visita>> = {
+  'la-mesa': { pieza: 'camino-mesa-ojos', f: 0.8, caja: [1212, 172, 30, 14], espera: 0 },
+};
+
+/**
+ * Lo que está parado entre lo lejano y el piso (`D-91`, tanda 3, segunda vuelta): una imagen clavada, a la vista
+ * siempre, que se corre a su propia velocidad. Es la lección de la tanda 1 (lo más cercano del fondo va aparte,
+ * a otra velocidad) para algo que no se repite: una baldosa de aire lo mostraría de nuevo cada tantas pantallas.
+ * En los astilleros, el carguero: va más rápido que la otra orilla y más despacio que el muelle.
+ */
+export const PLANOS: Readonly<Record<string, readonly { pieza: string; f: number; caja: readonly [number, number, number, number] }[]>> = {
+  'los-astilleros': [{ pieza: 'camino-astillero-carguero', f: 0.72, caja: [820, -12, 420, 400] }],
 };
 
 /** Las piezas que no son cuerpo: el humo, los fogonazos, los ojos, la boca, los muebles. A esas la luz no les prende un canto. */
 const SIN_FILO =
-  /-(humo|chispa|fogonazo|esquirlas|luz|brillo|gotas|estrella|fiebre|copo|pluma|plumon|hollin-[a-z]+|canto|agujero|rayita|iris-\d|pupila|parpado|ceja|boca|sirena-chica|reja|catre|alfeizar|pizarra|jamba|lata|caballete|cuadro|bandera|boleto|forro-\d)$/;
+  /-(humo|chispa|fogonazo|esquirlas|luz|brillo|gotas|estrella|fiebre|copo|pluma|plumon|hollin-[a-z]+|canto|agujero|rayita|iris-\d|pupila|parpado|ceja|boca|sirena-chica|reja|catre|alfeizar|pizarra|jamba|lata|caballete|cuadro|bandera|boleto|forro-\d|haz|banquina|yuyos|pompas|zeta|rubor|dia|libre|doble|cuencas|ojo-\d|pupila-\d|cejas|almohadon)$/;
 
 /** Si una pieza tiene su filo impreso, en esa región. */
 export function tieneFiloPropio(pieza: string, region: string): boolean {
@@ -374,15 +540,16 @@ export interface Acecho {
 }
 
 export const ACECHOS: Readonly<Record<string, Acecho>> = {
-  'el-monte': { pieza: 'acecho-monte', ancho: 46, alto: 20, lugares: [[0.16, 596, 1], [0.8, 604, 1.15], [0.5, 612, 0.9], [0.3, 268, 0.5], [0.72, 252, 0.45]], espera: [5, 6.5], dura: [6, 9] },
-  'la-pastura': { pieza: 'acecho-monte', ancho: 46, alto: 20, lugares: [[0.14, 600, 1], [0.84, 606, 1.1], [0.24, 262, 0.5], [0.66, 250, 0.45]], espera: [5, 6.5], dura: [6, 9] },
+  'el-monte': { pieza: 'acecho-monte', ancho: 46, alto: 20, lugares: [[0.16, 596, 1], [0.8, 604, 1.15], [0.5, 612, 0.9], [0.3, 268, 0.5], [0.72, 252, 0.45], [0.55, 196, 0.38], [0.12, 226, 0.42], [0.88, 172, 0.34]], espera: [5, 6.5], dura: [6, 9] },
+  'la-pastura': { pieza: 'acecho-monte', ancho: 46, alto: 20, lugares: [[0.14, 600, 1], [0.84, 606, 1.1], [0.24, 299, 0.34], [0.66, 298, 0.32], [0.46, 332, 0.4]], espera: [5, 6.5], dura: [6, 9] },
   cybersiberia: { pieza: 'acecho-cyber', ancho: 46, alto: 20, lugares: [[0.14, 598, 1], [0.82, 606, 1.1], [0.36, 168, 0.6], [0.7, 232, 0.6]], espera: [5, 6.5], dura: [5, 8] },
   'los-astilleros': { pieza: 'acecho-astillero', ancho: 46, alto: 30, lugares: [[0.2, 600, 1], [0.78, 606, 1.1], [0.62, 372, 0.55], [0.3, 380, 0.5]], espera: [5, 6.5], dura: [6, 9] },
   'el-infierno': { pieza: 'acecho-infierno', ancho: 46, alto: 20, lugares: [[0.18, 606, 1.1], [0.8, 610, 1.2], [0.5, 616, 0.9]], espera: [5, 6.5], dura: [5, 8] },
   // La ruta: algo en la banquina, o lejos, al borde del asfalto.
   'la-ruta': { pieza: 'acecho-monte', ancho: 46, alto: 20, lugares: [[0.16, 600, 1], [0.82, 606, 1.1], [0.3, 404, 0.5], [0.7, 396, 0.45]], espera: [5, 6.5], dura: [6, 9] },
   // El bajo: lo que mira desde el agua, con su reflejo.
-  'el-bajo': { pieza: 'acecho-astillero', ancho: 46, alto: 30, lugares: [[0.2, 560, 0.9], [0.78, 590, 1.1], [0.5, 610, 1]], espera: [5, 6.5], dura: [6, 9] },
+  // (Tanda 5: el del medio subió de 610 a 536. En 610 se abría pegado a la silla que flota, que anda entre 556 y 618.)
+  'el-bajo': { pieza: 'acecho-astillero', ancho: 46, alto: 30, lugares: [[0.2, 560, 0.9], [0.78, 590, 1.1], [0.5, 536, 0.9]], espera: [5, 6.5], dura: [6, 9] },
   // Los techos: los gatos, en lo negro de las medianeras.
   'los-techos': { pieza: 'acecho-monte', ancho: 46, alto: 20, lugares: [[0.2, 300, 0.6], [0.7, 330, 0.65], [0.45, 340, 0.55], [0.84, 612, 1]], espera: [5, 6.5], dura: [6, 9] },
   // La prisión: desde la celda de enfrente, en lo negro de arriba.
@@ -423,6 +590,12 @@ export interface Vida {
   alfa: number;
   /** Si puede venir de cualquiera de los dos lados, o siempre de la izquierda (la estrella cae para un lado). */
   deLosDosLados: boolean;
+  /** Siempre de la derecha: lo que lleva el viento, que en la pastura sopla para la izquierda (`D-91`). */
+  alReves?: boolean;
+  /** Lo que sube en el medio del cruce, en unidades: lo que alguien tiró vuela en arco (`D-91`, tanda 2). */
+  arco?: number;
+  /** Pasa por detrás del piso y de lo que está parado en él: el tren de la ruta, detrás de los postes. */
+  atras?: boolean;
 }
 
 const AVE = { pieza: 'vida-ave', ancho: 40, alto: 18, tam: 0.55, y: [70, 150], dura: [9, 14], espera: [22, 40], aletea: 1, bamboleo: 0, alfa: 0.8, deLosDosLados: true } as const;
@@ -430,18 +603,28 @@ const AVE = { pieza: 'vida-ave', ancho: 40, alto: 18, tam: 0.55, y: [70, 150], d
 export const VIDAS: Readonly<Record<string, Vida>> = {
   // La lechuza del monte y la gaviota del río son la misma silueta lejana.
   'el-monte': AVE,
-  'la-pastura': AVE,
-  'los-astilleros': { ...AVE, y: [60, 130] },
+  // La pastura (`D-91`, cuarta vuelta): no un pájaro sino un vellón que el viento lleva rodando por el pasto,
+  // para el mismo lado que la ola. Raro: uno cada medio minuto o más.
+  'la-pastura': { pieza: 'vida-vellon', ancho: 22, alto: 16, tam: 1, y: [468, 520], dura: [6, 9], espera: [26, 48], aletea: 0, bamboleo: 38, alfa: 0.9, deLosDosLados: false, alReves: true },
+  // Los astilleros (`D-91`, tanda 3): ya no la gaviota sino una chata con sus luces, que cruza el río despacio
+  // por detrás del muelle y del ferry. Tarda medio minuto; pasa una cada minuto o más.
+  'los-astilleros': { pieza: 'vida-chata', ancho: 150, alto: 26, tam: 1, y: [358, 358], dura: [26, 34], espera: [36, 70], aletea: 0, bamboleo: 0, alfa: 0.92, deLosDosLados: false, atras: true },
   // Los techos: un murciélago, más bajo y más rápido.
   'los-techos': { ...AVE, tam: 0.45, y: [120, 240], dura: [5, 8] },
   // La prisión: un pájaro blanco, de gubia, que pasa por arriba del muro. El único que sale.
   'la-prision': { ...AVE, pieza: 'vida-ave-papel', y: [40, 110], dura: [10, 15], alfa: 0.9 },
   // La ruta: una estrella que se cae.
-  'la-ruta': { pieza: 'vida-fugaz', ancho: 90, alto: 30, tam: 1, y: [50, 190], dura: [0.9, 1.4], espera: [18, 34], aletea: 0, bamboleo: 0, alfa: 0.9, deLosDosLados: false },
+  // La ruta (`D-91`, cuarta vuelta): ya no la estrella fugaz sino un tren, lejos, por el horizonte. Tarda
+  // casi medio minuto en cruzar y pasa uno cada minuto o más: el que se queda lo ve.
+  'la-ruta': { pieza: 'vida-tren', ancho: 280, alto: 22, tam: 0.62, y: [304, 304], dura: [24, 30], espera: [44, 80], aletea: 0, bamboleo: 0, alfa: 0.9, deLosDosLados: false, atras: true },
   // El bajo: un barquito de papel que se lleva el agua, despacio.
   // El árbol: el pájaro que vuelve a la copa. La mesa: una polilla, chica y rápida, arriba.
   'el-arbol': { ...AVE, y: [50, 120] },
-  'la-mesa': { ...AVE, tam: 0.3, y: [90, 200], dura: [4, 6], espera: [20, 36] },
+  // El galpón (`D-91`, tanda 2): una zapatilla, de las que se pierden en el pogo. Vuela en arco por arriba
+  // de la gente, dando vueltas, en tres segundos; una cada medio minuto.
+  'el-galpon': { pieza: 'vida-zapatilla', ancho: 30, alto: 18, tam: 1, y: [452, 470], dura: [2.6, 3.4], espera: [22, 44], aletea: 0, bamboleo: 170, alfa: 1, deLosDosLados: true, arco: 150 },
+  // La mesa (`D-91`, tanda 2): ya no una polilla sino un moscardón, gordo, que cruza zumbando por arriba de los platos.
+  'la-mesa': { pieza: 'vida-moscardon', ancho: 34, alto: 22, tam: 0.9, y: [170, 250], dura: [3.2, 4.6], espera: [18, 32], aletea: 1, bamboleo: 9, alfa: 1, deLosDosLados: true },
   'el-bajo': { pieza: 'vida-barquito', ancho: 40, alto: 30, tam: 0.7, y: [500, 506], dura: [34, 46], espera: [14, 26], aletea: 0, bamboleo: 5, alfa: 0.9, deLosDosLados: true },
 };
 
@@ -456,7 +639,7 @@ export function pasoDeVida(v: Vida, u: number, t: number, alReves: boolean): { f
   const onda = v.aletea ? Math.sin(k * Math.PI * 3) * 6 : 0;
   return {
     fx,
-    y: v.y[0] + (v.y[1] - v.y[0]) * k + onda,
+    y: v.y[0] + (v.y[1] - v.y[0]) * k + onda - (v.arco ? Math.sin(k * Math.PI) * v.arco : 0),
     aleteo: v.aletea ? 0.3 + 0.7 * Math.abs(Math.sin(t * 7.5)) : 1,
     giro: v.bamboleo ? Math.sin(t * 1.3) * v.bamboleo : 0,
   };
@@ -494,6 +677,21 @@ export function alivioDeEntrada(nucleos: number | undefined, memoria: number | u
  * Arranca sin el vaho de atrás, que es lo que menos se extraña. La nieve no se toca: es la región.
  */
 export const ALIVIO_DE_LA_REGION: Readonly<Record<string, number>> = { cybersiberia: 1 };
+
+/**
+ * Las regiones donde lo de adelante se corre con la lupa (`D-91`, tanda 2, quinta vuelta). Es la regla de
+ * siempre («con la lupa, lo pegado a la cámara se desvanece»), que hasta acá solo cumplía el aire `cerca`:
+ * en la mesa, el respaldo de una silla de adelante quedaba agrandado justo encima de lo que se había ido a
+ * mirar (la puerta del fondo, la ventana), y en el galpón, la fila grande. Las demás regiones quedan como
+ * estaban hasta que alguien las mire con la lupa.
+ */
+export const FRENTE_QUE_SE_CORRE: readonly string[] = ['la-mesa', 'el-galpon', 'los-astilleros', 'cybersiberia', 'el-arbol'];
+
+/**
+ * Lo mismo en los recintos enteros de la tanda 4: su franja de adelante (los yuyos del baldío, lo que flota en la sala,
+ * lo negro del borde del templo) es una imagen de la escena. La isla la busca por su pieza y la corre con la lupa.
+ */
+export const FRENTE_DEL_RECINTO: Readonly<Record<string, string>> = { 'los-techos': 'baldio-frente', 'el-bajo': 'bajo-frente', 'el-templo': 'templo-frente' };
 
 /** A cuántos píxeles de los ojos un dedo o un mouse ya los está mirando. */
 export const MIRADA = 84;

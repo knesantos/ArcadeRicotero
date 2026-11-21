@@ -32,7 +32,6 @@ import { BESTIARIO } from '../../lib/bestiario/copy.ts';
 import { REDONDOPEDIA } from '../../lib/sitio/copy.ts';
 import {
   LADO,
-  cajaDeFigura,
   dibujarRecinto,
   dibujarSuelo,
   lugarDelRotulo,
@@ -48,7 +47,11 @@ import { ENTORNOS_DE_NOCHE } from '../../lib/bestiario/escenas-entornos.ts';
 import { enEspera, SIN_ISLA } from '../../lib/bestiario/carga.ts';
 import { PALO, marcoDelRecinto } from '../../lib/bestiario/rig.ts';
 import { CON_CAMINO, hrefDeRegion, recintoDe } from '../../lib/bestiario/camino.ts';
-import { EL_PLANO, SOBRA, VELOS, rutaDelVelo } from '../../lib/bestiario/velos.ts';
+import { EL_PLANO, VELOS, rutaDelVelo } from '../../lib/bestiario/velos.ts';
+import { HITOS, cajaDelHito, cajaEnElPlano } from '../../lib/bestiario/arte-plano.ts';
+import { LAS_DEL_PLANO, LUGAR_EN_EL_PLANO } from '../../lib/bestiario/plano-elenco.ts';
+import { AUMENTO } from '../../lib/bestiario/mapa.ts';
+import VeloDeLlegada from '../../components/bestiario/VeloDeLlegada.astro';
 import FichaBestia from '../../components/bestiario/FichaBestia.astro';
 import { loQueDice } from '../../lib/bestiario/fichas.ts';
 import crudo from '../../data/bestiario.json';
@@ -162,12 +165,13 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
     <link rel="preload" as="image" href={rutaDelVelo(EL_PLANO)} fetchpriority="high" />
     {CON_CAMINO.filter((r) => VELOS[r]).map((r) => <link rel="prefetch" as="image" href={rutaDelVelo(r)} />)}
   </Fragment>
-  <div class="velo-de-llegada" aria-hidden="true" data-rumbo={VELOS[EL_PLANO]!.rumbo} style={`--velo: url(${rutaDelVelo(EL_PLANO)}); --sobra: ${SOBRA / 100}`}></div>
+  <VeloDeLlegada destino={EL_PLANO} />
 
   <div class="portada-redondopedia bestiario-portada">
     <h1 class="titulo-seccion bestiario-titulo">{BESTIARIO.titulo}</h1>
+    {/* Tanda 6, segunda vuelta: acá iba una bajada de cuatro líneas que explicaba lo que ya dice la línea de abajo del plano.
+        Queda la que canta y el contador, y el disco entra en la primera pantalla del teléfono. */}
     <p class="donde-estas">{BESTIARIO.dondeEstas}</p>
-    <p class="bajada-portal">{BESTIARIO.bajada(bestias.length)}</p>
     <p class="bestiario-libreta" id="libreta" aria-live="polite">{BESTIARIO.libretaVacia(bestias.length)}</p>
   </div>
 
@@ -186,12 +190,13 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
         <g class="suelo" set:html={dibujarSuelo(datos)} />
         <g class="bestias">
           {
-            bestias.map((b) => {
-              const caja = cajaDeFigura(b);
-              const p = punto(b.pos);
+            // Tanda 6, segunda vuelta: dos por zona (`plano-elenco.ts`), impresas como títeres de cartón (`arte-plano.ts`).
+            // Las 122 siguen en el recorrido, en los chips y en el índice; los `<symbol>` de arriba los siguen usando las fichas.
+            bestias.filter((b) => LAS_DEL_PLANO.has(b.id)).map((b) => {
+              const lugar = LUGAR_EN_EL_PLANO[b.id];
+              const p = lugar ? polar(lugar[0], lugar[1]) : punto(b.pos);
               return (
                 <g class="bestia-plano" data-id={b.id} style={`--tr: ${tintaDe(regionDe.get(b.region)!.disco)}`}>
-                  <use href={`#fig-${b.id}`} x={caja.x} y={caja.y} width={caja.ancho} height={caja.alto} />
                   <g class="marca-anotada" transform={`translate(${p.x + b.tam * 0.45} ${p.y - b.tam * 0.55})`}>
                     <circle r="7" class="b-pp b-borde" />
                     <path d="M-3.5 0 l2.5 3 l4.5 -6" class="b-tz" stroke-width="2.2" />
@@ -202,6 +207,27 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
           }
         </g>
       </svg>
+      {/* El aire del plano (`D-91`, tanda 6, `arte-plano.ts`): las nubes que pasan por encima del disco y, muy cada tanto,
+          la lechuza. Van arriba del dibujo y debajo de los carteles; no se tocan. Con la lupa se abren. */}
+      {/* Los títeres (tercera vuelta): imágenes sueltas arriba del dibujo, no adentro del SVG, así se pueden hamacar desde
+          el palito sin repintar el plano. Hoy están quietos (se midió el vaivén y no se leía: ver el estilo, abajo). */}
+      {bestias.filter((b) => LAS_DEL_PLANO.has(b.id)).map((b, i) => {
+        const lugar = LUGAR_EN_EL_PLANO[b.id];
+        const caja = cajaEnElPlano(b, lugar ? polar(lugar[0], lugar[1]) : punto(b.pos), AUMENTO);
+        return <img class="plano-titere" data-titere={b.id} src={`/bestiario/plano-titere-${b.id}.webp`} alt="" aria-hidden="true" width="326" height="350" decoding="async" style={`left: ${(caja.x / 10).toFixed(2)}%; top: ${(caja.y / 10).toFixed(2)}%; width: ${(caja.ancho / 10).toFixed(2)}%; --fase: ${((i * 0.53) % 3.4).toFixed(2)}s`} />;
+      })}
+      {/* Los hitos: lo que las tandas le sumaron a tres regiones, en chiquito. Se leen con la lupa. */}
+      {HITOS.map((h) => {
+        const [x, y, lado] = cajaDelHito(h);
+        return <img class="plano-hito" src={`/bestiario/plano-hito-${h.region}.webp`} alt="" aria-hidden="true" width="220" height="220" decoding="async" loading="lazy" style={`left: ${x / 10}%; top: ${y / 10}%; width: ${lado / 10}%`} />;
+      })}
+      <img class="plano-nubes" src="/bestiario/plano-nubes.webp" alt="" width="800" height="800" decoding="async" aria-hidden="true" />
+      <div class="plano-aire" aria-hidden="true">
+        {/* El cierre (cuarta vuelta): el cielo cerrado, apagado. Al bajar a una región entra girando y tapa el disco. Va
+            adentro del recorte redondo: espera más grande que el disco, y suelto le daba a la página un ancho que no tiene. */}
+        <img class="plano-cierre" src="/bestiario/plano-cierre.webp" alt="" width="450" height="450" decoding="async" loading="lazy" />
+        <img class="plano-lechuza" src="/bestiario/plano-lechuza.webp" alt="" width="180" height="144" decoding="async" loading="lazy" />
+      </div>
       <img class="portal-luz" src="/bestiario/portal-luz.webp" alt="" width="460" height="460" decoding="async" />
 
       <nav class="bestiario-rotulos" aria-label={BESTIARIO.regiones}>
@@ -306,5 +332,132 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
   <script type="application/json" id="datos-bestiario" set:html={JSON.stringify(paraLaIsla)} />
   <script>
     import '../../scripts/bestiario.ts';
+
+    // Bajar a una región (`D-91`, tanda 6): al tocar un cartel, las nubes del borde se cierran sobre el plano mientras
+    // llega la página de la región. No demora nada: el enlace sigue su camino. Al volver, se abren.
+    const marco = document.getElementById('marco');
+    for (const cartel of document.querySelectorAll('.rotulo-region')) cartel.addEventListener('click', () => marco?.classList.add('bestiario-marco--baja'));
+    window.addEventListener('pageshow', () => marco?.classList.remove('bestiario-marco--baja'));
   </script>
 </Base>
+
+<style>
+  /* El aire del plano (`D-91`, tanda 6). Va acá y no en `sitio.css` porque es solo de esta página, y esa hoja la está
+     tocando otra rama (`T-529`). Solo `transform` y `opacity`, sobre dos imágenes sueltas: el dibujo del plano no se repinta. */
+  .plano-aire {
+    position: absolute;
+    inset: 1.4%;
+    border-radius: 50%;
+    overflow: hidden;
+    pointer-events: none;
+    transition: opacity 0.5s;
+  }
+
+  /* Las nubes están quietas. En la primera versión daban la vuelta con el disco, una cada cinco minutos: no se llegaba a
+     ver que giraban y, medido contra main en ocho tandas, el plano costaba entre un 6 % y un 95 % más por cuadro, con el
+     recorte redondo y sin él. Una capa que se mueve siempre obliga a componer el plano entero en cada cuadro. Quietas no
+     cuestan; lo único que les pasa es que se abren con la lupa. */
+  .plano-nubes {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0.8;
+    transition: opacity 0.5s, transform 0.4s;
+  }
+
+  /* Los títeres: sueltos, sin toque, y con el eje en el palito. Están quietos. En la tercera vuelta se hamacaron con la
+     lupa puesta (2,8° para cada lado, cada uno a su tiempo): medido a ×4 contra el mismo plano quieto, costaba de un 7 a
+     un 28 % por cuadro, y en la tira de seis cuadros no se leía. Lo que se mueve y no se lee vuelve a quieto. Quedan
+     sueltos y con el eje puesto: si algún día se hamacan, es una regla acá y nada más. */
+  .plano-titere {
+    position: absolute;
+    height: auto;
+    pointer-events: none;
+    transform-origin: 50% 96%;
+  }
+
+  /* Los hitos van con el dibujo: chicos, quietos, sin toque. */
+  .plano-hito {
+    position: absolute;
+    height: auto;
+    pointer-events: none;
+  }
+
+  /* El cielo cerrado espera apagado, más grande que el disco y girado. Apagado no se compone. */
+  .plano-cierre {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0;
+    transform: scale(1.5) rotate(-38deg);
+    transition: opacity 0.2s, transform 0.36s;
+  }
+
+  /* Bajar a una región: el cielo se cierra sobre el disco. Las nubes del borde se espesan donde están, y el cielo cerrado
+     entra de afuera girando hasta calzar. Hasta la tercera vuelta eran las del borde achicándose: un anillo fino de
+     jirones no tapa nada, y no se veía. */
+  :global(.bestiario-marco--baja) .plano-nubes {
+    opacity: 1;
+    transform: scale(0.97);
+  }
+
+  :global(.bestiario-marco--baja) .plano-cierre {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* La lechuza cruza de abajo a la izquierda hacia arriba a la derecha en unos nueve segundos, una vez cada tres cuartos de minuto. */
+  .plano-lechuza {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 15%;
+    height: auto;
+    opacity: 0;
+    animation: plano-cruza 46s linear 9s infinite;
+  }
+
+  /* Con la lupa puesta, acercarse es meterse abajo de las nubes: se abren del todo. */
+  :global(.bestiario-marco--lupa) .plano-nubes,
+  :global(.bestiario-marco--lupa) .plano-aire {
+    opacity: 0;
+  }
+
+  @keyframes plano-cruza {
+    0% {
+      transform: translate(-120%, 540%) rotate(-25deg);
+      opacity: 0;
+    }
+    1.5% {
+      opacity: 0.94;
+    }
+    19% {
+      opacity: 0.94;
+    }
+    20.5%,
+    100% {
+      transform: translate(720%, 130%) rotate(-25deg);
+      opacity: 0;
+    }
+  }
+
+  /* Con movimiento reducido la lechuza no pasa y las nubes no se cierran. */
+  @media (prefers-reduced-motion: reduce) {
+    :global(.bestiario-marco--baja) .plano-nubes {
+      opacity: 0.8;
+      transform: none;
+    }
+
+    .plano-cierre {
+      display: none;
+    }
+
+    .plano-lechuza {
+      display: none;
+    }
+  }
+</style>

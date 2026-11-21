@@ -183,7 +183,8 @@ export const CAMINOS: Readonly<Record<string, Tramo>> = {
     // El borde del piso del monte está en y ≈ 305 (`camino-monte-piso`): la tierra del rey y las patas
     // de tu animal entran en él, y las lobas se echan sobre el pasto, no en el borde.
     // El joven lobo baja con su volcán entero: en el recinto está entre las tiras de arriba, y acá el cráter pisa el piso.
-    bajan: { 'el-rey-de-esta-jungla': 62, 'tu-animal': 56, 'las-antiguas-lobas': 30, 'el-joven-lobo': 116 },
+    // El animal que no late baja con su peana y su nube: en el recinto está entre las tiras, y acá las rueditas pisan el borde.
+    bajan: { 'el-rey-de-esta-jungla': 62, 'tu-animal': 56, 'las-antiguas-lobas': 30, 'el-joven-lobo': 116, 'el-animal-que-no-late': 48 },
   },
   'la-pastura': {
     region: 'la-pastura',
@@ -192,7 +193,7 @@ export const CAMINOS: Readonly<Record<string, Tramo>> = {
     escena: 2400,
     velocidad: { lejos: VELOCIDAD.lejos, frente: VELOCIDAD.frente },
     foco: 0,
-    piezas: { lejos: 'camino-monte-lejos', piso: 'camino-pastura-piso', frente: 'camino-monte-frente', cruce: null },
+    piezas: { lejos: 'camino-pastura-lejos', piso: 'camino-pastura-piso', frente: 'camino-pastura-frente', cruce: null },
     ojos: {},
     claro: {
       dx: 720,

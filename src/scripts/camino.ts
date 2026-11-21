@@ -51,15 +51,16 @@ import { contextoVivo, despertarSalida } from '../lib/audio/contexto.ts';
 import { Charla } from '../lib/bestiario/charla.ts';
 import { PRIMER_PASO, corridaDe, crearCamara, primerPaso, transformDe, type Encuadre } from '../lib/bestiario/camara.ts';
 import {
-  ACECHOS, AIRE, ALIVIO, LUCES, MIRADA, PASO_PLENO, VIDAS, alfaDeAire, alivioDeEntrada, alivioTras, corridaDeAire, despejeDeLupa, estadoDeLuz, parpadeo, pasoDeVida, rutaDelFilo, tieneFiloPropio,
+  ACECHOS, AIRE, ALIVIO, FRENTE_DEL_RECINTO, LUCES, MIRADA, PASO_PLENO, VIDAS, alfaDeAire, alivioDeEntrada, alivioTras, corridaDeAire, dondeCaeElHaz, saltoDeAire, tocaLaZona, despejeDeLupa, estadoDeLuz, parpadeo, pasoDeVida, rutaDelFilo, tieneFiloPropio,
   tocaLaLuz,
 } from '../lib/bestiario/aire.ts';
-import { ENTERA, LUPA, acotar, centrar, conLupa, enElMundo, enfocar, entreLentes, type Lente } from '../lib/bestiario/lupa.ts';
+import { ENTERA, LUPA, acotar, camConLupa, centrar, conLupa, enElMundo, enfocar, entreLentes, type Lente } from '../lib/bestiario/lupa.ts';
 import { leerGestos } from './bestiario/pellizco.ts';
 import { miradaDe, seguir } from './bestiario/mirada.ts';
 import { alSacudon } from './bestiario/sacudon.ts';
 import { lugarDeLaFicha, type Lado } from '../lib/bestiario/hoja.ts';
 import { reposar, sellar, sellarAnotada } from './bestiario/sellos.ts';
+import { contestarAlIrse, soltarElVelo } from './bestiario/llegada.ts';
 
 interface Datos {
   region: string;
@@ -90,6 +91,28 @@ const capas = [...camino.querySelectorAll<HTMLElement>('.capa')].map((el) => ({ 
 const conCapas = capas.some((c) => c.f !== 1);
 const cruce = document.getElementById('cruce')!;
 const apariciones = [...piso.querySelectorAll<SVGGElement>('.aparece')].map((el) => ({ el, x: Number(el.dataset.x) }));
+/**
+ * Lo que respira y lo que asoma (`D-91`, tanda 2; el salón del infierno, `arte-salon.ts`). Lo que respira
+ * es un grupo del piso que se estira y afloja desde su base: las lenguas de fuego. Lo que asoma no se ve
+ * hasta que quien mira se queda quieto `espera` segundos; entonces aparece despacio, y se va rápido al caminar.
+ */
+const respiran = [...piso.querySelectorAll<SVGGElement>('.respira')].map((el) => ({ el, base: Number(el.dataset.base), fase: Number(el.dataset.fase) }));
+/**
+ * Lo que cuelga (`D-91`, tanda 3, tercera vuelta): un grupo del piso que gira desde su nudo, como un péndulo:
+ * más largo, más lento. Solo se mueve lo que está a la vista.
+ */
+const pendulan = [...piso.querySelectorAll<SVGGElement>('.pendula')].map((el, i) => ({ el, x: Number(el.dataset.x), y: Number(el.dataset.y), ritmo: 2.4 / Math.sqrt(Math.max(40, Number(el.dataset.largo)) / 100), fase: i * 1.9, flota: Number(el.dataset.flota ?? 0) }));
+const asoman = [...camino.querySelectorAll<SVGGElement | HTMLElement>('.asoma')].map((el) => ({ el, espera: Number(el.dataset.espera), quietud: 0, alfa: 0, pintado: 0 }));
+/** Lo de adelante que se corre con la lupa (`FRENTE_QUE_SE_CORRE`), y el alfa que tiene pintada. */
+const frenteQueSeCorre = { el: camino.querySelector<HTMLElement>('.capa--frente[data-se-corre]'), alfa: 1 };
+/**
+ * Lo mismo en un recinto entero (`FRENTE_DEL_RECINTO`, `D-91`, tanda 4): su franja de adelante no es una capa, es una
+ * imagen adentro de la escena. Se la busca por su pieza y se le baja el alfa al grupo que la envuelve.
+ */
+const piezaDeAdelante = FRENTE_DEL_RECINTO[datos.region];
+const frenteDelRecinto = { el: piezaDeAdelante ? (piso.querySelector<SVGImageElement>(`image[href$="/${piezaDeAdelante}.webp"]`)?.parentElement ?? null) : null, alfa: 1 };
+/** Lo que se va si lo mirás de cerca (`HUIDIZOS`): está siempre, y se apaga con la lupa puesta. */
+const huyen = [...camino.querySelectorAll<HTMLElement>('.huye')].map((el) => ({ el, alfa: 1, pintado: 1 }));
 /** El aire (`D-90`, `lib/bestiario/aire.ts`): cada capa con su receta, y el alfa que tiene pintada. */
 const recetasDeAire = new Map((AIRE[datos.region] ?? []).map((c) => [c.pieza, c]));
 const aires = [...camino.querySelectorAll<HTMLElement>('.aire')].flatMap((el) => {
@@ -100,7 +123,9 @@ const aires = [...camino.querySelectorAll<HTMLElement>('.aire')].flatMap((el) =>
 const recetasDeLuz = new Map((LUCES[datos.region] ?? []).map((l) => [l.pieza, l]));
 const luces = [...camino.querySelectorAll<HTMLElement>('.luz')].flatMap((el) => {
   const r = recetasDeLuz.get(el.dataset.luz ?? '');
-  return r ? [{ el, r, alfa: -1, pulso: 0 }] : [];
+  // Las zonas de canto que esta luz prende en lo impreso (`Luz.cantos`), en el orden de la receta.
+  const cantos = [...camino.querySelectorAll<HTMLElement>(`.canto-de-luz[data-luz="${el.dataset.luz}"]`)].map((c) => ({ el: c, alfa: 0 }));
+  return r ? [{ el, r, alfa: -1, pulso: 0, cantos }] : [];
 });
 /**
  * Los filos (`D-90`, quinta ronda): la luz toca a los bichos. Cada luz que lo pide le prende un filo
@@ -453,6 +478,10 @@ let anchoPx = 0;
 let vistaPx = 0;
 /** Lo caminado, en píxeles: cuánto se corrió el piso. */
 let cam = 0;
+/** Dónde estaba la cámara la última vez que no había lupa: ahí se ancla el paralaje mientras se agranda (`camConLupa`, `D-91`). */
+let camSinLupa = 0;
+/** La cámara que ve una capa de velocidad `f`: la de siempre, o la anclada si la lupa está puesta. */
+const camDe = (f: number, suelta = true): number => camConLupa(f, cam, camSinLupa, lente.z, suelta);
 /** El paralaje de cada capa, en píxeles: lo que se corre por lo caminado, sin la cámara. */
 let corridas: number[] = capas.map(() => 0);
 /**
@@ -532,13 +561,31 @@ function pintarLuces(): void {
       const g = colgadas.get(l.r.sigue);
       ancla += Number(g?.dataset.ahora ?? g?.dataset.x ?? 0);
     }
-    const x = ancla * escala - (paralaje ? corrimiento(l.r.f, cam, datos.foco * escala, vistaPx) : 0);
+    const x = ancla * escala - (paralaje ? corrimiento(l.r.f, camDe(l.r.f), datos.foco * escala, vistaPx) : 0);
     const y = l.r.y * escala - lente.y;
     const base = encuadre ? transformDe(encuadre, capaX, x, z, y) : corridaDe(x, z, y);
     l.el.style.transform = `${base} rotate(${((l.r.rumbo ?? 0) + e.giro).toFixed(2)}deg) scale(${e.escala.toFixed(3)}) translate(${(l.r.caja[0] * escala).toFixed(1)}px, ${(l.r.caja[1] * escala).toFixed(1)}px)`;
     if (Math.abs(e.alfa - l.alfa) > 0.004) {
       l.alfa = e.alfa;
       l.el.style.opacity = e.alfa.toFixed(3);
+    }
+    // Y toca a lo impreso: cada zona de canto sube con el haz encima. Con movimiento reducido quedan apagadas.
+    if (l.cantos.length && l.r.cantos && !quieto()) {
+      // La zona se calcula con el corrimiento de las dos capas (`dondeCaeElHaz`): el seguidor va con el piso
+      // y la gente con la de adelante. (En `d9e5f03` el mensaje dice que la zona apagada «no se compone»: eso
+      // se probó con `visibility` y se sacó, porque acá solo se toca `transform` y `opacity`. Apagada, queda en cero.)
+      const apunta = (l.r.rumbo ?? 0) + e.giro;
+      l.cantos.forEach((c, i) => {
+        const z = l.r.cantos![i]!;
+        const xf = dondeCaeElHaz(ancla, l.r.y, apunta, l.r.cantosEn ?? ALTO, z.f, camDe(z.f) / escala);
+        // Con la lupa se va el canto de lo que está pegado a la cámara (la fila grande del galpón, a 1,3); el de lo que va con el piso
+        // o más atrás (las columnas del templo) se queda: es justo lo que se fue a mirar.
+        const k = alivio >= 2 ? 0 : 0.9 * tocaLaZona(xf, z.caja) * Math.min(1, e.alfa / l.r.alfa) * (z.f > 1 ? despejeDeLupa('cerca', false, lente.z) : 1);
+        if (Math.abs(k - c.alfa) > 0.02) {
+          c.alfa = k;
+          c.el.style.opacity = k.toFixed(2);
+        }
+      });
     }
     // La luz toca a los bichos: a cada uno, lo que le pega según a cuántos grados le quedó el haz.
     if (l.r.filo) {
@@ -611,7 +658,12 @@ function medirFilos(): void {
   for (const l of luces) {
     if (!l.r.filo) continue;
     const mios = filos.filter((f) => f.luz === l.r.pieza);
-    const alcance = l.r.caja[2] * 0.75;
+    // `D-91`: una luz colgada de un bicho que anda (los faros del bondi) se mide desde donde está él ahora;
+    // y si apunta de costado, le toca a lo que tiene adelante, a lo largo del haz, esté arriba o abajo.
+    const colgada = l.r.sigue ? colgadas.get(l.r.sigue) : null;
+    const anclaX = l.r.x + Number(colgada?.dataset.ahora ?? colgada?.dataset.x ?? 0);
+    const deCostado = Math.abs(l.r.rumbo ?? 0) > 45;
+    const alcance = deCostado ? l.r.caja[3] * 1.5 : l.r.caja[2] * 0.75;
     const cerca: { x: number; y: number; cy: number; ancho: number; d: number; g: SVGGElement }[] = [];
     for (const g of piso.querySelectorAll<SVGGElement>(BICHOS)) {
       if (g.dataset.velocidad) continue;
@@ -620,11 +672,11 @@ function medirFilos(): void {
       // Del dibujo al piso: lo deslizado se suma siempre (con capas o sin ellas, el piso se corrió eso).
       const x = ((r.left + r.width / 2 - caja.left) / z + cam) / escala;
       const y = ((r.top - caja.top) / z + lente.y) / escala;
-      const d = Math.abs(x - l.r.x);
+      const d = deCostado ? (x - anclaX) * -Math.sign(l.r.rumbo!) : Math.abs(x - anclaX);
       // Los muy altos (la drácula, Barbazul) no llevan la medialuna genérica, que les quedaría como un
       // sombrero; el canto impreso sí, porque les sigue la silueta.
-      if (d < alcance && r.height > innerHeight * 0.7 && !vestirConFilo(g)) continue;
-      if (d < alcance && y > l.r.y + 40) cerca.push({ x, y: y + 6, cy: y + r.height / z / escala / 2, ancho: Math.min(170, r.width / z / escala), d, g });
+      if (Math.abs(d) < alcance && r.height > innerHeight * 0.7 && !vestirConFilo(g)) continue;
+      if (d > (deCostado ? 20 : -1) && d < alcance && (deCostado || y > l.r.y + 40)) cerca.push({ x, y: y + 6, cy: y + r.height / z / escala / 2, ancho: Math.min(170, r.width / z / escala), d, g });
     }
     cerca.sort((p, q) => p.d - q.d);
     mios.forEach((f, i) => {
@@ -649,7 +701,7 @@ function pintarVida(capaX: number): void {
     if (reloj < pasa.proxima || conLupa(lente) || quieto() || alivio >= 2) return;
     pasa.desde = reloj;
     pasa.hasta = reloj + loQuePasa.dura[0] + Math.random() * (loQuePasa.dura[1] - loQuePasa.dura[0]);
-    pasa.alReves = loQuePasa.deLosDosLados && Math.random() < 0.5;
+    pasa.alReves = loQuePasa.alReves ?? (loQuePasa.deLosDosLados && Math.random() < 0.5);
   }
   const u = (reloj - pasa.desde) / (pasa.hasta - pasa.desde);
   if (u >= 1 || conLupa(lente)) {
@@ -728,6 +780,54 @@ function moverAcecho(dt: number, seMueve: boolean): void {
   mira.abierto = Math.min(1, Math.max(0, mira.abierto + dt * (mira.quiere ? 1.1 : -5)));
 }
 
+/**
+ * Lo suelto del piso: los péndulos del árbol. `desde` y `hasta`: lo que se ve, en unidades de escena. Solo
+ * `transform`. Van un cuadro sí y uno no, como las lenguas del salón: en cada cuadro, medido en cuatro tandas
+ * con control, el árbol costaba de un 8 a un 15 % más que en main (`D-91`, tanda 3, cuarta vuelta). Con el
+ * teléfono al límite (`alivio` 2) quedan quietos.
+ */
+function moverLoSuelto(desde: number, hasta: number): void {
+  if (alivio >= 2 || cuadros % 2) return;
+  for (const p of pendulan) {
+    if (p.x < desde - 90 || p.x > hasta + 90) continue;
+    // Lo que flota (el bajo) se hamaca el doble que lo que cuelga y, además, sube y baja con el agua, a otro compás
+    // que el vaivén. (Tercera vuelta: con el vaivén de un péndulo no se leía en la tira de seis cuadros.)
+    const a = (3.4 * Math.sin(reloj * p.ritmo + p.fase) + 1.2 * Math.sin(reloj * p.ritmo * 0.37 + p.fase * 2)) * (p.flota ? 2.2 : 1);
+    const sube = p.flota ? `translate(0 ${(p.flota * Math.sin(reloj * p.ritmo * 1.7 + p.fase * 1.3)).toFixed(2)}) ` : '';
+    p.el.setAttribute('transform', `${sube}rotate(${a.toFixed(2)} ${p.x} ${p.y})`);
+  }
+}
+
+/**
+ * El salón: las lenguas respiran un cuadro sí y uno no (son manchas sopladas: no se nota), con dos
+ * compases que no coinciden; y lo que asoma sube si nadie camina ni tiene nada agarrado, y se hunde si sí.
+ * Solo `transform` y `opacity`. Con el teléfono al límite (`alivio` 2), el fuego queda quieto.
+ */
+function moverElSalon(dt: number, seMueve: boolean): void {
+  if (respiran.length && alivio < 2 && cuadros % 2 === 0) {
+    for (const r of respiran) {
+      const s = 1 + 0.09 * Math.sin(reloj * 1.15 + r.fase) + 0.04 * Math.sin(reloj * 2.9 + r.fase * 2.3);
+      r.el.setAttribute('transform', `translate(0 ${r.base}) scale(1 ${s.toFixed(3)}) translate(0 ${-r.base})`);
+    }
+  }
+  for (const h of huyen) {
+    h.alfa = Math.min(1, Math.max(0, h.alfa + dt * (conLupa(lente) ? -3 : 0.25)));
+    if (Math.abs(h.alfa - h.pintado) > 0.01 || (h.alfa === 0 && h.pintado !== 0)) {
+      h.pintado = h.alfa;
+      h.el.style.opacity = h.alfa.toFixed(2);
+    }
+  }
+  for (const a of asoman) {
+    a.quietud = seMueve || !hoja.hidden || agarre !== null ? 0 : a.quietud + dt;
+    const quiere = a.quietud > a.espera ? 1 : 0;
+    a.alfa = Math.min(1, Math.max(0, a.alfa + dt * (quiere ? 0.3 : -2.4)));
+    if (Math.abs(a.alfa - a.pintado) > 0.008 || (a.alfa === 0 && a.pintado !== 0)) {
+      a.pintado = a.alfa;
+      a.el.style.opacity = a.alfa.toFixed(3);
+    }
+  }
+}
+
 /** Si te fijás en ellos, se apagan: un dedo o un mouse cerca alcanza. */
 function mirarLosOjos(ev: PointerEvent): void {
   if (!acecho || mira.abierto < 0.2 || !mira.quiere) return;
@@ -757,6 +857,21 @@ function pintarCapas(): void {
     const corrida = corridas[i]!;
     c.el.style.transform = encuadre ? transformDe(encuadre, capaX, corrida, z, -lente.y) : corridaDe(corrida, z, -lente.y);
   });
+  // Lo de adelante, donde se corre con la lupa: como lo pegado a la cámara, queda atrás al acercarse.
+  if (frenteQueSeCorre.el) {
+    const alfa = despejeDeLupa('cerca', false, z);
+    if (Math.abs(alfa - frenteQueSeCorre.alfa) > 0.012) {
+      frenteQueSeCorre.alfa = alfa;
+      frenteQueSeCorre.el.style.opacity = alfa.toFixed(3);
+    }
+  }
+  if (frenteDelRecinto.el) {
+    const alfa = despejeDeLupa('cerca', false, z);
+    if (Math.abs(alfa - frenteDelRecinto.alfa) > 0.012) {
+      frenteDelRecinto.alfa = alfa;
+      frenteDelRecinto.el.style.opacity = alfa.toFixed(3);
+    }
+  }
   // El aire: cada capa a su velocidad, con su viento, y el alfa que respira y se abre al paso.
   const t = quieto() ? 0 : reloj;
   mediaVuelta = !mediaVuelta;
@@ -764,9 +879,10 @@ function pintarCapas(): void {
     // Lo de atrás del piso va despacio y es pura mancha: se corre un cuadro sí y uno no, que no se nota
     // y es un estilo menos que recalcular (salvo con la lupa, que lo agranda).
     if (a.c.plano === 'fondo' && mediaVuelta && z === 1 && a.alfa >= 0) continue;
-    const k = corridaDeAire(a.c, cam / escala, t, paralaje);
+    const k = corridaDeAire(a.c, camDe(a.c.f, paralaje) / escala, t, paralaje);
     const x = quieto() ? 0 : k.x * escala;
-    const baja = k.y * escala - lente.y;
+    // Lo que salta (el pogo del galpón) baja y vuelve; con movimiento reducido queda arriba, donde está impreso.
+    const baja = (k.y + (quieto() ? 0 : saltoDeAire(a.c, t))) * escala - lente.y;
     a.el.style.transform = encuadre ? transformDe(encuadre, capaX, x, z, baja) : corridaDe(x, z, baja);
     // Con la lupa uno se mete adentro del aire: lo pegado a la cámara queda atrás, y la niebla afloja.
     const alfa = (quieto() ? a.c.alfa : alfaDeAire(a.c, t, anda)) * despejeDeLupa(a.c.plano, a.c.cae !== 0, z);
@@ -927,9 +1043,10 @@ function enElCruce(): boolean {
 function encuadrar(pintar = true): void {
   cam = escenario.scrollLeft / lente.z;
   lente.x = cam;
+  if (lente.z <= 1) camSinLupa = cam;
   if (paralaje) {
     const focoPx = datos.foco * escala;
-    corridas = capas.map((c) => -corrimiento(c.f, cam, focoPx, vistaPx));
+    corridas = capas.map((c) => -corrimiento(c.f, camDe(c.f), focoPx, vistaPx));
   }
   if (pintar) pintarCapas();
   for (const a of apariciones) {
@@ -1524,6 +1641,8 @@ function cuadro(ahora: number): void {
     anda += (pide - anda) * Math.min(1, dt * (pide > anda ? 3.5 : 0.55));
     pasoAhora = dt > 0 && Math.abs(paso) < 160 ? paso / dt : 0;
     moverAcecho(dt, dt > 0 && Math.abs(paso) / dt > 6);
+    moverElSalon(dt, dt > 0 && Math.abs(paso) / dt > 6);
+    if (pendulan.length) moverLoSuelto(cam / escala, (cam + vistaPx) / escala);
     camEnElCuadro = cam;
     camara.retumbar(retumboDeLaRuta());
     encuadre = camara.encuadre(reloj, dt, vistaPx, escenario.clientHeight);
@@ -1873,3 +1992,7 @@ requestAnimationFrame(() => {
   }
 });
 arrancar();
+
+// El velo de llegada espera a que esto haya arrancado y a lo que se ve en la primera pantalla (`D-91`).
+contestarAlIrse();
+void soltarElVelo();

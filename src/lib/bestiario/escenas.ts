@@ -138,14 +138,18 @@ export const VECINOS_DEL_INFIERNO: Readonly<Record<string, readonly [number, num
   'mandinga': [612, 540, 'rojo'],
 };
 
-export function escenaInfierno(nombres: ReadonlyMap<string, string>): string {
+/**
+ * `camino` (`D-91`, tanda 2): lo que el camino le suma al salón sin tocar el recinto del plano. `entre`
+ * va entre el fuego y el piso (la arcada, los que bailan, las lenguas); `cerca`, en lugar del piso de siempre.
+ */
+export function escenaInfierno(nombres: ReadonlyMap<string, string>, camino?: { entre: string; cerca: string }): string {
   const [px, py] = ARMADO.luzbelito.piso;
   const luz = llamaEnEscena();
   return (
     imagen('infierno-lejos') +
     // El fuego: la pincelada de *Gulp!*, teñida, que se suma a lo oscuro como luz.
     `<g class="infierno-fuego" transform="translate(-30 -330) scale(1)">${imagen('infierno-pincelada')}</g>` +
-    imagen('infierno-cerca') +
+    (camino ? camino.entre + camino.cerca : imagen('infierno-cerca')) +
     capasDe('el-infierno', 'atras', nombres) +
     `<g class="luz-de-vela" data-x="${f(luz.x)}" data-y="${f(luz.y)}" transform="translate(${f(luz.x)} ${f(luz.y)})">${imagen('luzbelito-luz')}</g>` +
     losOjos(VECINOS_DEL_INFIERNO, nombres) +
@@ -179,8 +183,8 @@ export const VECINOS_DEL_TEMPLO: Readonly<Record<string, readonly [number, numbe
   // Mister Ed ya es un títere (`arte-ed.ts`): hace el número entre el medallón de Momo y el Morta, y esto es donde está.
   'mister-ed-y-huesito': [494, 520, 'papel'],
   'el-doctor-saturno': [1000, 300, 'papel'],
-  // El sheriff, más contra la primera columna: el anda del santo fumador tiene varas largas.
-  'el-sheriff': [-226, 530, 'oro'],
+  // El sheriff ya es un títere (`arte-sheriff.ts`): atiende su puestito contra la primera columna, y esto es donde tiene los ojos.
+  'el-sheriff': [-245, 456, 'oro'],
   'la-bailarina': [270, 480, 'papel'],
 };
 
@@ -221,7 +225,8 @@ export function escenaTemplo(nombres: ReadonlyMap<string, string>): string {
 export const VECINOS_DEL_BAJO: Readonly<Record<string, readonly [number, number, Tinta]>> = {
   'el-amorcito-que-mordio-el-vidrio': [796, 182, 'papel'],
   'el-ahogado-y-su-fiel-fantasma': [-170, 486, 'papel'],
-  'los-nenes-de-oro': [880, 470, 'oro'],
+  // Los nenes de oro ya son un títere (`arte-nenes.ts`), dos trofeos en su podio: esto es donde tiene las antiparras el de la derecha.
+  'los-nenes-de-oro': [919, 374, 'oro'],
   // El polizón está abajo de su bote: los ojos van donde le asoman, por la rendija de la proa.
   'el-polizon-del-remolque': [178, 592, 'papel'],
   'el-rato-molhado': [92, 452, 'oro'],
@@ -316,22 +321,21 @@ export const VECINOS_DE_LA_PRISION: Readonly<Record<string, readonly [number, nu
   'el-chivato': [-110, 466, 'oro'],
   // Creció a títere de 70 de alto en el alféizar: el ojo sube y queda entre dos barrotes.
   'el-pichon': [506, 289, 'papel'],
-  // Adentro de su jaulita (`JAULITA` en `arte-prision.ts`), que cuelga en el ala de la izquierda.
+  // En su jaula, que cuelga en el ala de la izquierda: es títere del elenco (`arte-pajarito.ts`), y estos ojos ya no se dibujan.
   'el-pajarito-del-lavi-rap': [-130, 162, 'oro'],
 };
 
-/** La fiera más fiera no está: se toca la jaula vacía, adelante a la derecha. */
+/** La fiera más fiera no se ve: su jaula, adelante a la derecha, es títere del elenco (`arte-fiera.ts`). Acá queda dónde está. */
 export const JAULA_VACIA = { id: 'la-fiera-mas-fiera', x: 796, y: 486, r: 70 } as const;
 
 export function escenaPrision(nombres: ReadonlyMap<string, string>): string {
-  const { ventana: V, jaula: J } = PRISION;
+  const { ventana: V } = PRISION;
   const hueco = `M${V.x0} ${V.abajo} L${V.x0} ${V.hombro} Q${V.x0} ${V.clave} ${(V.x0 + V.x1) / 2} ${V.clave} Q${V.x1} ${V.clave} ${V.x1} ${V.hombro} L${V.x1} ${V.abajo} Z`;
   const banderas = BANDERAS.map((b, i) => {
     const [ax, ay] = deLaTapa(b.asta);
     return `<g data-bandera="${i}" data-asta="${f(ax)} ${f(ay)}">${imagen(`prision-bandera-${i + 1}`)}</g>`;
   }).join('');
   const { x, piso, escala } = DRACULA;
-  const fiera = nombres.get(JAULA_VACIA.id) ?? '';
   const B = BARBAZUL;
   return (
     imagen('prision-lejos') +
@@ -344,11 +348,7 @@ export function escenaPrision(nombres: ReadonlyMap<string, string>): string {
     `<g pointer-events="none"><g data-parte="cuarto" opacity="0">${imagen('prision-cuarto')}</g>` +
     `<g data-parte="hoja" data-bisagra="${PUERTA_DE_BARBAZUL.x0}">${imagen('prision-hoja')}</g></g>` +
     losOjos(VECINOS_DE_LA_PRISION, nombres) +
-    // La jaula de la fiera se toca, pero no tiene ojos: la fiera no está.
-    `<g class="bestia bestia--jaula" data-id="${JAULA_VACIA.id}" data-x="${JAULA_VACIA.x}" data-y="${JAULA_VACIA.y}" role="button" tabindex="0" aria-label="${fiera}">` +
-    `<circle class="toque" cx="${JAULA_VACIA.x}" cy="${JAULA_VACIA.y}" r="${JAULA_VACIA.r}"/><g class="cuerpo"></g>` +
-    `<g class="marca-anotada" transform="translate(${J.x1 - 20} ${J.arriba + 40})"><circle r="6" class="b-pp b-borde"/><path d="M-3 0 l2 2.5 l4 -5" class="b-tz" stroke-width="2"/></g>` +
-    `</g>` +
+    // La jaula de la fiera ya no va acá: es títere del elenco (`arte-fiera.ts`), en la capa de adelante.
     // La sombra en el piso y los dos cortes del taco, que la isla mueve con ella.
     `<ellipse class="dracula-sombra" data-parte="sombra" cx="${x}" cy="${piso + 3}" rx="${f(64 * escala)}" ry="7" pointer-events="none"/>` +
     `<path class="dracula-taco" data-parte="taco" d="M-14 -4 l-9 -6 M14 -4 l9 -6" opacity="0" pointer-events="none"/>` +
@@ -358,8 +358,7 @@ export function escenaPrision(nombres: ReadonlyMap<string, string>): string {
     `<g class="titere titere--barbazul" data-id="barbazul" role="button" tabindex="0" aria-label="${nombres.get('barbazul') ?? ''}">` +
     `<g id="barbazul-entero" transform="translate(${B.x} ${B.piso}) scale(${B.escala})">${barbazul()}</g></g>` +
     capasDe('la-prision', 'figura', nombres) +
-    `<g pointer-events="none">${imagen('prision-columna')}${imagen('prision-jaula')}` +
-    `<g data-parte="puerta-jaula" data-bisagra="${J.puerta.x}">${imagen('prision-puerta')}</g></g>` +
+    `<g pointer-events="none">${imagen('prision-columna')}</g>` +
     capasDe('la-prision', 'delante', nombres)
   );
 }

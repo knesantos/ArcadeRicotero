@@ -5,11 +5,51 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-11-16
+**Última actualización:** 2026-11-17
+
+> ## 🔦 EL BESTIARIO, REGIÓN POR REGIÓN, Y EL PLANO CON SUS TÍTERES (2026-11-17) — `D-91`, `T-530`
+>
+> **Sin integrar**: rama `worktree-bestiario-tres-ambientes`, sobre `main` en `57bdae8` (con `main` fusionado en `bea8712`). Pedido
+> del usuario: *"hacer las vueltas en 3 ambientes máximo [...] pulirlos al máximo y luego pasar a otros tres"* y *"pasa a otro
+> entorno [...] hasta que hayan sido auditados todos al menos 1 vez"*. Construyó Fable; el hilo principal auditó cada vuelta con
+> capturas antes y después.
+>
+> - **Las trece regiones pasaron al menos una vuelta**, de a tres: monte, pastura y ruta (4 vueltas); galpón, infierno y mesa (5);
+>   astilleros, Cybersiberia y árbol (4); techos, bajo y templo (3); la prisión (2). El velo de llegada ahora sí es carga.
+> - **El plano** (4 vueltas): dos títeres por zona (*"maximo 2"*, pedido del usuario), los trece protagonistas redibujados en cartón
+>   recortado con pose propia, nubes solo por el borde, la llegada en una línea y el contador, y el cielo que se cierra al tocar una región.
+> - **No toca lo de `T-529`** (rama `claude/bestiario-rocambole-3238c6`): ni los recintos que esa rama reescribió ni `figuras.ts`.
+>   Tests afirman que los lugares de sus títeres siguen libres. Cuando se integre, reimprimir sus pisos y mirar los títeres contra lo nuevo.
+> - **Memoria** de imágenes, contra `main`: entre +1,0 % (Cybersiberia) y +13,1 % (el plano); techo propio +20 %.
+> - **Verde:** `npm test` 2523, `astro check` 0 errores, `astro build` 200 páginas.
+> - **Visto en capturas, no en un teléfono real.** Falta: las trece segundas figuras del plano, el cierre de nubes visto con un toque
+>   real, una medición de cuadros con la PC tranquila (el control casi nunca cayó en banda).
+
+> ## 🎪 DIEZ ROCAMBOLESCAS: OPUS PLANIFICA Y CRITICA, FABLE DIBUJA (2026-11-16) — `D-73` enmienda 29, `T-529`
+>
+> **Sin integrar**: rama `claude/bestiario-rocambole-3238c6`, sobre `main` en `57bdae8`, PR abierto. Pedido del usuario: *"Hace otra
+> sesion de diseño de bestias con opus como planificador y criticdor y fable como diseñador. Que sea bien creativo y rocambolesco."*
+> Diez que eran ojos o una cosa pintada pasan a títere: la **fiera más fiera** (no se dibuja: un collar de púas flotando en la jaula
+> abierta) y el **pajarito del Lavi-rap** (flaco, pelado, con el precio más grande que él) en la prisión; el **perro manso** (xilofón
+> de costillas numeradas) y el **gato que llamás con silbidos** (linyera en una señal de tren) en los techos; el **ángel guardián**
+> (la lona tendida mirando una percha vacía) en el árbol; los **camellos prestigiosos** (venden nieve en la nieve) en Cybersiberia;
+> el **as del Club París** (un naipe que cabe en la valija) en los astilleros; el **Sheriff** (tiro al blanco sin Alí Babá) en el
+> templo; los **nenes de oro** (dos trofeos de natación) en el bajo, y el **animal que no late** (embalsamado con una radio en el
+> pecho) en el monte.
+>
+> - El hilo principal (Opus) eligió, encargó, pidió dos o tres ideas por bestia, eligió la más fuerte y criticó a PNG en dos vueltas.
+>   Tres subagentes Fable dibujaron, animaron e imprimieron. Lo compartido lo integró el hilo principal.
+> - Se reimprimieron `prision-lejos`, `arbol-piso`, `arbol-lejos`, `cyber-piso`, `astillero-piso` y sus caminos. Del monte no se
+>   reimprimió nada: lo está rehaciendo otra sesión (`D-91`, `T-530`).
+> - **Visto**: cada una a PNG de cerca, en su recinto, en el camino y en la tira del toque, y las diez en el HTML armado con todas sus
+>   piezas. **No visto**: vivas en el navegador (el panel quedó trabado) ni en un teléfono de verdad.
+> - **Verde:** `npm test` 2537, `npm run check` 0 errores, `npm run build` 200 páginas. `elenco.test.ts` pasa de 70 a 80.
+> - **Falta** (`T-529`): mirarlas vivas y en un teléfono, que `contenido` lea las diez estampas, las tintas al lienzo, el roce del tren
+>   del gato con el Atila, los nenes chicos en el bajo. `prision-jaula.webp` y `prision-puerta.webp`, sin uso, se borraron con el OK del usuario.
 
 > ## 🧨 DOS REELS DE TÍTERES QUE JUEGAN (2026-11-16) — `D-81`
 >
-> **Sin integrar**: rama `difusion/reels-titeres`, sobre `main` en `57bdae8`. Pedido del usuario: *"videos de difusion que utilicen
+> **Integrada en `main` el 2026-11-16** (PR #115, commit de fusión `bea8712`), desde la rama `difusion/reels-titeres`, sobre `main` en `57bdae8`. Pedido del usuario: *"videos de difusion que utilicen
 > las marionetas y fondos del bestiario pero con una historia [...] mostrar el juego de adivinar el tema con alguna marioneta jugando,
 > errando y festejando"*, *"sin mostrar los nombres se entiendan que bestias son"* y *"armar un video de 0 con esos diseños"*.
 >

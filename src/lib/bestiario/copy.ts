@@ -88,6 +88,8 @@ export const CAMINO = {
   ruedita: 'Bajá con la ruedita para caminar.',
   escena: 'El camino, visto de costado',
   saltar: 'Saltá al cruce',
+  /** En el velo de llegada, si la región tarda en cargar (`D-91`). Registro 3: seco. */
+  cargando: 'CARGANDO.',
   cruce: {
     titulo: 'Elegí para dónde seguir.',
     etiqueta: 'El cruce',

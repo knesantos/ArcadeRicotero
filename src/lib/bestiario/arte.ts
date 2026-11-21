@@ -214,7 +214,17 @@ export function claroDeLaPastura(): string {
     // El círculo pelado que deja la soga: tierra más honda, pisada.
     nube(px, py + 4, 92, 50, M.naranjaHonda, 'm', 0.95) +
     nube(px, py + 8, 70, 34, M.oscuro, 'l', 0.35) +
-    // El palo: madera, con la luz del lado izquierdo.
+    paloDeLaPastura()
+  );
+}
+
+/**
+ * El palo, solo: madera, con la luz del lado izquierdo. Aparte para el camino de la pastura
+ * (`arte-camino.ts`, `D-91`), que pinta su propio círculo pelado y clava el mismo palo en el mismo lugar.
+ */
+export function paloDeLaPastura(): string {
+  const { x: px, y: py } = PALO_ARTE;
+  return (
     nube(px + 4, py + 2, 14, 4, M.negro, 's', 0.8) +
     enmascarado('m-palo', `M${px - 4.5} ${py} L${px - 4} ${py - 50} L${px + 4} ${py - 53} L${px + 4.5} ${py} Z`,
       forma(`M${px - 4.5} ${py} L${px - 4} ${py - 50} L${px + 4} ${py - 53} L${px + 4.5} ${py} Z`, M.sombra) +
