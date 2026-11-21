@@ -2,7 +2,7 @@
   "contrato": "CTR-02",
   "contratoVersion": 1,
   "juego": "quiz",
-  "actualizado": "2026-10-15",
+  "actualizado": "2026-11-20",
   "items": [
     {
       "id": "QZ-001",
@@ -857,7 +857,7 @@
       "id": "QZ-042",
       "us": ["US-01"],
       "categoria": "discos",
-      "dificultad": "facil",
+      "dificultad": "media",
       "enunciado": "«Ji ji ji» cierra la noche en los recitales del Indio. ¿En qué disco salió?",
       "opciones": [
         { "texto": "Oktubre", "correcta": true },
@@ -872,13 +872,13 @@
       "spotify": { "trackId": "1tW6LiJGXGlReuNP38wrKb" },
       "disco": "oktubre",
       "estado": "listo",
-      "notaInterna": "Ciclo 20 (CNT-41): pasa de letras a discos (pregunta en que disco salio). El enunciado se apoya en RES-157 y no dice «el mas tocado»: RES-104 aclara que el numero de la base de listas es de listas cargadas, no de veces tocado, y asi lo dice la explicacion. No nombra Gulp! (respuesta de QZ-043)."
+      "notaInterna": "Ciclo 20 (CNT-41): pasa de letras a discos (pregunta en que disco salio). El enunciado se apoya en RES-157 y no dice «el mas tocado»: RES-104 aclara que el numero de la base de listas es de listas cargadas, no de veces tocado, y asi lo dice la explicacion. No nombra Gulp! (respuesta de QZ-043). T-535 (2026-11-20): pasa de facil a media. Vara: «lo sabe el que escucho Ji ji ji en una previa». Porque: pregunta en que disco salio, y eso no lo sabe el que escucho «Ji ji ji» en una previa: conoce el tema, no la discografia. Para el que tiene los discos es de las primeras medias."
     },
     {
       "id": "QZ-043",
       "us": ["US-01"],
       "categoria": "discos",
-      "dificultad": "facil",
+      "dificultad": "media",
       "enunciado": "«La bestia pop» es de los temas más conocidos de la banda. ¿En qué disco salió?",
       "opciones": [
         { "texto": "Gulp!", "correcta": true },
@@ -892,7 +892,7 @@
       "sensibleA": ["letra"],
       "disco": "gulp",
       "estado": "listo",
-      "notaInterna": "Ciclo 20 (CNT-41): pasa de letras a discos. El premio es el libro de Boimvaser (RES-08); por eso sensibleA lleva letra, aunque sea un verso de cuatro palabras. No nombra Oktubre (respuesta de QZ-042)."
+      "notaInterna": "Ciclo 20 (CNT-41): pasa de letras a discos. El premio es el libro de Boimvaser (RES-08); por eso sensibleA lleva letra, aunque sea un verso de cuatro palabras. No nombra Oktubre (respuesta de QZ-042). T-535 (2026-11-20): pasa de facil a media. Vara: «lo sabe el que escucho Ji ji ji en una previa». Porque: ubicar «La bestia pop» en Gulp! pide tener los discos; el que llega por un enlace tira al azar entre cuatro titulos."
     },
     {
       "id": "QZ-044",
@@ -956,7 +956,7 @@
       "id": "QZ-047",
       "us": ["US-01"],
       "categoria": "letras",
-      "dificultad": "facil",
+      "dificultad": "media",
       "enunciado": "«El futuro llegó hace rato». ¿De qué tema es?",
       "opciones": [
         { "texto": "Todo un palo", "correcta": true },
@@ -971,13 +971,13 @@
       "spotify": { "trackId": "0HQMAExgp4BiKGq6UM3u9X" },
       "disco": "un-baion-para-el-ojo-idiota",
       "estado": "listo",
-      "notaInterna": "Nuevo en el ciclo 20 (CNT-41). Verso de una linea, tomado de src/data/cancionero.json (todo-un-palo). TrackId de RES-140, el que tenia QZ-038. «De lo mas largo» y no «el mas largo»: RES-102 no tiene duraciones del vol. 2 de Lobo suelto."
+      "notaInterna": "Nuevo en el ciclo 20 (CNT-41). Verso de una linea, tomado de src/data/cancionero.json (todo-un-palo). TrackId de RES-140, el que tenia QZ-038. «De lo mas largo» y no «el mas largo»: RES-102 no tiene duraciones del vol. 2 de Lobo suelto. T-535 (2026-11-20): pasa de facil a media. Vara: «lo sabe el que escucho Ji ji ji en una previa». Porque: la frase la conoce cualquiera, el titulo del tema no: las cuatro opciones son titulos y no hay con que deducirlo."
     },
     {
       "id": "QZ-048",
       "us": ["US-01"],
       "categoria": "letras",
-      "dificultad": "facil",
+      "dificultad": "media",
       "enunciado": "«Banderas en tu corazón, yo quiero verlas». ¿De qué tema es?",
       "opciones": [
         { "texto": "Juguetes perdidos", "correcta": true },
@@ -991,7 +991,7 @@
       "sensibleA": ["letra"],
       "disco": "luzbelito",
       "estado": "listo",
-      "notaInterna": "Nuevo en el ciclo 20 (CNT-41). Verso de src/data/cancionero.json (juguetes-perdidos), dos lineas del cancionero unidas con coma; el ritual lo sostiene RES-157. Sin spotify: no hay trackId fichado para este tema."
+      "notaInterna": "Nuevo en el ciclo 20 (CNT-41). Verso de src/data/cancionero.json (juguetes-perdidos), dos lineas del cancionero unidas con coma; el ritual lo sostiene RES-157. Sin spotify: no hay trackId fichado para este tema. T-535 (2026-11-20): pasa de facil a media. Vara: «lo sabe el que escucho Ji ji ji en una previa». Porque: el verso se corea en la misa, pero pide el titulo y los cuatro son temas: fue una de las que tiraron al critico de afuera en la pregunta 4 (REV-24 r0-afuera, C-4)."
     },
     {
       "id": "QZ-049",
@@ -1056,7 +1056,7 @@
       "id": "QZ-052",
       "us": ["US-01"],
       "categoria": "mitologia",
-      "dificultad": "facil",
+      "dificultad": "media",
       "enunciado": "En Tandil, en 2016, el Indio gritó que ahí se hacía el más grande del mundo. ¿El más grande qué?",
       "opciones": [
         { "texto": "El pogo", "correcta": true },
@@ -1069,7 +1069,7 @@
       "esLeyenda": false,
       "sensibleA": [],
       "estado": "listo",
-      "notaInterna": "Nuevo en el ciclo 20 (CNT-41). Hecho: RES-158 tiene el grito con fecha y la falta de certificacion. La explicacion dice el año del disco del tema «Pogo» y no su nombre, que es la respuesta de QZ-005 y QZ-026."
+      "notaInterna": "Nuevo en el ciclo 20 (CNT-41). Hecho: RES-158 tiene el grito con fecha y la falta de certificacion. La explicacion dice el año del disco del tema «Pogo» y no su nombre, que es la respuesta de QZ-005 y QZ-026. T-535 (2026-11-20): pasa de facil a media. Vara: «lo sabe el que escucho Ji ji ji en una previa». Porque: pide conocer el relato de Tandil 2016; REV-24 r0-afuera (C-4) la marca como facil que no lo es."
     },
     {
       "id": "QZ-053",
@@ -1211,7 +1211,7 @@
       "id": "QZ-060",
       "us": ["US-01"],
       "categoria": "mitologia",
-      "dificultad": "media",
+      "dificultad": "facil",
       "enunciado": "En los recitales, ¿cómo le dice la gente a las banderas?",
       "opciones": [
         { "texto": "Trapos", "correcta": true },
@@ -1224,13 +1224,13 @@
       "esLeyenda": false,
       "sensibleA": [],
       "estado": "listo",
-      "notaInterna": "Nuevo en el ciclo 20 (CNT-41). La etnografia de 2009 (Aliano y otros) es el premio."
+      "notaInterna": "Nuevo en el ciclo 20 (CNT-41). La etnografia de 2009 (Aliano y otros) es el premio. T-535 (2026-11-20): pasa de media a facil. Vara: «lo sabe el que escucho Ji ji ji en una previa». Porque: «trapos» es palabra de cancha y de recital, se sabe sin haber puesto un disco; es de las que el critico de afuera pide para el arranque (cultura general del recital)."
     },
     {
       "id": "QZ-061",
       "us": ["US-01"],
       "categoria": "mitologia",
-      "dificultad": "media",
+      "dificultad": "facil",
       "enunciado": "Circula que la banda se fundó un 28 de diciembre. ¿Qué día es ese en el calendario?",
       "opciones": [
         { "texto": "Día de los Inocentes", "correcta": true },
@@ -1244,13 +1244,13 @@
       "rotuloLeyenda": "Fecha que circula como fundación. Nunca se confirmó ni se desmintió.",
       "sensibleA": [],
       "estado": "listo",
-      "notaInterna": "Nuevo en el ciclo 20 (CNT-41). Leyenda porque la premisa (la fecha de fundacion) lo es, segun RES-05. Lo que se puntua es un dato de calendario, que no depende de ninguna fuente: el 28 de diciembre es el Dia de los Santos Inocentes."
+      "notaInterna": "Nuevo en el ciclo 20 (CNT-41). Leyenda porque la premisa (la fecha de fundacion) lo es, segun RES-05. Lo que se puntua es un dato de calendario, que no depende de ninguna fuente: el 28 de diciembre es el Dia de los Santos Inocentes. T-535 (2026-11-20): pasa de media a facil. Vara: «lo sabe el que escucho Ji ji ji en una previa». Porque: lo que se puntua es un dato de calendario (28 de diciembre), no de la banda: se contesta sin saber nada. Sigue rotulada leyenda, la insignia va antes de responder."
     },
     {
       "id": "QZ-062",
       "us": ["US-01"],
       "categoria": "mitologia",
-      "dificultad": "media",
+      "dificultad": "facil",
       "enunciado": "Se cuenta que, en los recitales, los de adentro hacían algo por los que no tenían entrada. ¿Qué?",
       "opciones": [
         { "texto": "Abrían los molinetes", "correcta": true },
@@ -1264,7 +1264,7 @@
       "rotuloLeyenda": "Relato oral, sin crónica que lo confirme. Se dice en la previa.",
       "sensibleA": [],
       "estado": "listo",
-      "notaInterna": "Nuevo en el ciclo 20 (CNT-41). Es el principio del sitio (D-14), rotulado como lo que es: RES-155 no encontro fuente. La explicacion no nombra Cordoba (respuesta de QZ-054) ni Paladium (QZ-063), aunque RES-154 los trae."
+      "notaInterna": "Nuevo en el ciclo 20 (CNT-41). Es el principio del sitio (D-14), rotulado como lo que es: RES-155 no encontro fuente. La explicacion no nombra Cordoba (respuesta de QZ-054) ni Paladium (QZ-063), aunque RES-154 los trae. T-535 (2026-11-20): pasa de media a facil. Vara: «lo sabe el que escucho Ji ji ji en una previa». Porque: es el principio que el sitio dice en la puerta (abrir los molinetes) y las otras tres opciones no compiten; se saca sin saber nada. Sigue rotulada leyenda."
     },
     {
       "id": "QZ-063",
