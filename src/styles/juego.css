@@ -10811,34 +10811,12 @@ body:has(.juego-completar > #partida:not([hidden])) {
   --tinte-accion: var(--disco-un-baion-para-el-ojo-idiota-tinta);
 }
 
-/* La referencia: el número contra el que se decide. Recorte pegado —borde completo en la
-   tinta del disco—, el mismo idioma que `.verso-bloque`. Nunca la barrita lateral ni la
-   tarjeta elevada. */
-.masomenos-referencia {
-  margin: 0 0 var(--espacio-3);
-  padding: var(--espacio-2);
-  border: var(--linea) solid var(--tinta-disco, var(--borde));
-  /* Esquina de estampa y no `--radio`: la caja no se toca, y `--radio` es para lo tocable
-     grande (`diseno-marca.md`; lo notó `REV-16`). */
-  border-radius: 3px;
-  transform: rotate(-0.6deg);
-}
-
-/* El nombre del dato de un par: «Jijiji». Registro 3, chico, en la legible. */
+/* La referencia y su número grande son ahora una ficha (`.ficha-mm`, más abajo: ronda de
+   pulida del 2026-11-20). Queda la línea chica de setlist.fm, registro 3, en la legible. */
 .masomenos-sujeto {
   margin: 0;
   color: var(--texto-tenue);
   font-size: 0.95rem;
-}
-
-/* El número grande de la referencia. Nunca en color de acierto o error: todavía no se
-   respondió nada. */
-.masomenos-valor {
-  margin: 0;
-  font-family: var(--fuente-rotulada);
-  font-size: 2.2rem;
-  line-height: 1.1;
-  color: var(--texto);
 }
 
 /* Los dos botones, lado a lado: el layout del *Higher Lower Game* (`RES-93.1`). Son
@@ -10951,6 +10929,797 @@ body:has(.juego-completar > #partida:not([hidden])) {
   text-decoration: none;
   color: var(--texto);
   font-size: 0.9rem;
+}
+
+/* ==========================================================================
+   Más o menos: las fichas (ronda de pulida, 2026-11-20).
+
+   La acotación de la portada ya lo decía: "Tenés una ficha boca abajo en la mano." El objeto es
+   **la ficha**: una pieza de hueso con su canto, de papel por la cara y del celeste de *Un
+   baión* por el dorso. Sobre la mesa hay dos: la tuya, boca abajo, y la que está a la vista.
+   Responder es darla vuelta; la racha es la pila de las que ganaste, con su contador de ruedas,
+   y la primera que errás la tira.
+
+   Va antes del bloque de "Ponelos en fila" y no al final de la hoja: el test de `BR-22` lee de
+   `.ponelos {` hasta el final y ahí no admite el verde ni el rojo. Acá el acierto y el error
+   entran solo por las piezas de todos (`.sello-cae`, `.sello-marca`, `.racha`, `.feedback`).
+
+   NINGÚN ESTADO DEPENDE DEL MOVIMIENTO NI DE LA TINTA: la ficha dada vuelta tiene su número
+   escrito, las teclas su tilde o su cruz, la mesa la palabra que compara y la ficha de la
+   respuesta lo dice con todas las letras. Con movimiento reducido los tiempos valen cero.
+   ========================================================================== */
+
+/* ---- La ficha ----
+   Papel con filete por la cara; celeste con filete y rombo por el dorso. El canto es el borde
+   de abajo, más grueso (borde, no sombra). El cuerpo del número lo fija el ancho de la ficha
+   y cuántas letras tiene (`--largo`, que escribe la isla). */
+.ficha-mm {
+  position: relative;
+  z-index: 1;
+  display: block;
+  container-type: inline-size;
+  width: min(100%, 11.5rem);
+  aspect-ratio: 5 / 6;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+}
+
+.ficha-mm-cara,
+.ficha-mm-dorso {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0.9rem 0.6rem;
+  border: 2px solid var(--papel-borde);
+  border-bottom-width: 8px;
+  border-radius: var(--radio);
+  background: var(--papel);
+  color: var(--fondo);
+  text-align: center;
+  overflow: hidden;
+}
+
+.ficha-mm-dorso {
+  border-color: var(--apoyo-disco);
+  background: var(--tinta-disco);
+}
+
+.ficha-mm-cara::before,
+.ficha-mm-dorso::before {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border: 2px solid currentColor;
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+.ficha-mm-numero {
+  font-family: var(--fuente-rotulada);
+  font-weight: 400;
+  font-size: min(3.4rem, calc(112cqw / var(--largo, 2)));
+  line-height: 1;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.ficha-mm-unidad {
+  font-family: var(--fuente-rotulada);
+  font-weight: 400;
+  font-size: clamp(0.62rem, 8.6cqw, 0.9rem);
+  letter-spacing: 0.1em;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.ficha-mm-sujeto {
+  display: -webkit-box;
+  max-width: 100%;
+  overflow: hidden;
+  font-size: clamp(0.7rem, 8.4cqw, 0.9rem);
+  font-weight: 700;
+  line-height: 1.15;
+  text-wrap: balance;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+}
+
+.ficha-mm-rombo {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 38cqw;
+  aspect-ratio: 1;
+  /* Girado mide casi una vez y media: el aire es para que no pise el nombre de arriba. */
+  margin: 9cqw 0;
+  border: 3px solid currentColor;
+  rotate: 45deg;
+}
+
+.ficha-mm-rombo > span {
+  font-family: var(--fuente-rotulada);
+  font-size: 30cqw;
+  line-height: 1;
+  rotate: -45deg;
+}
+
+/* Boca abajo, la cara no existe para la vista (y está vacía: el número se escribe al darla
+   vuelta). */
+.ficha-mm--tapada .ficha-mm-cara {
+  visibility: hidden;
+}
+
+/* Darla vuelta: la ficha se levanta, se afina hasta el canto y vuelve a abrirse del otro
+   lado, en saltos. El dorso se va en el canto. */
+.ficha-mm--dada-vuelta {
+  animation: ficha-voltea var(--duracion-umbral) linear both;
+}
+
+.ficha-mm--dada-vuelta .ficha-mm-dorso {
+  pointer-events: none;
+  animation: ficha-dorso-se-va var(--duracion-umbral) linear both;
+}
+
+@keyframes ficha-voltea {
+  0%,
+  12% {
+    scale: 1 1;
+    translate: 0 0;
+  }
+
+  13%,
+  25% {
+    scale: 0.68 1.03;
+    translate: 0 -7px;
+  }
+
+  26%,
+  38% {
+    scale: 0.32 1.06;
+    translate: 0 -12px;
+  }
+
+  39%,
+  61% {
+    scale: 0.07 1.08;
+    translate: 0 -15px;
+  }
+
+  62%,
+  74% {
+    scale: 0.32 1.06;
+    translate: 0 -12px;
+  }
+
+  75%,
+  87% {
+    scale: 0.68 1.03;
+    translate: 0 -7px;
+  }
+
+  88%,
+  100% {
+    scale: 1 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes ficha-dorso-se-va {
+  0%,
+  49% {
+    opacity: 1;
+  }
+
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* La ficha que vuela a la pila (`volarPieza`): sin pose, del tamaño que le da el vuelo. */
+.ficha-mm--vuela {
+  width: auto;
+  aspect-ratio: auto;
+}
+
+/* ---- La portada: la ficha en la mano ----
+   La ficha boca abajo, torcida, al lado de la bajada. Tocarla es tocar "Jugá". */
+.en-mano {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--espacio-2);
+  align-items: center;
+  margin: var(--espacio-2) 0;
+}
+
+.en-mano-ficha {
+  width: clamp(6.5rem, 36vw, 10.5rem);
+  padding: 0.6rem 0.2rem 0.3rem 0.4rem;
+}
+
+.ficha-mm--portada {
+  width: 100%;
+  rotate: -7deg;
+  cursor: pointer;
+}
+
+.en-mano-texto > p {
+  margin: 0;
+}
+
+.mejor-portada {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.6rem;
+  margin-top: var(--espacio-2);
+}
+
+.mejor-portada[hidden] {
+  display: none;
+}
+
+.juego-mas-o-menos .arranque-ruidos {
+  margin-top: var(--espacio-1);
+}
+
+/* ---- La cabecera: la racha ----
+   El contador de ruedas con su rótulo, la pila de las fichas ganadas, tu mejor racha (o el
+   sello de haberla pasado) y la tecla de los ruidos. */
+.tablero-fichas {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem 0.8rem;
+  min-height: 2.9rem;
+  margin-bottom: var(--espacio-2);
+  padding-bottom: 0.45rem;
+  border-bottom: 2px solid var(--apoyo-disco);
+}
+
+.racha-cuenta {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.racha-rotulo {
+  font-family: var(--fuente-rotulada);
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+}
+
+.juego-mas-o-menos .contador-cifra {
+  border-color: var(--apoyo-disco);
+}
+
+/* La pila: un canto por ficha, de abajo para arriba, en montones de cinco. Vacía, queda el
+   lugar marcado de trazo cortado. */
+.apilada {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: flex-end;
+  gap: 6px 3px;
+  min-width: 1.6rem;
+  min-height: 2rem;
+  overflow: hidden;
+}
+
+.apilada-monton {
+  display: flex;
+  flex: none;
+  flex-direction: column-reverse;
+  gap: 1px;
+  width: 1.3rem;
+}
+
+.apilada-ficha {
+  display: block;
+  box-sizing: border-box;
+  height: 6px;
+  border-bottom: 2px solid var(--papel-borde);
+  border-radius: 1px;
+  background: var(--papel);
+}
+
+.apilada-ficha:nth-child(even) {
+  margin-left: 2px;
+  margin-right: -2px;
+}
+
+.apilada--vacia::before {
+  content: '';
+  width: 1.45rem;
+  height: 6px;
+  border: 2px dashed var(--borde);
+  border-radius: 1px;
+}
+
+.apilada-ficha--llega {
+  animation: ficha-apila var(--duracion-sello) linear both;
+}
+
+@keyframes ficha-apila {
+  0%,
+  32% {
+    translate: 0 -15px;
+    rotate: -9deg;
+  }
+
+  33%,
+  65% {
+    translate: 0 -6px;
+    rotate: 6deg;
+  }
+
+  66%,
+  100% {
+    translate: 0 0;
+    rotate: 0deg;
+  }
+}
+
+/* El canto suelto que cae cuando la pila se viene abajo, y la caja que le marca el lugar al
+   vuelo: las dos las pone la isla, sueltas sobre la pantalla. */
+.apilada-ficha--suelta {
+  position: fixed;
+  z-index: 40;
+  pointer-events: none;
+}
+
+.apilada-lugar {
+  pointer-events: none;
+}
+
+.apilada--portada,
+.apilada--resultado {
+  flex: 0 1 auto;
+  flex-wrap: wrap;
+  overflow: visible;
+}
+
+.mejor-marca {
+  margin: 0;
+  color: var(--texto-tenue);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.tablero-fichas .ruidos-tecla {
+  flex: none;
+  align-self: center;
+  margin-left: auto;
+}
+
+/* Se cortó la racha: la cabecera queda de trazo cortado (forma, además de la pila caída y de
+   lo que dice la ficha de la respuesta). */
+.tablero-fichas--cortada {
+  border-bottom-style: dashed;
+  border-bottom-color: var(--borde);
+}
+
+.tablero-fichas--cortada .contador-cifra {
+  border-style: dashed;
+  border-color: var(--borde);
+}
+
+/* ---- La pregunta y la mesa ---- */
+.juego-mas-o-menos #pregunta .enunciado {
+  margin-bottom: var(--espacio-2);
+  font-size: clamp(1.2rem, 5.4vw, 1.55rem);
+  line-height: 1.22;
+}
+
+.juego-mas-o-menos #pregunta .enunciado:focus {
+  outline: none;
+}
+
+/* La mesa: el paño, con doble filete en el azul de apoyo y una trama impresa (una máscara
+   sobre la tinta del disco: trama, no degradado). Nada se lee sobre la trama: las fichas y la
+   palabra del medio son opacas. */
+.mesa {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1.3rem;
+  align-items: center;
+  justify-items: center;
+  min-height: 12.5rem;
+  margin: 0.7rem 0 var(--espacio-2);
+  padding: 1.7rem 1.1rem 1.3rem;
+  border: var(--linea) solid var(--apoyo-disco);
+  border-radius: 3px;
+}
+
+.mesa::before {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border: 1px solid var(--apoyo-disco);
+  pointer-events: none;
+}
+
+.mesa::after {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  background: var(--tinta-disco);
+  opacity: 0.13;
+  -webkit-mask: var(--textura-barrido);
+  mask: var(--textura-barrido);
+  pointer-events: none;
+}
+
+.mesa-familia {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 0.9rem;
+  translate: 0 -58%;
+  background: var(--fondo);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+/* La pestaña de la derecha: tu mejor racha del aparato, o el sello verde de haberla pasado. */
+.mesa-mejor,
+.mesa .racha-hazana {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  right: 0.9rem;
+  translate: 0 -58%;
+  background: var(--fondo);
+  white-space: nowrap;
+}
+
+.mesa-mejor {
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+}
+
+.mesa .racha-hazana {
+  font-size: 0.7rem;
+}
+
+.ficha-mm--tuya {
+  rotate: -3deg;
+}
+
+.ficha-mm--vista {
+  rotate: 2deg;
+}
+
+/* Con el dedo apoyado en una tecla, tu ficha se despega un pelo de la mesa. Es respuesta al
+   toque, no adorno: dura lo que dura el dedo. */
+.mesa:has(~ .masomenos-opciones .opcion:active) .ficha-mm--tapada {
+  translate: 0 -5px;
+}
+
+/* La palabra que compara: tu ficha es *más*, *menos*, *antes* o *después* que la otra. Llega
+   con la ficha de la respuesta, estampada, en el hueco del medio. Tinta de texto: es un dato,
+   no un acierto. */
+.mesa-signo {
+  position: absolute;
+  z-index: 3;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  visibility: hidden;
+  padding: 0.14rem 0.5rem 0.08rem;
+  border: 2px solid currentColor;
+  border-radius: 3px;
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: var(--fuente-rotulada);
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  line-height: 1.4;
+  text-transform: uppercase;
+  white-space: nowrap;
+  rotate: -5deg;
+}
+
+.mesa-signo--puesto {
+  visibility: visible;
+  animation: sello-golpe var(--duracion-pasada) var(--curva-cinta) both;
+}
+
+.mesa-nota {
+  margin: calc(-1 * var(--espacio-1)) 0 var(--espacio-2);
+  font-size: 0.82rem;
+}
+
+/* El sello del cierre, a la medida de la mesa, y la marca que deja en la esquina de tu ficha. */
+.mesa .sello-cae {
+  /* Abajo, en el paño que queda entre las dos fichas: no tapa el número recién dado vuelta. */
+  --sello-y: 85%;
+  width: 5.4rem;
+  height: 5.4rem;
+  margin: -2.7rem 0 0 -2.7rem;
+  font-size: 2.6rem;
+}
+
+.ficha-mm .sello-marca {
+  top: -0.7rem;
+  right: -0.7rem;
+  margin: 0;
+}
+
+/* ---- Las dos teclas ----
+   El canto de abajo es más grueso (borde, no sombra) y bajan al apretarlas. La que tocaste
+   queda hundida, con el filete de la tinta del texto, hasta que la ficha apoya y las dos
+   dicen cuál era. */
+.juego-mas-o-menos .masomenos-opciones {
+  gap: 0.6rem;
+}
+
+.juego-mas-o-menos .masomenos-opciones .opcion {
+  min-height: calc(var(--toque-min) * 1.55);
+  border-bottom-width: 8px;
+  background: var(--fondo);
+  font-size: 1.3rem;
+  touch-action: manipulation;
+}
+
+.juego-mas-o-menos .masomenos-opciones .opcion:active:not(:disabled),
+.juego-mas-o-menos .masomenos-opciones .opcion.es-apretada {
+  translate: 0 4px;
+  border-color: var(--texto);
+  border-bottom-width: 4px;
+  margin-bottom: 4px;
+}
+
+.juego-mas-o-menos .masomenos-opciones .opcion.es-correcta {
+  border-color: var(--acento-3);
+}
+
+.juego-mas-o-menos .masomenos-opciones .opcion.es-elegida {
+  border-color: var(--acento-4);
+}
+
+/* Con la ficha de la respuesta a la vista, las teclas quedan como constancia, bajas. */
+.juego-mas-o-menos .masomenos-opciones--cerradas .opcion,
+.juego-mas-o-menos .masomenos-opciones--cerradas .opcion.es-apretada {
+  min-height: 2.5rem;
+  margin-bottom: 0;
+  padding-block: 0.3rem;
+  border-bottom-width: var(--linea);
+  font-size: 0.9rem;
+  translate: 0 0;
+}
+
+/* ---- La ficha de la respuesta ---- */
+.juego-mas-o-menos .ficha-respuesta {
+  margin-top: var(--espacio-2);
+}
+
+.juego-mas-o-menos .ficha-respuesta .revelacion-cabeza {
+  justify-content: flex-start;
+  gap: 0.65rem;
+  margin-bottom: 0.5rem;
+}
+
+.juego-mas-o-menos .ficha-respuesta .revelacion-suma {
+  margin-left: auto;
+}
+
+.juego-mas-o-menos .ficha-respuesta .micro {
+  min-width: 0;
+  text-wrap: balance;
+}
+
+.juego-mas-o-menos .ficha-respuesta.ok .micro {
+  font-size: clamp(0.95rem, 4.4vw, 1.25rem);
+}
+
+/* En la partida el número real lo lleva la ficha, grande: acá queda para el lector. */
+.juego-mas-o-menos .ficha-respuesta .masomenos-real {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.juego-mas-o-menos .ficha-respuesta .explicacion + .explicacion {
+  margin-top: 0.3rem;
+  font-size: 0.9rem;
+}
+
+.juego-mas-o-menos .ficha-respuesta .seguir-ficha {
+  margin-top: var(--espacio-2);
+}
+
+/* ---- El resultado ----
+   La racha, grande, y al lado la pila de lo que juntaste, que se arma ficha por ficha. */
+.cuenta-fichas {
+  align-items: flex-end;
+  gap: 0.6rem 1.4rem;
+  margin-top: var(--espacio-2);
+}
+
+.cuenta-fichas .cifra {
+  margin: 0;
+}
+
+.cuenta-fichas .cifra-numero {
+  width: fit-content;
+  min-width: 1.4em;
+  padding: 0.05em 0.14em 0;
+  border: var(--linea) solid transparent;
+  border-radius: 3px;
+  color: var(--tinta-disco);
+  font-size: clamp(4.2rem, 23vw, 6.2rem);
+  line-height: 0.95;
+}
+
+/* Cero: la cifra queda torcida y de trazo cortado. */
+.cuenta-fichas .cifra-numero--cero {
+  border: var(--linea) dashed var(--borde);
+  color: var(--texto-tenue);
+  rotate: -4deg;
+}
+
+/* La hazaña: doble filete (un segundo marco pegado por afuera, no una sombra). */
+.cuenta-fichas .cifra-numero--hazana {
+  border-color: currentColor;
+  outline: var(--linea) solid currentColor;
+  outline-offset: 4px;
+}
+
+.apilada--resultado {
+  max-width: 14rem;
+  min-height: 2.6rem;
+  padding-bottom: 0.5rem;
+}
+
+.apilada--resultado .apilada-monton {
+  width: 1.9rem;
+}
+
+.apilada--resultado .apilada-ficha {
+  height: 7px;
+}
+
+/* Lo que te cortó: la pregunta, las dos fichas como quedaron y de dónde salió el número. */
+.mesa--quieta {
+  min-height: 0;
+  margin-top: 0.9rem;
+  padding-block: 1.4rem 1.1rem;
+}
+
+.mesa--quieta .ficha-mm {
+  width: min(100%, 7rem);
+}
+
+.corte-dice {
+  margin-top: 0;
+  border-style: dashed;
+}
+
+.corte-dice .masomenos-real {
+  font-size: 1.25rem;
+}
+
+/* ---- El alto de la ventana, repartido (teléfono) ----
+   Arriba la cabecera y la pregunta; al medio la mesa, que crece hasta donde haya; abajo las
+   dos teclas, en la zona del pulgar. Con la ficha de la respuesta a la vista, la mesa vuelve a
+   su alto justo. Va al final del bloque: con el mismo peso, una regla de pantalla chica puesta
+   antes de la base no pisa nada. */
+@media (max-width: 45.99rem) {
+  .juego-mas-o-menos #partida:not([hidden]) {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100svh - var(--espacio-3) * 2);
+  }
+
+  .juego-mas-o-menos #partida:not(.partida--revelada) #pregunta {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+  }
+
+  .juego-mas-o-menos #partida:not(.partida--revelada) .mesa {
+    flex: 1 1 auto;
+    max-height: 24rem;
+  }
+
+  .juego-mas-o-menos #partida:not(.partida--revelada) .masomenos-opciones {
+    margin-top: auto;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
+
+/* Teléfonos angostos: la ficha de la portada, más chica, y la mesa con menos aire. */
+@media (max-width: 22.5rem) {
+  .mesa {
+    gap: 0.9rem;
+    padding-inline: 0.7rem;
+  }
+
+  .mesa-mejor {
+    display: none;
+  }
+}
+
+/* Ventana baja: la mesa no pide alto de más y con la respuesta a la vista las fichas se achican. */
+@media (max-height: 44rem) {
+  .mesa {
+    min-height: 10rem;
+    padding-block: 1.4rem 1rem;
+  }
+
+  .partida--revelada .mesa .ficha-mm {
+    width: min(100%, 7.4rem);
+  }
+
+  /* Con una ficha larga la hoja se corre hasta "Seguí" y la mesa puede quedar arriba de la
+     ventana: acá el número real se escribe también en la ficha de la respuesta. */
+  .juego-mas-o-menos .ficha-respuesta .masomenos-real {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+    white-space: normal;
+    margin: 0 0 0.3rem;
+    font-size: 1.3rem;
+  }
+
+  /* Y la portada se aprieta para que "Jugá" quede arriba del pliegue. */
+  .en-mano {
+    margin: var(--espacio-1) 0;
+  }
+
+  .en-mano-ficha {
+    width: 5.4rem;
+  }
+
+  .en-mano-texto > p {
+    font-size: 0.93rem;
+    line-height: 1.4;
+  }
+
+  .juego-mas-o-menos .fuentes-del-juego {
+    margin-block: 0.4rem 0;
+    font-size: 0.8rem;
+  }
+
+  .juego-mas-o-menos #inicio .primario {
+    margin-top: var(--espacio-2);
+  }
+}
+
+/* La compu: la mesa mide lo suyo y las fichas crecen. */
+@media (min-width: 46rem) {
+  .mesa {
+    min-height: 17rem;
+    padding-block: 2.2rem 1.8rem;
+  }
+
+  .ficha-mm {
+    width: min(100%, 12.5rem);
+  }
+
+  .en-mano-ficha {
+    width: 9.5rem;
+  }
 }
 
 /* ==========================================================================

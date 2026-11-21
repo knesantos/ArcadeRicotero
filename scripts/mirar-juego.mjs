@@ -1864,6 +1864,264 @@ async function adivinarLaTapa(ctx) {
   await foto('resultado-flojo');
 }
 
+/**
+ * "Más o menos": la portada, la ficha que se tira, la pregunta, un acierto con "más" y otro con
+ * "menos" (los que salgan), el pase de la ficha a la pila, la racha larga (con la mejor racha
+ * del aparato pasada en el camino), el error con la pila que se cae, el resultado, la tarjeta,
+ * lo compartido y una segunda vuelta errando la primera.
+ *
+ * Con `--peor`, le cambia al navegador el pozo para que **todas** las preguntas lleven el
+ * enunciado, el nombre y la explicación más largos, números de cinco cifras con unidad y el
+ * detalle de las palabras; recorre lo justo y dice, por tamaño, si la hoja desborda, si "Jugá"
+ * y las dos teclas entran en la ventana y si "Seguí" queda a la vista. Pensado para correrlo
+ * con los diez tamaños (`--tamanos 320x568,360x640,…`).
+ */
+async function masOMenos(ctx) {
+  const { pagina, foto, tira, rafaga, quieto, ancho, alto } = ctx;
+  const peor = bandera('--peor');
+  const ruta = `${base}/juegos/mas-o-menos/`;
+  const prefijo = `${ancho}${quieto ? '-quieto' : ''}`;
+
+  if (peor) {
+    const empeorar = (isla) => {
+      const mas = (campo) => isla.datos.map((d) => d[campo] ?? '').sort((a, b) => b.length - a.length)[0];
+      const palabra = isla.datos.filter((d) => d.temas).sort((a, b) => b.temas.length - a.temas.length)[0];
+      const pregunta = mas('pregunta');
+      const sujeto = mas('sujeto');
+      const explicacion = mas('explicacion');
+      return {
+        ...isla,
+        datos: isla.datos.map((d, i) => ({
+          ...d,
+          // El enunciado tiene que seguir siendo único: por él se busca el dato.
+          pregunta: `${pregunta.replace(/\?$/, '')} (${i})?`,
+          sujeto,
+          explicacion,
+          medida: 'peor',
+          escala: 'entero',
+          unidad: ['persona', 'personas'],
+          valor: 10000 + i * 257,
+          techo: undefined,
+          formas: palabra?.formas,
+          temas: palabra?.temas,
+        })),
+      };
+    };
+    await pagina.setRequestInterception(true);
+    pagina.on('request', async (pedido) => {
+      if (pedido.resourceType() !== 'document' || !pedido.url().includes('/juegos/mas-o-menos')) return pedido.continue();
+      try {
+        const html = await (await fetch(pedido.url())).text();
+        const cambiado = html.replace(/(<script[^>]*id="pozo"[^>]*>)([\s\S]*?)(<\/script>)/, (_, abre, json, cierra) => abre + JSON.stringify(empeorar(JSON.parse(json))) + cierra);
+        await pedido.respond({ status: 200, contentType: 'text/html; charset=utf-8', body: cambiado });
+      } catch (e) {
+        console.log(`   (no pude empeorar el pozo: ${e.message})`);
+        await pedido.continue();
+      }
+    });
+  }
+
+  const sinMenuDeCompartir = () =>
+    pagina.evaluate(() => {
+      try {
+        delete Navigator.prototype.share;
+      } catch {}
+    });
+  const ponerMejor = (n) =>
+    pagina.evaluate((valor) => {
+      try {
+        if (valor > 0) localStorage.setItem('arcade.mas-o-menos.mejor', String(valor));
+        else localStorage.removeItem('arcade.mas-o-menos.mejor');
+      } catch {}
+    }, n);
+
+  await pagina.goto(ruta, { waitUntil: 'networkidle0' });
+  // La mejor racha del aparato: 3, para que la portada la muestre y la partida la pase.
+  await ponerMejor(peor ? 0 : 3);
+  if (peor) await pagina.reload({ waitUntil: 'networkidle0' });
+  else await tira('portada-entra', () => pagina.reload({ waitUntil: 'domcontentloaded' }), { ms: 900 });
+  await sinMenuDeCompartir();
+  await ctx.espera(300);
+  await foto('portada');
+  if (!peor) await foto('portada-entera', { entera: true });
+
+  const pozo = await pagina.evaluate(() => JSON.parse(document.getElementById('pozo').textContent).datos);
+  /** Cuál es la tecla buena, leyendo la pantalla como la lee quien juega: la pregunta y la ficha a la vista. */
+  const elDeAhora = async () => {
+    const visto = await pagina.evaluate(() => ({
+      enunciado: document.querySelector('#pregunta .enunciado')?.textContent,
+      referencia: document.querySelector('#pregunta .ficha-mm--vista .ficha-mm-numero')?.textContent,
+    }));
+    const dato = pozo.find((d) => d.pregunta === visto.enunciado);
+    if (!dato) throw new Error(`no encuentro en el pozo «${visto.enunciado}»`);
+    const texto = visto.referencia ?? '';
+    const referencia =
+      dato.escala === 'segundos'
+        ? texto.split(':').reduce((minutos, segundos) => Number(minutos) * 60 + Number(segundos))
+        : Number(texto.replace(/\./g, ''));
+    if (!Number.isFinite(referencia)) throw new Error(`no entiendo la referencia «${texto}»`);
+    return { dato, buena: dato.valor > referencia ? 'mas' : 'menos' };
+  };
+  const tecla = async (acertar) => {
+    const { buena } = await elDeAhora();
+    const cual = acertar ? buena : buena === 'mas' ? 'menos' : 'mas';
+    const boton = await pagina.$(`#pregunta .opcion[data-eleccion="${cual}"]:not(:disabled)`);
+    if (!boton) throw new Error(`no hay tecla "${cual}"`);
+    return { boton, cual };
+  };
+  const fichaLista = () => pagina.waitForSelector('#revelado .seguir-ficha', { timeout: 8000 });
+  const asentar = () => ctx.espera(quieto ? 200 : 1300);
+  const estado = () =>
+    pagina.evaluate(() => {
+      const caja = (sel) => {
+        const n = document.querySelector(sel);
+        if (!n) return null;
+        const c = n.getBoundingClientRect();
+        return [Math.round(c.top), Math.round(c.bottom)];
+      };
+      return {
+        racha: document.querySelector('#partida .racha-cuenta .solo-lector')?.textContent ?? null,
+        pila: document.querySelector('#partida .apilada')?.getAttribute('aria-label') ?? null,
+        hazana: !!document.querySelector('#partida .racha-hazana'),
+        alto: innerHeight,
+        desliza: Math.round(scrollY),
+        teclas: caja('#pregunta .masomenos-opciones'),
+        mesa: caja('#pregunta .mesa'),
+        seguir: caja('#revelado .seguir-ficha'),
+        desborda: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      };
+    });
+  const seguir = async () => {
+    await pagina.click('#revelado .seguir-ficha');
+    await ctx.espera(quieto ? 150 : 700);
+  };
+
+  // ---- Jugá: la ficha salta, da una vuelta entera en el aire y cae boca abajo.
+  const jugar = await pagina.evaluate(() => {
+    const c = document.getElementById('jugar').getBoundingClientRect();
+    return { abajo: Math.round(c.bottom), alto: innerHeight, desborda: document.documentElement.scrollWidth - document.documentElement.clientWidth };
+  });
+  console.log(`   (portada: "Jugá" termina en ${jugar.abajo} de ${jugar.alto}; desborda ${jugar.desborda})`);
+  if (peor) await pagina.click('#jugar');
+  else await rafaga('tira-la-ficha', () => pagina.click('#jugar'), { desde: 0, hasta: 700, sobre: '.en-mano', zoom: 1, cada: 3, tope: 12, porRenglon: 4 });
+  await pagina.waitForSelector('#partida:not([hidden]) .opcion', { timeout: 8000 });
+  await ctx.espera(quieto ? 200 : 900);
+  await foto('pregunta');
+  console.log(`   (pregunta: ${JSON.stringify(await estado())})`);
+
+  if (peor) {
+    // Lo justo: un acierto con la ficha de la respuesta, el error, y el resultado.
+    await (await tecla(true)).boton.click();
+    await fichaLista();
+    await asentar();
+    await foto('peor-acierto');
+    console.log(`   (peor, acierto: ${JSON.stringify(await estado())})`);
+    await seguir();
+    await (await tecla(false)).boton.click();
+    await fichaLista();
+    await asentar();
+    await foto('peor-error');
+    console.log(`   (peor, error: ${JSON.stringify(await estado())})`);
+    await seguir();
+    await pagina.waitForSelector('#resultado:not([hidden])', { timeout: 8000 });
+    await ctx.espera(quieto ? 300 : 1600);
+    await foto('peor-resultado', { entera: true });
+    const fin = await pagina.evaluate(() => ({ desborda: document.documentElement.scrollWidth - document.documentElement.clientWidth, altoHoja: document.documentElement.scrollHeight }));
+    console.log(`   (peor, resultado: ${JSON.stringify(fin)})`);
+    return;
+  }
+
+  // ---- El primer acierto: la ficha se da vuelta, cae el sello y llega la ficha de la respuesta.
+  {
+    const { boton, cual } = await tecla(true);
+    await rafaga(`acierto-${cual}-se-da-vuelta`, () => boton.click(), { desde: 0, hasta: 1100, cada: 4, tope: 12 });
+    await fichaLista();
+    await asentar();
+    await foto(`acierto-${cual}`);
+    await foto(`acierto-${cual}-entera`, { entera: true });
+    console.log(`   (acierto 1: ${JSON.stringify(await estado())})`);
+  }
+  // ---- El pase: la ficha ganada vuela a la pila y se reparten las dos que siguen.
+  await rafaga('pase-a-la-pila', () => pagina.click('#revelado .seguir-ficha'), { desde: 0, hasta: 800, cada: 3, tope: 12 });
+  await ctx.espera(quieto ? 150 : 500);
+  await foto('pregunta-2');
+
+  // ---- La racha larga: seis seguidas. En la cuarta se pasa la mejor racha del aparato (3).
+  const vistas = new Set();
+  for (let i = 2; i <= 6; i++) {
+    const { boton, cual } = await tecla(true);
+    if (i === 2 && !quieto) {
+      // La vuelta de la ficha, de cerca y lenta: el canto se tiene que ver.
+      await tira('la-ficha-se-da-vuelta', () => boton.click(), { ms: 380, sobre: '#pregunta .mesa' });
+    } else {
+      await boton.click();
+    }
+    await fichaLista();
+    await asentar();
+    if (!vistas.has(cual) || i === 4) {
+      vistas.add(cual);
+      await foto(`acierto-${i}-${cual}`);
+    }
+    console.log(`   (acierto ${i}: ${JSON.stringify(await estado())})`);
+    if (i === 6) break;
+    await seguir();
+  }
+  await seguir();
+  await ctx.espera(quieto ? 150 : 600);
+  await foto('racha-larga');
+
+  // ---- El error: la ficha se da vuelta, cae la cruz, la partida da un golpe y la pila se viene abajo.
+  {
+    const { boton, cual } = await tecla(false);
+    await rafaga(`error-${cual}-se-cae-la-pila`, () => boton.click(), { desde: 0, hasta: 1500, cada: 5, tope: 12 });
+    await fichaLista();
+    await asentar();
+    await foto('error-ficha');
+    await foto('error-ficha-entera', { entera: true });
+    console.log(`   (error: ${JSON.stringify(await estado())})`);
+  }
+
+  // ---- El resultado: la pila se arma ficha por ficha y la cifra sube con ella.
+  await rafaga('resultado-entra', () => pagina.click('#revelado .seguir-ficha'), { desde: 0, hasta: 1500, cada: 6, tope: 12 });
+  await pagina.waitForSelector('#resultado:not([hidden])', { timeout: 8000 });
+  await ctx.espera(quieto ? 400 : 1500);
+  await foto('resultado');
+  await foto('resultado-entera', { entera: true });
+  // La tarjeta, tal cual se comparte.
+  await pagina.waitForSelector('#resultado .tarjeta-asoma img', { timeout: 8000 }).catch(() => console.log('   (¡la tarjeta no asomó!)'));
+  const tarjeta = await pagina.evaluate(async () => {
+    const foto = document.querySelector('#resultado .tarjeta-asoma img');
+    if (!foto) return null;
+    const bytes = new Uint8Array(await (await fetch(foto.src)).arrayBuffer());
+    let crudo = '';
+    for (const b of bytes) crudo += String.fromCharCode(b);
+    return btoa(crudo);
+  });
+  if (tarjeta) {
+    const destino = join(salida, `${prefijo}-tarjeta.png`);
+    await sharp(Buffer.from(tarjeta, 'base64')).png().toFile(destino);
+    console.log('tarjeta', destino);
+  }
+  await pagina.$eval('#resultado .pie-resultado .primario', (b) => b.click());
+  await ctx.espera(500);
+  await pagina.$eval('#resultado .pie-resultado', (n) => n.scrollIntoView({ block: 'center' }));
+  await ctx.espera(200);
+  await foto('compartido');
+
+  // ---- Otra vuelta, errando la primera: el cierre de cero.
+  await pagina.$eval('#resultado .pie-resultado .secundario', (b) => b.click());
+  await pagina.waitForSelector('#partida:not([hidden]) .opcion', { timeout: 8000 });
+  await ctx.espera(quieto ? 200 : 800);
+  await (await tecla(false)).boton.click();
+  await fichaLista();
+  await asentar();
+  await foto('error-en-la-primera');
+  await seguir();
+  await pagina.waitForSelector('#resultado:not([hidden])', { timeout: 8000 });
+  await ctx.espera(quieto ? 400 : 1300);
+  await foto('resultado-cero');
+}
+
 /** Cualquier otra ruta: la portada, y lo que aparece al tocar el botón de empezar. */
 async function generico(ctx, ruta) {
   const { pagina, foto, tira } = ctx;
@@ -1908,6 +2166,7 @@ const RECORRIDOS = {
   quiz: preguntasRicoteras,
   'preguntas-ricoteras': preguntasRicoteras,
   'adivinar-la-tapa': adivinarLaTapa,
+  'mas-o-menos': masOMenos,
 };
 
 // ---------------------------------------------------------------- correr

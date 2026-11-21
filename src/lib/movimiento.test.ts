@@ -317,6 +317,12 @@ const ANIMACIONES = [
   // queda pegado con cinta en la prueba en una tinta.
   { nombre: 'hoja-sale', apaga: 'token', valor: '--duracion-paso', hoja: 'src/styles/juego.css' },
   { nombre: 'cinta-se-pega', apaga: 'token', valor: '--duracion-pasada', hoja: 'src/styles/juego.css' },
+  // "Más o menos", las fichas (ronda de pulida, 2026-11-20): la ficha que se da vuelta —se
+  // afina hasta el canto y se abre del otro lado, con el dorso que se va en el medio— y el
+  // canto que cae en la pila de la racha. Las tres pasan una vez, en saltos.
+  { nombre: 'ficha-voltea', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  { nombre: 'ficha-dorso-se-va', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/juego.css' },
+  { nombre: 'ficha-apila', apaga: 'token', valor: '--duracion-sello', hoja: 'src/styles/juego.css' },
 ] as const;
 
 test('no hay ninguna animacion que esta lista no conozca', () => {

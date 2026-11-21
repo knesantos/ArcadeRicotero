@@ -839,7 +839,36 @@ const ESTADOS_EJES = [
  * cuatro (`UX-34` §3.3), y el panel del revelado. No tiene rótulos de leyenda ni de
  * testimonio: acá un número es hecho o "según", nunca leyenda (`D-48` punto 6).
  */
-const ESTADOS_MAS_O_MENOS = ['.es-correcta', '.es-elegida', '.feedback.ok', '.feedback.no'];
+const ESTADOS_MAS_O_MENOS = [
+  '.es-correcta',
+  '.es-elegida',
+  '.feedback.ok',
+  '.feedback.no',
+  // Las fichas (ronda de pulida, 2026-11-20): la ficha boca abajo y la dada vuelta, la tecla
+  // hundida, la palabra que compara, la pila (vacía, con la que llega, la que cae) y la
+  // cabecera de la racha cortada; el sello del cierre y su marca; la cifra del resultado.
+  '.es-apretada',
+  '.ficha-mm--tapada',
+  '.ficha-mm--dada-vuelta',
+  '.ficha-mm--tuya',
+  '.ficha-mm--vista',
+  '.ficha-mm--vuela',
+  '.mesa-signo--puesto',
+  '.masomenos-opciones--cerradas',
+  '.apilada--vacia',
+  '.apilada--resultado',
+  '.apilada--portada',
+  '.apilada-ficha--llega',
+  '.apilada-ficha--suelta',
+  '.tablero-fichas--cortada',
+  '.sello-cae--ok',
+  '.sello-cae--no',
+  '.sello-marca--ok',
+  '.sello-marca--no',
+  '.cifra-numero--cero',
+  '.cifra-numero--hazana',
+  '.partida--revelada',
+];
 
 interface Tablero {
   /** De que juego es, para que el mensaje de error no obligue a abrir el archivo. */
@@ -971,6 +1000,7 @@ const ISLAS: Readonly<Record<string, Tablero | SinTablero>> = {
   'tarjeta-pared.ts': { sinTablero: 'pincel de canvas de la tarjeta de US-03 (el muro de la vuelta); dibuja pixeles, no crea nodos con clase' },
   'tarjeta-tirada.ts': { sinTablero: 'pincel de canvas de la tarjeta de US-04 (la tirada colgada a secar); dibuja pixeles, no crea nodos con clase' },
   'tarjeta-fichin.ts': { sinTablero: 'pincel de canvas de la tarjeta de US-01 (la chapa del fichin con la planilla); dibuja pixeles, no crea nodos con clase' },
+  'tarjeta-fichas.ts': { sinTablero: 'pincel de canvas de la tarjeta de US-10 (la racha, la ficha boca abajo y la pila); dibuja pixeles, no crea nodos con clase' },
 };
 
 const esTablero = (i: Tablero | SinTablero): i is Tablero => 'estados' in i;
