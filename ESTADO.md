@@ -9,8 +9,7 @@
 
 > ## 🎮 LOS DIEZ JUEGOS, PULIDOS (2026-11-17 a 2026-11-21) — `D-92`, `T-537`
 >
-> **Sin integrar**: rama local `pulida/juegos-ui` (worktree `.claude/worktrees/juegos-pulida`), sobre `main` en `bea8712`, con
-> `main` fusionado en `820f676`. No se subió. Pedido del usuario: *"una ronda de pulida y subida de nivel de los juegos, a nivel
+> **Integrado** en `main` por el PR #119 (rama `pulida/juegos-ui`, sobre `main` en `bea8712`). Pedido del usuario: *"una ronda de pulida y subida de nivel de los juegos, a nivel
 > ui/ux [...] manteniendo la estetica y nuestra alma"*, *"que giren las ruedas del cassete"* y *"al menos 3 rondas por juego"*.
 >
 > - **Tres rondas por juego**, en el orden del menú. Construyó Fable (un agente por juego) y auditó el hilo principal con capturas
@@ -29,8 +28,8 @@
 >     se pusieron al día.
 > - **Choque anunciado**: `worktree-pulida-jugabilidad` (`T-531`…`T-536`) toca `partida-tema.ts`, `partida.ts`, `partida-letra.ts`
 >   y `partida-tapa.ts`. La segunda rama que se integre va a tener que resolverlo.
-> - **Verde:** `npm test` 2636 con **1 rojo ajeno**: `D-91/t6` de `aire.test.ts` busca `'</svg>
-'` y el checkout de Windows tiene CRLF, así que falla igual en `main`. `npm run check` da 0 errores y `npm run build` sale verde, con 200 páginas.
+> - **Verde:** `npm test` 2636/2636 (`D-91/t6` de `aire.test.ts` ahora normaliza los fines de línea: buscaba `'</svg>
+'` y en Windows el archivo llega con CRLF), `npm run check` 0 errores, `npm run build` verde con 200 páginas.
 
 > ## 🔦 EL BESTIARIO, REGIÓN POR REGIÓN, Y EL PLANO CON SUS TÍTERES (2026-11-17) — `D-91`, `T-530`
 >
