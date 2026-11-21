@@ -103,6 +103,7 @@ let tableroEl: HTMLElement | null = null;
 let contadorEl: HTMLElement | null = null;
 let rachaLeidaEl: HTMLElement | null = null;
 let pilaEl: HTMLElement | null = null;
+let mejorEl: HTMLElement | null = null;
 // Las piezas del paso.
 let mesaEl: HTMLElement | null = null;
 let fichaTuyaEl: HTMLElement | null = null;
@@ -204,15 +205,17 @@ function fichaALaVista(valor: number, dato: Dato, sujeto: string | undefined, cl
   return ficha;
 }
 
-/** Una ficha boca abajo: el dorso, con su rombo. La cara está vacía hasta que se da vuelta. */
+/**
+ * Una ficha boca abajo: el dorso, con su trama y la medalla de la marca del fichín (dibujo de
+ * la hoja). La cara está vacía hasta que se da vuelta.
+ */
 function fichaTapada(sujeto: string | undefined, clase: string): HTMLElement {
   const ficha = el('div', `ficha-mm ficha-mm--tapada ${clase}`);
   const cara = el('p', 'ficha-mm-cara');
   const dorso = el('p', 'ficha-mm-dorso');
   if (sujeto) dorso.append(el('span', 'ficha-mm-sujeto', `«${sujeto}»`));
-  const rombo = dibujo('span', 'ficha-mm-rombo');
-  rombo.append(el('span', undefined, '?'));
-  dorso.append(rombo, el('span', 'solo-lector', FICHAS.tapada));
+  dorso.prepend(dibujo('span', 'ficha-mm-trama'));
+  dorso.append(dibujo('span', 'ficha-mm-medalla'), el('span', 'solo-lector', FICHAS.tapada));
   ficha.append(cara, dorso);
   return ficha;
 }
@@ -230,7 +233,7 @@ function darVuelta(ficha: HTMLElement, valor: number, dato: Dato): void {
 
 /**
  * La mesa: la ficha tuya a la izquierda, la que está a la vista a la derecha y, entre las dos,
- * el lugar de la palabra que las compara. `revelada` la arma ya dada vuelta (el resultado).
+ * el lugar del signo que las compara. `revelada` la arma ya dada vuelta (el resultado).
  */
 function armarMesa(p: Paso, revelada: boolean): { mesa: HTMLElement; tuya: HTMLElement } {
   const { dato, referencia } = p;
@@ -245,15 +248,21 @@ function armarMesa(p: Paso, revelada: boolean): { mesa: HTMLElement; tuya: HTMLE
   const signo = dibujo('span', 'mesa-signo');
   if (revelada) ponerElSigno(signo, p);
   mesa.append(tuya, signo, vista);
-  const pestana = revelada ? null : pestanaDeLaMejor();
-  if (pestana) mesa.append(pestana);
   return { mesa, tuya };
 }
 
-/** La palabra entre las dos fichas: la tuya es *más*, *menos*, *antes* o *después* que la otra. */
+/**
+ * Lo que compara las dos fichas, estampado entre ellas: el símbolo grande (tu ficha es mayor,
+ * `>`, o menor, `<`, que la otra) y debajo las palabras ("más que", "antes de"). Es dibujo: lo
+ * mismo lo dicen las teclas y la ficha de la respuesta.
+ */
 function ponerElSigno(signo: Element | null | undefined, p: Paso): void {
   if (!signo || signo.classList.contains('mesa-signo--puesto')) return;
-  signo.textContent = rotuloDe(p.correcta, p.dato);
+  const palabras = PARTIDA.nombreBoton(rotuloDe(p.correcta, p.dato), '').trim();
+  signo.replaceChildren(
+    el('span', 'mesa-signo-simbolo', p.correcta === 'mas' ? '>' : '<'),
+    el('span', 'mesa-signo-palabras', palabras),
+  );
   signo.classList.add('mesa-signo--puesto');
 }
 
@@ -286,10 +295,16 @@ function armarTablero(): void {
   pilaEl = el('div', 'apilada');
   pilaEl.setAttribute('role', 'img');
 
+  // La mejor racha de este aparato: la marca a pasar. Sin ninguna guardada, no hay chapa.
+  mejorEl = el('span', 'mejor-chapa', FICHAS.mejorCorta(mejorAlEmpezar));
+  mejorEl.hidden = mejorAlEmpezar <= 0;
+
   const ruidos = armarInterruptorDeRuidos({ apagar: FICHAS.ruidosTecla, prender: FICHAS.ruidosTecla });
   ruidos.classList.add('ruidos-tecla');
+  const lado = el('div', 'tablero-fichas-lado');
+  lado.append(ruidos, mejorEl);
 
-  tableroEl.append(cuenta, pilaEl, ruidos);
+  tableroEl.append(cuenta, pilaEl, lado);
   zonaPartida.prepend(tableroEl);
   pintarPila(pilaEl, 0, false, TOPE_CABECERA);
 }
@@ -333,24 +348,20 @@ function ponerLaRacha(rueda: boolean): void {
 }
 
 /**
- * La pestaña de la derecha de la mesa: tu mejor racha de este aparato o, si ya la pasaste, el
- * sello verde que lo dice. Sin mejor racha guardada no hay pestaña.
+ * La hazaña en curso: la racha pasó a la mejor que había en el aparato. La chapa de la
+ * cabecera pasa al oro —el del destaque, no el verde del acierto: es una marca, no una
+ * respuesta— y desde ahí va diciendo la racha, que es la mejor nueva. La primera vez, además,
+ * cae un sello grande sobre la mesa, que se va con la pregunta.
  */
-function pestanaDeLaMejor(): HTMLElement | null {
-  if (mejorAlEmpezar <= 0) return null;
-  if (estado.racha > mejorAlEmpezar) return el('span', 'racha racha-hazana', FICHAS.hazana);
-  return el('span', 'categoria mesa-mejor', RESULTADO.mejor(mejorAlEmpezar));
-}
-
-/** La hazaña en curso: la racha pasó a la mejor que había en el aparato. El sello cae una vez. */
 function anotarHazana(): void {
-  if (mejorAlEmpezar <= 0 || estado.racha !== mejorAlEmpezar + 1 || !mesaEl?.isConnected) return;
-  if (mesaEl.querySelector('.racha-hazana')) return;
-  const sello = pestanaDeLaMejor();
-  if (!sello) return;
-  mesaEl.querySelector('.mesa-mejor')?.remove();
-  mesaEl.append(sello);
-  estampar(sello);
+  if (!mejorEl || mejorAlEmpezar <= 0 || estado.racha <= mejorAlEmpezar) return;
+  const texto = FICHAS.mejorCorta(estado.racha);
+  if (mejorEl.textContent === texto && mejorEl.classList.contains('mejor-chapa--pasada')) return;
+  mejorEl.textContent = texto;
+  mejorEl.classList.add('mejor-chapa--pasada');
+  estampar(mejorEl);
+  if (estado.racha !== mejorAlEmpezar + 1 || !mesaEl?.isConnected || mesaEl.querySelector('.hazana-cae')) return;
+  mesaEl.append(el('span', 'hazana-cae', FICHAS.hazana));
   sonarEfecto('sello');
 }
 
@@ -469,17 +480,11 @@ function tirarLaFicha(): void {
     anchos.map((ancho, i) => ({ transform: `translate(0, ${altos[i]}px) scale(${ancho}, ${1 + (1 - ancho) * 0.08})` })),
     { duration: ms, easing: 'steps(8, end)' },
   );
-  // El dorso se esconde mientras la ficha está del otro lado del canto.
+  // El dorso se esconde mientras la ficha está del otro lado del canto, en los mismos saltos:
+  // con una curva propia quedaba un cuadro a medio transparentar.
   const cara = dorso.animate(
-    [
-      { opacity: 1, offset: 0 },
-      { opacity: 1, offset: 0.24 },
-      { opacity: 0, offset: 0.25 },
-      { opacity: 0, offset: 0.74 },
-      { opacity: 1, offset: 0.75 },
-      { opacity: 1, offset: 1 },
-    ],
-    { duration: ms, easing: 'linear' },
+    [1, 1, 1, 0, 0, 0, 1, 1, 1].map((opacity) => ({ opacity })),
+    { duration: ms, easing: 'steps(8, end)' },
   );
   vuelta.addEventListener(
     'finish',
@@ -500,7 +505,7 @@ function comenzar(): void {
   mejorAlEmpezar = leerMejor();
   tarjetaDeLaPartida = null;
   mostrar(zonaPartida);
-  zonaPartida.classList.remove('partida--revelada');
+  zonaPartida.classList.remove('partida--revelada', 'partida--apretada', 'partida--mesa-afuera');
   armarTablero();
   window.scrollTo({ top: 0 });
   pintarPaso();
@@ -515,7 +520,7 @@ function pintarPaso(): void {
     return;
   }
   const { dato, referencia } = paso;
-  zonaPartida.classList.remove('partida--revelada');
+  zonaPartida.classList.remove('partida--revelada', 'partida--apretada', 'partida--mesa-afuera');
   zonaPregunta.replaceChildren();
   zonaRevelado.replaceChildren();
 
@@ -549,9 +554,11 @@ function pintarPaso(): void {
   const lista = el('ul', 'masomenos-opciones');
   for (const [eleccion, rotulo] of botones) {
     const li = el('li');
-    const b = el('button', 'opcion', rotulo);
+    const b = el('button', 'opcion');
     b.type = 'button';
     b.dataset.eleccion = eleccion;
+    // La flecha del teclado que la aprieta: se ve solo donde hay puntero fino (la hoja).
+    b.append(dibujo('span', 'opcion-flecha', lista.childElementCount === 0 ? '←' : '→'), rotulo);
     b.setAttribute('aria-label', PARTIDA.nombreBoton(rotulo, textoRef));
     b.addEventListener('pointerdown', () => {
       conPuntero = true;
@@ -567,6 +574,30 @@ function pintarPaso(): void {
   zonaPregunta.append(lista);
   enfocar(enunciado);
 }
+
+/*
+ * Las teclas del teclado: ← y → aprietan la tecla de ese lado; ↑ es "más" (o "después") y ↓ es
+ * "menos" (o "antes"). Solo mientras la pregunta espera respuesta.
+ */
+document.addEventListener('keydown', (ev) => {
+  if (zonaPartida.hidden || !listaEl?.isConnected || listaEl.dataset.respondida === 'si') return;
+  if (ev.altKey || ev.ctrlKey || ev.metaKey || ev.shiftKey) return;
+  const teclas = [...listaEl.querySelectorAll<HTMLButtonElement>('.opcion')];
+  const tecla =
+    ev.key === 'ArrowLeft'
+      ? teclas[0]
+      : ev.key === 'ArrowRight'
+        ? teclas[1]
+        : ev.key === 'ArrowUp'
+          ? teclas.find((t) => t.dataset.eleccion === 'mas')
+          : ev.key === 'ArrowDown'
+            ? teclas.find((t) => t.dataset.eleccion === 'menos')
+            : undefined;
+  if (!tecla || tecla.disabled) return;
+  ev.preventDefault();
+  conPuntero = false;
+  tecla.click();
+});
 
 /** El sello grande del cierre: cae al medio de la mesa, entre las dos fichas. Es dibujo. */
 function sellarLaMesa(mesa: HTMLElement, acerto: boolean): void {
@@ -743,6 +774,51 @@ function loQueDice(p: Paso, acerto: boolean, enPartida: boolean): { dice: HTMLEl
 }
 
 /**
+ * **Que tu ficha dada vuelta y "Seguí" entren juntas en la ventana.** Se mide, no se calcula
+ * (lo aprendido en "Adiviná la tapa"): si la partida con la ficha de la respuesta mide más que
+ * la ventana, las dos fichas se achican lo justo; si ni así, la pregunta y las teclas —que ya
+ * dijeron lo suyo, y el lector conserva— salen de la vista y se vuelve a medir; y si ni así,
+ * el número real se escribe también en la ficha de la respuesta y la hoja se corre hasta
+ * "Seguí". El achique se anima (lo que dura un paso; con movimiento reducido, de una).
+ */
+const FICHA_MINIMA = 104;
+
+function acomodarLaMesa(mesa: HTMLElement, panel: HTMLElement): void {
+  const ficha = mesa.querySelector<HTMLElement>('.ficha-mm');
+  const arriba = tableroEl ?? zonaPartida;
+  if (!ficha) return;
+  zonaPartida.classList.remove('partida--apretada', 'partida--mesa-afuera');
+  mesa.classList.remove('mesa--medida');
+  mesa.style.removeProperty('--ficha-alto');
+  const natural = ficha.offsetHeight;
+  /** Cuánto le sobra a la partida respecto de la ventana, con las fichas de alto `alto`. */
+  const sobra = (alto: number): number => {
+    mesa.style.setProperty('--ficha-alto', `${alto}px`);
+    return panel.getBoundingClientRect().bottom - arriba.getBoundingClientRect().top + 14 - window.innerHeight;
+  };
+  mesa.classList.add('mesa--medida', 'mesa--midiendo');
+  let alto = natural;
+  let falta = sobra(alto);
+  if (falta > 0) {
+    alto = Math.max(FICHA_MINIMA, natural - falta);
+    falta = sobra(alto);
+  }
+  if (falta > 0) {
+    zonaPartida.classList.add('partida--apretada');
+    alto = Math.max(FICHA_MINIMA, natural - Math.max(0, sobra(natural)));
+    falta = sobra(alto);
+  }
+  if (falta > 0) zonaPartida.classList.add('partida--mesa-afuera');
+  // El achique, animado: las fichas vuelven un instante a su alto y bajan al que quedó.
+  mesa.style.setProperty('--ficha-alto', `${natural}px`);
+  void mesa.offsetHeight;
+  mesa.classList.remove('mesa--midiendo');
+  mesa.style.setProperty('--ficha-alto', `${alto}px`);
+  if (falta > 0) panel.scrollIntoView({ block: 'end' });
+  else window.scrollTo({ top: Math.max(0, arriba.getBoundingClientRect().top + window.scrollY - 12) });
+}
+
+/**
  * El segundo tiempo: la ficha de la respuesta, con la gramática de los otros juegos pulidos —
  * la marca y el grito estampados, lo que sumaste, de dónde salió el número y "Seguí" adentro—.
  * Sobre la mesa queda la marca chica en tu ficha y, entre las dos, la palabra que las compara.
@@ -792,7 +868,7 @@ function pintarLaRespuesta(p: Paso, acerto: boolean, mesa: HTMLElement, tuya: HT
     seguir.addEventListener('blur', () => seguir.classList.remove('seguir--sin-anillo'), { once: true });
   }
   seguir.focus({ preventScroll: true });
-  panel.scrollIntoView({ block: 'nearest' });
+  acomodarLaMesa(mesa, panel);
 }
 
 /**
@@ -907,14 +983,16 @@ function pintarResultado(quienCorto: Paso | null): void {
   cifra.append(el('p', 'cifra-rotulo', RESULTADO.rotuloRacha), numero);
   const pila = el('div', 'apilada apilada--resultado');
   pila.setAttribute('role', 'img');
-  cuenta.append(cifra, pila);
+  // Al lado de la cifra: la pila, la mejor racha del aparato y, si la pasaste, el sello.
+  const lado = el('div', 'cuenta-fichas-lado');
+  lado.append(pila, el('p', 'cifra-pie', RESULTADO.mejor(mejor)));
   if (racha === 0) numero.classList.add('cifra-numero--cero');
   if (esHazana) {
     numero.classList.add('cifra-numero--hazana');
-    cuenta.append(el('p', 'hazana-sello', FICHAS.hazana));
+    lado.append(el('p', 'hazana-sello', FICHAS.hazana));
   }
+  cuenta.append(cifra, lado);
   zonaResultado.append(cuenta);
-  zonaResultado.append(entra(el('p', 'cifra-pie', RESULTADO.mejor(mejor))));
 
   const cerrarLaCuenta = (): void => {
     if (!numero.isConnected) return;
@@ -961,16 +1039,18 @@ function pintarResultado(quienCorto: Paso | null): void {
     // fichas como quedaron y de dónde salió el número.
     const corte = entra(el('section', 'corte'));
     corte.append(el('h3', 'resumen-titulo', RESULTADO.teCorto));
-    corte.append(el('p', 'masomenos-pregunta', quienCorto.dato.pregunta));
+    // En un renglón: a la izquierda las dos fichas, chicas, con el signo entre ellas; a la
+    // derecha la pregunta, el número escrito y de dónde salió.
+    const fila = el('div', 'corte-fila');
     const { mesa, tuya } = armarMesa(quienCorto, true);
     mesa.classList.add('mesa--quieta');
     tuya.append(dibujo('span', 'sello-marca sello-marca--no', '✕︎'));
-    corte.append(mesa);
+    const texto = el('div', 'corte-dice');
+    texto.append(el('p', 'masomenos-pregunta', quienCorto.dato.pregunta), loQueDice(quienCorto, false, false).dice);
     const nota = lineaDeSetlist(quienCorto);
-    if (nota) corte.append(nota);
-    const panel = el('div', 'feedback no corte-dice');
-    panel.append(loQueDice(quienCorto, false, false).dice);
-    corte.append(panel);
+    if (nota) texto.append(nota);
+    fila.append(mesa, texto);
+    corte.append(fila);
     zonaResultado.append(corte);
   }
 

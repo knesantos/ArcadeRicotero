@@ -1982,7 +1982,9 @@ async function masOMenos(ctx) {
       return {
         racha: document.querySelector('#partida .racha-cuenta .solo-lector')?.textContent ?? null,
         pila: document.querySelector('#partida .apilada')?.getAttribute('aria-label') ?? null,
-        hazana: !!document.querySelector('#partida .racha-hazana'),
+        hazana: !!document.querySelector('#partida .mejor-chapa--pasada'),
+        clases: document.getElementById('partida').className,
+        ficha: Math.round(document.querySelector('#pregunta .ficha-mm--tuya')?.offsetHeight ?? 0),
         alto: innerHeight,
         desliza: Math.round(scrollY),
         teclas: caja('#pregunta .masomenos-opciones'),

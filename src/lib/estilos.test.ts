@@ -868,6 +868,12 @@ const ESTADOS_MAS_O_MENOS = [
   '.cifra-numero--cero',
   '.cifra-numero--hazana',
   '.partida--revelada',
+  // Ronda 2: la mesa a la medida de la ventana, la partida apretada y la chapa de la mejor racha.
+  '.mesa--medida',
+  '.mesa--midiendo',
+  '.partida--apretada',
+  '.partida--mesa-afuera',
+  '.mejor-chapa--pasada',
 ];
 
 interface Tablero {

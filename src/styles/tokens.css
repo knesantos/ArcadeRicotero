@@ -1779,6 +1779,10 @@
      vidrio de la pantalla de "Preguntas ricoteras" (ronda de pulida, 2026-11-19). Se usa de
      máscara sobre una tinta casi transparente: es una trama impresa, no un degradado. */
   --textura-barrido: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='4'%3E%3Crect width='8' height='1.5'/%3E%3C/svg%3E");
+  /* Las estrías del canto de una ficha: una raya parada cada cuatro. Es la hermana de la trama
+     de barrido, de pie; nace con las fichas de "Más o menos" (ronda de pulida, 2026-11-20). Se
+     usa de máscara sobre una tinta: trama impresa, no degradado. */
+  --textura-estria: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='8'%3E%3Crect width='1.5' height='8'/%3E%3C/svg%3E");
 
   /* La almohadilla (`D-64`, hoja 07). Las tapas de los juegos —el título del casete, el de la
      carátula, el h1 de cada juego y el macizo del sello— salen de la misma almohadilla de goma

@@ -140,3 +140,78 @@ en los tamaños que se le pasen.
    innecesario repetir el número.
 4. **El sello del cierre cae donde no tapa el premio**: al medio tapaba los dos números; va en
    el paño de abajo.
+
+---
+
+## Ronda 2 (2026-11-20/21): el signo, la ficha con cuerpo y todo en una pantalla
+
+### 1. Decisiones del hilo principal, ya aplicadas (para las enmiendas)
+
+- **`UX-34` §5 y §6 ("sin movimiento decorativo", "ninguna animación nueva")**: la ficha se da
+  vuelta, cae un sello, la ficha ganada vuela a la pila y la pila se cae al errar. Lo que §5
+  protegía sigue en pie: **el número real llega de golpe**, impreso en la cara, sin contador que suba.
+- **`UX-34` §3.2 (la caja de referencia)**: la referencia y el número escondido son dos fichas
+  sobre una mesa; la tuya a la izquierda. El nombre del dato va adentro de la ficha.
+- **`D-48` punto 11 ("sin tarjeta-imagen")**: hay tarjeta (`tarjeta-fichas.ts`). Lleva la racha,
+  la ficha boca abajo y la pila; ninguna pregunta ni número del pozo.
+- **`D-48` punto 7 (la mejor racha)**: además de guardarse, se muestra en la portada y en la
+  cabecera, y pasarla es la hazaña. Va en el oro del destaque (`--acento-2`), no en el verde.
+- **"Corregí esto" no se hace en esta pulida.** Queda para `arquitectura`: sumar
+  `'mas-o-menos'` a `JuegoCorregible` (`CTR-10`, `src/lib/correccion/armar.ts`) y poner el
+  zócalo debajo de la ficha de la respuesta, con el dato, su valor y su fuente en lo que se manda.
+
+### 2. Qué se hizo
+
+1. **El signo que compara.** Entre las dos fichas se estampa un recuadro derecho y de borde
+   grueso con el símbolo grande (`>` si la tuya es mayor, `<` si es menor) y debajo las palabras
+   ("MÁS QUE", "MENOS QUE", "ANTES DE", "DESPUÉS DE", que salen de `PARTIDA.nombreBoton`: no hay
+   copy nuevo). Se lee como la cuenta: "7:25 > 6:00". Las fichas se separaron y el número bajó
+   un cuerpo para que el signo no lo pise.
+2. **La mejor racha no va en verde ni pegada al borde de la mesa.** Es una chapa en la
+   cabecera, debajo de la tecla de los ruidos: "MEJOR: 3", tenue y de trazo cortado. Cuando la
+   pasás, la chapa pasa al oro con doble filete y desde ahí va diciendo la racha ("MEJOR: 4",
+   "MEJOR: 5"); la primera vez, además, cae un sello grande en oro sobre la mesa, que se va con
+   la pregunta. En el resultado y en la tarjeta, el doble filete y el sello también van en oro.
+3. **El dorso tiene cuerpo.** Trama impresa en el azul de apoyo sobre el celeste (tono sobre
+   tono), filete, **la medalla con la FR coronada** (`public/marca/fr-tinta.svg`, de máscara) y
+   **el canto estriado** (también en la cara). Salió el rombo con el signo de pregunta. El
+   nombre de lo que se pregunta va en una etiqueta de papel pegada: no se lee sobre la trama.
+4. **El botón principal.** El par (tinta del fondo sobre la tinta de *Un baión*) da **6,40:1**:
+   no es débil, y *Un baión* no tiene un valor más claro medido. Lo que fallaba era que el botón
+   y el dorso eran el mismo celeste liso. Ahora el dorso lleva trama y el botón es una tecla:
+   filete de la tinta del fondo por adentro y canto en el azul de apoyo. `D-54` no se toca.
+5. **La ficha dada vuelta y "Seguí" entran juntas** (`acomodarLaMesa`): la isla mide; si no
+   entra, achica las dos fichas lo justo (hasta 104 px de alto), animado; si ni así, la pregunta
+   y las teclas salen de la vista (el lector las conserva) y vuelve a medir; si ni así, el
+   número se escribe también en la ficha de la respuesta y la hoja se corre hasta "Seguí".
+6. **La pregunta, compuesta.** Las teclas van pegadas a la mesa, abajo; las fichas son más
+   altas (5 × 6,8); la pregunta queda al medio del aire que haya; en un teléfono alto crecen el
+   contador, los cantos de la pila y el cuerpo de la pregunta.
+7. **El resultado entra en una pantalla** (a 430 × 860 "Volvé al fichín" termina en ~740). La
+   cifra con la pila, la mejor racha y el sello al lado; "Te cortó acá" es un renglón: las dos
+   fichas chicas con su signo y, a la derecha, la pregunta, el número y la fuente.
+8. **La compu, a escala**: fichas de 14,5 rem, teclas de 5,2 rem, la pregunta a 1,75 rem.
+   **Teclado**: ← y → aprietan la tecla de ese lado; ↑ es "más" o "después" y ↓ es "menos" o
+   "antes". La flecha se ve en la tecla solo donde hay puntero fino.
+9. **La tirada de la portada**: el dorso se esconde en los mismos ocho saltos que la ficha (ya
+   no queda un cuadro a medio transparentar) y la cara lleva impresos los dos signos, + y −.
+
+### 3. Tokens, tests y copy
+
+- **Un token nuevo: `--textura-estria`** (una raya parada cada cuatro; la hermana de pie de
+  `--textura-barrido`). Entró por `tokens.css`; **falta en la hoja 07 del lienzo**.
+- **Pares de contraste: ninguno nuevo.** El oro sobre el fondo ya estaba ("acento-2 sobre fondo").
+- `estilos.test.ts`: cinco estados más en `ESTADOS_MAS_O_MENOS`. Ninguno relajado. Suite: 2511.
+- Copy nuevo: `FICHAS.mejorCorta` ("Mejor: N"), para el visto de `contenido`.
+- `scripts/mirar-juego.mjs`: el estado de cada paso dice además las clases de la partida
+  (apretada, mesa afuera) y el alto de la ficha.
+
+### 4. Lo aprendido
+
+1. **Un signo se lee como cuenta si va derecho, grande y con el borde de las piezas**; torcido
+   y chico es un sello más.
+2. **El verde es del acierto.** Una marca propia (un récord) va en el oro del destaque.
+3. **Si el botón y el objeto comparten tinta, se separan por material**: trama en el objeto,
+   filete y canto en el botón, sin tocar el mapa de discos.
+4. **Todo en `cqw` de la pieza**: una ficha que se achica entera (letra, filete, canto) deja
+   medir y animar un solo número, su alto.

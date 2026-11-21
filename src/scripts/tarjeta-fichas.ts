@@ -61,7 +61,7 @@ export async function dibujarFichas(datos: DatosDeLasFichas): Promise<Blob | nul
     apoyo: tinta('--disco-un-baion-para-el-ojo-idiota-apoyo'),
     papel: tinta('--papel'),
     papelBorde: tinta('--papel-borde'),
-    ok: tinta('--acento-3'),
+    oro: tinta('--acento-2'),
   };
 
   ctx.fillStyle = c.fondo;
@@ -97,32 +97,55 @@ export async function dibujarFichas(datos: DatosDeLasFichas): Promise<Blob | nul
   escribir(datos.rotulo.toUpperCase(), MARGEN, 300, 40, ROTULADA, c.tenue, UTIL);
   escribir(String(datos.racha), MARGEN, 350, 330, ROTULADA, c.disco, UTIL - 400);
 
-  // ---- La ficha boca abajo, torcida, a la derecha: el dorso celeste, su filete y el rombo.
+  // ---- La ficha boca abajo, torcida, a la derecha: el dorso celeste con su trama, el filete,
+  // el canto estriado y la medalla con la marca del fichín. Si la marca no llega, queda la
+  // medalla lisa: la tarjeta sale igual.
   {
     const ancho = 290;
-    const alto = 348;
+    const alto = 394;
+    const canto = 20;
+    const marca = await new Promise<HTMLImageElement | null>((listo) => {
+      const imagen = new Image();
+      imagen.onload = () => listo(imagen);
+      imagen.onerror = () => listo(null);
+      imagen.src = '/marca/fr-tinta.svg';
+    });
     ctx.save();
-    ctx.translate(W - MARGEN - ancho / 2 - 24, 520);
+    ctx.translate(W - MARGEN - ancho / 2 - 24, 530);
     ctx.rotate(0.09);
-    // El canto, abajo: la ficha tiene espesor.
+    // El canto, abajo, con sus estrías.
     ctx.fillStyle = c.apoyo;
-    ctx.fillRect(-ancho / 2, -alto / 2 + 18, ancho, alto);
+    ctx.fillRect(-ancho / 2, -alto / 2 + canto, ancho, alto);
+    ctx.fillStyle = c.fondo;
+    ctx.globalAlpha = 0.3;
+    for (let x = -ancho / 2 + 3; x < ancho / 2; x += 9) ctx.fillRect(x, alto / 2, 3.5, canto);
+    ctx.globalAlpha = 1;
     ctx.fillStyle = c.disco;
     ctx.fillRect(-ancho / 2, -alto / 2, ancho, alto);
+    // La trama, tono sobre tono, adentro del filete.
+    ctx.fillStyle = c.apoyo;
+    for (let y = -alto / 2 + 18; y < alto / 2 - 18; y += 11) ctx.fillRect(-ancho / 2 + 16, y, ancho - 32, 4);
     ctx.strokeStyle = c.fondo;
     ctx.lineWidth = 5;
     ctx.strokeRect(-ancho / 2 + 16, -alto / 2 + 16, ancho - 32, alto - 32);
-    ctx.save();
-    ctx.rotate(Math.PI / 4);
-    ctx.lineWidth = 8;
-    ctx.strokeRect(-74, -74, 148, 148);
-    ctx.restore();
-    ctx.font = `400 130px ${ROTULADA}`;
-    ctx.fillStyle = c.fondo;
-    ctx.textBaseline = 'middle';
-    ctx.textAlign = 'center';
-    ctx.fillText('?', 0, 8);
-    ctx.textAlign = 'left';
+    // La medalla: redondel liso, doble filete y la FR coronada.
+    ctx.fillStyle = c.disco;
+    ctx.beginPath();
+    ctx.arc(0, 0, 92, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.lineWidth = 4;
+    ctx.stroke();
+    ctx.lineWidth = 7;
+    ctx.beginPath();
+    ctx.arc(0, 0, 78, 0, Math.PI * 2);
+    ctx.stroke();
+    if (marca) {
+      const lado = 104;
+      const k = Math.min(lado / marca.naturalWidth, lado / marca.naturalHeight) || lado / 1290;
+      const w = (marca.naturalWidth || 1290) * k;
+      const h = (marca.naturalHeight || 1170) * k;
+      ctx.drawImage(marca, -w / 2, -h / 2, w, h);
+    }
     ctx.restore();
   }
 
@@ -161,10 +184,10 @@ export async function dibujarFichas(datos: DatosDeLasFichas): Promise<Blob | nul
     ctx.save();
     ctx.translate(W - MARGEN - ancho - 60, 1076);
     ctx.rotate(-0.06);
-    ctx.strokeStyle = c.ok;
+    ctx.strokeStyle = c.oro;
     ctx.lineWidth = 6;
     ctx.strokeRect(0, 0, ancho + 44, 70);
-    escribir(texto, 22, 13, 40, ROTULADA, c.ok, ancho + 1);
+    escribir(texto, 22, 13, 40, ROTULADA, c.oro, ancho + 1);
     ctx.restore();
   }
 
