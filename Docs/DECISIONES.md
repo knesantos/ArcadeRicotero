@@ -8165,3 +8165,85 @@ reimprimir sus pisos y mirar los títeres contra las piezas nuevas.
 - Una medición de cuadros con la PC tranquila.
 
 **Verde:** `npm test` 2523, `astro check` 0 errores, `astro build` 200 páginas.
+
+## D-92 — Los diez juegos, pulidos: el objeto de cada bajada y el movimiento atado al estado
+
+- **Fecha:** 2026-11-17 a 2026-11-21
+- **Estado:** activa. Pedido del usuario, textual: *"Vamos a empezar una ronda de pulida y subida de
+  nivel de los juegos, a nivel ui/ux. Agregar efectos, animaciones que parezca mas profesional
+  manteniendo la estetica y nuestra alma."*, aclarado con *"cuando esta andando el tema que giren las
+  ruedas del cassete, cosas asi para que te metas mas en el juego y detalles que quedan bien"*, y
+  después *"que el proceso siga al menos con 3 rondas por juego, luego pasar al siguiente. El objetivo
+  es dar un salto de calidad"*. La escribe el hilo principal en la rama `pulida/juegos-ui`, sobre `main`
+  en `bea8712`. Construyó Fable, un agente por juego con tres rondas cada uno, y auditó el hilo
+  principal con capturas antes y después. La tarea es `T-537`. Antes de numerar se miraron las ramas
+  remotas: `D-91` era el último, y `worktree-pulida-jugabilidad` tiene tomados `T-531` a `T-536`.
+- **Consume:** `diseno-marca.md`, `voz-ricotera.md`, `bestiario-inmersion.md` §7–12 y `D-19` (la mezcla
+  de discos).
+- **Detalle por juego:** `Docs/SUGERENCIAS/pulida-juegos-*.md`, con lo hecho, lo medido, lo que pide
+  decisión ajena y lo aprendido en cada ronda.
+
+### La idea
+
+Cada juego tiene un **objeto** y casi siempre ya estaba nombrado en la bajada de su portada. La pulida
+lo hizo protagonista: está en la portada, viaja a la partida, y el resultado se marca sobre él.
+
+| Juego | El objeto |
+|---|---|
+| Adiviná el tema | el casete que gira y bobina mientras suena |
+| ¿Qué tipo de ricotero sos? | la noche en cinco lugares, impresa en serigrafía |
+| Sacalo por la letra | el papel que sale del bolsillo y se desdobla |
+| Skayboy y Poligirl | el mueble del fichín: marquesina, tubo y tablero de cartuchos |
+| Completá la letra | la pintada en la pared, con plantillas de cartón |
+| Ponelos en fila | la batea de discos y la funda que se apoya en su cajón |
+| Preguntas ricoteras | la ficha del fichín: las vidas son fichas y la pregunta es la pantalla |
+| Adiviná la tapa | la mesa de serigrafía y la tirada colgada en la soga |
+| Más o menos | las dos fichas, una boca abajo, y la pila de la racha |
+| Armá tu recital | la boletería, la hoja del setlist con cinta y el fibrón |
+
+### Lo que se decide
+
+1. **Movimiento atado al estado (enmienda a `diseno-marca.md`).** La tabla anti-slop decía que el único
+   movimiento decorativo del sitio es la mosca. Desde acá también se mueven los objetos de los juegos
+   cuando un estado de la partida lo pide: suena, se revela, se apoya, se erra, termina. Las condiciones:
+   - nunca en bucle permanente;
+   - solo `transform` y `opacity` (el alto, únicamente para acompañar un achique);
+   - cada animación entra en `ANIMACIONES` de `movimiento.test.ts`;
+   - con movimiento reducido todo queda quieto y en su estado final.
+2. **La gramática común del cierre.** Funciona igual en todos los juegos:
+   - el sello grande cae donde está el ojo y deja la marca chica;
+   - después llega la ficha, con "Seguí" adentro y el zócalo con la fuente y "Corregí esto";
+   - el cierre se adelanta con un toque, siempre con `click` y no con `pointerdown`.
+
+   El resultado usa `.pie-resultado` con `.tarjeta-asoma`, y el anillo de foco se dibuja solo con
+   teclado (`conPuntero`). Enmienda a `D-71`: "Seguí" va adentro de la ficha, no pegado abajo.
+3. **Ruidos de interfaz (enmienda a `D-69` y `CTR-17`).** Los sintetiza `efectos.ts` y nunca suenan
+   encima de la música. Quedan detrás de un interruptor visible, que se recuerda en `localStorage`, y en
+   Skayboy gobierna también los efectos del motor. Al tipear no suena nada.
+4. **Excepciones declaradas:**
+   - el botón redondo de Jugá en Skayboy es un botón de fichín, no una pastilla;
+   - los versos de Completá la letra van en rotulada mayúscula porque son pintadas cortas, a 16 px como
+     mínimo (14 px en 320×568);
+   - en Skayboy, las chispas y el sello del nivel completado enmiendan `D-32` y `UX-32` §2.3, y los
+     créditos del final duran 7 s.
+5. **Reglas de cada juego que cambian:**
+   - **Preguntas ricoteras:** al llegar la ficha se van las dos opciones que no dicen nada.
+   - **Adiviná la tapa:** al errar, el pedazo queda en color y pegado con cinta sobre la tapa entera
+     (`UX-22` §11), y el sello cae al terminar la tirada.
+   - **Más o menos:** la mejor racha es una chapa en oro (`--acento-2`), nunca en el verde del acierto
+     (`UX-34`, `D-48`).
+   - **Ponelos en fila:** la fila vacía sale apagada en la lámina, no desaparece.
+6. **Lo que no cambió:** preguntas, respuestas, números, fuentes, rótulos de leyenda y testimonio, ni
+   cuánta letra se muestra.
+
+### Lo que queda
+
+- **Nadie escuchó los ruidos** y no se jugó con dedo en un teléfono real. Tampoco se probó con lector de
+  pantalla ni con `?incrustado`. Todo lo visto fueron capturas de Edge sin ventana.
+- **Cuadros largos sin aislar** (CPU ×4): unos 300 ms al tocar en Preguntas ricoteras, unos 200 ms al
+  "Salí a tocar" del recital y 130–170 ms al elegir en Completá la letra.
+- **Tokens nuevos que no pasaron por el lienzo:** los tiempos del jugo, `--textura-barrido`,
+  `--textura-estria` y `--duracion-creditos`.
+- **Textos nuevos sin el visto de `contenido`.** `UX-` y `CNT-` describen las pantallas de antes.
+- **La rama `worktree-pulida-jugabilidad`** (`T-531` a `T-536`) toca los mismos archivos de cuatro
+  juegos. La que se integre segunda va a tener choques.
