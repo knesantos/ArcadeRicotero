@@ -188,3 +188,74 @@ tres objetos, y cada pantalla es uno:
 - **El papelito que vuela a la cuenta casi no se ve más**: con la hoja pegada arriba, el
   renglón nuevo siempre está a la vista y se escribe ahí. Queda para la hoja abierta y corrida.
 - `D-72` y los `UX-` del juego describen la pantalla de antes.
+
+---
+
+## Ronda 3 (2026-11-21): la contratapa, el resaltador y el cierre
+
+### 1. Lo que marcó el hilo principal
+
+1. **Los temas del cajón, punteados y apagados.** Ahora son **renglones de la contratapa** de la
+   funda abierta: un solo recuadro que sigue al borde del disco, y por tema el número de pista,
+   el título y lo que dura, separados por una raya fina. El que ya está en la lista va **tildado
+   y tachado con fibra**, en tinta plena (la tilde ocupa el lugar del número). El sello «EN LA
+   LISTA» salió de la vista; lo dice el nombre accesible. Apagados quedan solo los que no entran
+   con la lista llena, que es cuando de verdad no se pueden tocar.
+2. **"localhost:4340" en la tarjeta**: es `location.host + location.pathname`, igual que las
+   otras ocho tarjetas del sitio (`partida.ts`, `partida-tema.ts`, `partida-letra.ts`,
+   `partida-tapa.ts`, `partida-por-la-letra.ts`, `partida-ponelos.ts`,
+   `partida-mas-o-menos.ts`). En producción dice `fichinricotero.com.ar/…`. No se tocó.
+3. **El título largo en la hoja plegada** va en un renglón, cortado con puntos. Abierta se lee entero.
+4. **El renglón que se cruzaba con las teclas** ahora pasa por atrás: el marcado va por encima,
+   con su papel. **Y el papel acompaña al sacar**: la hoja se achica en el mismo tiempo en que
+   los de abajo suben (es la única medida animada que no es `transform`: el alto de una pieza).
+
+### 2. Lo nuevo
+
+5. **La noche.** El casete mide 10,5 rem (7,5 antes); en el teléfono más angosto va arriba y la
+   tecla abajo. **El renglón que suena lleva resaltador**: una franja plana del oro de destaque
+   que entra de izquierda a derecha, con el sello SUENA debajo (el par tinta sobre oro ya estaba
+   en `contraste.test.ts`). **Cuando la lista sonó entera**, la cinta se rebobina, cae en la hoja
+   el sello «SONÓ ENTERA» y suena el sello. Cortada con «Pará», nada de eso. El pie de la noche
+   se arma un cuadro después del toque de «SALÍ A TOCAR».
+6. **La funda**: al abrirla, la página se acomoda y la deja justo debajo de la hoja pegada.
+7. **La hoja vacía**: con menos de tres temas muestra los renglones que faltan, numerados y en blanco.
+8. **Movimiento reducido**: las capturas se abrieron esta vez (ver el informe).
+
+### 3. Tests y copy
+
+- `estilos.test.ts`: cuatro estados más en la isla. Ningún test relajado; el total no cambia.
+- Copy nuevo: `NOCHE.finSello` («Sonó entera»).
+- `mirar-juego.mjs`: en el teléfono el recorrido deja sonar la lista entera para ver el
+  resaltador y el cierre (suma algo más de un minuto por pasada).
+
+### 4. Lo medido y lo que queda (sitio construido)
+
+- **Diez tamaños con el peor caso**: nada desborda y nada tocable baja de 48 px. Plegada, la hoja
+  mide 189 px (105 en los dos teléfonos más bajos) y quedan de 331 a 702 px para el cajón.
+- **Rendimiento** (CPU ×4, dos tandas, controles 16,7). Peor cuadro: abrir una funda 33–50;
+  sumar 83–100; sumar el 14 plegada 50–67; «Subila» 67; «Sacala» 67; «SALÍ A TOCAR» con 14
+  temas 200–217 (ronda 2: 217–267). Ese cuadro puede ser el dibujo de la tarjeta, que cae
+  adentro de la ventana medida: no se separó.
+- **Queda:** con menos de tres temas la hoja pegada mide ~300 px (lleva los renglones en blanco
+  y los dos avisos) y deja poco cajón a la vista hasta que se pliega; el trazo del fibrón contra
+  el recorte, sin oír; `?incrustado`, teclado y lector de pantalla, sin probar; `D-72` y los
+  `UX-` describen la pantalla de antes.
+
+### 5. Lo aprendido en este juego (para lo que venga)
+
+1. **Si el juego es escribir, la animación es escribir** y el útil se ve: un recorte que avanza
+   con el fibrón adelante se lee en una tira; un fundido no.
+2. **Lo que se construye tiene que estar a la vista mientras se elige**: plegar la pieza y
+   pegarla arriba rindió más que cualquier vuelo hacia un contador.
+3. **Un punteado alrededor de un texto se lee como campo vacío, y un gris como apagado**: el
+   troquel va *entre* dos partes, y lo ya elegido se marca con tinta (tilde, tachón), no se apaga.
+4. **Una lista larga se pliega por su orden natural** (diez discos), no se filtra: de 7971 a 1525 px.
+5. **Medir antes y después y animar la diferencia** sirve para todo lo que se rehace entero; el
+   papel tiene que acompañar con su alto, o lo de adentro se sale.
+6. **El `:hover` queda pegado en el teléfono**: si cambia el relleno, parece un estado. Contorno,
+   y solo con `hover: hover`.
+7. **Una demora con relleno hacia atrás muestra el primer cuadro desde el principio**:
+   `visibility: hidden` en el `from` esconde la pieza hasta su turno, sin fundido.
+8. **Una tarjeta buena es la pantalla hecha imagen con planta propia**, con test: prestar la
+   planta de otro juego deja aire donde no va.

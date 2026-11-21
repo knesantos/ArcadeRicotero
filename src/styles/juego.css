@@ -15897,9 +15897,20 @@ button.recital-entrada:focus-visible {
   padding: 14px var(--espacio-2) 6px;
 }
 
-/* Plegada, cada renglón es una línea: el título, sin el disco. */
+/* Plegada, cada renglón es una línea: el título, sin el disco, y si es largo se corta con
+   puntos. Entero se lee al abrirla; acá no puede empujar el corte de los bises. */
 .recital-hoja-caja--plegada .recital-disco {
   display: none;
+}
+
+.recital-hoja-caja--plegada .recital-escrito {
+  justify-self: stretch;
+}
+
+.recital-hoja-caja--plegada .recital-tema {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .recital-hoja-caja--plegada .recital-corte {
@@ -16095,7 +16106,7 @@ button.recital-entrada:focus-visible {
 
 .recital-renglon-boton {
   display: grid;
-  grid-template-columns: 2.4ch 1fr;
+  grid-template-columns: 2.4ch minmax(0, 1fr);
   column-gap: var(--espacio-1);
   align-items: center;
   width: 100%;
@@ -16325,9 +16336,25 @@ button.recital-entrada:focus-visible {
 
 /* El tema marcado se recorta con un contorno de tinta: un estado es borde, no color. */
 .recital-renglon--marcado {
+  /* Por encima y con su papel: cuando otro renglón le cede el lugar, pasa por atrás de sus
+     teclas y no cruzado con ellas. */
+  position: relative;
+  z-index: 1;
+  background: var(--papel);
   outline: 2px solid var(--fondo);
   outline-offset: 2px;
   border-radius: 3px;
+}
+
+/* Los renglones que faltan, en blanco: el número y la raya. */
+.recital-renglon--blanco {
+  display: flex;
+  align-items: center;
+  min-height: 2.5rem;
+}
+
+.recital-renglon--blanco .recital-numero {
+  opacity: 0.55;
 }
 
 /* Lo que suena se subraya grueso, y la región viva lo dice: nunca solo con color. */
@@ -16397,8 +16424,7 @@ button.recital-entrada:focus-visible {
   display: block;
 }
 
-.recital-sin-recorte,
-.recital-ya {
+.recital-sin-recorte {
   display: inline-block;
   padding: 1px 5px;
   border: 1px solid currentColor;
@@ -16522,43 +16548,80 @@ button.recital-entrada:focus-visible {
   rotate: -6deg;
 }
 
-.recital-funda-temas {
-  display: grid;
-  gap: 4px;
-  margin: 6px 0 var(--espacio-2);
-  padding: 0 0 0 var(--espacio-1);
-  list-style: none;
+/* La contratapa: los temas de la funda abierta, en un solo recuadro que sigue al de la funda
+   (el mismo borde del disco), un renglón por tema separado por una raya fina. No hay cajas
+   sueltas ni punteado: eso se leía como una pila de campos vacíos. */
+.recital-funda--abierta .recital-funda-boton {
+  border-bottom-width: 2px;
+  border-radius: 3px 3px 0 0;
 }
 
-.recital-temas-nada {
-  padding: var(--espacio-2) 0;
-  color: var(--texto-tenue);
+.recital-funda-temas {
+  margin: 0 0 var(--espacio-2);
+  padding: 0 10px;
+  list-style: none;
+  border: 4px solid var(--tinta-disco, var(--borde));
+  border-top: 0;
+  border-radius: 0 0 3px 3px;
+}
+
+/* Buscando no hay funda arriba: el recuadro va entero y fino. */
+.recital-funda-temas--sueltos {
+  border: 2px solid var(--borde);
+  border-radius: 3px;
+}
+
+.recital-funda-temas li + li {
+  border-top: 1px solid var(--borde);
 }
 
 .recital-tema-cajon {
-  display: flex;
+  display: grid;
+  grid-template-columns: 2.2ch minmax(0, 1fr) auto auto;
   align-items: center;
-  gap: var(--espacio-1);
+  column-gap: var(--espacio-1);
   width: 100%;
   min-height: var(--toque-min);
-  padding: 6px 8px;
+  padding: 6px 0;
   background: transparent;
   color: var(--texto);
-  border: 1px solid var(--borde);
-  border-radius: 3px;
+  border: 0;
   font: inherit;
   text-align: left;
   touch-action: manipulation;
 }
 
-.recital-tema-cajon:hover:not(:disabled),
-.recital-tema-cajon:focus-visible {
-  border-color: var(--tinta-disco, var(--texto));
-}
-
+/* Con la lista llena, los que no entraron sí están apagados: no se pueden sumar. */
 .recital-tema-cajon:disabled {
   color: var(--texto-tenue);
-  border-style: dashed;
+}
+
+/* El que ya está en la lista: tinta plena, tachado con la fibra y con su tilde. No es un
+   control apagado; es lo que uno marca en la contratapa cuando ya lo anotó. */
+.recital-tema-cajon--puesto:disabled {
+  color: var(--texto);
+}
+
+.recital-tema-cajon--puesto .recital-tema-texto strong {
+  text-decoration: line-through 2px var(--tinte-accion);
+}
+
+/* La tilde de fibra: dos trazos gruesos, en la tinta del juego. */
+.recital-pista--tilde::before {
+  content: "";
+  display: inline-block;
+  width: 0.4em;
+  height: 0.85em;
+  margin-bottom: 0.15em;
+  border: solid var(--tinte-accion);
+  border-width: 0 4px 4px 0;
+  rotate: 42deg;
+}
+
+.recital-dura-tema {
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--texto-tenue);
 }
 
 .recital-pista {
@@ -16755,7 +16818,48 @@ button.recital-entrada:focus-visible {
 }
 
 .recital-cabina .casete-vivo.recital-casete {
-  width: 7.5rem;
+  width: 10.5rem;
+}
+
+/* En el teléfono más angosto, el casete arriba y la tecla abajo, a todo el ancho. */
+@media (max-width: 23rem) {
+  .recital-cabina {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    row-gap: var(--espacio-1);
+  }
+
+  .recital-cabina-lado {
+    width: 100%;
+  }
+}
+
+/* El renglón que suena, en la noche: el resaltador le pasa por encima al título (una franja
+   plana del oro de destaque, que entra de izquierda a derecha) y cae el sello SUENA. El
+   subrayado queda para el armado. */
+.recital-lista--noche .recital-renglon--sonando .recital-tema {
+  text-decoration: none;
+}
+
+.recital-lista--noche .recital-renglon--sonando .recital-escrito::before {
+  content: "";
+  position: absolute;
+  inset: -3px -8px -2px -6px;
+  z-index: -1;
+  background: var(--acento-2);
+  rotate: -0.6deg;
+  transform-origin: 0 50%;
+  animation: tachon-pasa var(--duracion-golpe) var(--curva-cinta) both;
+}
+
+.recital-lista--noche .recital-escrito {
+  z-index: 0;
+}
+
+/* El sello del final: cae cuando la lista sonó entera. */
+.recital-sello-fin {
+  margin-top: var(--espacio-1);
+  font-size: 0.9rem;
 }
 
 .recital-cabina-lado .primario {

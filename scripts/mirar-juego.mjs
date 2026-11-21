@@ -2267,6 +2267,7 @@ async function armaTuRecital(ctx) {
     await tocar('[data-clave="cerrar"]');
     await pagina.waitForSelector('#resultado:not([hidden]) .recital-hoja--noche', { timeout: 8000 });
     await pagina.click('#resultado .recital-noche-titulo');
+    await pagina.waitForSelector('#resultado .pie-resultado', { timeout: 8000 });
     await pagina.waitForSelector('#resultado .tarjeta-asoma img', { timeout: 15000 }).catch(() => console.log('   (¡la hoja no asomó!)'));
     await ctx.espera(600);
     await arriba();
@@ -2444,8 +2445,20 @@ async function armaTuRecital(ctx) {
   await arriba();
   await foto('noche-sonando');
   await tira('casete-de-la-noche', async () => {}, { ms: 1000, lento: 1, sobre: '#resultado .recital-cabina' });
-  await tira('casete-de-la-noche-frena', () => tocar('[data-clave="escuchar-noche"]'), { ms: 1100, lento: 1, sobre: '#resultado .recital-cabina' });
-  await pausa(300);
+  if (ancho < 768) {
+    // En el teléfono se la deja sonar entera (diez segundos por tema): el resaltador en el
+    // renglón que suena, y al final la cinta que se rebobina y el sello que cae en la hoja.
+    await ctx.espera(9000);
+    await foto('noche-resaltador');
+    await pagina.waitForFunction(() => document.querySelector('#resultado .recital-sello-fin'), { timeout: 150000, polling: 500 });
+    await ctx.espera(quieto ? 300 : 900);
+    await foto('noche-sono-entera');
+    await arriba();
+    await foto('noche-sono-entera-arriba');
+  } else {
+    await tira('casete-de-la-noche-frena', () => tocar('[data-clave="escuchar-noche"]'), { ms: 1100, lento: 1, sobre: '#resultado .recital-cabina' });
+    await pausa(300);
+  }
 
   // ---- la tarjeta, tal cual se comparte
   const tarjeta = await pagina.evaluate(async () => {

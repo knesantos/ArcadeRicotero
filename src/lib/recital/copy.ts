@@ -160,6 +160,8 @@ export const NOCHE = {
   sonando: (n: number, total: number) => `Suena el ${n} de ${total}.`,
   /** Registro 3, seco: solo cuando sonó hasta el final (`FIND-165`). */
   termino: 'Terminó la lista.',
+  /** El sello que cae en la hoja cuando la lista sonó entera. Registro 3. */
+  finSello: 'Sonó entera',
   compartir: 'Compartí',
   copiado: 'La dirección quedó copiada.',
   aManoTitulo: 'La dirección, para copiarla a mano:',

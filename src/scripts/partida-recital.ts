@@ -45,7 +45,7 @@ import { armarLinkRecital, leerRecital, limpiarLugar, LUGAR_DESCAMPADO, LUGAR_OT
 import { claseDisco } from '../lib/tema/paleta.ts';
 import { normalizar } from '../lib/texto.ts';
 import { rutaFicha } from '../lib/tapa/pasadas.ts';
-import { armarCasete, correrCasete, frenarCasete, ponerAvance, ponerContador } from '../lib/tema/casete.ts';
+import { armarCasete, correrCasete, frenarCasete, ponerAvance, ponerContador, rebobinarCasete } from '../lib/tema/casete.ts';
 import { crearRocola, SEGUNDOS_POR_TEMA } from './rocola.ts';
 import { armarContador, armarInterruptorDeRuidos, duracionDe, estampar, pegar, rodarContador, volarPieza } from './jugo.ts';
 import { sonarEfecto } from '../lib/audio/efectos.ts';
@@ -267,7 +267,7 @@ function pararTodo(): void {
  * `segundos`, lo que marca el contador. Con movimiento reducido el carrete no gira; que suena
  * lo dice siempre un texto al lado.
  */
-function armarCabina(casete: HTMLElement): { correr(avance: () => number, segundos: () => number): void; frenar(): void } {
+function armarCabina(casete: HTMLElement): { correr(avance: () => number, segundos: () => number): void; frenar(): void; rebobinar(): void } {
   let anda = false;
   let reloj = 0;
   return {
@@ -290,6 +290,14 @@ function armarCabina(casete: HTMLElement): { correr(avance: () => number, segund
       if (!anda) return;
       anda = false;
       frenarCasete(casete);
+    },
+    /** La cinta llegó al final: suelta la tecla y vuelve al principio, rápido y para atrás. */
+    rebobinar() {
+      window.clearInterval(reloj);
+      anda = false;
+      casete.classList.remove('casete-vivo--play');
+      ponerContador(casete, 0);
+      rebobinarCasete(casete);
     },
   };
 }
@@ -867,6 +875,7 @@ function conDeslizamiento(pintar: () => void): void {
   const nombre = (n: HTMLElement): string => n.dataset.slug ?? n.className + (n.previousElementSibling?.className ?? '');
   const antes = new Map<string, number>();
   for (const li of hoja.querySelectorAll<HTMLElement>(PIEZAS)) antes.set(nombre(li), li.getBoundingClientRect().top);
+  const altoAntes = hoja.offsetHeight;
   pintar();
   const curva = getComputedStyle(document.documentElement).getPropertyValue('--curva-cinta').trim() || 'linear';
   for (const li of (partes?.hoja ?? hoja).querySelectorAll<HTMLElement>(PIEZAS)) {
@@ -875,6 +884,14 @@ function conDeslizamiento(pintar: () => void): void {
     const corre = estaba - li.getBoundingClientRect().top;
     if (Math.abs(corre) < 1) continue;
     li.animate([{ transform: `translateY(${corre}px)` }, { transform: 'translateY(0)' }], { duration: ms, easing: curva });
+  }
+  // Y el papel acompaña: si la hoja cambió de alto (se sacó un tema), se achica en el mismo
+  // tiempo. Sin esto los de abajo subían por afuera de un papel que ya se había cortado. Es la
+  // única medida que se anima acá que no es `transform`, y es una sola pieza.
+  const papel = partes?.hoja ?? hoja;
+  const altoDespues = papel.offsetHeight;
+  if (Math.abs(altoAntes - altoDespues) > 1 && typeof papel.animate === 'function') {
+    papel.animate([{ height: `${altoAntes}px` }, { height: `${altoDespues}px` }], { duration: ms, easing: curva });
   }
 }
 
@@ -885,10 +902,7 @@ function parcharTema(i: number): boolean {
   const t = catalogo.temas[i]!;
   b.disabled = true;
   b.setAttribute('aria-label', `${t.titulo}. ${ARMADO.yaEsta}`);
-  b.querySelector('.recital-sin-recorte')?.remove();
-  const sello = el('span', 'recital-ya', ARMADO.yaEsta);
-  b.append(sello);
-  estampar(sello);
+  estampar(tildar(b));
   // La funda abierta dice cuántos de los suyos ya están.
   const puestos = b.closest('.recital-funda')?.querySelector<HTMLElement>('.recital-funda-puestos');
   if (puestos) puestos.textContent = ARMADO.enLaLista(catalogo.temas.filter((x, k) => x.disco === t.disco && tiraDe(armado, k) !== null).length);
@@ -944,6 +958,8 @@ function pintarCabecera(): void {
   p.cabecera.replaceChildren(entrada, boton('recital-cambiar', ARMADO.cambiarLugar, () => irAlLugar()));
 }
 
+/** Hasta qué renglón la hoja muestra los que faltan, en blanco. */
+const EN_BLANCO = 3;
 /** Cuántos renglones de la lista deja ver la hoja plegada: los últimos, que son los recién escritos. */
 const A_LA_VISTA_PLEGADA = 2;
 
@@ -984,12 +1000,18 @@ function pintarHoja(): void {
     hoja.append(raya);
     return;
   }
+  // Con menos de tres, la hoja muestra los renglones que faltan, numerados y en blanco: es una
+  // lista por escribir, no un aviso. (Son dibujo: lo que hay que hacer lo dice la línea de arriba.)
   if (armado.lista.length === 0) hoja.append(el('p', 'recital-vacia', ARMADO.vacia));
-  else {
-    const ol = el('ol', 'recital-lista');
-    armado.lista.forEach((i, k) => ol.append(renglon(i, k + 1, false)));
-    hoja.append(ol);
+  const ol = el('ol', 'recital-lista');
+  armado.lista.forEach((i, k) => ol.append(renglon(i, k + 1, false)));
+  for (let n = armado.lista.length + 1; n <= EN_BLANCO; n++) {
+    const li = el('li', 'recital-renglon recital-renglon--blanco');
+    li.setAttribute('aria-hidden', 'true');
+    li.append(el('span', 'recital-numero', String(n)));
+    ol.append(li);
   }
+  hoja.append(ol);
   hoja.append(corte());
   if (armado.bises.length === 0) hoja.append(el('p', 'recital-vacia', ARMADO.sinBises));
   else {
@@ -1025,7 +1047,14 @@ function pintarTemas(): void {
   if (normalizar(busqueda) !== '') {
     const ids = visibles();
     if (ids.length === 0) ul.append(el('li', 'recital-temas-nada', ARMADO.sinResultados(busqueda.trim())));
-    for (const i of ids) ul.append(temaDelCajon(i, false));
+    else {
+      // Lo encontrado va en un solo recuadro, con los mismos renglones que una contratapa.
+      const caja = el('li');
+      const adentro = el('ul', 'recital-funda-temas recital-funda-temas--sueltos');
+      for (const i of ids) adentro.append(temaDelCajon(i, false));
+      caja.append(adentro);
+      ul.append(caja);
+    }
     return;
   }
   for (const d of catalogo.discos) {
@@ -1035,7 +1064,16 @@ function pintarTemas(): void {
     const b = boton('recital-funda-boton', '', () => {
       filtro = abierta ? null : d.slug;
       conFoco(() => pintarTemas());
-      if (!abierta) pegar(partes!.temas.querySelector('.recital-funda--abierta .recital-funda-temas'));
+      if (abierta) return;
+      const funda = partes!.temas.querySelector<HTMLElement>('.recital-funda--abierta');
+      pegar(funda?.querySelector('.recital-funda-temas'));
+      // La página se acomoda: la funda abierta queda justo debajo de la hoja pegada (o arriba
+      // de todo, si la hoja está abierta y corrida), con sus temas a la vista.
+      if (!funda) return;
+      const caja = partes!.hojaCaja;
+      const techo = caja.classList.contains('recital-hoja-caja--pegada') ? Math.max(0, caja.getBoundingClientRect().bottom) : 0;
+      const corre = funda.getBoundingClientRect().top - techo - 6;
+      if (Math.abs(corre) > 4) window.scrollBy({ top: corre, behavior: comoMoverse() });
     });
     b.dataset.clave = `funda-${d.slug}`;
     b.setAttribute('aria-expanded', String(abierta));
@@ -1064,7 +1102,13 @@ function pintarTemas(): void {
   }
 }
 
-/** Un tema del cajón. `enSuFunda`: va debajo de su disco (dice cuánto dura); si no, dice de qué disco es. */
+/**
+ * Un tema del cajón: **un renglón de la contratapa** de su funda. El número de pista, el título
+ * y lo que dura. El que ya está en la lista va **tildado y tachado con fibra**, en tinta plena:
+ * es una marca de quien arma la lista, no un control apagado (antes iba punteado y gris, con un
+ * sello, y se leía como deshabilitado). `enSuFunda`: va debajo de su disco; si no (buscando),
+ * dice de qué disco es.
+ */
 function temaDelCajon(i: number, enSuFunda: boolean): HTMLLIElement {
   const t = catalogo.temas[i]!;
   const li = el('li', claseDisco(t.disco));
@@ -1074,14 +1118,26 @@ function temaDelCajon(i: number, enSuFunda: boolean): HTMLLIElement {
   b.disabled = esta || !hayLugar(armado);
   b.setAttribute('aria-label', esta ? `${t.titulo}. ${ARMADO.yaEsta}` : ARMADO.agregarAria(t.titulo));
   const texto = el('span', 'recital-tema-texto');
-  const bajada = enSuFunda ? (t.segundos === null ? '' : minutos(t.segundos)) : `${tituloDeDisco.get(t.disco) ?? ''} · ${t.pista}`;
   texto.append(el('strong', '', t.titulo));
-  if (bajada) texto.append(el('span', '', bajada));
-  b.append(el('span', 'recital-pista', String(t.pista)), texto);
-  if (esta) b.append(el('span', 'recital-ya', ARMADO.yaEsta));
-  else if (!conAudio.has(t.slug)) b.append(el('span', 'recital-sin-recorte', ARMADO.sinRecorte));
+  if (!enSuFunda) texto.append(el('span', '', `${tituloDeDisco.get(t.disco) ?? ''} · ${t.pista}`));
+  const pista = el('span', 'recital-pista', enSuFunda ? String(t.pista) : '');
+  b.append(pista, texto);
+  if (!conAudio.has(t.slug)) b.append(el('span', 'recital-sin-recorte', ARMADO.sinRecorte));
+  if (t.segundos !== null) b.append(el('span', 'recital-dura-tema', minutos(t.segundos)));
+  if (esta) tildar(b);
   li.append(b);
   return li;
+}
+
+/** Tilda un tema del cajón: la tilde de fibra en el lugar del número, y el título tachado. */
+function tildar(b: HTMLButtonElement): HTMLElement | null {
+  b.classList.add('recital-tema-cajon--puesto');
+  const pista = b.querySelector<HTMLElement>('.recital-pista');
+  if (pista) {
+    pista.textContent = '';
+    pista.classList.add('recital-pista--tilde');
+  }
+  return pista;
 }
 
 /** "4:02": lo que dura un tema en su disco. */
@@ -1230,6 +1286,7 @@ function pintarNoche(): void {
       return;
     }
     escuchar.textContent = NOCHE.parar;
+    hoja.querySelector('.recital-sello-fin')?.remove();
     let va = 0;
     let desde = Date.now();
     const pasado = (): number => Math.min((Date.now() - desde) / 1000, SEGUNDOS_POR_TEMA);
@@ -1248,7 +1305,15 @@ function pintarNoche(): void {
         estado.textContent = NOCHE.sonando(k + 1, orden.length);
       },
       (completa) => {
-        cabina.frenar();
+        // Sonó entera: la cinta se rebobina, y en la hoja cae el sello. Cortada, frena y nada más.
+        if (completa) {
+          cabina.rebobinar();
+          const fin = el('p', 'recital-sello-hoja recital-sello-fin', NOCHE.finSello);
+          fin.setAttribute('aria-hidden', 'true');
+          hoja.append(fin);
+          sonarEfecto('sello');
+          fin.scrollIntoView({ block: 'nearest', behavior: comoMoverse() });
+        } else cabina.frenar();
         renglones.forEach((r) => r.classList.remove('recital-renglon--sonando'));
         zonaNoche.querySelector('.recital-renglon .recital-suena-sello')?.remove();
         escuchar.textContent = NOCHE.escuchar;
@@ -1262,66 +1327,72 @@ function pintarNoche(): void {
   escuchar.disabled = conRecorte.length === 0;
   lado.append(escuchar, estado);
 
-  // El pie, igual que en los otros juegos: la hoja que asoma, "Compartí", lo que compartir
-  // tenga para decir, y la otra vuelta. La hoja es la misma imagen que se comparte.
-  const pie = el('div', 'pie-resultado');
-  const asoma = el('div', 'tarjeta-asoma');
-  asoma.setAttribute('aria-hidden', 'true');
-  let imagen: File | null = null;
-  const { boton: compartir, salida } = botonCompartir(
-    { compartir: NOCHE.compartir, copiado: NOCHE.copiado, aManoTitulo: NOCHE.aManoTitulo },
-    () => ({ texto: (ajena ? NOCHE.paraReenviar : NOCHE.paraCompartir)(lugarEnUnaLinea(lugar!)), url: linkDeLaNoche(), archivo: imagen }),
-  );
-  asoma.addEventListener('click', () => compartir.click());
-  pie.append(asoma, compartir, salida);
-  // La hoja también se baja, para el que no tiene menú de compartir (una compu, casi siempre).
-  // Entra recién cuando la imagen existe: `.secundario` pisa el `hidden` del navegador.
-  const bajar = el('a', 'secundario compartir-bajar', NOCHE.bajar);
-  // Se dibuja un momento después: pintar la hoja en el mismo cuadro del toque de "SALÍ A TOCAR"
-  // lo alargaba justo cuando la lista empieza a escribirse.
-  const dibujada = new Promise<File | null>((listo) => window.setTimeout(() => void armarImagen().then(listo), 500));
-  void dibujada.then((f) => {
-    imagen = f;
-    if (!f || !salida.isConnected) return asoma.remove();
-    const url = URL.createObjectURL(f);
-    const foto = el('img', 'jugo-pega');
-    foto.alt = '';
-    foto.src = url;
-    asoma.append(foto);
-    bajar.href = url;
-    bajar.download = f.name;
-    salida.after(bajar);
-  });
-
-  if (ajena) {
-    pie.append(
-      boton('secundario', NOCHE.laTuya, () => {
-        armado = VACIO;
-        lugar = null;
-        irAlLugar();
-      }),
+  // El pie se arma un cuadro después: entra cuando la lista terminó de escribirse, así que no
+  // tiene por qué pesar en el cuadro del toque de "SALÍ A TOCAR".
+  const esta = hoja;
+  window.setTimeout(() => {
+    if (!esta.isConnected || !lugar) return;
+    // El pie, igual que en los otros juegos: la hoja que asoma, "Compartí", lo que compartir
+    // tenga para decir, y la otra vuelta. La hoja es la misma imagen que se comparte.
+    const pie = el('div', 'pie-resultado');
+    const asoma = el('div', 'tarjeta-asoma');
+    asoma.setAttribute('aria-hidden', 'true');
+    let imagen: File | null = null;
+    const { boton: compartir, salida } = botonCompartir(
+      { compartir: NOCHE.compartir, copiado: NOCHE.copiado, aManoTitulo: NOCHE.aManoTitulo },
+      () => ({ texto: (ajena ? NOCHE.paraReenviar : NOCHE.paraCompartir)(lugarEnUnaLinea(lugar!)), url: linkDeLaNoche(), archivo: imagen }),
     );
-  } else {
-    pie.append(
-      boton('secundario', NOCHE.otra, () => {
-        armado = VACIO;
-        guardarPartida();
-        irAlLugar();
-      }),
-    );
-  }
-  zonaNoche.append(pie);
+    asoma.addEventListener('click', () => compartir.click());
+    pie.append(asoma, compartir, salida);
+    // La hoja también se baja, para el que no tiene menú de compartir (una compu, casi siempre).
+    // Entra recién cuando la imagen existe: `.secundario` pisa el `hidden` del navegador.
+    const bajar = el('a', 'secundario compartir-bajar', NOCHE.bajar);
+    // Se dibuja un momento después: pintar la hoja en el mismo cuadro del toque de "SALÍ A TOCAR"
+    // lo alargaba justo cuando la lista empieza a escribirse.
+    const dibujada = new Promise<File | null>((listo) => window.setTimeout(() => void armarImagen().then(listo), 500));
+    void dibujada.then((f) => {
+      imagen = f;
+      if (!f || !salida.isConnected) return asoma.remove();
+      const url = URL.createObjectURL(f);
+      const foto = el('img', 'jugo-pega');
+      foto.alt = '';
+      foto.src = url;
+      asoma.append(foto);
+      bajar.href = url;
+      bajar.download = f.name;
+      salida.after(bajar);
+    });
 
-  // Las salidas, chicas y al final: volver al fichín, retocar la lista y las listas de verdad.
-  const salidas = el('p', 'salida-resultado recital-salidas');
-  const volver = el('a', 'volver', `← ${NOCHE.volver}`);
-  volver.href = '/';
-  salidas.append(volver);
-  if (!ajena) salidas.append(boton('recital-cambiar', NOCHE.cambiar, () => irAlArmado()));
-  const deVerdad = el('a', 'recital-cambiar', NOCHE.deVerdad);
-  deVerdad.href = '/redondopedia/en-vivo/';
-  salidas.append(deVerdad);
-  zonaNoche.append(salidas);
+    if (ajena) {
+      pie.append(
+        boton('secundario', NOCHE.laTuya, () => {
+          armado = VACIO;
+          lugar = null;
+          irAlLugar();
+        }),
+      );
+    } else {
+      pie.append(
+        boton('secundario', NOCHE.otra, () => {
+          armado = VACIO;
+          guardarPartida();
+          irAlLugar();
+        }),
+      );
+    }
+    zonaNoche.append(pie);
+
+    // Las salidas, chicas y al final: volver al fichín, retocar la lista y las listas de verdad.
+    const salidas = el('p', 'salida-resultado recital-salidas');
+    const volver = el('a', 'volver', `← ${NOCHE.volver}`);
+    volver.href = '/';
+    salidas.append(volver);
+    if (!ajena) salidas.append(boton('recital-cambiar', NOCHE.cambiar, () => irAlArmado()));
+    const deVerdad = el('a', 'recital-cambiar', NOCHE.deVerdad);
+    deVerdad.href = '/redondopedia/en-vivo/';
+    salidas.append(deVerdad);
+    zonaNoche.append(salidas);
+  }, 80);
 }
 
 // Un toque adelanta el cierre: la lista queda escrita y el pie, a la vista.
