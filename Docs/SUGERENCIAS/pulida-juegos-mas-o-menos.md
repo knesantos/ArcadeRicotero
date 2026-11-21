@@ -215,3 +215,84 @@ en los tamaños que se le pasen.
    filete y canto en el botón, sin tocar el mapa de discos.
 4. **Todo en `cqw` de la pieza**: una ficha que se achica entera (letra, filete, canto) deja
    medir y animar un solo número, su alto.
+
+---
+
+## Ronda 3 (2026-11-21): el cierre de la pulida
+
+### 1. Decisión del hilo principal, ya aplicada
+
+- **"Seguí" se queda en la tinta de *Un baión*** (6,40:1, `D-54` intacta): lo que lo separa del
+  dorso de la ficha es el material —filete y canto en el botón, trama en el dorso—, no la tinta.
+
+### 2. Qué se hizo
+
+1. **El sello de la hazaña cae en el paño de arriba.** Cuando la respuesta pasa tu mejor racha,
+   la mesa le reserva una franja arriba (`mesa--con-hazana`, que entra en lo que mide
+   `acomodarLaMesa`) y el sello oro cae ahí: no pisa las fichas, los números ni el signo. A
+   los 1,8 s se va y queda **la marca chica, que es la chapa "MEJOR: N" en oro** (se estampa
+   de nuevo al irse el sello). Con movimiento reducido el sello se queda hasta la pregunta que sigue.
+2. **El cuerpo de la pregunta depende de su largo** (`data-largo`: hasta 46 letras, hasta 84,
+   más): la más larga del pozo (118 letras) entra en tres renglones a 430 y no empuja la mesa.
+3. **`acomodarLaMesa`, una sola política, siempre en este orden**: entra → achicar las fichas
+   hasta 150 px → plegar lo largo de la ficha de la respuesta (explicación a dos renglones y el
+   detalle de las palabras, detrás de "Leé más"; la fuente no se pliega) → fichas al mínimo
+   (96 px) → sacar de la vista la pregunta y las teclas → escribir el número en el panel.
+   **El achique va por `transform`**: el alto se pone de una y cada ficha anima desde donde
+   estaba y del tamaño que tenía (`animate()` en la isla, `--duracion-paso`).
+4. **La pila tiene cuerpo de ficha**, en la cabecera, la portada, el resultado y la tarjeta:
+   cada canto con sus estrías y su línea de apoyo, y arriba de cada montón la cara de la última
+   en escorzo. Ya no son tres rayas.
+5. **Tres cierres distintos en el resultado.** *Cero*: cifra tenue, torcida y de trazo
+   cortado, lugar de la pila vacío, y la hoja da un golpe. *El de siempre*: cifra en la tinta
+   del disco con filete entero, que apoya como sello. *La hazaña*: cifra, doble filete y sello
+   en oro, dos golpes de sello, y la línea "Tu mejor racha" no se repite (la dice el sello).
+6. **Limpieza**: salió la transición de alto y `mesa--midiendo`; las medidas de la pila son dos
+   variables (`--canto-pila`, `--ancho-pila`) en vez de reglas repetidas por tamaño.
+7. **El recorrido juega con el teclado en la compu** (← → por el lado, ↑ ↓ por lo que dice):
+   cuatro o cinco respuestas por pasada, todas llegaron a la ficha de la respuesta.
+
+### 3. Tests y copy
+
+- `estilos.test.ts`: seis estados más y uno menos (`mesa--midiendo`). Ninguno relajado.
+  Suite entera, al final: **2511 de 2511**; `check` 0 errores; `build` verde.
+- Copy nuevo: `FICHAS.leerMas` ("Leé más"), para el visto de `contenido`.
+
+### 4. Lo medido (sitio construido)
+
+- **Diez tamaños con el peor dato, acierto y error**: no desborda en ninguno; "Jugá" entra en
+  los diez (320 × 568: 548 de 568); "Seguí" a la vista en los veinte casos; **la mesa entera
+  entra con "Seguí" en 19 de 20** (ronda 2: 14 de 20). El que falta es el error a 320 × 568:
+  la mesa queda a la vista (de 22 a 155 px) pero la cabecera se corre, y el número se escribe
+  también en el panel.
+- **Rendimiento** (CPU ×4, 430 × 860 a ×2, dos tandas, control 16,7 ms sin cuadros sobre 34).
+  Acierto: media 18,1–18,2, peor 100–117, **2 cuadros sobre 34 ms** (ronda 2: 9–12, peor
+  300–333). "Jugá": peor 117. Pase: peor 67–100. Error: peor 83–100. Llegar al resultado:
+  peor 117–133. La máquina estaba más libre que en la ronda 2: la baja del acierto es del
+  cambio a `transform`; la de los demás, en parte, del día.
+
+### 5. Lo que queda abierto
+
+- A 320 × 568 con el peor dato y error, la partida mide unos píxeles más que la ventana.
+- La política pliega antes de bajar del alto legible: en un teléfono alto con dato largo
+  aparece "Leé más" aunque sobraría con fichas un poco más chicas. Es el orden pedido.
+- El sello de la hazaña dura 1,8 s fijo; quien toca "Seguí" antes se lo lleva puesto.
+- Sin probar con dedo, con lector de pantalla ni con oídos; `?incrustado` sin mirar.
+- `--textura-estria` falta en la hoja 07 del lienzo. `UX-34`, `PRD-mas-o-menos.md` y `D-48`
+  describen la pantalla de antes. "Corregí esto" sigue anotado para `arquitectura`.
+
+### 6. Lo aprendido (para el juego que queda)
+
+1. **Si la respuesta es un dato escondido, el momento es darlo vuelta, y lo demás espera**:
+   las teclas dicen cuál era recién cuando la pieza apoya.
+2. **Una relación entre dos piezas se dibuja entre ellas**, derecha, grande y con su borde;
+   un sello torcido al costado es decoración.
+3. **El verde es del acierto y el rojo del error**: una marca propia va en el oro.
+4. **Lo que cae "encima" necesita lugar reservado antes de medir**: si no, tapa el premio.
+5. **Un achique se pone de una y se anima con `transform`**: animar el alto fueron 9–12
+   cuadros largos; así, 2.
+6. **Una política de ajuste es una lista ordenada escrita en el código**, no ramas que
+   dependen del tamaño: es lo que hace comparables los diez tamaños.
+7. **Todo en `cqw` de la pieza y las medidas repetidas en variables**: la pieza se achica
+   entera y cada tamaño cambia un número.
+8. **Buscar el nombre de la clase en toda la hoja, también más abajo** (`.pila`, `.mano`).

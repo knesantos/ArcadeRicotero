@@ -11286,15 +11286,20 @@ body:has(.juego-completar > #partida:not([hidden])) {
   border-color: var(--apoyo-disco);
 }
 
-/* La pila: un canto por ficha, de abajo para arriba, en montones de cinco. Vacía, queda el
-   lugar marcado de trazo cortado. */
+/* La pila: un canto por ficha, de abajo para arriba, en montones de cinco. Cada canto es el
+   de una ficha —papel, con sus estrías y su línea de apoyo— y arriba de cada montón se ve, en
+   escorzo, la cara de la última: es una pila de fichas, no tres rayas. Vacía, queda el lugar
+   marcado de trazo cortado. */
 .apilada {
+  --canto-pila: 7px;
+  --ancho-pila: 1.7rem;
   display: flex;
   flex: 1 1 auto;
   align-items: flex-end;
-  gap: 6px 3px;
-  min-width: 1.6rem;
-  min-height: 2rem;
+  gap: 6px 7px;
+  min-width: 2rem;
+  min-height: 2.6rem;
+  padding-left: 2px;
   overflow: hidden;
 }
 
@@ -11302,28 +11307,47 @@ body:has(.juego-completar > #partida:not([hidden])) {
   display: flex;
   flex: none;
   flex-direction: column-reverse;
-  gap: 1px;
-  width: 1.3rem;
+  width: var(--ancho-pila);
 }
 
 .apilada-ficha {
+  position: relative;
   display: block;
   box-sizing: border-box;
-  height: 6px;
+  height: var(--canto-pila);
   border-bottom: 2px solid var(--papel-borde);
   border-radius: 1px;
   background: var(--papel);
 }
 
-.apilada-ficha:nth-child(even) {
-  margin-left: 2px;
-  margin-right: -2px;
+/* Las estrías del canto. */
+.apilada-ficha::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--fondo);
+  opacity: 0.26;
+  -webkit-mask: var(--textura-estria);
+  mask: var(--textura-estria);
+}
+
+/* La cara de la ficha de arriba, en escorzo: un paralelogramo de papel con su borde. En una
+   columna invertida, el `::after` del montón queda arriba de todo. */
+.apilada-monton::after {
+  content: '';
+  display: block;
+  height: calc(var(--canto-pila) - 1px);
+  border: 1.5px solid var(--papel-borde);
+  border-bottom: 0;
+  background: var(--papel);
+  transform: skewX(-40deg);
+  transform-origin: 0 100%;
 }
 
 .apilada--vacia::before {
   content: '';
-  width: 1.3rem;
-  height: 6px;
+  width: var(--ancho-pila);
+  height: var(--canto-pila);
   border: 2px dashed var(--borde);
   border-radius: 1px;
 }
@@ -11369,6 +11393,12 @@ body:has(.juego-completar > #partida:not([hidden])) {
   flex: 0 1 auto;
   flex-wrap: wrap;
   overflow: visible;
+}
+
+.apilada--portada {
+  --canto-pila: 6px;
+  --ancho-pila: 1.5rem;
+  min-height: 0;
 }
 
 .mejor-marca {
@@ -11438,6 +11468,18 @@ body:has(.juego-completar > #partida:not([hidden])) {
   margin-bottom: var(--espacio-2);
   font-size: clamp(1.2rem, 5.4vw, 1.55rem);
   line-height: 1.22;
+}
+
+/* El cuerpo depende del largo (`data-largo`, que escribe la isla): una pregunta larga baja uno
+   o dos cuerpos y no empuja la mesa. Con más peso que las reglas de pantalla de más abajo, a
+   propósito: el largo manda sobre el tamaño de la ventana. */
+.juego-mas-o-menos #partida #pregunta .enunciado[data-largo='medio'] {
+  font-size: clamp(1.1rem, 4.9vw, 1.4rem);
+}
+
+.juego-mas-o-menos #partida #pregunta .enunciado[data-largo='largo'] {
+  font-size: clamp(1rem, 4.3vw, 1.2rem);
+  line-height: 1.28;
 }
 
 /* Lo que cae estampado en el borde derecho (la chapa de la mejor racha) no ensancha la hoja. */
@@ -11514,16 +11556,12 @@ body:has(.juego-completar > #partida:not([hidden])) {
 }
 
 /* Las fichas a la medida que les dio la isla (`acomodarLaMesa`): alto fijo, y el ancho sale
-   de la proporción. El cambio de alto se anima; mientras se mide, no. */
+   de la proporción. El alto se pone de una; lo que se ve moverse es un `transform` que anima
+   la isla. */
 .mesa--medida .ficha-mm {
   width: auto;
   max-width: 100%;
   height: var(--ficha-alto);
-  transition: height var(--duracion-paso) var(--curva-cinta);
-}
-
-.mesa--midiendo .ficha-mm {
-  transition: none;
 }
 
 /* Con el dedo apoyado en una tecla, tu ficha se despega un pelo de la mesa. Es respuesta al
@@ -11598,12 +11636,17 @@ body:has(.juego-completar > #partida:not([hidden])) {
   margin: 0;
 }
 
-/* La hazaña, en su momento: pasaste tu mejor racha. Un sello grande en el oro del destaque,
-   con doble filete, que cae sobre la mesa y se va con la pregunta. */
+/* La hazaña, en su momento: pasaste tu mejor racha. Un sello en el oro del destaque, con doble
+   filete, que cae en el paño de arriba de la mesa —la mesa se lo reserva (`mesa--con-hazana`):
+   no pisa las fichas, los números ni el signo— y al rato se va: queda la chapa de la cabecera. */
+.mesa.mesa--con-hazana {
+  padding-top: 4.1rem;
+}
+
 .hazana-cae {
   position: absolute;
   z-index: 4;
-  top: 0.9rem;
+  top: 0.85rem;
   left: 50%;
   translate: -50% 0;
   padding: 0.16rem 0.7rem 0.08rem;
@@ -11614,12 +11657,12 @@ body:has(.juego-completar > #partida:not([hidden])) {
   background: var(--fondo);
   color: var(--acento-2);
   font-family: var(--fuente-rotulada);
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   letter-spacing: 0.04em;
   line-height: 1.35;
   text-transform: uppercase;
   white-space: nowrap;
-  rotate: -5deg;
+  rotate: -2.5deg;
   pointer-events: none;
   animation: sello-golpe var(--duracion-pasada) var(--curva-cinta) both;
 }
@@ -11706,6 +11749,30 @@ body:has(.juego-completar > #partida:not([hidden])) {
   white-space: nowrap;
 }
 
+/* Apretada, además, la mesa y la cabecera pierden el aire que no hace falta. */
+.juego-mas-o-menos .partida--apretada .tablero-fichas {
+  min-height: 0;
+  margin-bottom: 0.9rem;
+}
+
+.juego-mas-o-menos .partida--apretada .mesa {
+  margin-block: 0.5rem 0;
+  padding-block: 1.15rem 0.75rem;
+}
+
+.juego-mas-o-menos .partida--apretada .ficha-respuesta {
+  margin-top: 0.55rem;
+  padding-block: 0.7rem;
+}
+
+.juego-mas-o-menos .partida--apretada .ficha-respuesta .seguir-ficha {
+  margin-top: 0.5rem;
+}
+
+.juego-mas-o-menos .ficha-respuesta .leer-mas {
+  margin-top: 0;
+}
+
 /* ---- La ficha de la respuesta ---- */
 .juego-mas-o-menos .ficha-respuesta {
   margin-top: 0.7rem;
@@ -11761,6 +11828,29 @@ body:has(.juego-completar > #partida:not([hidden])) {
   margin-top: 0.8rem;
 }
 
+/* Plegada (`acomodarLaMesa`, paso 3): la explicación larga a dos renglones y el detalle de las
+   palabras, detrás de "Leé más". La fuente no se pliega nunca. Sin plegado, la puerta no está. */
+.juego-mas-o-menos .ficha-respuesta .leer-mas {
+  display: none;
+}
+
+.juego-mas-o-menos .ficha-respuesta--plegada .leer-mas {
+  display: block;
+}
+
+.ficha-respuesta--plegada .explicacion--larga {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.ficha-respuesta--plegada .masomenos-formas,
+.ficha-respuesta--plegada .masomenos-despliegue {
+  display: none;
+}
+
 /* ---- El resultado, en una pantalla ----
    La racha, grande, y a su lado la pila de lo que juntaste (se arma ficha por ficha), la
    mejor racha y el sello de haberla pasado. Debajo, en un renglón, lo que te cortó: las dos
@@ -11800,8 +11890,8 @@ body:has(.juego-completar > #partida:not([hidden])) {
 /* La hazaña: doble filete en el oro (un segundo marco pegado por afuera, no una sombra). */
 .cuenta-fichas .cifra-numero--hazana {
   margin: 6px;
-  border-color: var(--acento-2);
-  outline: var(--linea) solid var(--acento-2);
+  border-color: currentColor;
+  outline: var(--linea) solid currentColor;
   outline-offset: 4px;
 }
 
@@ -11826,17 +11916,33 @@ body:has(.juego-completar > #partida:not([hidden])) {
 }
 
 .apilada--resultado {
+  --canto-pila: 10px;
+  --ancho-pila: 2.5rem;
   max-width: 100%;
   min-height: 2.4rem;
+  gap: 8px 12px;
 }
 
-.apilada--resultado .apilada-monton {
-  width: 1.9rem;
+/* Los tres cierres. **El de siempre**: la cifra en la tinta del disco, con filete entero.
+   **Cero**: trazo cortado, torcida y tenue (más arriba). **La hazaña**: todo en oro, con doble
+   filete y su sello. Forma además de tinta en los tres. */
+.cuenta-fichas .cifra-numero--puesta {
+  border-color: currentColor;
 }
 
-.apilada--resultado .apilada-ficha {
-  height: 7px;
+.cuenta-fichas--hazana .cifra-numero {
+  color: var(--acento-2);
 }
+
+.cuenta-fichas--hazana .hazana-sello {
+  font-size: 1.05rem;
+}
+
+/* Cero: el lugar de la pila queda vacío, de trazo cortado, y la línea de al lado, apagada. */
+.cuenta-fichas--cero .cifra-pie {
+  color: var(--texto-tenue);
+}
+
 
 .juego-mas-o-menos .corte .resumen-titulo {
   margin: 1.1rem 0 0.9rem;
@@ -11858,6 +11964,11 @@ body:has(.juego-completar > #partida:not([hidden])) {
 .mesa--quieta .mesa-familia {
   left: 0.5rem;
   font-size: 0.6rem;
+}
+
+/* Chicas, el signo también lo es: las caras no le guardan aire de más. */
+.mesa.mesa--quieta .ficha-mm .ficha-mm-cara {
+  padding-inline: 7cqw;
 }
 
 .mesa--quieta .mesa-signo {
@@ -11954,18 +12065,9 @@ body:has(.juego-completar > #partida:not([hidden])) {
     font-size: 1.9rem;
   }
 
-  .tablero-fichas .apilada-monton {
-    width: 1.75rem;
-  }
-
-  .tablero-fichas .apilada-ficha {
-    height: 9px;
-    border-bottom-width: 3px;
-  }
-
-  .tablero-fichas .apilada--vacia::before {
-    width: 1.75rem;
-    height: 9px;
+  .tablero-fichas .apilada {
+    --canto-pila: 9px;
+    --ancho-pila: 2.1rem;
   }
 
   .juego-mas-o-menos #pregunta .enunciado {

@@ -118,6 +118,8 @@ export const FICHAS = {
   ruidosTecla: 'Ruidos',
   /** La hazaña: pasar tu mejor racha de este aparato. */
   hazana: '¡Tu mejor racha!',
+  /** La puerta de lo que se plegó en la ficha de la respuesta, en ventanas bajas. */
+  leerMas: 'Leé más',
   /** La chapa de la cabecera: la marca a pasar, en corto. Registro 3. */
   mejorCorta: (n: number) => `Mejor: ${n}`,
   /** Lo que lee el lector de pantalla donde la vista ve el dorso de la ficha. */

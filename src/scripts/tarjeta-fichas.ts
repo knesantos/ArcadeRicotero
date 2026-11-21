@@ -153,17 +153,38 @@ export async function dibujarFichas(datos: DatosDeLasFichas): Promise<Blob | nul
   const Y_PISO = 900;
   const dibujadas = Math.min(datos.racha, TOPE);
   const montones = Math.max(1, Math.ceil(dibujadas / POR_MONTON));
-  const anchoCanto = Math.min(120, (UTIL - (montones - 1) * 16) / montones);
-  const altoCanto = 22;
+  const anchoCanto = Math.min(118, (UTIL - (montones - 1) * 34) / montones - 14);
+  const altoCanto = 24;
+  const escorzo = 16;
   for (let i = 0; i < dibujadas; i++) {
     const monton = Math.floor(i / POR_MONTON);
     const piso = i % POR_MONTON;
-    const x = MARGEN + monton * (anchoCanto + 16) + (piso % 2 === 0 ? 0 : 4);
-    const y = Y_PISO - (piso + 1) * (altoCanto + 4);
-    ctx.fillStyle = c.papelBorde;
-    ctx.fillRect(x, y + 6, anchoCanto - 4, altoCanto - 6);
+    const x = MARGEN + monton * (anchoCanto + 34);
+    const y = Y_PISO - (piso + 1) * altoCanto;
+    // El canto de cada ficha: papel, su línea de apoyo y las estrías.
     ctx.fillStyle = c.papel;
-    ctx.fillRect(x, y, anchoCanto - 4, altoCanto - 6);
+    ctx.fillRect(x, y, anchoCanto, altoCanto);
+    ctx.fillStyle = c.papelBorde;
+    ctx.fillRect(x, y + altoCanto - 6, anchoCanto, 6);
+    ctx.fillStyle = c.fondo;
+    ctx.globalAlpha = 0.26;
+    for (let e = x + 3; e < x + anchoCanto - 2; e += 9) ctx.fillRect(e, y, 3.5, altoCanto - 6);
+    ctx.globalAlpha = 1;
+    // La cara de la de arriba de cada montón, en escorzo.
+    const esLaDeArriba = piso === POR_MONTON - 1 || i === dibujadas - 1;
+    if (esLaDeArriba) {
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + escorzo, y - altoCanto + 6);
+      ctx.lineTo(x + anchoCanto + escorzo, y - altoCanto + 6);
+      ctx.lineTo(x + anchoCanto, y);
+      ctx.closePath();
+      ctx.fillStyle = c.papel;
+      ctx.fill();
+      ctx.strokeStyle = c.papelBorde;
+      ctx.lineWidth = 3;
+      ctx.stroke();
+    }
   }
   ctx.strokeStyle = c.apoyo;
   ctx.lineWidth = 5;

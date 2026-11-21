@@ -1985,6 +1985,7 @@ async function masOMenos(ctx) {
         hazana: !!document.querySelector('#partida .mejor-chapa--pasada'),
         clases: document.getElementById('partida').className,
         ficha: Math.round(document.querySelector('#pregunta .ficha-mm--tuya')?.offsetHeight ?? 0),
+        plegada: !!document.querySelector('#revelado .ficha-respuesta--plegada'),
         alto: innerHeight,
         desliza: Math.round(scrollY),
         teclas: caja('#pregunta .masomenos-opciones'),
@@ -2055,6 +2056,12 @@ async function masOMenos(ctx) {
     if (i === 2 && !quieto) {
       // La vuelta de la ficha, de cerca y lenta: el canto se tiene que ver.
       await tira('la-ficha-se-da-vuelta', () => boton.click(), { ms: 380, sobre: '#pregunta .mesa' });
+    } else if (ancho >= 768) {
+      // En la compu se juega con el teclado: ← y → por el lado de la tecla, ↑ y ↓ por lo que dice.
+      const orden = await pagina.$$eval('#pregunta .opcion', (teclas) => teclas.map((t) => t.dataset.eleccion));
+      const flecha = i % 2 === 1 ? (cual === 'mas' ? 'ArrowUp' : 'ArrowDown') : orden[0] === cual ? 'ArrowLeft' : 'ArrowRight';
+      await pagina.keyboard.press(flecha);
+      console.log(`   (con el teclado: ${flecha})`);
     } else {
       await boton.click();
     }

@@ -870,7 +870,13 @@ const ESTADOS_MAS_O_MENOS = [
   '.partida--revelada',
   // Ronda 2: la mesa a la medida de la ventana, la partida apretada y la chapa de la mejor racha.
   '.mesa--medida',
-  '.mesa--midiendo',
+  // Ronda 3: el paño reservado para el sello de la hazaña, lo plegado y los tres cierres.
+  '.mesa--con-hazana',
+  '.ficha-respuesta--plegada',
+  '.explicacion--larga',
+  '.cuenta-fichas--cero',
+  '.cuenta-fichas--hazana',
+  '.cifra-numero--puesta',
   '.partida--apretada',
   '.partida--mesa-afuera',
   '.mejor-chapa--pasada',

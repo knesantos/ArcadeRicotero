@@ -351,7 +351,7 @@ function ponerLaRacha(rueda: boolean): void {
  * La hazaña en curso: la racha pasó a la mejor que había en el aparato. La chapa de la
  * cabecera pasa al oro —el del destaque, no el verde del acierto: es una marca, no una
  * respuesta— y desde ahí va diciendo la racha, que es la mejor nueva. La primera vez, además,
- * cae un sello grande sobre la mesa, que se va con la pregunta.
+ * cae un sello grande en el paño de arriba de la mesa, y al rato queda solo la chapa.
  */
 function anotarHazana(): void {
   if (!mejorEl || mejorAlEmpezar <= 0 || estado.racha <= mejorAlEmpezar) return;
@@ -360,9 +360,23 @@ function anotarHazana(): void {
   mejorEl.textContent = texto;
   mejorEl.classList.add('mejor-chapa--pasada');
   estampar(mejorEl);
-  if (estado.racha !== mejorAlEmpezar + 1 || !mesaEl?.isConnected || mesaEl.querySelector('.hazana-cae')) return;
-  mesaEl.append(el('span', 'hazana-cae', FICHAS.hazana));
+  const mesa = mesaEl;
+  if (estado.racha !== mejorAlEmpezar + 1 || !mesa?.isConnected || mesa.querySelector('.hazana-cae')) return;
+  // El sello cae en el paño de arriba, que la mesa le reservó al llegar la respuesta
+  // (`mesa--con-hazana`): no pisa las fichas, los números ni el signo. Al rato se va y queda la
+  // marca chica, que es la chapa en oro. Con movimiento reducido se queda hasta la pregunta
+  // que sigue.
+  mesa.classList.add('mesa--con-hazana');
+  const sello = el('span', 'hazana-cae', FICHAS.hazana);
+  mesa.append(sello);
   sonarEfecto('sello');
+  const rato = duracionDe('--duracion-inercia') * 2;
+  if (rato > 0) {
+    window.setTimeout(() => {
+      sello.remove();
+      if (mejorEl?.isConnected) estampar(mejorEl);
+    }, rato);
+  }
 }
 
 /**
@@ -525,6 +539,8 @@ function pintarPaso(): void {
   zonaRevelado.replaceChildren();
 
   const enunciado = el('h2', 'enunciado', dato.pregunta);
+  // El cuerpo de la pregunta depende de su largo (la hoja): una larga no empuja la mesa.
+  enunciado.dataset.largo = dato.pregunta.length > 84 ? 'largo' : dato.pregunta.length > 46 ? 'medio' : 'corto';
   zonaPregunta.append(enunciado);
 
   // La mesa: las dos fichas se reparten, primero la que está a la vista y después la tuya.
@@ -735,7 +751,9 @@ function loQueDice(p: Paso, acerto: boolean, enPartida: boolean): { dice: HTMLEl
   // El número real, escrito: en el resultado se ve (la mesa de arriba es chica); en la
   // partida lo lleva la ficha, grande, y acá queda para el lector de pantalla.
   dice.append(el('p', 'masomenos-real', `${acerto ? '✔︎' : '✕︎'} ${comoSeLee(dato.valor, dato)}`));
-  if (dato.explicacion) dice.append(el('p', 'explicacion', dato.explicacion));
+  if (dato.explicacion) {
+    dice.append(el('p', dato.explicacion.length > 90 ? 'explicacion explicacion--larga' : 'explicacion', dato.explicacion));
+  }
   dice.append(el('p', 'explicacion', dato.fuente));
 
   // En un par, las dos fuentes si son distintas (`RNF-CTR-20-A`): el jugador también vio el
@@ -775,47 +793,90 @@ function loQueDice(p: Paso, acerto: boolean, enPartida: boolean): { dice: HTMLEl
 
 /**
  * **Que tu ficha dada vuelta y "Seguí" entren juntas en la ventana.** Se mide, no se calcula
- * (lo aprendido en "Adiviná la tapa"): si la partida con la ficha de la respuesta mide más que
- * la ventana, las dos fichas se achican lo justo; si ni así, la pregunta y las teclas —que ya
- * dijeron lo suyo, y el lector conserva— salen de la vista y se vuelve a medir; y si ni así,
- * el número real se escribe también en la ficha de la respuesta y la hoja se corre hasta
- * "Seguí". El achique se anima (lo que dura un paso; con movimiento reducido, de una).
+ * (lo aprendido en "Adiviná la tapa"), y la política es una sola, siempre en este orden:
+ *
+ * 1. si entra, no se toca nada;
+ * 2. las dos fichas se achican lo justo, hasta un alto en que el número se lee de lejos;
+ * 3. lo largo de la ficha de la respuesta se pliega (la explicación a dos renglones y el
+ *    detalle de las palabras, detrás de "Leé más") y las fichas vuelven a medirse;
+ * 4. las fichas bajan al mínimo;
+ * 5. la pregunta y las teclas —que ya dijeron lo suyo, y el lector conserva— salen de la vista;
+ * 6. y si ni así, el número real se escribe también en la ficha de la respuesta y la hoja se
+ *    corre hasta "Seguí".
+ *
+ * El alto nuevo se pone de una y **lo que se anima es la diferencia, con `transform`** (cada
+ * ficha arranca donde estaba y del tamaño que tenía): no se rehace la hoja en cada cuadro. Con
+ * movimiento reducido, de una. `antes` es dónde estaba cada ficha antes de que llegara la
+ * respuesta, en coordenadas de la hoja.
  */
-const FICHA_MINIMA = 104;
+const FICHA_LEGIBLE = 150;
+const FICHA_MINIMA = 96;
 
-function acomodarLaMesa(mesa: HTMLElement, panel: HTMLElement): void {
-  const ficha = mesa.querySelector<HTMLElement>('.ficha-mm');
+interface Lugar {
+  readonly x: number;
+  readonly y: number;
+  readonly alto: number;
+}
+
+function lugaresDe(mesa: HTMLElement): Lugar[] {
+  return [...mesa.querySelectorAll<HTMLElement>('.ficha-mm')].map((ficha) => {
+    const r = ficha.getBoundingClientRect();
+    return { x: r.left + r.width / 2 + window.scrollX, y: r.top + r.height / 2 + window.scrollY, alto: r.height };
+  });
+}
+
+function acomodarLaMesa(mesa: HTMLElement, panel: HTMLElement, antes: readonly Lugar[]): void {
+  const fichas = [...mesa.querySelectorAll<HTMLElement>('.ficha-mm')];
   const arriba = tableroEl ?? zonaPartida;
-  if (!ficha) return;
+  if (fichas.length === 0) return;
   zonaPartida.classList.remove('partida--apretada', 'partida--mesa-afuera');
+  panel.classList.remove('ficha-respuesta--plegada');
   mesa.classList.remove('mesa--medida');
   mesa.style.removeProperty('--ficha-alto');
-  const natural = ficha.offsetHeight;
-  /** Cuánto le sobra a la partida respecto de la ventana, con las fichas de alto `alto`. */
-  const sobra = (alto: number): number => {
-    mesa.style.setProperty('--ficha-alto', `${alto}px`);
-    return panel.getBoundingClientRect().bottom - arriba.getBoundingClientRect().top + 14 - window.innerHeight;
+  const natural = fichas[0]!.offsetHeight;
+  mesa.classList.add('mesa--medida');
+  const sobra = (): number =>
+    panel.getBoundingClientRect().bottom - arriba.getBoundingClientRect().top + 14 - window.innerHeight;
+  /** Prueba a su alto y, si no entra, achica lo que falta sin bajar de `piso`. Dice si entró. */
+  const ajustar = (piso: number): boolean => {
+    mesa.style.setProperty('--ficha-alto', `${natural}px`);
+    const falta = sobra();
+    if (falta <= 0) return true;
+    mesa.style.setProperty('--ficha-alto', `${Math.max(Math.min(piso, natural), natural - falta)}px`);
+    return sobra() <= 0;
   };
-  mesa.classList.add('mesa--medida', 'mesa--midiendo');
-  let alto = natural;
-  let falta = sobra(alto);
-  if (falta > 0) {
-    alto = Math.max(FICHA_MINIMA, natural - falta);
-    falta = sobra(alto);
+  let entra = ajustar(FICHA_LEGIBLE);
+  if (!entra && panel.querySelector('.explicacion--larga, .masomenos-despliegue')) {
+    panel.classList.add('ficha-respuesta--plegada');
+    entra = ajustar(FICHA_LEGIBLE);
   }
-  if (falta > 0) {
+  if (!entra) entra = ajustar(FICHA_MINIMA);
+  if (!entra) {
     zonaPartida.classList.add('partida--apretada');
-    alto = Math.max(FICHA_MINIMA, natural - Math.max(0, sobra(natural)));
-    falta = sobra(alto);
+    entra = ajustar(FICHA_MINIMA);
   }
-  if (falta > 0) zonaPartida.classList.add('partida--mesa-afuera');
-  // El achique, animado: las fichas vuelven un instante a su alto y bajan al que quedó.
-  mesa.style.setProperty('--ficha-alto', `${natural}px`);
-  void mesa.offsetHeight;
-  mesa.classList.remove('mesa--midiendo');
-  mesa.style.setProperty('--ficha-alto', `${alto}px`);
-  if (falta > 0) panel.scrollIntoView({ block: 'end' });
-  else window.scrollTo({ top: Math.max(0, arriba.getBoundingClientRect().top + window.scrollY - 12) });
+  if (!entra) zonaPartida.classList.add('partida--mesa-afuera');
+
+  // La hoja se mueve primero y los lugares se miden después.
+  if (entra) window.scrollTo({ top: Math.max(0, arriba.getBoundingClientRect().top + window.scrollY - 12) });
+  else panel.scrollIntoView({ block: 'end' });
+
+  const ms = duracionDe('--duracion-paso');
+  if (ms <= 0) return;
+  const curva = getComputedStyle(document.documentElement).getPropertyValue('--curva-cinta').trim() || 'linear';
+  lugaresDe(mesa).forEach((ahora, i) => {
+    const era = antes[i];
+    const ficha = fichas[i];
+    if (!era || !ficha || typeof ficha.animate !== 'function' || ahora.alto <= 0) return;
+    const dx = era.x - ahora.x;
+    const dy = era.y - ahora.y;
+    const k = era.alto / ahora.alto;
+    if (Math.abs(dx) < 1 && Math.abs(dy) < 1 && Math.abs(k - 1) < 0.01) return;
+    ficha.animate(
+      [{ transform: `translate(${dx}px, ${dy}px) scale(${k})` }, { transform: 'translate(0, 0) scale(1)' }],
+      { duration: ms, easing: curva },
+    );
+  });
 }
 
 /**
@@ -824,7 +885,11 @@ function acomodarLaMesa(mesa: HTMLElement, panel: HTMLElement): void {
  * Sobre la mesa queda la marca chica en tu ficha y, entre las dos, la palabra que las compara.
  */
 function pintarLaRespuesta(p: Paso, acerto: boolean, mesa: HTMLElement, tuya: HTMLElement, lista: HTMLElement): void {
+  const antes = lugaresDe(mesa);
   zonaPartida.classList.add('partida--revelada');
+  // Si con esta pasás tu mejor racha, la mesa le reserva al sello el paño de arriba desde ya:
+  // así entra en la cuenta de lo que mide la pantalla.
+  if (acerto && mejorAlEmpezar > 0 && estado.racha === mejorAlEmpezar + 1) mesa.classList.add('mesa--con-hazana');
   dejarLaMarca(mesa, tuya, acerto);
   ponerElSigno(mesa.querySelector('.mesa-signo'), p);
   lista.classList.add('masomenos-opciones--cerradas');
@@ -837,7 +902,14 @@ function pintarLaRespuesta(p: Paso, acerto: boolean, mesa: HTMLElement, tuya: HT
   const seguir = el('button', 'primario seguir-ficha', acerto ? PARTIDA.seguir : FICHAS.alResultado);
   seguir.type = 'button';
   seguir.addEventListener('click', () => (acerto ? pasar(p, tuya) : pintarResultado(p)), { once: true });
-  panel.append(seguir);
+  // "Leé más": la puerta de lo que `acomodarLaMesa` haya plegado. Sin plegado no se ve.
+  const leerMas = el('button', 'leer-mas', FICHAS.leerMas);
+  leerMas.type = 'button';
+  leerMas.addEventListener('click', () => {
+    panel.classList.remove('ficha-respuesta--plegada');
+    panel.scrollIntoView({ block: 'nearest' });
+  });
+  panel.append(leerMas, seguir);
   zonaRevelado.replaceChildren(panel);
 
   // Lo que sumaste vuela del sello de la ficha al contador de la racha, que da la vuelta.
@@ -868,7 +940,7 @@ function pintarLaRespuesta(p: Paso, acerto: boolean, mesa: HTMLElement, tuya: HT
     seguir.addEventListener('blur', () => seguir.classList.remove('seguir--sin-anillo'), { once: true });
   }
   seguir.focus({ preventScroll: true });
-  acomodarLaMesa(mesa, panel);
+  acomodarLaMesa(mesa, panel, antes);
 }
 
 /**
@@ -985,11 +1057,22 @@ function pintarResultado(quienCorto: Paso | null): void {
   pila.setAttribute('role', 'img');
   // Al lado de la cifra: la pila, la mejor racha del aparato y, si la pasaste, el sello.
   const lado = el('div', 'cuenta-fichas-lado');
-  lado.append(pila, el('p', 'cifra-pie', RESULTADO.mejor(mejor)));
-  if (racha === 0) numero.classList.add('cifra-numero--cero');
-  if (esHazana) {
+  lado.append(pila);
+  if (racha === 0) {
+    // Cero: la cifra de trazo cortado y torcida, y el lugar de la pila vacío.
+    cuenta.classList.add('cuenta-fichas--cero');
+    numero.classList.add('cifra-numero--cero');
+    lado.append(el('p', 'cifra-pie', RESULTADO.mejor(mejor)));
+  } else if (esHazana) {
+    // La hazaña: todo en oro —la cifra, su doble filete y el sello—; el sello ya dice que es
+    // tu mejor racha, así que la línea de la mejor no se repite.
+    cuenta.classList.add('cuenta-fichas--hazana');
     numero.classList.add('cifra-numero--hazana');
     lado.append(el('p', 'hazana-sello', FICHAS.hazana));
+  } else {
+    // El de siempre: la cifra en la tinta del disco, con su filete entero.
+    numero.classList.add('cifra-numero--puesta');
+    lado.append(el('p', 'cifra-pie', RESULTADO.mejor(mejor)));
   }
   cuenta.append(cifra, lado);
   zonaResultado.append(cuenta);
@@ -1004,6 +1087,8 @@ function pintarResultado(quienCorto: Paso | null): void {
     } else {
       estampar(numero);
       sonarEfecto('sello');
+      // La hazaña suena dos veces: la cifra y, un compás después, su sello.
+      if (esHazana) window.setTimeout(() => sonarEfecto('sello'), duracionDe('--duracion-cuenta') + 160);
     }
   };
   const escalon = duracionDe('--escalon-umbral');
