@@ -266,3 +266,85 @@ ahora en ese cuadro la isla además mide y acomoda la mesa.
 - **El botón en plata** tiene filete y canto, pero sigue siendo un gris sobre fondo oscuro.
 - Las manchas y la malla son esquemáticas; la malla solo está en la portada.
 - No se probó con dedo, teclado de verdad ni lector de pantalla, ni `?incrustado`.
+
+---
+
+## Ronda 3 (2026-11-20): el botón que se lee, la ficha apretada y el cierre
+
+### 1. Decisión del hilo principal, ya aplicada (para la enmienda)
+
+- **El botón principal va en la plata clara de la familia** (`--disco-momo-sampler-tinta`), con
+  el filete de la tinta del fondo por adentro y el canto en la plata vieja de *Último bondi*.
+  *Último bondi* no tiene un tono más claro medido; el de Momo es el valor alto de la misma
+  familia y su par de texto (la tinta del fondo encima) ya estaba en `contraste.test.ts`. La
+  entrada "boton primario de adivinar-la-tapa" de ese test ahora apunta a ese par. Enmienda a
+  `D-54` para este juego: el relleno no es la tinta del disco de la página, es su valor alto.
+
+### 2. Qué se hizo
+
+1. **El botón** ("Empezá", "Seguí", "Mirá cómo te fue"): chapa de plata clara, filete y canto.
+2. **La ficha en la compu dejó de ser angosta**: desde 72 rem de ancho, mientras se juega, la
+   hoja de este juego mide 44 rem (`--ancho-tablero`), y la ficha queda de unos 320 px al lado
+   de la tapa entera. Entre 64 y 72 rem sigue en 34 (a 1024 px, con 44 la hoja desbordaba 8 px:
+   lo encontró el guion de los diez tamaños).
+3. **La ficha del teléfono, apretada**: menos relleno, la marca y el grito más chicos, el disco
+   un cuerpo más bajo. **El crédito de la tapa pasa a la derecha, debajo de las opciones** (la
+   figura suelta a sus dos hijos en la grilla): sigue pegado a la imagen (`D-21`), al lado. Con
+   eso la tapa terminada mide ~200 px a 430 × 860 **con el rótulo más largo y sin plegar nada**
+   (en la ronda 2, 150 y plegada).
+4. **La mesa se achica animada**: la isla mide dónde estaba y dónde quedó, y anima la
+   diferencia (solo `transform`, lo que dura un sub-paso). Con movimiento reducido, de una.
+5. **Teléfonos bajos**: con la ficha a la vista la soga se guarda y la explicación plegada son
+   dos renglones. Con el peor dato, la tapa entera entra con "Seguí" a 375 × 667 y a 360 × 640.
+6. **"Leé más" salió de la región viva**: va entre dos regiones (la respuesta con su
+   explicación, y el rótulo), y el lector ya no lo anuncia mezclado con el resultado.
+7. **Las imágenes de la tapa se decodifican mientras se piensa**, para que ponerlas no le cueste
+   al cuadro del toque.
+
+### 3. Lo visto que faltaba ver
+
+- **La hoja que sale del bastidor** al arrancar: en la ráfaga, el último cuadro muestra la hoja
+  impresa saliendo por abajo y la malla que queda.
+- **Las teclas 1 a 4**: el recorrido, en la compu, juega una vuelta entera apretando el número
+  de la tecla buena con el teclado; llegó al resultado con las seis.
+- **El cierre flojo**: una vuelta errando todas; la cuenta queda en "0 de 6", torcida y de trazo
+  cortado.
+
+### 4. Lo medido
+
+- **Diez tamaños con los datos peores** (sitio construido): no desborda en ninguno; "Empezá" y
+  las cuatro teclas entran en los diez; "Seguí" y el zócalo, a la vista en los diez. **La tapa
+  entera entra con "Seguí" en nueve de diez**; a 320 × 568 asoma la mitad de abajo.
+- **Rendimiento** (CPU ×4, 430 × 860 a ×2, sitio construido, dos tandas, control 16,7 ms).
+  "Empezá": peor cuadro 167–217. Error con la ficha: media 19–22, peor 150–217 (en la ronda 2,
+  217–350). Acierto: media 17,8–17,9, peor 83–167. El pase: peor 117–183. Llegar al resultado
+  con la tarjeta ya dibujada: media 17,7–17,8, **un cuadro de 183 en las dos tandas** (en la
+  ronda 1, 367–383). Sin esperar en la última ficha la tarjeta se dibuja al llegar, y ese caso
+  no se volvió a medir.
+- Suite: 2511. `contraste.test.ts` cambió un par a propósito (el del botón).
+
+### 5. Lo que queda flojo
+
+- A 320 × 568, con el peor dato, la tapa no entra entera.
+- Entre 1024 y 1151 px de ancho la ficha de la compu sigue angosta.
+- Con "Leé más" a la vista queda un aire de más entre el botón y el rótulo.
+- La malla y las manchas no cambiaron en esta ronda: siguen esquemáticas.
+- No hubo limpieza de reglas viejas: las de `.tapa-juego` y `.estampa-papel--abre` de antes de
+  la pulida siguen en la hoja, pisadas por las de `.juego-tapa`.
+- Sin dedo, sin lector de pantalla de verdad, sin `?incrustado`, y los ruidos sin oír.
+- `UX-13`, `UX-22` §11 y el lienzo describen la pantalla de antes.
+
+### 6. Lo aprendido (para los dos juegos que quedan)
+
+1. **Si el juego esconde algo, la animación es mostrar dónde estaba**: el dato suele existir ya
+   en el generador; se repite para el navegador con un test que compare las dos tablas.
+2. **Que dos cosas entren juntas se mide, no se calcula**: una función que mide el final de la
+   pantalla y achica una sola pieza resolvió lo que tres media queries no.
+3. **El peor dato encuentra lo que el recorrido no**: el desborde a 1024 y los teléfonos bajos
+   salieron del guion de diez tamaños, no de las capturas.
+4. **Un gris medio con letra oscura es un botón apagado**, tenga el filete que tenga: el
+   primario va en el valor alto de su familia.
+5. **Mover una pieza de lugar en la grilla (`display: contents`) rinde más que achicarla.**
+6. **Un puerto ocupado no es mío por estar ocupado**: se guarda el PID al lanzar y se mata ese.
+7. **Si el navegador de las capturas no arranca desde un shell, probar el otro** antes de
+   tocar perfiles.

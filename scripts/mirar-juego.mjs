@@ -1668,7 +1668,7 @@ async function adivinarLaTapa(ctx) {
   };
 
   // ---- Empezá: la racleta baja y deja la segunda tinta, vuelve y deja la clave.
-  await rafaga('pasa-la-racleta', () => pagina.click('#jugar'), { desde: 0, hasta: 760, sobre: '#mesa-portada', zoom: 1, cada: 3, tope: 12, porRenglon: 6 });
+  await rafaga('pasa-la-racleta', () => pagina.click('#jugar'), { desde: 0, hasta: 1000, sobre: '#mesa-portada', zoom: 1, cada: 3, tope: 18, porRenglon: 6 });
   await pagina.waitForSelector('#partida:not([hidden]) .opcion', { timeout: 8000 });
   await ctx.espera(quieto ? 200 : 900);
   await foto('partida');
@@ -1820,7 +1820,12 @@ async function adivinarLaTapa(ctx) {
       await ctx.espera(quieto ? 100 : 500);
       await foto('pregunta-nivel-dificil');
     }
-    await (await opcion(true)).evaluate((b) => b.click());
+    // En la compu se contesta con el teclado de verdad: el número de la tecla buena.
+    if (ctx.ancho >= 768) {
+      const cual = item.opciones.findIndex((o) => o.correcta) + 1;
+      await pagina.keyboard.press(String(cual));
+      if (n === 1) console.log('   (teclado: se apretó el ' + cual + ')');
+    } else await (await opcion(true)).evaluate((b) => b.click());
     await fichaLista();
     if (mirar.length || n === 3) {
       await asentar();
@@ -1836,6 +1841,27 @@ async function adivinarLaTapa(ctx) {
   await foto('hazana-entera', { entera: true });
   await mirarLaTarjeta('tarjeta-hazana');
   if (!vistos.has('leyenda')) console.log('   (en estas dos vueltas no salió ninguna tapa con leyenda)');
+
+  // ---- y una tercera, errando todas: el cierre de menos de la mitad.
+  await pagina.evaluate(() => document.querySelector('#resultado .pie-resultado button.secundario')?.click());
+  await pagina.waitForSelector('#partida:not([hidden]) .opcion', { timeout: 8000 });
+  await ctx.espera(quieto ? 200 : 700);
+  for (let n = 1; n <= 8; n++) {
+    if (!(await pagina.$('#partida:not([hidden]) .opcion:not(:disabled)'))) break;
+    await (await opcion(false)).evaluate((b) => b.click());
+    await fichaLista();
+    const ultima = await pagina.$eval('#partida .tablero-imprenta-paso', (p) => /^(d+) de $/.test(p.textContent));
+    if (ultima) {
+      await asentar();
+      await rafaga('cierre-flojo', () => pagina.$eval('#partida .ficha-respuesta .seguir-ficha', (b) => b.click()), { desde: 0, hasta: 2600, cada: 9, tope: 12 });
+    } else {
+      await pasar();
+      await ctx.espera(quieto ? 100 : 500);
+    }
+  }
+  await pagina.waitForSelector('#resultado:not([hidden])', { timeout: 8000 });
+  await ctx.espera(1200);
+  await foto('resultado-flojo');
 }
 
 /** Cualquier otra ruta: la portada, y lo que aparece al tocar el botón de empezar. */

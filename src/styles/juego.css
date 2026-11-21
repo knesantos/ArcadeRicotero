@@ -10967,21 +10967,28 @@ body:has(.juego-completar > #partida:not([hidden])) {
      que no. Es la forma que acompaña a "en una tinta".
    - La cabecera es la soga: una hoja por tapa, con su broche. La hoja impresa vuela de la mesa
      a la soga al pasar, y se queda hamacando. En el resultado, la soga entera es la tirada.
-   - El botón principal es una chapa en la plata vieja de Último bondi (`D-19`, `D-54`), con
-     un filete por adentro y el canto de goma de la racleta. La racleta, que es dibujo, es de
-     madera.
+   - El botón principal es una chapa de plata: el valor alto de la familia de `D-19` (la plata
+     de Momo Sampler, que es el par de texto que ya estaba medido), con un filete por adentro y
+     el canto en la plata vieja de Último bondi. La racleta, que es dibujo, es de madera.
 
    Ni un hex, ni una sombra, ni un degradado. Todo par de texto ya está en `contraste.test.ts`
    (la tinta del fondo sobre el papel; el texto sobre el fondo).
    ========================================================================== */
 
-/* El botón principal: la chapa del disco, con un filete de la tinta del fondo por adentro (dos
-   anillos pegados: contorno, no sombra) y abajo el canto de goma (borde). */
+/* El botón principal: una chapa de plata clara. La plata vieja de Último bondi, como relleno,
+   se leía como un botón apagado; este es el valor alto de la misma familia, y la tinta del
+   fondo encima es un par que ya estaba en `contraste.test.ts`. Lleva un filete de la tinta del
+   fondo por adentro (dos anillos pegados: contorno, no sombra) y abajo el canto, en la plata
+   vieja del disco (borde). */
+.juego-tapa {
+  --tinte-accion: var(--disco-momo-sampler-tinta);
+}
+
 .juego-tapa .primario:not(.firma) {
   padding-bottom: calc(var(--espacio-2) - 0.2rem);
-  border-bottom: 0.4rem solid var(--cat-discos-apoyo);
+  border-bottom: 0.42rem solid var(--cat-discos);
   box-shadow:
-    inset 0 0 0 3px var(--cat-discos),
+    inset 0 0 0 3px var(--disco-momo-sampler-tinta),
     inset 0 0 0 5px var(--fondo);
 }
 
@@ -11797,23 +11804,75 @@ body:has(.juego-completar > #partida:not([hidden])) {
     grid-column: 1 / -1;
   }
 
+  /* La figura suelta a sus dos hijos en la grilla: el bastidor a la izquierda, ocupando los dos
+     renglones, y el crédito a la derecha, debajo de las opciones. El crédito sigue pegado a la
+     imagen (`D-21`): está al lado, en la misma pieza. */
   .juego-tapa #partida.partida--revelada > .mesa-imprenta {
-    grid-column: 1;
-    width: min-content;
+    display: contents;
   }
 
   .juego-tapa #partida.partida--revelada .bastidor {
-    width: min(21.4rem, 47vw);
-  }
-
-  .juego-tapa #partida.partida--revelada .credito-tapa {
-    text-wrap: balance;
+    grid-row: 2 / span 2;
+    grid-column: 1;
+    width: min(21.4rem, 50vw);
+    margin-top: var(--espacio-1);
   }
 
   .juego-tapa #partida.partida--revelada > .opciones--tapa {
+    grid-row: 2;
     grid-column: 2;
     grid-template-columns: minmax(0, 1fr);
+    align-self: end;
     margin-top: 0;
+  }
+
+  .juego-tapa #partida.partida--revelada .credito-tapa {
+    grid-row: 3;
+    grid-column: 2;
+    align-self: start;
+    margin: 0.35rem 0 0;
+    text-align: left;
+    text-wrap: balance;
+  }
+
+  /* La ficha, apretada: menos relleno, la marca y el grito más chicos, el disco en un renglón
+     más bajo. Lo que se lee no baja de cuerpo. */
+  .juego-tapa #partida.partida--revelada .ficha-respuesta {
+    padding: 0.7rem 0.8rem 0.8rem;
+  }
+
+  .juego-tapa #partida.partida--revelada .revelacion-cabeza {
+    min-height: 2.1rem;
+  }
+
+  .juego-tapa #partida.partida--revelada .ficha-respuesta-marca {
+    width: 1.9rem;
+    height: 1.9rem;
+    font-size: 1.15rem;
+  }
+
+  .juego-tapa #partida.partida--revelada .ficha-respuesta .revelacion-suma {
+    font-size: 1.7rem;
+  }
+
+  .juego-tapa #partida.partida--revelada .ficha-respuesta .respuesta-dato {
+    margin: 0.45rem 0 0.3rem;
+    font-size: 1.25rem;
+  }
+
+  .juego-tapa #partida.partida--revelada .ficha-respuesta .explicacion {
+    line-height: 1.42;
+  }
+
+  .juego-tapa #partida.partida--revelada .ficha-respuesta .sello {
+    margin-top: 0.6rem;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.86rem;
+    line-height: 1.4;
+  }
+
+  .juego-tapa #partida.partida--revelada .ficha-respuesta .seguir-ficha {
+    margin-top: 0.7rem;
   }
 }
 
@@ -11896,8 +11955,12 @@ body:has(.juego-completar > #partida:not([hidden])) {
   cursor: pointer;
 }
 
-.juego-tapa .ficha-respuesta .leer-mas + .sello {
+.juego-tapa .ficha-respuesta .leer-mas + .ficha-respuesta-nota .sello {
   margin-top: 0.55rem;
+}
+
+.ficha-respuesta-nota:empty {
+  display: none;
 }
 
 /* El blanco de toque, más grande que la letra. */
@@ -12085,9 +12148,18 @@ body:has(.juego-completar > #partida:not([hidden])) {
 /* ---- En la compu ----
    La mesa a la izquierda y, a su derecha, la pregunta con las cuatro teclas en columna; al
    responder, en ese mismo lugar va la ficha: la tapa terminada y "Seguí" quedan lado a lado. */
+/* Desde 72 rem: a 64 (1024 px) la carátula y una hoja de 44 rem no entran, y la hoja desbordaba. */
+@media (min-width: 72rem) {
+  /* Con la carátula al costado, el ancho de la hoja lo da `--ancho-tablero`: mientras se juega,
+     esta mesa necesita lugar para la tapa y para la ficha al lado. */
+  .juego-tapa:has(> #partida:not([hidden])) {
+    --ancho-tablero: 44rem;
+  }
+}
+
 @media (min-width: 46rem) {
   .juego-tapa #partida.pantalla {
-    max-width: 43rem;
+    max-width: 44rem;
   }
 
   .juego-tapa #partida:not([hidden]) {
@@ -12202,6 +12274,15 @@ body:has(.juego-completar > #partida:not([hidden])) {
 @media (max-height: 44rem) and (max-width: 45.99rem) {
   .juego-tapa #partida.partida--revelada .tendedero-tendido {
     display: none;
+  }
+
+  .juego-tapa #partida.partida--revelada .explicacion--plegada {
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  .juego-tapa #partida.partida--revelada .ficha-zocalo .edicion-tapa {
+    padding: 0.3rem 0;
   }
 }
 

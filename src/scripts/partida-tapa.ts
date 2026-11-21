@@ -321,6 +321,8 @@ function traer(rutas: readonly string[]): void {
     const img = new Image();
     img.decoding = 'async';
     img.src = ruta;
+    // Decodificada de antemano: al responder, ponerla en la hoja no le cuesta al cuadro del toque.
+    img.decode?.().catch(() => {});
   }
 }
 
@@ -610,6 +612,8 @@ function abrirElRecorte(item: Item, disco: string, acerto: boolean): boolean {
  * puerta para corregir.
  */
 function pintarFicha(item: Item, acerto: boolean, correcta: string, seImprimio: boolean): void {
+  // Dónde está la mesa antes de que la pantalla cambie de modo: de ahí sale su achique animado.
+  const antes = bastidorEl.getBoundingClientRect();
   zonaPartida.classList.add('partida--revelada');
   dejarLaMarca(acerto);
   listaEl.classList.add('opciones--cerradas');
@@ -643,9 +647,13 @@ function pintarFicha(item: Item, acerto: boolean, correcta: string, seImprimio: 
   const explicacion = item.explicacion ? el('p', 'explicacion', item.explicacion) : null;
   if (explicacion) dice.append(explicacion);
 
-  // El rótulo (`BR-08`, registro 3): frío, con su símbolo, sin adornos.
+  // El rótulo (`BR-08`, registro 3): frío, con su símbolo, sin adornos. Va en su propia región
+  // viva, después de "Leé más": así el botón de abrir no queda adentro de lo que se anuncia.
+  const nota = el('div', 'ficha-respuesta-dice ficha-respuesta-nota');
+  nota.setAttribute('role', 'status');
+  panel.append(nota);
   if (item.rotulo) {
-    dice.append(
+    nota.append(
       el(
         'p',
         `sello sello--${item.rotulo.tipo}`,
@@ -732,7 +740,7 @@ function pintarFicha(item: Item, acerto: boolean, correcta: string, seImprimio: 
         explicacion.classList.remove('explicacion--plegada');
         mas.remove();
       });
-      explicacion.after(mas);
+      dice.after(mas);
       entra = acomodarLaMesa(zocalo);
     } else {
       explicacion.classList.remove('explicacion--plegada');
@@ -743,6 +751,24 @@ function pintarFicha(item: Item, acerto: boolean, correcta: string, seImprimio: 
   // ver el premio y que el botón esté, gana el botón (`UX-22` §1.4).
   if (entra) window.scrollTo({ top: 0 });
   else zocalo.scrollIntoView({ block: 'nearest' });
+
+  // La mesa se achica y se corre a su lugar nuevo, en vez de saltar: se mide dónde quedó y se
+  // anima desde donde estaba (solo `transform`). Con movimiento reducido ya está en su lugar.
+  const ms = duracionDe('--duracion-umbral');
+  const despues = bastidorEl.getBoundingClientRect();
+  if (ms > 0 && despues.width > 0 && typeof bastidorEl.animate === 'function') {
+    const curva = getComputedStyle(document.documentElement).getPropertyValue('--curva-cinta').trim() || 'linear';
+    bastidorEl.animate(
+      [
+        {
+          transformOrigin: '0 0',
+          transform: `translate(${antes.left - despues.left}px, ${antes.top - despues.top}px) scale(${antes.width / despues.width})`,
+        },
+        { transformOrigin: '0 0', transform: 'none' },
+      ],
+      { duration: ms, easing: curva },
+    );
+  }
 
   // La tarjeta de la vuelta se dibuja ahora, mientras se lee la última ficha: al llegar al
   // resultado ya está hecha y no le cuesta un cuadro largo a la entrada de la soga.

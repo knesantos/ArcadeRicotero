@@ -97,7 +97,7 @@ const PARES: Array<[string, string, string]> = [
   // "Adiviná la tapa" (Último bondi). Entran con el cambio, invertidos como los de arriba.
   ['boton primario de dos-ejes', 'fondo', 'disco-luzbelito-tinta'],
   ['boton primario de completar-la-letra', 'fondo', 'cat-letras'],
-  ['boton primario de adivinar-la-tapa', 'fondo', 'cat-discos'],
+  ['boton primario de adivinar-la-tapa', 'fondo', 'disco-momo-sampler-tinta'],
   // `D-85`: la chapita del nombre en el afiche de noviembre y la de la última parada, letra
   // `--fondo` sobre la plata de *Último bondi*. Es la tinta del disco por su nombre, no el alias
   // de la categoría: si un día se separan, este par se entera.
