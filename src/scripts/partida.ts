@@ -77,6 +77,7 @@ import {
   variante,
 } from '../lib/quiz/copy.ts';
 import { PORTAL } from '../lib/sitio/copy.ts';
+import { puertaDelQuiz } from '../lib/quiz/puerta.ts';
 import { botonCorreccion } from './correccion.ts';
 import { protegerDeRebote } from '../lib/sitio/rebote.ts';
 
@@ -571,6 +572,15 @@ function pintarResultado(): void {
   alArcade.href = '/';
   salida.append(alArcade);
   zonaResultado.append(salida);
+
+  // `T-535`: la derrota no es un callejon. La puerta al disco de lo que se escapo
+  // (`lib/quiz/puerta.ts`), al lado de la vuelta al fichin.
+  const puerta = puertaDelQuiz(partida);
+  if (puerta) {
+    const va = el('a', 'volver', `${puerta.texto} →`);
+    va.href = puerta.href;
+    salida.append(va);
+  }
 
   mostrar(zonaResultado);
   window.scrollTo({ top: 0 });

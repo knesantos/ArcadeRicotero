@@ -42,7 +42,7 @@ import { PARTIDA, REVELACION, RESULTADO, TARJETA, TRAMOS, PANTALLA_0, SIN_SONIDO
 import { estampaDe } from '../lib/tapa/pasadas.ts';
 import { armarCasete } from '../lib/tema/casete.ts';
 import { esIOS, esMovil, navegadorIncrustado } from '../lib/sitio/aparato.ts';
-import { tramo } from '../lib/quiz/tramo.ts';
+import { tramoDeLaVuelta, titularDeLaVuelta, puertaDeLaVuelta } from '../lib/tema/veredicto.ts';
 import { armarLink, leerDesafio } from '../lib/desafio.ts';
 import { Cronometro, duracion, total as sumarTiempos } from '../lib/tema/reloj.ts';
 import { claseDisco } from '../lib/tema/paleta.ts';
@@ -1314,7 +1314,7 @@ function pieDeTema(i: number): string {
  */
 function pintarResultado(): void {
   const aciertos = marcador.filter((p) => p > 0).length;
-  const t = tramo(aciertos, ronda.length);
+  const t = tramoDeLaVuelta(marcador, ronda.length);
   const maximo = puntajeMaximo(ronda.length);
 
   zonaResultado.replaceChildren();
@@ -1327,13 +1327,12 @@ function pintarResultado(): void {
 
   // El reloj: el dato que el jugador cuenta cuando sale de la partida.
   const reloj = el('div', 'cifra');
-  reloj.append(el('p', 'cifra-rotulo', RESULTADO.rotuloTiempo));
-  reloj.append(el('p', 'cifra-numero', duracion(sumarTiempos(tiempos))));
-  // Abajo del tiempo, las dos cuentas que se dicen en la previa: cuantos sacaste y cuanto
-  // sumaste. El punto medio las separa sin sumarlas, igual que en la revelacion.
-  reloj.append(
-    el('p', 'cifra-pie', `${RESULTADO.sacaste(aciertos, ronda.length)} · ${RESULTADO.puntos(puntaje, maximo)}`),
-  );
+  // `T-535`: que numero es el grande lo decide `veredicto.ts`. El tiempo, si sacaste al menos
+  // la mitad; si no, cuantos sacaste, y el reloj baja al renglon de abajo.
+  const titular = titularDeLaVuelta(marcador, ronda.length, duracion(sumarTiempos(tiempos)));
+  reloj.append(el('p', 'cifra-rotulo', titular.rotulo));
+  reloj.append(el('p', 'cifra-numero', titular.numero));
+  reloj.append(el('p', 'cifra-pie', titular.pie));
   zonaResultado.append(reloj);
 
   // La linea que canta del afiche (`CNT-14` §2.6): la vuelta se pega en la pared. La que
@@ -1364,6 +1363,17 @@ function pintarResultado(): void {
    * lugares — de eso se encarga `acreditarTapas` (`sacar-temas.ts`).
    */
   acreditarTapas(ronda.map((t) => t.discoTitulo));
+
+  // `T-535`: «Te falta escuchar disco.» nunca va sola. Con el tramo bajo, la puerta al
+  // disco del primer tema que se escapo (`veredicto.ts`).
+  const puerta = puertaDeLaVuelta(ronda.map((t) => t.disco), marcador);
+  if (puerta) {
+    const va = el('a', 'volver', `${puerta.texto} →`);
+    va.href = puerta.href;
+    const renglon = el('p', 'salida-resultado');
+    renglon.append(va);
+    zonaResultado.append(renglon);
+  }
 
 
   // 'Compartí' va en la letra de la firma con su tilde: desde `D-65` la tiene, derivada de la
@@ -1434,7 +1444,7 @@ async function compartirResultado(boton: HTMLButtonElement): Promise<void> {
     total: maximo,
   });
   const aciertos = marcador.filter((p) => p > 0).length;
-  const t = tramo(aciertos, ronda.length);
+  const t = tramoDeLaVuelta(marcador, ronda.length);
   const tiempoTotal = duracion(sumarTiempos(tiempos));
   const texto = `${TRAMOS[t]} ${tiempoTotal} · ${RESULTADO.puntos(puntaje, maximo)}`;
 
@@ -1460,8 +1470,8 @@ async function compartirResultado(boton: HTMLButtonElement): Promise<void> {
         pie: pieDeTema(i),
         disco: tema.disco,
       })),
-      rotuloHero: TARJETA.rotuloTiempo,
-      hero: tiempoTotal,
+      rotuloHero: titularDeLaVuelta(marcador, ronda.length, tiempoTotal).rotuloTarjeta,
+      hero: titularDeLaVuelta(marcador, ronda.length, tiempoTotal).numero,
       puntaje: RESULTADO.puntos(puntaje, maximo),
       sitio: location.host + location.pathname,
     });
