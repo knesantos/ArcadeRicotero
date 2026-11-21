@@ -274,9 +274,38 @@ export const TARJETA = {
   pieFallo: (disco: string, tiempo: string) => `${disco} · no salió · ${tiempo}`,
 } as const;
 
-/** Los tres tramos del resultado, con la voz del proyecto. Espeja `quiz/copy.ts`. */
+/**
+ * Los tramos del resultado, con la voz del proyecto. Espeja `quiz/copy.ts`.
+ *
+ * **Cuál sale lo decide `veredicto.ts`, no la isla** (`T-535`). «Te falta escuchar disco.» se
+ * queda (`voz-ricotera.md` §4.4 la pone de ejemplo), pero sale solo cuando corresponde: sin
+ * ningún tema sacado, o con pocos y todos a fuerza de audio. Y nunca sola: al lado van la
+ * cuenta (`TITULAR`) y una puerta (`PUERTAS`, en `sitio/copy.ts`).
+ *
+ * `oido` es de `T-535`: el que sacó pocos pero alguno con dos segundos o menos. Antes caía
+ * en `bajo`, y decirle que le falta escuchar disco al que sacó uno con una décima era falso.
+ */
 export const TRAMOS = {
   bajo: 'Te falta escuchar disco.',
+  oido: 'Sacaste pocos, pero de oído.',
   medio: 'Los conocés, tardaste un poco.',
   alto: 'Los tenés de memoria.',
+} as const;
+
+/**
+ * El número grande del resultado cuando **no** es el tiempo (`T-535`, `veredicto.ts`).
+ *
+ * El tiempo es el titular desde el 2026-08-27 porque es lo que se cuenta al salir. Pero al que
+ * sacó menos de la mitad le ponía «TARDASTE 1 m 14 s» en lo más grande de la pantalla: el
+ * reloj de alguien que estuvo apretando «Pasá». Para esa vuelta lo grande es lo que sacó, y
+ * el reloj baja al renglón de abajo. Registro 3: dice qué hay y se calla.
+ */
+export const TITULAR = {
+  /** El rótulo de la cuenta. Nombra de qué es el «1 de 4», que solo no lo dice. */
+  rotuloSacaste: 'Temas que sacaste',
+  cuenta: (n: number, total: number) => `${n} de ${total}`,
+  /** Con cuánto audio salió el único que salió: `deAudio` viene de la escalera. */
+  conAudio: (deAudio: string) => `Con ${deAudio}`,
+  /** El reloj, de dato menor. */
+  enTiempo: (tiempo: string) => `en ${tiempo}`,
 } as const;
