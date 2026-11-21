@@ -65,10 +65,10 @@ const SUBTITULO = PANTALLA_0.subtitulo(banco.momentos.length, banco.preguntasPor
           <a class="volver" href="/">← {PORTAL.volverAlArcade}</a>
         </header>
         <p class="marca"><img src="/marca/fichin-ricotero.svg" alt="Fichín Ricotero" width="1540" height="1450" /></p>
-        <h1>{PANTALLA_0.titulo}</h1>
+        <h1 class="jugo-entra" style="--orden:0">{PANTALLA_0.titulo}</h1>
         <Tapa momentos={banco.momentos} amigo={c} />
-        <p id="subtitulo" class="tenue">{SUBTITULO}</p>
-        <button id="empezar" class="primario" type="button">{POSTAL.boton}</button>
+        <p id="subtitulo" class="tenue jugo-entra" style="--orden:3">{SUBTITULO}</p>
+        <button id="empezar" class="primario ejes-empezar jugo-entra" style="--orden:4" type="button">{POSTAL.boton}</button>
       </section>
 
       <section id="pregunta" class="pantalla" hidden></section>

@@ -64,6 +64,15 @@ const ESTADOS = [
   '.tramo--bajo',
   '.tramo--medio',
   '.tramo--alto',
+  // La ficha del fichin (ronda de pulida, 2026-11-19): la vida en pie y la ida, lo que se va
+  // al llegar la ficha de la respuesta, y el sello y la marca del cierre.
+  '.vida--viva',
+  '.vida--ida',
+  '.opciones--cerradas',
+  '.sello-cae--ok',
+  '.sello-cae--no',
+  '.sello-marca--ok',
+  '.sello-marca--no',
 ];
 
 test('el acierto y el error no se comunican solo con color', () => {
@@ -383,14 +392,32 @@ const JS_TEMA = leer('src/scripts/partida-tema.ts');
 
 /** Las clases de estado que crea la isla del tema y que tienen que verse distinto. */
 const ESTADOS_TEMA = [
-  '.intento--libre',
+  // "Seguí" sin anillo cuando el tema se cerro con un toque (ronda de pulida, 2026-11-18): el
+  // mismo criterio que "Sacalo por la letra". Con teclado el anillo se ve siempre.
+  '.seguir--sin-anillo',
+  // La lista ya no dibuja renglones vacios (ronda de pulida, 2026-11-17): la escalera la
+  // dibuja la regla, una sola vez, y aca queda solo lo gastado. Por eso salieron
+  // `.intento--libre` y `.intento--actual`, que eran el renglon sin escribir y el que tocaba.
   '.intento--fallado',
   '.intento--pasado',
-  // El renglon que toca (su numero de escalon se enciende) y el ultimo que gastaste, que es
-  // el unico que queda a la vista con el teclado abierto.
-  '.intento--actual',
+  // El ultimo que gastaste: el que se escribe, y el unico a la vista con el teclado abierto.
   '.intento--ultimo',
   '.barra-tramo--abierto',
+  // Lo que hiciste con cada escalon, marcado en su tramo de la regla: cruz o punto.
+  '.barra-tramo--fallo',
+  '.barra-tramo--pasado',
+  '.barra-tramo--acierto',
+  // La pantalla con el tema ya revelado: el reproductor en un renglon y la cabecera con lo
+  // que llevas, en vez de los datos de una partida que ya termino.
+  '.partida--revelada',
+  '.restantes--llevas',
+  // La cinta que se rebobina al empezar un tema nuevo.
+  '.reproductor--rebobina',
+  // Ronda 3: el campo vestido de ficha cuando hay un tema elegido, la cabina del tema entero
+  // y la ficha de la hazana (sacarlo con la primera decima).
+  '.buscador-fila--elegida',
+  '.partida--entero',
+  '.revelacion--hazana',
   // La regla graduada de abajo de la barra: el numero del escalon que ya tenes cambia de
   // tinta igual que su tramo. Sin regla que lo pinte, la regla queda toda del mismo gris
   // y deja de decir donde estas.
@@ -442,10 +469,44 @@ const JS_LETRA = leer('src/scripts/partida-por-la-letra.ts');
 
 /** Las clases de estado que crea la isla de la letra y que tienen que verse distinto. */
 const ESTADOS_LETRA = [
-  '.chip--fallado',
-  '.chip--pasado',
-  // El ultimo intento gastado: el unico chip que queda con el teclado abierto.
-  '.chip--ultimo',
+  // El intento gastado se anota en el papel, sobre el quiebre (ronda de pulida, 2026-11-18):
+  // antes eran chips arriba de la hoja. La ultima es la unica que queda con el teclado abierto.
+  '.nota--fallada',
+  '.nota--pasada',
+  '.nota--ultima',
+  // El doblez que se abre, y el que espera al golpe de un error.
+  '.pliego--nuevo',
+  '.pliego--tras-error',
+  // El resultado marcado sobre el papel, y el papel del tema nuevo que sale del bolsillo.
+  '.hoja-sello--ok',
+  '.hoja-sello--no',
+  '.hoja-versos--sacada',
+  '.hoja-versos--escapada',
+  '.hoja-versos--sale',
+  // Ronda 2: el papel plegado a un renglon con la ficha a la vista, y su canto de dobleces; el
+  // buscador que deja su lugar mientras cae el sello; "Seguí" sin anillo si se llego con el dedo;
+  // el papel que respira mientras espera, y los papeles de la vuelta en el resultado.
+  '.hoja-versos--plegada',
+  '.dobleces--plegado',
+  '.buscador--cerrado',
+  '.seguir--sin-anillo',
+  // Ronda 3: el sello grande del cierre, el canto rayado del papel que sigue, la birome que
+  // anota y el papel usado que se guarda.
+  '.sello-cae--ok',
+  '.sello-cae--no',
+  '.hoja-canto--arriba',
+  '.hoja-canto--abajo',
+  '.hoja-versos--sigue-arriba',
+  '.hoja-versos--sigue-abajo',
+  '.birome--anota',
+  '.hoja-versos--se-guarda',
+  '.resumen--papeles',
+  '.papelito-quiebre--fallo',
+  '.papelito-quiebre--paso',
+  // El buscador de papel del hermano, la racha, la hazana y la cabecera que dice cuanto llevas.
+  '.buscador-fila--elegida',
+  '.restantes--llevas',
+  '.revelacion--hazana',
   // Lo que ya arriesgaste sigue en la lista, tachado y sin poder elegirse.
   '.sugerencia--probada',
   '.verso--nuevo',
@@ -499,6 +560,18 @@ const ESTADOS_PONELOS = [
   '.carta--moviendo',
   '.mazo--moviendo',
   '.filas--editando',
+  // Ronda de pulida (2026-11-19): el disco que suena, la carta que llega, la ficha que viaja y
+  // apoya, la fila que la recibe, la tapa sola en el conjunto que se mira, y la batea mientras
+  // le llega la pila de la portada.
+  '.carta--suena',
+  '.carta--llega',
+  '.pieza--viene',
+  '.pieza--apoya',
+  '.pieza--tapa',
+  '.fila--recibe',
+  '.batea--llega',
+  // Ronda 2: la fila que quedó vacía con la lista cerrada, apagada.
+  '.fila--vacia',
 ];
 
 test('US-08: lo que tenes en la mano no se comunica solo con color', () => {
@@ -648,6 +721,18 @@ const ESTADOS_COMPLETAR = [
   // El hueco que se rellena al contestar: es la recompensa de haber respondido y tiene que
   // distinguirse del resto del verso, que ya estaba ahi.
   '.resuelto',
+  // La pintada (ronda de pulida, 2026-11-18): lo que elegiste y no era queda en la pared con
+  // su cruz y su tachon; el sello del cierre; y la fila de cada verso en la pared del resultado.
+  '.hueco-errada',
+  '.sello-cae--ok',
+  '.sello-cae--no',
+  // Ronda 2: el muro del resultado (cada palabra, sacada o no) y la que era, en su renglon.
+  '.muro-palabra--ok',
+  '.muro-palabra--no',
+  '.la-que-era',
+  // Ronda 3: la marca chica que deja el sello en la pared cuando llega la ficha.
+  '.sello-marca--ok',
+  '.sello-marca--no',
 ];
 
 /** `US-04`. El quiz, mas lo que le pasa al recorte de tapa cuando se abre. */
@@ -666,6 +751,34 @@ const ESTADOS_TAPA = [
   '.pasada--clara',
   '.pasada--media',
   '.pasada--clave',
+  // La mesa de serigrafía (ronda de pulida, 2026-11-20): el pedazo que vuelve a su lugar, la
+  // hoja en una sola tinta, las dos maneras de pasar la racleta, la tinta que se usó, el sello
+  // del cierre y su marca, y las hojas de la soga según cómo salieron.
+  '.tapa-juego--a-su-lugar',
+  '.estampa-papel--prueba',
+  '.racleta-carro--tirada',
+  '.racleta-carro--prueba',
+  '.tinta--puesta',
+  '.sello-cae--ok',
+  '.sello-cae--no',
+  '.sello-marca--ok',
+  '.sello-marca--no',
+  '.colgada--resto',
+  '.colgada--ahora',
+  '.colgada--ok',
+  '.colgada--no',
+  '.colgada--llega',
+  '.colgada-foto--clave',
+  '.mesa-imprenta--imprime',
+  '.tendedero--vuelta',
+  '.puntaje--tirada',
+  // Ronda 2: la hoja que sale de la mesa de la portada, la explicación plegada, la hoja del
+  // resultado que todavía no se colgó, la segunda soga y la cuenta de una vuelta floja.
+  '.mesa-imprenta--sale',
+  '.explicacion--plegada',
+  '.colgada--espera',
+  '.tendedero-soga--segunda',
+  '.puntaje--floja',
 ];
 
 /**
@@ -697,6 +810,28 @@ const ESTADOS_EJES = [
   // la fila no dice nada.
   '.ejes-noche-hoja--pasada',
   '.ejes-noche-hoja--actual',
+  // La ronda de pulida del 2026-11-18. La mitad ya contestada de una casilla de la noche:
+  // sin regla, la marca que vuela no deja nada donde llega.
+  '.ejes-noche-media--hecha',
+  // El pase de hoja: la que se va queda dibujada encima y se corre; la que vuelve, la tapa.
+  // Sin `--fantasma` la hoja vieja empuja a la nueva para abajo en vez de irse.
+  '.ejes-hoja--fantasma',
+  '.ejes-hoja--se-va',
+  '.ejes-hoja--vuelve',
+  // El pase de momento en orden (ronda 2): la hoja nueva espera sin verse y entra al final.
+  '.ejes-hoja--espera',
+  '.ejes-hoja--entra',
+  // El cartel del momento que cae sobre el cielo y se va con su momento; la tapa que se abre.
+  '.ejes-lugar-cartel--cae',
+  '.ejes-lugar-cartel--fuera',
+  '.ejes-tapa--abre',
+  // El guiño que cae en el lugar al elegir, y el lugar que amanece en el resultado.
+  '.ejes-guino--cae',
+  '.ejes-lugar--amanece',
+  '.ejes-lugar--alba',
+  // El plano que espera a que lo vean y se arma: sin regla, el recuadro de la tuya no cae.
+  '.ejes-plano--espera',
+  '.ejes-plano--armado',
 ];
 
 /**
@@ -704,7 +839,48 @@ const ESTADOS_EJES = [
  * cuatro (`UX-34` §3.3), y el panel del revelado. No tiene rótulos de leyenda ni de
  * testimonio: acá un número es hecho o "según", nunca leyenda (`D-48` punto 6).
  */
-const ESTADOS_MAS_O_MENOS = ['.es-correcta', '.es-elegida', '.feedback.ok', '.feedback.no'];
+const ESTADOS_MAS_O_MENOS = [
+  '.es-correcta',
+  '.es-elegida',
+  '.feedback.ok',
+  '.feedback.no',
+  // Las fichas (ronda de pulida, 2026-11-20): la ficha boca abajo y la dada vuelta, la tecla
+  // hundida, la palabra que compara, la pila (vacía, con la que llega, la que cae) y la
+  // cabecera de la racha cortada; el sello del cierre y su marca; la cifra del resultado.
+  '.es-apretada',
+  '.ficha-mm--tapada',
+  '.ficha-mm--dada-vuelta',
+  '.ficha-mm--tuya',
+  '.ficha-mm--vista',
+  '.ficha-mm--vuela',
+  '.mesa-signo--puesto',
+  '.masomenos-opciones--cerradas',
+  '.apilada--vacia',
+  '.apilada--resultado',
+  '.apilada--portada',
+  '.apilada-ficha--llega',
+  '.apilada-ficha--suelta',
+  '.tablero-fichas--cortada',
+  '.sello-cae--ok',
+  '.sello-cae--no',
+  '.sello-marca--ok',
+  '.sello-marca--no',
+  '.cifra-numero--cero',
+  '.cifra-numero--hazana',
+  '.partida--revelada',
+  // Ronda 2: la mesa a la medida de la ventana, la partida apretada y la chapa de la mejor racha.
+  '.mesa--medida',
+  // Ronda 3: el paño reservado para el sello de la hazaña, lo plegado y los tres cierres.
+  '.mesa--con-hazana',
+  '.ficha-respuesta--plegada',
+  '.explicacion--larga',
+  '.cuenta-fichas--cero',
+  '.cuenta-fichas--hazana',
+  '.cifra-numero--puesta',
+  '.partida--apretada',
+  '.partida--mesa-afuera',
+  '.mejor-chapa--pasada',
+];
 
 interface Tablero {
   /** De que juego es, para que el mensaje de error no obligue a abrir el archivo. */
@@ -748,6 +924,10 @@ const ISLAS: Readonly<Record<string, Tablero | SinTablero>> = {
   },
   // `US-09`: el area es un canvas y no tiene clases; lo unico que la isla pinta en el DOM es
   // la tecla que sigue apretada, que `:active` no alcanza a mostrar con cuatro dedos.
+  'jugo.ts': {
+    sinTablero:
+      'los gestos compartidos de la ronda de pulida (golpear, estampar, contar); sus clases no llevan modificador y viven en el bloque "El jugo" de juego.css',
+  },
   'partida-skayboy.ts': {
     juego: 'US-09, skayboy y poligirl',
     fuente: leer('src/scripts/partida-skayboy.ts'),
@@ -781,7 +961,7 @@ const ISLAS: Readonly<Record<string, Tablero | SinTablero>> = {
   'partida-recital.ts': {
     juego: 'D-72, armá tu recital',
     fuente: leer('src/scripts/partida-recital.ts'),
-    estados: ['.recital-renglon--marcado', '.recital-renglon--sonando', '.recital-renglon--entra'],
+    estados: ['.recital-renglon--marcado', '.recital-renglon--sonando', '.recital-renglon--entra', '.recital-pie--suena', '.recital-noche--escribe', '.recital-renglon--tachado', '.recital-hoja-caja--plegada', '.recital-hoja-caja--pegada', '.recital-funda--abierta', '.recital-renglon--blanco', '.recital-tema-cajon--puesto', '.recital-pista--tilde', '.recital-funda-temas--sueltos'],
   },
   // `D-72`: la página "En vivo" de la Redondopedia, que vive en `sitio.css` como el resto de la
   // Redondopedia. Su único estado es el tema que suena.
@@ -822,6 +1002,7 @@ const ISLAS: Readonly<Record<string, Tablero | SinTablero>> = {
   'compartir.ts': { sinTablero: 'el boton de compartir de tapa, letra y dos ejes (con la tarjeta fija de su identidad, D-57); sus tres clases son las de compartir de juego.css' },
   'correccion.ts': { sinTablero: 'el boton de correccion compartido; abre un formulario, no pinta estado de partida' },
   'diagnostico-audio.ts': { sinTablero: 'pantalla de medicion; sus reglas viven en el <style> de su propia pagina y la cubre la red derivada' },
+  'hoja-recital.ts': { sinTablero: 'pincel de canvas de la hoja de "Armá tu recital" (D-72); dibuja pixeles, no crea nodos con clase' },
   'lamina.ts': { sinTablero: 'pincel de canvas (US-08); dibuja pixeles, no crea nodos con clase' },
   'mosca.ts': { sinTablero: 'la mosca del portal (D-49); su unica clase, la de tomada a mano, vive en sitio.css y la cubre la red derivada' },
   'almanaque.ts': { sinTablero: 'la estampa del cumpleanos en el afiche del mes (D-84); cambia un texto, no crea clases' },
@@ -829,6 +1010,10 @@ const ISLAS: Readonly<Record<string, Tablero | SinTablero>> = {
   'rocola.ts': { sinTablero: 'la rocola de los recitales (D-72); un <audio> que suena en fila, no crea nodos' },
   'spotify.ts': { sinTablero: 'un <a> y nada mas, que es literalmente RQ-B2 de ADR-01' },
   'tarjeta.ts': { sinTablero: 'pincel de canvas (US-02 y US-07); dibuja pixeles, no crea nodos con clase' },
+  'tarjeta-pared.ts': { sinTablero: 'pincel de canvas de la tarjeta de US-03 (el muro de la vuelta); dibuja pixeles, no crea nodos con clase' },
+  'tarjeta-tirada.ts': { sinTablero: 'pincel de canvas de la tarjeta de US-04 (la tirada colgada a secar); dibuja pixeles, no crea nodos con clase' },
+  'tarjeta-fichin.ts': { sinTablero: 'pincel de canvas de la tarjeta de US-01 (la chapa del fichin con la planilla); dibuja pixeles, no crea nodos con clase' },
+  'tarjeta-fichas.ts': { sinTablero: 'pincel de canvas de la tarjeta de US-10 (la racha, la ficha boca abajo y la pila); dibuja pixeles, no crea nodos con clase' },
 };
 
 const esTablero = (i: Tablero | SinTablero): i is Tablero => 'estados' in i;

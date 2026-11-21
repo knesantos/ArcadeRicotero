@@ -4,6 +4,13 @@
  * Calca la mecánica de `partida.ts` —tres pantallas, cuatro opciones, feedback con
  * símbolo además de color— y cambia lo único que cambia: la pregunta es una imagen.
  *
+ * **El objeto es la mesa de serigrafía** (ronda de pulida, 2026-11-20). La acotación de la
+ * portada ya lo decía: *"Tenés tinta fresca pegada en los dedos."* El recorte se mira adentro
+ * de un bastidor; al responder **el zoom se abre** —el pedazo se achica hasta su lugar real en
+ * la tapa— y la racleta pasa una vez por tinta: tres pasadas y el fijado si la tenías, una
+ * sola tinta si no. La hoja impresa se cuelga a secar en la soga de la cabecera, que es el
+ * riel de la partida y, al final, la tirada entera.
+ *
  * **Regla que atraviesa el archivo, igual que en el quiz: nada se escribe con
  * `innerHTML`.** Todo se arma con `createElement` y `textContent`.
  *
@@ -13,10 +20,17 @@
 
 import { armarRonda, contarAciertos } from '../lib/quiz/ronda.ts';
 import type { Item } from '../lib/tapa/banco.ts';
-import { PANTALLA_0, PARTIDA, RESULTADO } from '../lib/tapa/copy.ts';
+import { IMPRENTA, PANTALLA_0, PARTIDA, RESULTADO } from '../lib/tapa/copy.ts';
 import { armarLink, leerDesafio } from '../lib/desafio.ts';
 import { botonCompartir } from './compartir.ts';
-import { estampaDe, slugDeRecorte } from '../lib/tapa/pasadas.ts';
+import { botonCorreccion } from './correccion.ts';
+import { estampaDe, slugDeRecorte, type Estampa } from '../lib/tapa/pasadas.ts';
+import { recorteDe } from '../lib/tapa/recorte.ts';
+import { nombreArchivo } from '../lib/tarjeta/plan.ts';
+import { dibujarTirada } from './tarjeta-tirada.ts';
+import { despertarSalida } from '../lib/audio/contexto.ts';
+import { sonarEfecto } from '../lib/audio/efectos.ts';
+import { golpear, estampar, pegar, volar, volarPieza, contar, duracionDe, armarInterruptorDeRuidos } from './jugo.ts';
 
 const LARGO_RONDA = 6; // US-04: banco chico, ronda mas corta que la del quiz
 
@@ -30,6 +44,28 @@ const banco: Item[] = JSON.parse($('banco').textContent ?? '[]');
 let ronda: readonly Item[] = [];
 let indice = 0;
 let elegidas: (string | null)[] = [];
+/** Si lo último que se tocó fue con el dedo o el mouse: decide si el foco de "Seguí" dibuja anillo. */
+let conPuntero = false;
+/** La tarjeta de la vuelta: se dibuja una vez al llegar al resultado, y "Compartí" usa esa. */
+let tarjetaDeLaVuelta: Promise<Blob | null> | null = null;
+let archivoDeLaTarjeta: File | null = null;
+let urlDeLaTarjeta = '';
+
+/** Las piezas que son las mismas de una tapa a la otra: la cabecera con la soga, y la mesa. */
+let tableroEl: HTMLElement;
+let progresoEl: HTMLElement;
+let sogaEl: HTMLElement;
+let rachaEl: HTMLElement;
+let llevasEl: HTMLElement;
+let mesaEl: HTMLElement;
+let bastidorEl: HTMLElement;
+let carroEl: HTMLElement;
+let tintasEl: HTMLElement;
+let creditoEl: HTMLElement;
+/** Las de la tapa en curso. */
+let papelEl: HTMLElement;
+let enunciadoEl: HTMLElement;
+let listaEl: HTMLElement;
 
 function el<K extends keyof HTMLElementTagNameMap>(
   tag: K,
@@ -42,10 +78,36 @@ function el<K extends keyof HTMLElementTagNameMap>(
   return n;
 }
 
+/** Una pieza que es dibujo: no se lee ni toma toques. */
+function dibujo<K extends keyof HTMLElementTagNameMap>(tag: K, clase: string, texto?: string): HTMLElementTagNameMap[K] {
+  const n = el(tag, clase, texto);
+  n.setAttribute('aria-hidden', 'true');
+  return n;
+}
+
 function mostrar(seccion: HTMLElement): void {
   for (const s of [portada, zonaPartida, zonaResultado]) s.hidden = s !== seccion;
 }
 
+/** Lleva el foco a lo primero de la pantalla nueva, sin meterlo en el orden de tabulación. */
+function enfocar(destino: HTMLElement): void {
+  destino.tabIndex = -1;
+  destino.focus({ preventScroll: true });
+}
+
+const correctaDe = (item: Item): string => item.opciones.find((o) => o.correcta)!.texto;
+const estampaDelItem = (item: Item): Estampa | null => {
+  const slug = slugDeRecorte(item.imagen.ruta);
+  return slug ? estampaDe(slug) : null;
+};
+const acertada = (i: number): boolean => elegidas[i] === correctaDe(ronda[i]!);
+
+/** Cuántas seguidas van, contando desde la última respondida para atrás. */
+function racha(): number {
+  let n = 0;
+  for (let i = elegidas.length - 1; i >= 0 && acertada(i); i--) n += 1;
+  return n;
+}
 
 /*
  * Si alguien llegó por un desafío, la bajada de la portada lo dice (`ADR-02`). El juego
@@ -60,171 +122,446 @@ const JUEGO = 'tapa';
     bajada.textContent = PANTALLA_0.desafio(desafio.puntaje, desafio.total, desafio.nombre);
   }
 }
-$('jugar').addEventListener('click', comenzar);
+
+// El interruptor de los ruidos, debajo del botón (como en los otros juegos).
+document
+  .getElementById('ruidos')
+  ?.append(armarInterruptorDeRuidos({ apagar: IMPRENTA.ruidosApagar, prender: IMPRENTA.ruidosPrender }));
+
+/* ---- La portada: la mesa con una tinta puesta ---- */
+
+/**
+ * Pasar la racleta. Lo llaman "Empezá" y la mesa de la portada, que es el mismo gesto dicho
+ * con el objeto. En la mesa hay una hoja con la primera tinta; la racleta baja y deja la
+ * segunda, vuelve y deja la clave, y recién ahí arranca la partida. Un segundo toque mientras
+ * pasa no espera: arranca. Con movimiento reducido no hay pasada y la partida arranca en el acto.
+ */
+let pasando: (() => void) | null = null;
+
+function pasarLaRacleta(): void {
+  if (pasando) {
+    pasando();
+    return;
+  }
+  // Este toque es el gesto que los celulares piden para dejar sonar algo: se despierta la
+  // salida acá, y los ruidos de la partida ya pueden salir.
+  const despierta = despertarSalida();
+  const mesa = document.getElementById('mesa-portada');
+  const escalon = duracionDe('--escalon-pasada');
+  const total = escalon + duracionDe('--duracion-pasada');
+  if (!mesa || total <= 0) {
+    void despierta.then(() => sonarEfecto('racleta'));
+    comenzar();
+    return;
+  }
+  let entro = false;
+  const relojes: number[] = [];
+  const entrar = (): void => {
+    if (entro) return;
+    entro = true;
+    pasando = null;
+    for (const r of relojes) window.clearTimeout(r);
+    comenzar();
+  };
+  pasando = entrar;
+  mesa.classList.add('mesa-imprenta--imprime');
+  void despierta.then(() => sonarEfecto('racleta'));
+  relojes.push(window.setTimeout(() => sonarEfecto('racleta'), escalon));
+  // Las dos pasadas; después la hoja impresa sale de abajo del bastidor, y arranca.
+  relojes.push(window.setTimeout(() => mesa.classList.add('mesa-imprenta--sale'), total));
+  relojes.push(window.setTimeout(entrar, total + duracionDe('--duracion-paso') + duracionDe('--duracion-toque')));
+}
+
+$('jugar').addEventListener('click', pasarLaRacleta);
+document.getElementById('mesa-portada')?.addEventListener('click', pasarLaRacleta);
 
 function comenzar(): void {
   const largo = Math.min(LARGO_RONDA, banco.length);
   ronda = armarRonda(banco, largo);
   indice = 0;
   elegidas = [];
+  tarjetaAdelantada = null;
   mostrar(zonaPartida);
+  zonaPartida.replaceChildren();
+  armarTablero();
+  armarMesa();
   pintarPregunta();
+  window.scrollTo({ top: 0 });
+}
+
+/* ---- La cabecera: por dónde vas, lo que llevás y la soga ---- */
+
+/**
+ * La soga, dibujada: una línea que cuelga un poco entre dos clavos. Es un trazo de SVG que se
+ * estira al ancho que haya (`preserveAspectRatio="none"`) sin engordar (`non-scaling-stroke`).
+ * Las hojas siguen la misma panza con `--panza`, que escribe `colgarEnLaPanza`.
+ */
+function dibujarSoga(): SVGSVGElement {
+  const NS = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(NS, 'svg');
+  svg.setAttribute('class', 'tendedero-soga');
+  svg.setAttribute('viewBox', '0 0 100 10');
+  svg.setAttribute('preserveAspectRatio', 'none');
+  svg.setAttribute('aria-hidden', 'true');
+  const trazo = document.createElementNS(NS, 'path');
+  // La curva pasa por y = 1 en las puntas y por y = 9 al medio (el control va al doble).
+  trazo.setAttribute('d', 'M0 1 Q50 17 100 1');
+  trazo.setAttribute('vector-effect', 'non-scaling-stroke');
+  svg.append(trazo);
+  return svg;
+}
+
+/** Cuánto baja la soga en cada hoja de un renglón de `cuantas`: 0 en las puntas, 1 al medio. */
+function colgarEnLaPanza(hojas: readonly HTMLElement[]): void {
+  hojas.forEach((hoja, i) => {
+    const t = (i + 0.5) / hojas.length;
+    hoja.style.setProperty('--panza', (4 * t * (1 - t)).toFixed(3));
+  });
+}
+
+/** Una hoja de la soga, vacía: el broche y el lugar donde va a colgar la impresa. */
+function hojaDeSoga(): HTMLElement {
+  const hoja = el('span', 'colgada colgada--resto');
+  const papel = el('span', 'colgada-papel');
+  papel.append(el('span', 'colgada-hoja'));
+  hoja.append(papel);
+  return hoja;
+}
+
+/** La tapa impresa, en chico: la foto si la tenías, la clave sola sobre el papel si no. */
+function miniatura(e: Estampa, acerto: boolean): HTMLImageElement {
+  const mini = el('img', acerto ? 'colgada-foto' : 'colgada-foto colgada-foto--clave');
+  mini.src = acerto ? e.ficha : e.pasadas[2];
+  mini.alt = '';
+  mini.decoding = 'async';
+  return mini;
+}
+
+function armarTablero(): void {
+  tableroEl = el('div', 'tablero-imprenta');
+  const fila = el('div', 'tablero-imprenta-fila');
+  progresoEl = el('p', 'micro tablero-imprenta-paso');
+  rachaEl = el('span', 'racha');
+  rachaEl.hidden = true;
+  llevasEl = el('span', 'restantes restantes--llevas', IMPRENTA.llevas(0));
+  llevasEl.setAttribute('aria-live', 'polite');
+  const ruidos = armarInterruptorDeRuidos({ apagar: IMPRENTA.ruidosTecla, prender: IMPRENTA.ruidosTecla });
+  ruidos.classList.add('ruidos-tecla');
+  fila.append(progresoEl, rachaEl, llevasEl, ruidos);
+
+  // La soga: una hoja por tapa de la vuelta. Es dibujo —lo que dice lo lee `progresoEl` y la
+  // cuenta de "Llevás"—; cada hoja respondida lleva además su tilde o su cruz.
+  sogaEl = dibujo('div', 'tendedero');
+  for (let i = 0; i < ronda.length; i++) sogaEl.append(hojaDeSoga());
+  colgarEnLaPanza([...sogaEl.children] as HTMLElement[]);
+  // La soga va en una caja aparte: `sogaEl` tiene una hoja por hijo, y el pase cuenta con eso.
+  const tendido = dibujo('div', 'tendedero-tendido');
+  tendido.append(dibujarSoga(), sogaEl);
+
+  tableroEl.append(fila, tendido);
+  zonaPartida.append(tableroEl);
+}
+
+/** Marca en la soga cuál es la tapa que está en la mesa. */
+function ponerTableroAlDia(): void {
+  progresoEl.textContent = PARTIDA.progreso(indice + 1, ronda.length);
+  [...sogaEl.children].forEach((hoja, i) => {
+    if (i === indice) {
+      hoja.classList.remove('colgada--resto');
+      hoja.classList.add('colgada--ahora');
+    }
+  });
+}
+
+/** La racha de la cabecera: dos o más seguidas. Se anota al llegar la ficha, o se corta. */
+function anotarRacha(): void {
+  const n = racha();
+  rachaEl.hidden = n < 2;
+  if (n >= 2) {
+    rachaEl.textContent = IMPRENTA.racha(n);
+    estampar(rachaEl);
+  }
+}
+
+/* ---- La mesa: el bastidor, la racleta y las tres tintas ---- */
+
+/**
+ * La mesa se arma una vez por partida y queda (lo aprendido en "Completá la letra": lo impreso
+ * no se rehace por pregunta). De una tapa a la otra cambia la hoja que hay adentro del bastidor.
+ *
+ * La `<figure>` y su `figcaption.credito-tapa` siguen siendo las de siempre (`D-21`, condición
+ * 1): el crédito va pegado a la imagen, antes y después de responder.
+ */
+function armarMesa(): void {
+  mesaEl = el('figure', 'figura-tapa-juego mesa-imprenta');
+  bastidorEl = el('div', 'bastidor');
+  bastidorEl.append(
+    dibujo('span', 'bastidor-mordaza'),
+    dibujo('span', 'bastidor-mordaza bastidor-mordaza--der'),
+    // Las manchas de tinta vieja en la madera: una mesa que ya imprimió muchas.
+    dibujo('span', 'bastidor-mancha'),
+    dibujo('span', 'bastidor-mancha bastidor-mancha--der'),
+  );
+  papelEl = el('span', 'estampa-papel estampa-papel--abre');
+  carroEl = dibujo('span', 'racleta-carro');
+  carroEl.append(el('span', 'racleta'));
+  // Las tres tintas de la tirada, al pie del bastidor: se llenan con cada pasada. Dicen con
+  // forma —lleno o hueco— lo que la ficha dice con palabras ("en una tinta").
+  tintasEl = dibujo('span', 'tintas');
+  for (let i = 0; i < 3; i++) tintasEl.append(el('span', 'tinta'));
+  bastidorEl.append(papelEl, carroEl, tintasEl);
+  creditoEl = el('figcaption', 'credito-tapa');
+  mesaEl.append(bastidorEl, creditoEl);
+  zonaPartida.append(mesaEl);
+}
+
+/** Pide las imágenes sin ponerlas en pantalla, para que lleguen antes de hacer falta. */
+function traer(rutas: readonly string[]): void {
+  for (const ruta of rutas) {
+    const img = new Image();
+    img.decoding = 'async';
+    img.src = ruta;
+    // Decodificada de antemano: al responder, ponerla en la hoja no le cuesta al cuadro del toque.
+    img.decode?.().catch(() => {});
+  }
 }
 
 function pintarPregunta(): void {
   const item = ronda[indice]!;
-  zonaPartida.replaceChildren();
+  // Lo de la tapa anterior se va; la cabecera y la mesa quedan.
+  for (const hijo of [...zonaPartida.children]) if (hijo !== tableroEl && hijo !== mesaEl) hijo.remove();
+  zonaPartida.classList.remove('partida--revelada');
+  ponerTableroAlDia();
 
-  const cab = el('div', 'cabecera');
-  cab.append(el('p', 'micro', PARTIDA.progreso(indice + 1, ronda.length)));
-  zonaPartida.append(cab);
+  // La mesa vuelve a como estaba: la racleta arriba, las tintas sin usar, ningún sello.
+  mesaEl.classList.remove('figura-tapa-juego--abierta');
+  bastidorEl.style.removeProperty('width');
+  carroEl.className = 'racleta-carro';
+  for (const t of tintasEl.children) t.className = 'tinta';
+  for (const resto of bastidorEl.querySelectorAll('.sello-cae, .sello-marca')) resto.remove();
 
   // La imagen es la pregunta. El alt NO nombra el disco: nombrarlo seria regalar la
   // respuesta a quien usa lector de pantalla y a quien mire el HTML.
-  const figura = el('figure', 'figura-tapa-juego');
+  const papel = el('span', 'estampa-papel estampa-papel--abre');
   const img = el('img', 'tapa-juego');
   img.src = item.imagen.ruta;
   img.alt = PARTIDA.altImagen;
   img.loading = 'eager';
-  figura.append(img);
-  figura.append(el('figcaption', 'credito-tapa', PARTIDA.credito(item.imagen.credito.autor)));
-  zonaPartida.append(figura);
+  papel.append(img);
+  papelEl.replaceWith(papel);
+  papelEl = papel;
+  pegar(papel);
+  creditoEl.textContent = PARTIDA.credito(item.imagen.credito.autor);
 
-  zonaPartida.append(
-    el('h2', 'enunciado', item.imagen.encuadre === 'detalle' ? PARTIDA.preguntaDetalle : PARTIDA.pregunta),
+  // Mientras se piensa, llegan las tintas de esta tapa y el recorte de la que sigue: al
+  // responder, la racleta no espera a la red.
+  const e = estampaDelItem(item);
+  const proxima = ronda[indice + 1];
+  traer([...(e ? [...e.pasadas, e.ficha] : []), ...(proxima ? [proxima.imagen.ruta] : [])]);
+
+  enunciadoEl = el(
+    'h2',
+    'enunciado',
+    item.imagen.encuadre === 'detalle' ? PARTIDA.preguntaDetalle : PARTIDA.pregunta,
   );
+  zonaPartida.append(enunciadoEl);
 
-  const lista = el('ul', 'opciones');
-  for (const op of item.opciones) {
+  listaEl = el('ul', 'opciones opciones--tapa');
+  item.opciones.forEach((op, i) => {
     const li = el('li');
-    const b = el('button', 'opcion', op.texto);
+    const b = el('button', 'opcion jugo-pega');
     b.type = 'button';
+    b.dataset.texto = op.texto;
+    b.style.setProperty('--orden', String(i + 1));
+    // El número de la tecla: se ve solo donde hay teclado (lo decide la hoja de estilos).
+    b.append(dibujo('span', 'opcion-numero', String(i + 1)), el('span', 'opcion-texto', op.texto));
+    b.addEventListener('pointerdown', () => (conPuntero = true));
+    b.addEventListener('keydown', () => (conPuntero = false));
     b.addEventListener('click', () => responder(op.texto), { once: true });
     li.append(b);
-    lista.append(li);
-  }
-  zonaPartida.append(lista);
+    listaEl.append(li);
+  });
+  zonaPartida.append(listaEl);
+
+  // Las cuatro teclas también son el 1, el 2, el 3 y el 4 del teclado.
+  soltarNumeros();
+  const alNumero = (ev: KeyboardEvent): void => {
+    if (ev.repeat || ev.ctrlKey || ev.metaKey || ev.altKey) return;
+    const n = Number(ev.key);
+    if (!Number.isInteger(n) || n < 1 || n > item.opciones.length) return;
+    if (papelEl !== papel || elegidas[indice] !== undefined || zonaPartida.hidden) return;
+    ev.preventDefault();
+    conPuntero = false;
+    responder(item.opciones[n - 1]!.texto);
+  };
+  document.addEventListener('keydown', alNumero);
+  soltarNumeros = () => {
+    document.removeEventListener('keydown', alNumero);
+    soltarNumeros = () => {};
+  };
+}
+
+/** Deja de escuchar los números de la pregunta en curso. */
+let soltarNumeros: () => void = () => {};
+
+/**
+ * El sello grande del cierre: cae sobre la esquina de la hoja recién impresa, con la tilde o la
+ * cruz, como el visto de una prueba de imprenta. Es dibujo: lo mismo lo dicen las opciones
+ * (símbolo y tinta) y la ficha.
+ */
+function sellarLaHoja(acerto: boolean): void {
+  if (bastidorEl.querySelector('.sello-cae, .sello-marca')) return;
+  bastidorEl.append(dibujo('span', `sello-cae sello-cae--${acerto ? 'ok' : 'no'}`, acerto ? '✔︎' : '✕︎'));
+  sonarEfecto('sello');
+}
+
+/** Lo que queda del sello cuando llega la ficha: la marca chica, en la esquina del bastidor. */
+function dejarLaMarca(acerto: boolean): void {
+  for (const resto of bastidorEl.querySelectorAll('.sello-cae')) resto.remove();
+  if (bastidorEl.querySelector('.sello-marca')) return;
+  bastidorEl.append(dibujo('span', `sello-marca sello-marca--${acerto ? 'ok' : 'no'}`, acerto ? '✔︎' : '✕︎'));
 }
 
 function responder(texto: string): void {
   const item = ronda[indice]!;
+  if (elegidas[indice] !== undefined) return;
   elegidas[indice] = texto;
-  const correcta = item.opciones.find((o) => o.correcta)!;
-  const acerto = texto === correcta.texto;
+  soltarNumeros();
+  const correcta = correctaDe(item);
+  const acerto = texto === correcta;
+  const cual = indice;
+  const estaHoja = papelEl;
+  const vigente = (): boolean => indice === cual && papelEl === estaHoja && estaHoja.isConnected;
 
   // Se marcan todas y se apagan: la ronda no admite cambiar de opinion.
   for (const b of zonaPartida.querySelectorAll<HTMLButtonElement>('.opcion')) {
     b.disabled = true;
-    if (b.textContent === correcta.texto) b.classList.add('es-correcta');
-    if (b.textContent === texto && !acerto) b.classList.add('es-elegida');
+    b.classList.remove('jugo-pega');
+    if (b.dataset.texto === correcta) b.classList.add('es-correcta');
+    else if (b.dataset.texto === texto) b.classList.add('es-elegida');
+    else b.classList.add('es-otra');
   }
+  // Los botones quedaron deshabilitados: el foco vuelve a la pregunta, no al `<body>`.
+  enfocar(enunciadoEl);
 
-  // El zoom se abre (`UX-22` §11, `T-206`): la pieza que `UX-13` §4 dejo escrita como
-  // pendiente. Va antes del panel porque el panel se agrega despues de la figura y el
-  // orden de la pantalla no cambia: imagen, enunciado, opciones, feedback.
-  const seImprimio = abrirElRecorte(item, correcta.texto, acerto);
-
-  const panel = el('div', `feedback ${acerto ? 'ok' : 'no'}`);
-  // Al fallar, la tapa llega en una sola tinta, y la linea lo dice con las mismas
-  // palabras que "Adivina el tema" (`CNT-14` §3). Si el disco no tiene estampa, no hay
-  // tinta de la que hablar y la frase queda como estaba.
-  const linea = acerto
-    ? PARTIDA.ok
-    : `${PARTIDA.no} ${PARTIDA.eraLa} ${correcta.texto}${seImprimio ? `, ${PARTIDA.enClave}` : '.'}`;
-  panel.append(el('p', 'micro', linea));
-
-  // La edicion se cuenta recien acá: antes de responder es una pista de mas.
-  panel.append(el('p', 'edicion-tapa', PARTIDA.edicion(item.imagen.edicion)));
-
-  if (item.explicacion) panel.append(el('p', 'explicacion', item.explicacion));
-
-  if (item.rotulo) {
-    const insignia = el(
-      'p',
-      `sello sello--${item.rotulo.tipo}`,
-      `${item.rotulo.tipo === 'leyenda' ? '◆' : '❝'} ${item.rotulo.texto}`,
-    );
-    panel.append(insignia);
-  }
-
-  const seguir = el('button', 'primario', PARTIDA.seguir);
-  seguir.type = 'button';
-  seguir.addEventListener('click', avanzar, { once: true });
-  panel.append(seguir);
-
-  zonaPartida.append(panel);
   /*
-   * A donde mira la pantalla al revelar (`UX-22` §1.4 v4, que resolvio `FIND-51`).
-   *
-   * El foco va al boton de seguir, como siempre, pero SIN que el navegador se lleve la
-   * pantalla hasta el (`preventScroll`): enfocar el boton dejaba la tapa recien impresa
-   * afuera de la vista, que es el problema que este ciclo existe para resolver. Sin
-   * `smooth`: un desplazamiento animado seria movimiento que el corte de movimiento
-   * reducido no apaga.
-   *
-   * **El blanco es el panel, alineado al PIE** (`block: 'end'`), no la figura alineada
-   * arriba. Apuntar a la figura era lo que rompia esta pantalla: entre la tapa y el boton
-   * hay enunciado, cuatro opciones, explicacion y sello, y en el item mas cargado el
-   * boton terminaba 457 px abajo del pliegue —mas de media pantalla, el techo que
-   * `UX-22` §1.4 no queria cruzar—. Con el pie del panel alineado al pie del viewport, el
-   * boton **nunca queda afuera, por construccion**, sin importar cuanto contenido haya
-   * antes; lo que varia es cuanto del premio se ve arriba. Entre ver el premio y que el
-   * boton este, gana el boton.
-   *
-   * Si no hubo estampa que imprimir, no hay premio que mirar y el boton se lleva la vista
-   * como en cualquier otra revelacion de texto del sitio.
+   * El primer tiempo, en el mismo toque: la hoja de la soga dice cómo salió (tilde o cruz), el
+   * zoom se abre y la racleta empieza a pasar. Si erraste, además, la mesa da un golpe.
    */
-  if (seImprimio) {
-    seguir.focus({ preventScroll: true });
-    panel.scrollIntoView({ block: 'end' });
-  } else {
-    seguir.focus();
+  const hoja = sogaEl.children[indice];
+  if (hoja) {
+    hoja.classList.remove('colgada--ahora');
+    hoja.classList.add(acerto ? 'colgada--ok' : 'colgada--no');
+    hoja.querySelector('.colgada-papel')?.append(el('span', 'colgada-marca', acerto ? '✔︎' : '✕︎'));
+    estampar(hoja.querySelector('.colgada-marca'));
   }
+  const seImprimio = abrirElRecorte(item, correcta, acerto);
+  if (acerto) {
+    try {
+      navigator.vibrate?.(18);
+    } catch {
+      // Sin vibración: no pasa nada.
+    }
+  } else {
+    golpear(zonaPartida);
+    sonarEfecto('golpe');
+  }
+
+  /*
+   * Lo que tarda la tirada: el zoom que se abre y una pasada por tinta (tres y el fijado si la
+   * tenías; la clave sola si no). Cuando la última tinta ya está apoyando cae el sello, y un
+   * compás después llega la ficha. **Todo se puede adelantar con un toque** (o con Enter o la
+   * barra). Adelantar no saltea: el sello y la ficha se ponen una sola vez, vengan de su reloj
+   * o del toque. Con movimiento reducido los tiempos valen cero.
+   */
+  const escalon = duracionDe('--escalon-pasada');
+  const arranque = seImprimio ? duracionDe('--duracion-paso') : 0;
+  const pasadas = !seImprimio ? 0 : acerto ? 4 : 1;
+  const hastaElSello = arranque + escalon * pasadas;
+  // La ficha llega con el sello todavía cayendo: el ojo está en la esquina de la hoja, y lo
+  // que hay para leer ya está abajo cuando baja la vista.
+  const hastaLaFicha = hastaElSello + (hastaElSello > 0 ? duracionDe('--duracion-toque') : 0);
+  const relojes: number[] = [];
+  for (let i = 0; i < pasadas; i++) {
+    relojes.push(window.setTimeout(() => vigente() && sonarEfecto('racleta'), arranque + escalon * i));
+  }
+
+  let conFicha = false;
+  const alTeclear = (ev: KeyboardEvent): void => {
+    if (ev.key !== 'Enter' && ev.key !== ' ') return;
+    ev.preventDefault();
+    conPuntero = false;
+    mostrarLaFicha();
+  };
+  const alTocar = (): void => {
+    conPuntero = true;
+    mostrarLaFicha();
+  };
+  function mostrarLaFicha(): void {
+    if (conFicha) return;
+    conFicha = true;
+    for (const r of relojes) window.clearTimeout(r);
+    zonaPartida.removeEventListener('click', alTocar);
+    document.removeEventListener('keydown', alTeclear);
+    if (!vigente()) return;
+    sellarLaHoja(acerto);
+    pintarFicha(item, acerto, correcta, seImprimio);
+  }
+  if (hastaLaFicha <= 0) {
+    mostrarLaFicha();
+    return;
+  }
+  relojes.push(window.setTimeout(() => vigente() && sellarLaHoja(acerto), hastaElSello));
+  relojes.push(window.setTimeout(mostrarLaFicha, hastaLaFicha));
+  // El toque que eligió la opción no cuenta: se empieza a escuchar en la vuelta siguiente. Se
+  // escucha el `click` y no el `pointerdown`: la ficha corre la hoja, y con `pointerdown` el
+  // `click` de ese mismo toque cae después sobre lo que haya quedado bajo el dedo.
+  window.setTimeout(() => {
+    if (conFicha || !vigente()) return;
+    zonaPartida.addEventListener('click', alTocar);
+    document.addEventListener('keydown', alTeclear);
+  }, 0);
 }
 
-
 /**
- * El zoom se abre (`UX-22` §11, `T-206`).
+ * El zoom se abre (`UX-22` §11, `T-206`; ronda de pulida, 2026-11-20).
  *
- * Se jugo mirando un recorte de la tapa —uno de los diez encuadres de `UX-13` §3— y al
- * responder deja de haber zoom: la tapa entera se imprime a su tamano de ficha real, por
- * las mismas pasadas del reveal de "Adivina el tema" (clara, media, clave, el fijado de
- * la foto). No es un mecanismo nuevo: es el del `§2`, con las mismas clases, los mismos
- * tokens y el mismo techo de tiempo. Al fallar, la clave sola: la tapa de un item que no
- * se acerto no se completa nunca.
+ * Se jugó mirando un recorte de la tapa y al responder deja de haber zoom. **El pedazo se
+ * achica hasta su lugar real** adentro de la tapa (`recorte.ts` sabe dónde cae) y el resto se
+ * imprime alrededor, por las mismas pasadas del reveal de "Adiviná el tema" —clara, media,
+ * clave y el fijado de la foto—, con la racleta pasando una vez por tinta. Al fallar, la clave
+ * sola: la tapa de un ítem que no se acertó no se completa nunca; lo que queda es una prueba de
+ * imprenta en una tinta, con el pedazo que mirabas pegado en su sitio.
  *
- * **La asimetria del recorte, dicha en voz alta.** Al acertar, el recorte con el que se
- * jugo queda de capa de abajo: las tintas llegan encima y la foto lo tapa entero al
- * fijarse, asi que se ve literalmente como el pedazo que mirabas se abre al resto. Al
- * fallar no queda: la clave sola sobre un recorte ampliado del mismo dibujo serian dos
- * versiones desalineadas de la misma tapa, que no es registro imperfecto sino ruido. Sin
- * la tapa completa no hay nada que abrir, y lo que queda es lo mismo que en el otro
- * juego: una tinta sobre el papel.
+ * *La mosca y la sopa* se juega con la olla de la contratapa, que no está en la tapa de
+ * adelante: ahí no hay lugar al que llevar el pedazo. Al acertar queda debajo y la foto lo tapa
+ * al fijarse; al fallar se va, como antes.
  *
- * La `<figure>` y su `figcaption.credito-tapa` no se tocan (`D-21`, condicion 1): el
- * credito ya estaba pegado a la imagen y sigue estando pegado a la que la reemplaza.
+ * La `<figure>` y su `figcaption.credito-tapa` no se tocan (`D-21`, condición 1): el crédito ya
+ * estaba pegado a la imagen y sigue pegado a la que la reemplaza.
  *
- * Devuelve si de verdad se imprimio algo: un disco fuera de los diez no tiene estampa y
- * la pantalla queda como era, sin hueco (`ADR-05.5`).
+ * Devuelve si de verdad se imprimió algo: un disco fuera de los diez no tiene estampa y la
+ * pantalla queda como era, sin hueco (`ADR-05.5`).
  */
 function abrirElRecorte(item: Item, disco: string, acerto: boolean): boolean {
-  const figura = zonaPartida.querySelector<HTMLElement>('.figura-tapa-juego');
-  const recorte = figura?.querySelector<HTMLImageElement>('.tapa-juego');
-  const slug = slugDeRecorte(item.imagen.ruta);
-  const e = slug ? estampaDe(slug) : null;
-  if (!figura || !recorte || !e) return false;
+  const recorte = papelEl.querySelector<HTMLImageElement>('.tapa-juego');
+  const e = estampaDelItem(item);
+  if (!recorte || !e) return false;
 
-  figura.classList.add('figura-tapa-juego--abierta');
+  mesaEl.classList.add('figura-tapa-juego--abierta');
+  papelEl.classList.remove('jugo-pega');
 
-  // El papel se mete en el lugar del recorte y se lo lleva adentro: asi la caja de la
-  // figura no salta de tamano al reemplazar una imagen por otra.
-  const papel = el('span', 'estampa-papel estampa-papel--abre');
-  recorte.replaceWith(papel);
-  if (acerto) {
-    papel.append(recorte);
-    // Deja de ser lo que se lee: arriba llega la tapa entera, que es la que habla.
-    recorte.alt = '';
+  const lugar = recorteDe(e.slug);
+  if (lugar) {
+    recorte.style.setProperty('--recorte-x', `${lugar.x * 100}%`);
+    recorte.style.setProperty('--recorte-y', `${lugar.y * 100}%`);
+    recorte.style.setProperty('--recorte-lado', String(lugar.lado));
+    recorte.classList.add('tapa-juego--a-su-lugar');
+  } else if (!acerto) {
+    recorte.remove();
   }
+  // Deja de ser lo que se lee: arriba llega la tapa, que es la que habla.
+  recorte.alt = '';
 
   const capas: Array<[nombre: string, ruta: string]> = acerto
     ? [['clara', e.pasadas[0]], ['media', e.pasadas[1]], ['clave', e.pasadas[2]]]
@@ -234,7 +571,7 @@ function abrirElRecorte(item: Item, disco: string, acerto: boolean): boolean {
     tinta.src = ruta;
     tinta.decoding = 'async';
     tinta.alt = acerto ? '' : PARTIDA.altTapaClave(disco);
-    papel.append(tinta);
+    papelEl.append(tinta);
   }
 
   if (acerto) {
@@ -242,46 +579,464 @@ function abrirElRecorte(item: Item, disco: string, acerto: boolean): boolean {
     foto.src = e.ficha;
     foto.decoding = 'async';
     foto.alt = PARTIDA.altTapaEntera(disco);
-    papel.append(foto);
+    papelEl.append(foto);
   }
+
+  // La racleta: cuatro pasadas (ida y vuelta, dos veces), o una sola ida con su vuelta.
+  carroEl.classList.add(acerto ? 'racleta-carro--tirada' : 'racleta-carro--prueba');
+  if (!acerto) papelEl.classList.add('estampa-papel--prueba');
+  // En la prueba, el pedazo que mirabas queda pegado en su sitio con dos tiras de cinta: es un
+  // recorte puesto encima de la hoja, no parte de lo impreso. El marco y la cinta son dibujo.
+  if (!acerto && lugar) {
+    const pegado = dibujo('span', 'recorte-pegado');
+    pegado.style.setProperty('--recorte-x', `${lugar.x * 100}%`);
+    pegado.style.setProperty('--recorte-y', `${lugar.y * 100}%`);
+    pegado.style.setProperty('--recorte-lado', `${lugar.lado * 100}%`);
+    papelEl.append(pegado);
+  }
+  // Las tintas que se usaron: las tres, una atrás de la otra, o la clave sola.
+  [...tintasEl.children].forEach((t, i) => {
+    if (!acerto && i < 2) return;
+    t.classList.add('tinta--puesta');
+    (t as HTMLElement).style.setProperty('--orden', String(acerto ? i : 0));
+  });
 
   return true;
 }
 
-function avanzar(): void {
-  indice += 1;
+/**
+ * El segundo tiempo: la ficha de la respuesta, con la gramática de los otros juegos pulidos —
+ * la marca y el grito estampados, lo que sumaste, el disco escrito grande, el dato, el rótulo
+ * de leyenda o testimonio, y "Seguí" adentro, cerrando la columna—. Las dos opciones que no
+ * eran ni la tuya ni la buena se van. Debajo, el zócalo: de qué edición es la imagen y la
+ * puerta para corregir.
+ */
+function pintarFicha(item: Item, acerto: boolean, correcta: string, seImprimio: boolean): void {
+  // Dónde está la mesa antes de que la pantalla cambie de modo: de ahí sale su achique animado.
+  const antes = bastidorEl.getBoundingClientRect();
+  zonaPartida.classList.add('partida--revelada');
+  dejarLaMarca(acerto);
+  listaEl.classList.add('opciones--cerradas');
+  anotarRacha();
 
+  const panel = el('div', `feedback revelacion ficha-respuesta jugo-pega ${acerto ? 'ok' : 'no'}`);
+  // Region viva: se inserta VACIA a proposito —un lector de pantalla anuncia los cambios de una
+  // region que ya existe con mucha mas confiabilidad que una recien nacida—, y sin el botón.
+  const dice = el('div', 'ficha-respuesta-dice');
+  dice.setAttribute('role', 'status');
+  panel.append(dice);
+  zonaPartida.append(panel);
+
+  const cabeza = el('div', 'revelacion-cabeza');
+  cabeza.append(dibujo('span', 'ficha-respuesta-marca', acerto ? '✔︎' : '✕︎'), el('p', 'micro', acerto ? PARTIDA.ok : PARTIDA.no));
+  const sumaEl = acerto ? dibujo('span', 'revelacion-suma', IMPRENTA.suma) : null;
+  if (sumaEl) cabeza.append(sumaEl);
+  dice.append(cabeza);
+
+  // El disco, escrito grande. Al fallar, la tapa llegó en una sola tinta, y la línea lo dice
+  // con las mismas palabras que "Adiviná el tema" (`CNT-14` §3). Si el disco no tiene estampa,
+  // no hay tinta de la que hablar y la frase queda como estaba.
+  dice.append(
+    el(
+      'p',
+      'respuesta-dato',
+      acerto ? correcta : `${PARTIDA.eraLa} ${correcta}${seImprimio ? `, ${PARTIDA.enClave}` : '.'}`,
+    ),
+  );
+
+  const explicacion = item.explicacion ? el('p', 'explicacion', item.explicacion) : null;
+  if (explicacion) dice.append(explicacion);
+
+  // El rótulo (`BR-08`, registro 3): frío, con su símbolo, sin adornos. Va en su propia región
+  // viva, después de "Leé más": así el botón de abrir no queda adentro de lo que se anuncia.
+  const nota = el('div', 'ficha-respuesta-dice ficha-respuesta-nota');
+  nota.setAttribute('role', 'status');
+  panel.append(nota);
+  if (item.rotulo) {
+    nota.append(
+      el(
+        'p',
+        `sello sello--${item.rotulo.tipo}`,
+        `${item.rotulo.tipo === 'leyenda' ? '◆' : '❝'} ${item.rotulo.texto}`,
+      ),
+    );
+  }
+
+  /*
+   * El avance lo manda el dedo, siempre. "Seguí" va adentro de la ficha y afuera de la región
+   * viva: así se anuncia el resultado y la explicación, y no "Seguí, botón" mezclado con ellos.
+   */
+  const ultima = indice + 1 >= ronda.length;
+  const seguir = el('button', 'primario seguir-ficha', ultima ? IMPRENTA.alResultado : PARTIDA.seguir);
+  seguir.type = 'button';
+  seguir.addEventListener('click', avanzar, { once: true });
+  panel.append(seguir);
+
+  // El zócalo, pegado debajo: la edición de la imagen —que se cuenta recién acá: antes de
+  // responder es una pista de más— y el botón de corrección, afuera de la región viva (`UX-09`).
+  const zocalo = el('div', 'ficha-pie ficha-zocalo');
+  zocalo.append(el('p', 'edicion-tapa', PARTIDA.edicion(item.imagen.edicion)));
+  zocalo.append(
+    botonCorreccion(() => ({
+      juego: 'tapa',
+      itemId: item.id,
+      ubicacion: 'la respuesta correcta',
+      dice: `${item.imagen.encuadre === 'detalle' ? PARTIDA.preguntaDetalle : PARTIDA.pregunta} → ${correcta}`,
+      rotulo: item.rotulo?.tipo ?? 'hecho',
+      banco: { contrato: 'CTR-05', version: 1 },
+    })),
+  );
+  zonaPartida.append(zocalo);
+
+  // Lo que sumaste vuela del sello de la ficha a la cuenta de la cabecera, que sube al llegar.
+  const total = contarAciertos(ronda, elegidas);
+  if (acerto && sumaEl) {
+    const cual = indice;
+    const destino = llevasEl;
+    const sigue = (): boolean => indice === cual && destino.isConnected;
+    window.setTimeout(
+      () => {
+        if (!destino.isConnected) return;
+        if (!sigue() || !sumaEl.isConnected) {
+          destino.textContent = IMPRENTA.llevas(contarAciertos(ronda, elegidas));
+          return;
+        }
+        volar(IMPRENTA.suma, 'suma-vuela', sumaEl, destino, () => {
+          if (!destino.isConnected) return;
+          contar(destino, total - 1, total, IMPRENTA.llevas);
+          estampar(destino);
+        });
+      },
+      duracionDe('--duracion-umbral') + duracionDe('--escalon-pasada'),
+    );
+  } else {
+    llevasEl.textContent = IMPRENTA.llevas(total);
+  }
+
+  // El foco va a "Seguí" sin arrastrar la vista. El anillo se dibuja si se llegó con el
+  // teclado y no si se llegó con el dedo.
+  if (conPuntero) {
+    seguir.classList.add('seguir--sin-anillo');
+    seguir.addEventListener('blur', () => seguir.classList.remove('seguir--sin-anillo'), { once: true });
+  }
+  seguir.focus({ preventScroll: true });
+
+  /*
+   * Que entren juntas la tapa terminada y "Seguí". Primero se prueba con todo a la vista: si
+   * sobra lugar, la mesa queda como está; si falta, la mesa se achica hasta donde haga falta
+   * (nunca menos que `MESA_MINIMA`). Si ni así entra, o la tapa quedaría más chica que
+   * `MESA_COMODA`, y la explicación es larga, se pliega a tres renglones con su "Leé más" y se
+   * vuelve a medir. El rótulo no se pliega nunca.
+   */
+  let entra = acomodarLaMesa(zocalo);
+  if ((!entra || bastidorEl.offsetWidth < MESA_COMODA) && explicacion) {
+    explicacion.classList.add('explicacion--plegada');
+    // Solo se ofrece abrir si de verdad quedó texto escondido.
+    if (explicacion.scrollHeight > explicacion.clientHeight + 2) {
+      const mas = el('button', 'leer-mas', IMPRENTA.leerMas);
+      mas.type = 'button';
+      mas.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        explicacion.classList.remove('explicacion--plegada');
+        mas.remove();
+      });
+      dice.after(mas);
+      entra = acomodarLaMesa(zocalo);
+    } else {
+      explicacion.classList.remove('explicacion--plegada');
+      entra = acomodarLaMesa(zocalo);
+    }
+  }
+  // Si entra, la hoja queda arriba, con la tapa entera a la vista. Si no, hasta el zócalo: entre
+  // ver el premio y que el botón esté, gana el botón (`UX-22` §1.4).
+  if (entra) window.scrollTo({ top: 0 });
+  else zocalo.scrollIntoView({ block: 'nearest' });
+
+  // La mesa se achica y se corre a su lugar nuevo, en vez de saltar: se mide dónde quedó y se
+  // anima desde donde estaba (solo `transform`). Con movimiento reducido ya está en su lugar.
+  const ms = duracionDe('--duracion-umbral');
+  const despues = bastidorEl.getBoundingClientRect();
+  if (ms > 0 && despues.width > 0 && typeof bastidorEl.animate === 'function') {
+    const curva = getComputedStyle(document.documentElement).getPropertyValue('--curva-cinta').trim() || 'linear';
+    bastidorEl.animate(
+      [
+        {
+          transformOrigin: '0 0',
+          transform: `translate(${antes.left - despues.left}px, ${antes.top - despues.top}px) scale(${antes.width / despues.width})`,
+        },
+        { transformOrigin: '0 0', transform: 'none' },
+      ],
+      { duration: ms, easing: curva },
+    );
+  }
+
+  // La tarjeta de la vuelta se dibuja ahora, mientras se lee la última ficha: al llegar al
+  // resultado ya está hecha y no le cuesta un cuadro largo a la entrada de la soga.
+  if (ultima) {
+    const cual = indice;
+    const estaRonda = ronda;
+    window.setTimeout(
+      () => {
+        if (ronda !== estaRonda || indice !== cual || tarjetaAdelantada) return;
+        tarjetaAdelantada = { ronda: estaRonda, imagen: dibujarLaTarjeta(total) };
+      },
+      duracionDe('--duracion-umbral') + duracionDe('--duracion-inercia'),
+    );
+  }
+}
+
+/** La tarjeta que se dibujó antes de tiempo, y de qué vuelta es. */
+let tarjetaAdelantada: { ronda: readonly Item[]; imagen: Promise<Blob | null> } | null = null;
+
+/** Lo mínimo que mide el bastidor con la ficha a la vista, en píxeles de CSS. */
+const MESA_MINIMA = 150;
+/** Por debajo de este ancho, antes de achicar más la tapa se pliega la explicación. */
+const MESA_COMODA = 176;
+
+/**
+ * Ajusta el ancho del bastidor para que la partida revelada termine adentro de la ventana.
+ * El bastidor es cuadrado más un marco fijo: cada píxel de ancho es un píxel de alto. Devuelve
+ * si todo entró. Una sola lectura de medidas y una escritura.
+ */
+function acomodarLaMesa(ultimo: HTMLElement): boolean {
+  bastidorEl.style.removeProperty('width');
+  const ancho = bastidorEl.offsetWidth;
+  const fin = ultimo.getBoundingClientRect().bottom + window.scrollY;
+  const sobra = window.innerHeight - fin - 6;
+  if (sobra >= 0) return true;
+  // En la compu la ficha va al lado de la mesa: achicar la mesa no le hace lugar a nada.
+  if (ultimo.getBoundingClientRect().left >= bastidorEl.getBoundingClientRect().right - 1) return false;
+  const nuevo = Math.max(MESA_MINIMA, ancho + sobra);
+  bastidorEl.style.width = `${Math.floor(nuevo)}px`;
+  return ancho + sobra >= MESA_MINIMA;
+}
+
+/**
+ * El pase: la hoja impresa sale de la mesa y **se cuelga a secar en la soga**, donde se queda
+ * hamacando un momento; en la mesa ya está el recorte que sigue. Con movimiento reducido la
+ * hoja aparece colgada.
+ */
+function avanzar(): void {
+  sonarEfecto('tecla');
+  const cual = indice;
+  const item = ronda[cual]!;
+  const acerto = acertada(cual);
+  const e = estampaDelItem(item);
+  const hoja = sogaEl.children[cual];
+  const lugar = hoja?.querySelector<HTMLElement>('.colgada-hoja');
+  const estaSoga = sogaEl;
+
+  indice += 1;
   if (indice >= ronda.length) {
     pintarResultado();
     return;
   }
+
+  // Primero la hoja vuelve arriba y la soga a la vista (en un teléfono bajo estaba guardada):
+  // el vuelo se mide con todo en su lugar.
+  zonaPartida.classList.remove('partida--revelada');
+  window.scrollTo({ top: 0 });
+  const desde = papelEl;
+  if (e && lugar && desde.isConnected) {
+    const colgar = (): void => {
+      if (!estaSoga.isConnected || lugar.firstChild) return;
+      lugar.append(miniatura(e, acerto));
+      hoja?.classList.add('colgada--llega');
+      sonarEfecto('clac');
+    };
+    const pieza = el('span', 'hoja-suelta');
+    const enElAire = miniatura(e, acerto);
+    // Ya está bajada (es la que se acaba de imprimir): que se pinte en el primer cuadro.
+    enElAire.decoding = 'sync';
+    pieza.append(enElAire);
+    volarPieza(pieza, desde, lugar, colgar);
+  }
   pintarPregunta();
+  enfocar(enunciadoEl);
+}
+
+/* ---- El resultado: la tirada colgada ---- */
+
+/** La tarjeta de la vuelta: la soga con las seis hojas. Nunca tira: si no se puede, `null`. */
+async function dibujarLaTarjeta(aciertos: number): Promise<Blob | null> {
+  try {
+    const autores = [...new Set(ronda.map((i) => i.imagen.credito.autor))];
+    return await dibujarTirada({
+      juego: IMPRENTA.juego,
+      puntaje: RESULTADO.puntaje(aciertos, ronda.length),
+      rotulo: IMPRENTA.tirada,
+      hojas: ronda.map((item, i) => {
+        const e = estampaDelItem(item);
+        return { entera: acertada(i), imagen: e ? (acertada(i) ? e.ficha : e.pasadas[2]) : null };
+      }),
+      credito: IMPRENTA.creditoTarjeta(autores.join(', ')),
+      sitio: location.host + location.pathname,
+    });
+  } catch {
+    // La tarjeta es el premio, no el camino.
+    return null;
+  }
 }
 
 function pintarResultado(): void {
   const aciertos = contarAciertos(ronda, elegidas);
-  zonaResultado.replaceChildren();
-  zonaResultado.append(el('h2', undefined, RESULTADO.titulo));
-  zonaResultado.append(el('p', 'puntaje', RESULTADO.puntaje(aciertos, ronda.length)));
-
-  // Compartir (2026-10-01): el resultado viaja como desafío, forma `marcador` (`ADR-02`).
-  // Es el primario de la pantalla, como en los otros juegos que comparten; "Otra vuelta"
-  // pasa a secundario para que no haya dos botones gritando lo mismo.
   const total = ronda.length;
+  zonaResultado.replaceChildren();
+
+  let orden = 0;
+  const entra = <T extends HTMLElement>(pieza: T, clase = 'jugo-entra'): T => {
+    pieza.classList.add(clase);
+    pieza.style.setProperty('--orden', String(orden++));
+    return pieza;
+  };
+
+  const puntaje = el('p', 'puntaje puntaje--tirada');
+  puntaje.id = 'puntaje-tapa';
+  const encabezado = entra(el('h2', undefined, RESULTADO.titulo));
+  encabezado.setAttribute('aria-describedby', puntaje.id);
+  zonaResultado.append(encabezado);
+
+  /*
+   * La soga se llena hoja por hoja, en el orden en que se jugó, cada una con su clac; y **la
+   * cuenta sube con cada hoja que salió entera**. Cuando colgó la última, el cierre, que son
+   * tres distintos:
+   *   - la tirada entera (la hazaña): doble filete, el sello "¡Tirada entera!" y el sello que suena;
+   *   - la mitad o más: la cuenta apoya como un sello;
+   *   - menos de la mitad: la cuenta queda torcida y de trazo cortado, y la hoja da un golpe.
+   * Ninguno se dice solo con color ni solo con movimiento: la cifra y las tildes ya lo dicen.
+   * Con movimiento reducido la soga aparece llena y la cuenta, en su valor.
+   */
+  const paso = duracionDe('--duracion-sello');
+  const cuenta = entra(el('div', 'cuenta-vuelta'));
+  puntaje.textContent = RESULTADO.puntaje(paso > 0 ? 0 : aciertos, total);
+  cuenta.append(puntaje);
+  zonaResultado.append(cuenta);
+
+  // Cada hoja con su disco. Las que tenías, impresas del todo; las que no, en una tinta. Tilde
+  // o cruz además de la tinta.
+  zonaResultado.append(entra(el('p', 'tendedero-rotulo', IMPRENTA.tirada)));
+  const soga = el('ul', 'tendedero tendedero--vuelta');
+  soga.setAttribute('aria-label', IMPRENTA.tiradaLeida(aciertos, total - aciertos));
+  const hojas = ronda.map((item, i) => {
+    const ok = acertada(i);
+    const disco = correctaDe(item);
+    const e = estampaDelItem(item);
+    const hoja = el('li', `colgada colgada--${ok ? 'ok' : 'no'}${paso > 0 ? ' colgada--espera' : ''}`);
+    const papel = dibujo('span', 'colgada-papel');
+    const lamina = el('span', 'colgada-hoja');
+    if (e) lamina.append(miniatura(e, ok));
+    papel.append(lamina, el('span', 'colgada-marca', ok ? '✔︎' : '✕︎'));
+    hoja.append(papel);
+    hoja.append(dibujo('span', 'colgada-disco', disco));
+    hoja.append(el('span', 'solo-lector', ok ? IMPRENTA.hojaEntera(disco) : IMPRENTA.hojaEnUnaTinta(disco)));
+    soga.append(hoja);
+    return hoja;
+  });
+  // Las sogas dibujadas, una por renglón: tres hojas por renglón en el teléfono, seis en la compu.
+  const porRenglon = window.matchMedia('(min-width: 46rem)').matches ? 6 : 3;
+  for (let r = 0; r * porRenglon < hojas.length; r++) {
+    colgarEnLaPanza(hojas.slice(r * porRenglon, (r + 1) * porRenglon));
+    const trazo = dibujarSoga();
+    if (r > 0) trazo.classList.add('tendedero-soga--segunda');
+    soga.prepend(trazo);
+  }
+  zonaResultado.append(soga);
+
+  const cerrar = (): void => {
+    if (!puntaje.isConnected) return;
+    puntaje.textContent = RESULTADO.puntaje(aciertos, total);
+    if (aciertos === total && total > 0) {
+      puntaje.classList.add('puntaje--hazana');
+      cuenta.append(el('p', 'hazana-sello', IMPRENTA.hazana));
+      estampar(puntaje);
+      sonarEfecto('sello');
+    } else if (aciertos * 2 >= total) {
+      estampar(puntaje);
+      sonarEfecto('sello');
+    } else {
+      puntaje.classList.add('puntaje--floja');
+      golpear(zonaResultado);
+      sonarEfecto('golpe');
+    }
+  };
+  if (paso <= 0) {
+    sonarEfecto('clac');
+    cerrar();
+  } else {
+    const arranque = duracionDe('--duracion-umbral');
+    let van = 0;
+    hojas.forEach((hoja, i) => {
+      window.setTimeout(
+        () => {
+          if (!hoja.isConnected) return;
+          hoja.classList.remove('colgada--espera');
+          hoja.classList.add('colgada--llega');
+          sonarEfecto('clac');
+          if (acertada(i)) {
+            van += 1;
+            puntaje.textContent = RESULTADO.puntaje(van, total);
+            estampar(puntaje);
+          }
+        },
+        arranque + paso * i,
+      );
+    });
+    window.setTimeout(cerrar, arranque + paso * hojas.length + duracionDe('--duracion-toque'));
+  }
+
+  /*
+   * El pie del resultado (`.pie-resultado`): la misma pieza y el mismo orden que los otros
+   * juegos pulidos — la tarjeta que asoma, "Compartí", lo que compartir tenga para decir y la
+   * otra vuelta. El resultado viaja como desafío, forma `marcador` (`ADR-02`).
+   */
+  const pie = entra(el('div', 'pie-resultado'));
   const { boton: compartir, salida } = botonCompartir(RESULTADO, () => ({
     texto: RESULTADO.paraCompartir(aciertos, total),
     url: armarLink(location.origin + location.pathname, { forma: 'marcador', juego: JUEGO, puntaje: aciertos, total }),
+    archivo: archivoDeLaTarjeta,
   }));
-  zonaResultado.append(compartir, salida);
+
+  // La tarjeta asoma: lo que vas a compartir se ve antes de tocar el botón. Se dibuja una vez.
+  const asoma = dibujo('div', 'tarjeta-asoma');
+  asoma.addEventListener('click', () => compartir.click());
+  if (urlDeLaTarjeta) URL.revokeObjectURL(urlDeLaTarjeta);
+  urlDeLaTarjeta = '';
+  archivoDeLaTarjeta = null;
+  // Si se dibujó mientras se leía la última ficha, es esa; si no, se dibuja ahora.
+  const estaTarjeta = tarjetaAdelantada?.ronda === ronda ? tarjetaAdelantada.imagen : dibujarLaTarjeta(aciertos);
+  tarjetaAdelantada = null;
+  tarjetaDeLaVuelta = estaTarjeta;
+  void estaTarjeta.then((imagen) => {
+    if (tarjetaDeLaVuelta !== estaTarjeta || !asoma.isConnected) return;
+    if (!imagen) {
+      asoma.remove();
+      return;
+    }
+    archivoDeLaTarjeta = new File([imagen], nombreArchivo('adivina-la-tapa'), { type: 'image/png' });
+    urlDeLaTarjeta = URL.createObjectURL(imagen);
+    const foto = el('img', 'jugo-pega');
+    foto.alt = '';
+    foto.src = urlDeLaTarjeta;
+    asoma.append(foto);
+  });
 
   const denuevo = el('button', 'secundario', RESULTADO.denuevo);
   denuevo.type = 'button';
-  denuevo.addEventListener('click', comenzar);
-  zonaResultado.append(denuevo);
+  denuevo.addEventListener('click', () => {
+    sonarEfecto('racleta');
+    comenzar();
+  });
+  pie.append(asoma, compartir, salida, denuevo);
+  zonaResultado.append(pie);
 
-  const volver = el('a', 'accion-abajo', RESULTADO.volver);
+  // La salida hacia el fichín: la misma cinta de regreso de la portada, no un botón nuevo.
+  const salidaAlFichin = el('p', 'salida-resultado');
+  const volver = el('a', 'volver', `← ${RESULTADO.volver}`);
   volver.href = '/';
-  zonaResultado.append(volver);
+  salidaAlFichin.append(volver);
+  zonaResultado.append(salidaAlFichin);
 
   mostrar(zonaResultado);
+  window.scrollTo({ top: 0 });
+  enfocar(encabezado);
 }

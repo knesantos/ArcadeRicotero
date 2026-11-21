@@ -99,6 +99,11 @@ export interface FilaTarjeta {
   readonly pie: string;
   /** El slug del disco, para que la fila se raye con la tinta real de su tapa. */
   readonly disco: string;
+  /**
+   * Lo que se hizo con cada intento gastado, en orden. Solo lo usa la tarjeta de papeles
+   * (`DatosTarjeta.papeles`): cada uno es un quiebre abierto, con su marca.
+   */
+  readonly recorrido?: readonly ('fallo' | 'paso')[];
 }
 
 /** Todo lo que la tarjeta necesita saber de una vuelta. */
@@ -109,6 +114,13 @@ export interface DatosTarjeta {
   readonly tinteJuego: string;
   /** La línea que canta: uno de los tres tramos. */
   readonly tramo: string;
+  /**
+   * El setlist como papeles (ronda de pulida, 2026-11-18): cada fila es un recorte de papel
+   * con su sello, las marcas de lo que se gastó y el canto de los dobleces sin abrir. Es el
+   * idioma del resultado de "Sacalo por la letra". La maqueta no cambia: las filas ocupan los
+   * mismos lugares que reparte `planificar()`. Sin esto, la tarjeta es la de siempre.
+   */
+  readonly papeles?: boolean;
   readonly filas: readonly FilaTarjeta[];
   /**
    * El número grande y su rótulo, ya formateados por el juego.

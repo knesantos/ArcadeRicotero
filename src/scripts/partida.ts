@@ -10,24 +10,30 @@
  * nombre inyectado desde la URL es XSS reflejado de manual. Usar `textContent` en todos
  * lados hace que la clase entera de bug sea imposible, no improbable.
  *
- * ## Lo que cambio en el ciclo 20 (`D-71`)
+ * ## El objeto del juego: la ficha (ronda de pulida, 2026-11-19)
  *
- * El usuario lo jugo y dijo que estaba *"muy duro y feo"*. Medido a 375 px, era cierto: las
- * opciones eran cuatro cajas grises de formulario, la cabecera una linea de 13 px, el
- * `SEGUÍ` quedaba abajo del pliegue y "Cerrá la partida" caia **entre** las opciones y la
- * respuesta, justo donde baja el pulgar. La logica no se toco; cambio todo lo que se ve:
+ * La portada lo dice: "Se te cae una moneda en la ranura". El objeto es **la ficha del
+ * fichín**, y la máquina le contesta:
  *
- * - **El tablero** arriba: las tres fichas de vida grandes, el `Nº` de la pregunta y un riel
- *   con un paso por pregunta, partido en los tres escalones. "Cerrá la partida" sube aca,
- *   que es lo mas lejos del pulgar que hay (`BR-19` apartado 7).
- * - **La pregunta es un recorte**: borde de la tinta de su categoria (`D-19`), cinta arriba,
- *   apenas torcido, con los sellos de categoria, nivel y rotulo.
- * - **Las opciones llevan letra** (A, B, C, D), y se eligen tambien con el teclado.
- * - **La respuesta se revela con la tapa del disco** del que se hablaba (`disco` en el
- *   banco), la respuesta correcta escrita grande, el grito estampado del acierto (el mismo
- *   sello de "Adiviná el tema") y la racha cuando la hay.
- * - **`SEGUÍ` va pegado abajo**, en la zona del pulgar, y siempre a la vista.
- * - **El resultado trae la planilla**: pregunta por pregunta, con simbolo.
+ * - **La portada es la chapa de la ranura.** Tocar "Jugá" (o la ficha) la mete: gira de canto,
+ *   cae por la ranura y el contador de créditos da una vuelta. Recién ahí arranca la partida.
+ * - **Las tres vidas son tres fichas**, las mismas de la portada. Cuando errás, la ficha se
+ *   parte en dos y las mitades se caen; queda el hueco con su cruz (forma y símbolo, no solo
+ *   tinta) y la pantalla da un golpe.
+ * - **El `Nº` de la pregunta es un contador de ruedas**: cada pregunta nueva le da una vuelta.
+ * - **La pregunta es la pantalla de la máquina** (rondas 2 y 3): un tubo con su vidrio y su
+ *   trama de barrido, la categoría inscripta arriba y el nivel abajo, que se prende y se apaga
+ *   al pasar de pregunta. Las cuatro teclas van abajo, en la zona del pulgar.
+ * - **La respuesta se cierra en dos tiempos**, como en los otros juegos pulidos: primero el
+ *   sello grande cae sobre la pregunta, donde está el ojo; después llega la ficha de la
+ *   respuesta, con el grito, lo que sumaste, la tapa, el dato y "Seguí" adentro. El cierre se
+ *   adelanta con un toque (o con Enter o la barra): no saltea pasos, los corre.
+ *
+ * **Lo que no cambió** (`D-71`, `BR-19`, `UX-01` v2): la lógica de `vidas.ts`, las preguntas y
+ * su respuesta, la insignia de rótulo antes de responder y el sello completo después, que
+ * avanzar lo manda el dedo (sin temporizador), "Cerrá la partida" arriba y en dos pasos, y las
+ * teclas 1–4 y A–D. Ningún estado depende del movimiento ni del color; con movimiento reducido
+ * todo aparece en su estado final (los tiempos salen de tokens que el corte lleva a cero).
  */
 
 import {
@@ -36,6 +42,7 @@ import {
   retirarse,
   actual,
   abreEscalon,
+  aciertos as aciertosDe,
   resultado as resultadoDe,
   type Partida,
 } from '../lib/quiz/vidas.ts';
@@ -46,14 +53,14 @@ import type { Item } from '../lib/quiz/banco.ts';
 import { tituloDelDisco } from '../lib/letra/discos.ts';
 import {
   ACIERTOS,
-  BOTON_COMPARTIR,
   BOTON_DE_NUEVO,
   BOTON_RETIRARSE,
   BOTON_SEGUIR,
+  COMPARTIR,
   DESENLACES,
-  ENLACE_COPIADO,
   ERRORES,
   ESCALON_CANTA,
+  FICHIN,
   PLANILLA,
   RACHAS,
   RETIRADA_CONFIRMA,
@@ -76,14 +83,31 @@ import {
   textoParaCompartir,
   variante,
 } from '../lib/quiz/copy.ts';
-import { PORTAL } from '../lib/sitio/copy.ts';
 import { botonCorreccion } from './correccion.ts';
+import { botonCompartir } from './compartir.ts';
+import { nombreArchivo } from '../lib/tarjeta/plan.ts';
+import { dibujarFichin } from './tarjeta-fichin.ts';
+import { despertarSalida } from '../lib/audio/contexto.ts';
+import { sonarEfecto } from '../lib/audio/efectos.ts';
+import {
+  golpear,
+  estampar,
+  volar,
+  contar,
+  duracionDe,
+  armarInterruptorDeRuidos,
+  armarContador,
+  rodarContador,
+} from './jugo.ts';
 
 /** Quien soy, para `leerDesafio`. Ver `FIND-28` en `desafio.ts`. */
 const JUEGO = 'quiz';
 
 /** Las letras de las cuatro opciones (`BR-04`). Tambien son las teclas que las eligen. */
 const LETRAS = ['A', 'B', 'C', 'D'] as const;
+
+/** Con cuántas vidas arranca la partida: tres fichas (`BR-19`). */
+const FICHAS = 3;
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const portada = $('portada');
@@ -95,6 +119,28 @@ const desafio = leerDesafio(location.search, JUEGO);
 
 let partida: Partida<Item>;
 let ultimoFeedback: string | null = null;
+/**
+ * Si lo último que se tocó fue con el dedo o el mouse y no con el teclado. Decide si el foco
+ * que la isla le pone a "Seguí" dibuja su anillo (la misma regla de los otros juegos pulidos).
+ */
+let conPuntero = false;
+/** La tarjeta de la partida: se dibuja una vez al llegar al resultado, y "Compartí" usa esa. */
+let tarjetaDeLaPartida: Promise<Blob | null> | null = null;
+let archivoDeLaTarjeta: File | null = null;
+let urlDeLaTarjeta = '';
+
+/** Las piezas del tablero, que es el mismo de una pregunta a la otra (así el contador gira). */
+let tableroEl: HTMLElement;
+let vidasEl: HTMLElement;
+let contadorEl: HTMLElement;
+let numeroLeidoEl: HTMLElement;
+let rachaEl: HTMLElement;
+let llevasEl: HTMLElement;
+let rielEl: HTMLElement;
+let retiradaEl: HTMLElement;
+/** Las piezas de la pregunta en curso. Se rehacen en cada pregunta. */
+let fichaEl: HTMLElement;
+let listaEl: HTMLElement;
 
 /** Crea un elemento con texto. Nunca HTML: ver la nota del encabezado. */
 function el<K extends keyof HTMLElementTagNameMap>(
@@ -105,6 +151,13 @@ function el<K extends keyof HTMLElementTagNameMap>(
   const n = document.createElement(tag);
   if (clase) n.className = clase;
   if (texto !== undefined) n.textContent = texto;
+  return n;
+}
+
+/** Una pieza que es dibujo: no se lee ni toma toques. */
+function dibujo<K extends keyof HTMLElementTagNameMap>(tag: K, clase: string, texto?: string): HTMLElementTagNameMap[K] {
+  const n = el(tag, clase, texto);
+  n.setAttribute('aria-hidden', 'true');
   return n;
 }
 
@@ -124,22 +177,88 @@ function mostrar(seccion: HTMLElement): void {
 function enfocar(destino: HTMLElement): void {
   // -1 lo hace enfocable por codigo sin meterlo en el orden de tabulacion.
   destino.tabIndex = -1;
-  destino.focus();
+  destino.focus({ preventScroll: true });
 }
 
-/** Si el que juega pidio menos movimiento: el desplazamiento suave tambien es movimiento. */
-function sinMovimiento(): boolean {
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-}
+/* ---- La portada: la ficha en la ranura ---- */
 
 // Pantalla 0: si se llego por un desafio, el subtitulo lo dice.
 if (desafio) $('subtitulo').textContent = subtituloDesafio(desafio);
 
-$('jugar').addEventListener('click', comenzar);
+// El interruptor de los ruidos, debajo de la tecla (como en los otros juegos).
+document
+  .getElementById('ruidos')
+  ?.append(armarInterruptorDeRuidos({ apagar: FICHIN.ruidosApagar, prender: FICHIN.ruidosPrender }));
+
+/**
+ * Meter la ficha. Lo llaman "Jugá" y la ficha de la chapa, que es el mismo gesto dicho con el
+ * objeto. La ficha gira de canto y cae por la ranura, en saltos; cuando entró, suena el clac,
+ * el contador de créditos da una vuelta y arranca la partida. Un segundo toque mientras cae
+ * no espera: arranca. Con movimiento reducido no hay caída y la partida arranca en el acto.
+ */
+let entrando: (() => void) | null = null;
+
+function meterLaFicha(): void {
+  if (entrando) {
+    entrando();
+    return;
+  }
+  // Este toque es el gesto que los celulares piden para dejar sonar algo: se despierta la
+  // salida acá, y los ruidos de la partida ya pueden salir.
+  const despierta = despertarSalida();
+  const ficha = document.getElementById('ficha-portada');
+  const ms = duracionDe('--duracion-golpe') * 1.3;
+  if (!ficha || ms <= 0 || typeof ficha.animate !== 'function') {
+    void despierta.then(() => sonarEfecto('clac'));
+    comenzar();
+    return;
+  }
+  let reloj = 0;
+  let entro = false;
+  const entrar = (): void => {
+    if (entro) return;
+    entro = true;
+    entrando = null;
+    window.clearTimeout(reloj);
+    comenzar();
+  };
+  entrando = entrar;
+  void despierta.then(() => sonarEfecto('tecla'));
+  const entra = Math.round(ficha.getBoundingClientRect().width + 6);
+  // La ficha está de canto, a medio meter. El dedo la empuja: retrocede un pelo, y la boca se
+  // la traga en saltos (la recorta `.ranura-caida`, a la altura de la hendija).
+  const caida = ficha.animate(
+    [
+      { translate: '0 0', offset: 0 },
+      { translate: '-5px 0', offset: 0.2 },
+      { translate: '-5px 0', offset: 0.3 },
+      { translate: `${entra}px 0`, offset: 1 },
+    ],
+    { duration: ms, easing: 'steps(8, end)', fill: 'forwards' },
+  );
+  caida.addEventListener(
+    'finish',
+    () => {
+      if (entro) return;
+      sonarEfecto('clac');
+      const creditos = document.getElementById('creditos');
+      rodarContador(creditos, 1);
+      // Lo que tarda la rueda en dar la vuelta, y arranca.
+      reloj = window.setTimeout(entrar, duracionDe('--duracion-golpe'));
+    },
+    { once: true },
+  );
+}
+
+$('jugar').addEventListener('click', meterLaFicha);
+document.getElementById('ficha-portada')?.addEventListener('click', meterLaFicha);
 
 function comenzar(): void {
   partida = comenzarPartida(banco);
+  ultimoFeedback = null;
   mostrar(zonaPartida);
+  zonaPartida.replaceChildren();
+  armarTablero();
   pintarPregunta();
   window.scrollTo({ top: 0 });
 }
@@ -165,18 +284,36 @@ function posicionEnEscalon(p: Partida<Item>): { nivel: string; van: number; tota
 
 /* ---- El tablero ---- */
 
-/** El marcador de vidas: tres fichas, y la palabra. `UX-07` — ningun estado por color solo. */
-function marcadorVidas(vidas: number): HTMLElement {
+/**
+ * El marcador de vidas: tres fichas, y la palabra. `UX-07` — ningun estado por color solo.
+ *
+ * La que está en pie es una ficha llena con su rombo; la que se fue, el hueco de trazo cortado
+ * con la cruz —el mismo `✕` de la opción errada, porque errar es la única causa posible de
+ * perder una vida—. `seRompe` es la que se acaba de perder: lleva encima las dos mitades de la
+ * ficha, que se separan y se caen (`ficha-rompe-*`). Con movimiento reducido no se arman: el
+ * hueco con la cruz ya lo dice.
+ */
+function marcadorVidas(vidas: number, seRompe = false, llegan = false): HTMLElement {
   const caja = el('div', 'vidas');
   caja.append(el('span', 'vidas-rotulo', VIDAS_ROTULO));
-  for (let i = 0; i < 3; i++) {
+  const fila = el('span', 'vidas-fichas');
+  const conMovimiento = duracionDe('--duracion-cuenta') > 0;
+  for (let i = 0; i < FICHAS; i++) {
     const viva = i < vidas;
-    // El simbolo va ademas del color, no en su lugar: el trazo es el mismo `✕` que ya
-    // marca la opcion errada, porque errar es la unica causa posible de perder una vida.
-    caja.append(el('span', `vida ${viva ? 'vida--viva' : 'vida--ida'}`, viva ? '◆' : '✕︎'));
+    const ficha = el('span', `vida ${viva ? 'vida--viva' : 'vida--ida'}`, viva ? '◆' : '✕︎');
+    if (viva && llegan) {
+      ficha.classList.add('vida--llega');
+      ficha.style.setProperty('--orden', String(i));
+    }
+    if (!viva && seRompe && i === vidas && conMovimiento) {
+      ficha.append(dibujo('span', 'vida-mitad vida-mitad--izq'), dibujo('span', 'vida-mitad vida-mitad--der'));
+    }
+    fila.append(ficha);
   }
+  caja.append(fila);
   caja.setAttribute('role', 'img');
-  caja.setAttribute('aria-label', `${VIDAS_ROTULO}: ${vidas} de 3`);
+  caja.setAttribute('aria-label', `${VIDAS_ROTULO}: ${vidas} de ${FICHAS}`);
+  caja.id = 'vidas-pregunta';
   return caja;
 }
 
@@ -200,7 +337,10 @@ function riel(p: Partida<Item>, respondida: boolean): HTMLElement {
       let estado = 'resto';
       if (i < h.length) estado = h[i] ? 'ok' : 'no';
       else if (!respondida && i === p.indice) estado = 'ahora';
-      tramo.append(el('span', `riel-paso riel-paso--${estado}`));
+      const paso = el('span', `riel-paso riel-paso--${estado}`);
+      // El que se acaba de contestar apoya como un sello: es la marca que quedó.
+      if (respondida && i === h.length - 1) paso.classList.add('jugo-sello');
+      tramo.append(paso);
     }
     caja.append(tramo);
   }
@@ -208,34 +348,86 @@ function riel(p: Partida<Item>, respondida: boolean): HTMLElement {
 }
 
 /**
- * El tablero de arriba. `respondida` es el momento de la respuesta: `vidas.ts` ya avanzo
- * el indice a la que sigue, pero en pantalla todavia se esta leyendo la que se contesto,
- * asi que el `Nº` es el de las respondidas y el riel no marca la proxima. Y no se ofrece
- * cerrar: con la respuesta a la vista, el paso que sigue es `SEGUÍ`.
+ * El tablero de arriba, que se arma una vez por partida y después se pone al día: las tres
+ * fichas, el `Nº` en su contador de ruedas y las dos teclas (los ruidos y "Cerrá la partida");
+ * debajo, el riel con la racha y lo que llevás.
  */
-function tablero(respondida = false): HTMLElement {
-  const cab = el('div', 'tablero');
-  cab.id = 'cabecera-pregunta';
+function armarTablero(): void {
+  tableroEl = el('div', 'tablero');
+  tableroEl.id = 'cabecera-pregunta';
 
   const fila = el('div', 'tablero-fila');
-  const vidas = marcadorVidas(partida.vidas);
-  vidas.id = 'vidas-pregunta';
-  fila.append(vidas);
+  vidasEl = marcadorVidas(partida.vidas, false, true);
 
-  const n = respondida ? partida.elegidas.length : partida.indice + 1;
   // El `Nº` solo no dice de cuantas: el lector lee la frase entera, que va oculta a la vista.
   // No es un `aria-label` sobre el `<p>`: un parrafo no tiene nombre en ARIA 1.2 y varios
   // lectores lo ignoran (`FIND-151`).
   const numero = el('p', 'tablero-numero');
   numero.id = 'numero-pregunta';
-  const aLaVista = el('span', undefined, numeroDePregunta(n));
-  aLaVista.setAttribute('aria-hidden', 'true');
-  numero.append(aLaVista, el('span', 'solo-lector', numeroDePreguntaLeido(n, partida.orden.length)));
-  fila.append(numero);
-  if (!respondida) fila.append(disparadorRetirada());
-  cab.append(fila);
-  cab.append(riel(partida, respondida));
-  return cab;
+  contadorEl = armarContador(0, String(partida.orden.length).length);
+  numeroLeidoEl = el('span', 'solo-lector');
+  numero.append(dibujo('span', 'tablero-numero-rotulo', numeroDePregunta(0).replace(/\s*0$/, '')), contadorEl, numeroLeidoEl);
+
+  rachaEl = el('span', 'racha');
+  rachaEl.hidden = true;
+  llevasEl = el('span', 'restantes restantes--llevas', FICHIN.llevas(0));
+  llevasEl.setAttribute('aria-live', 'polite');
+  // Las dos teclas de la máquina van juntas en la cabecera, arriba a la derecha: los ruidos y
+  // "Cerrá la partida", que sigue lo más lejos del pulgar que hay (`BR-19` apartado 7).
+  const teclas = el('div', 'tablero-teclas');
+  const ruidos = armarInterruptorDeRuidos({ apagar: FICHIN.ruidosTecla, prender: FICHIN.ruidosTecla });
+  ruidos.classList.add('ruidos-tecla');
+  retiradaEl = disparadorRetirada();
+  retiradaEl.classList.add('retirada-tecla');
+  // "Cerrá" va primero: cuando se esconde (con la respuesta a la vista), los ruidos no quedan
+  // flotando con un hueco a la derecha.
+  teclas.append(retiradaEl, ruidos);
+  fila.append(vidasEl, numero, teclas);
+
+  // Debajo, en un renglón: el riel y, a su derecha, la racha y lo que llevás.
+  rielEl = riel(partida, false);
+  const renglon = el('div', 'tablero-riel');
+  renglon.append(rielEl, rachaEl, llevasEl);
+
+  tableroEl.append(fila, renglon);
+  zonaPartida.append(tableroEl);
+}
+
+/**
+ * Pone el tablero al día. `respondida` es el momento de la respuesta: `vidas.ts` ya avanzó el
+ * índice a la que sigue, pero en pantalla todavía se está leyendo la que se contestó, así que
+ * el `Nº` es el de las respondidas y el riel no marca la próxima. Y no se ofrece cerrar: con
+ * la respuesta a la vista, el paso que sigue es `SEGUÍ`.
+ */
+function ponerTableroAlDia(respondida: boolean, perdioUna = false): void {
+  const n = respondida ? partida.elegidas.length : partida.indice + 1;
+  if (rodarContador(contadorEl, n) && !respondida && n > 1) sonarEfecto('tecla');
+  numeroLeidoEl.textContent = numeroDePreguntaLeido(n, partida.orden.length);
+
+  // Las vidas cambian en el mismo tick que el feedback: son la misma noticia (`UX-07`).
+  // `CNT-10` decidió que perder una no lleva texto propio; lo dice el marcador.
+  if (perdioUna) {
+    const nuevas = marcadorVidas(partida.vidas, true);
+    vidasEl.replaceWith(nuevas);
+    vidasEl = nuevas;
+  }
+
+  const nuevoRiel = riel(partida, respondida);
+  rielEl.replaceWith(nuevoRiel);
+  rielEl = nuevoRiel;
+
+  // No se esconde con `hidden`: así la tecla de los ruidos no se corre de lugar.
+  retiradaEl.style.visibility = respondida ? 'hidden' : '';
+}
+
+/** La racha de la cabecera: dos o más seguidas. Se anota al cerrar la respuesta, o se corta. */
+function anotarRacha(): void {
+  const n = racha(partida);
+  rachaEl.hidden = n < 2;
+  if (n >= 2) {
+    rachaEl.textContent = FICHIN.racha(n);
+    estampar(rachaEl);
+  }
 }
 
 /* ---- La pregunta ---- */
@@ -243,10 +435,15 @@ function tablero(respondida = false): HTMLElement {
 /** `T-40` — la pregunta, con la insignia de rotulo **antes** de responder (`UX-01` v2). */
 function pintarPregunta(): void {
   const item = actual(partida)!;
-  zonaPartida.replaceChildren();
-  zonaPartida.append(tablero());
+  // Lo de la pregunta anterior se va; el tablero queda.
+  for (const hijo of [...zonaPartida.children]) if (hijo !== tableroEl) hijo.remove();
+  zonaPartida.classList.remove('partida--revelada');
+  ponerTableroAlDia(false);
 
-  const ficha = el('article', `ficha-pregunta ficha-pregunta--${item.categoria}`);
+  // La pregunta es **la pantalla del fichín**: ocupa el alto libre, se prende de una línea al
+  // medio (`pantalla-prende`) y las cuatro teclas quedan abajo, donde está el pulgar.
+  const ficha = el('article', `ficha-pregunta ficha-pregunta--${item.categoria} ficha-pregunta--prende`);
+  fichaEl = ficha;
 
   const sellos = el('div', 'ficha-sellos');
   sellos.id = 'sellos-pregunta';
@@ -254,7 +451,6 @@ function pintarPregunta(): void {
   // lee sale de la tabla de etiquetas, porque `mitologia` en mayusculas se leia sin tilde.
   sellos.append(el('span', `categoria categoria--${item.categoria}`, etiquetaCategoria(item.categoria)));
   const pos = posicionEnEscalon(partida);
-  sellos.append(el('span', 'paso', etiquetaNivel(pos.nivel, pos.van, pos.total)));
   // La insignia va antes de tocar: el que conoce la historia real tiene que saber que se
   // le pregunta "que se cuenta" y no "que paso".
   const ins = insignia(item.clase);
@@ -264,7 +460,15 @@ function pintarPregunta(): void {
   // El aviso de escalon aparece una sola vez por salto y no corta el ritmo con una
   // pantalla intermedia: `UX-07` descarto el "¡subiste de nivel!" por ese motivo. Va
   // adentro de la ficha, como una franja estampada: el rotulo seco y la linea que canta.
-  if (abreEscalon(partida)) {
+  const abre = abreEscalon(partida);
+  if (abre) {
+    // El escalón es un momento, sin pantalla aparte (`UX-07`): el cartel cae sobre la pantalla
+    // cuando ya prendió, suena el sello y el tramo nuevo del riel apoya.
+    window.setTimeout(() => {
+      if (fichaEl !== ficha) return;
+      sonarEfecto('sello');
+      estampar(rielEl.querySelector('.riel-paso--ahora')?.parentElement);
+    }, duracionDe('--duracion-umbral'));
     const aviso = el('div', 'escalon');
     aviso.setAttribute('role', 'status');
     aviso.append(el('span', 'escalon-rotulo', avisoEscalon(pos.nivel)));
@@ -273,25 +477,41 @@ function pintarPregunta(): void {
     ficha.append(aviso);
   }
 
-  const enunciado = el('h2', 'enunciado', item.enunciado);
+  // Un enunciado largo baja un cuerpo: la pantalla tiene que entrar con sus cuatro teclas.
+  // El nivel va abajo, en el pie del vidrio, como la línea de estado de la máquina.
+  const pie = el('p', 'pantalla-pie');
+  pie.id = 'nivel-pregunta';
+  pie.append(el('span', 'paso', etiquetaNivel(pos.nivel, pos.van, pos.total)));
+
+  const enunciado = el('h2', item.enunciado.length > 120 ? 'enunciado enunciado--largo' : 'enunciado', item.enunciado);
   // El foco aterriza en la pregunta, pero las vidas, el numero, la categoria y —sobre todo—
   // la insignia de rotulo tienen que llegar con ella (`UX-01` v2).
   // Las vidas, el numero y los sellos, y no el tablero entero: el tablero tambien tiene el
   // boton de cerrar, y su texto no es parte de la pregunta (`FIND-151`).
-  enunciado.setAttribute('aria-describedby', 'vidas-pregunta numero-pregunta sellos-pregunta');
-  ficha.append(enunciado);
+  enunciado.setAttribute('aria-describedby', 'vidas-pregunta numero-pregunta sellos-pregunta nivel-pregunta');
+  ficha.append(enunciado, pie);
   zonaPartida.append(ficha);
 
   const lista = el('div', 'opciones opciones--letradas');
+  listaEl = lista;
   item.opciones.forEach((op, i) => {
-    const b = el('button', 'opcion');
+    const b = el('button', 'opcion jugo-pega');
     b.type = 'button';
+    // Las teclas se apoyan cuando la pantalla ya prendió (y el cartel del escalón ya cayó).
+    b.style.setProperty('--orden', String(i + (abre ? 9 : 5)));
     // El texto se compara por el dato y no por `textContent`: la letra vive adentro.
     b.dataset.texto = op.texto;
     const letra = el('span', 'opcion-letra', LETRAS[i]);
     letra.setAttribute('aria-hidden', 'true');
     b.append(letra, el('span', 'opcion-texto', op.texto));
-    b.addEventListener('click', () => responder(op.texto), { once: true });
+    b.addEventListener(
+      'click',
+      (ev) => {
+        conPuntero = ev.detail > 0;
+        responder(op.texto);
+      },
+      { once: true },
+    );
     lista.append(b);
   });
   zonaPartida.append(lista);
@@ -366,48 +586,189 @@ function pintarConfirmacionRetirada(): void {
     zonaPartida.querySelector<HTMLButtonElement>('.retirada-disparador')?.focus();
   });
   caja.append(no, si);
-  zonaPartida.querySelector('.tablero')!.after(caja);
+  tableroEl.after(caja);
   enfocar(no);
 }
 
 /* ---- La respuesta ---- */
 
+/**
+ * El sello grande del cierre: cae al medio de la pregunta, que es donde está el ojo, con la
+ * tilde o la cruz. Es dibujo: lo mismo lo dicen las opciones (símbolo y tinta) y la ficha.
+ */
+function sellarLaPregunta(acerto: boolean): void {
+  fichaEl.append(dibujo('span', `sello-cae sello-cae--${acerto ? 'ok' : 'no'}`, acerto ? '✔︎' : '✕︎'));
+}
+
+/** Lo que queda del sello cuando llega la ficha: la marca chica, en la esquina de la pregunta. */
+function dejarLaMarca(acerto: boolean): void {
+  for (const resto of fichaEl.querySelectorAll('.sello-cae')) resto.remove();
+  if (fichaEl.querySelector('.sello-marca')) return;
+  fichaEl.append(dibujo('span', `sello-marca sello-marca--${acerto ? 'ok' : 'no'}`, acerto ? '✔︎' : '✕︎'));
+}
+
+/**
+ * Se acabaron las fichas: las tres, partidas, se caen del tablero y cruzan la pantalla hasta
+ * el pie, en saltos. Es el momento de la derrota, antes de pasar al resultado. Son dibujo —el
+ * marcador ya dice "0 de 3" con sus tres cruces— y con movimiento reducido no hay lluvia.
+ */
+function lloverFichas(): void {
+  const ms = duracionDe('--duracion-inercia') * 1.5;
+  if (ms <= 0) return;
+  const piso = fichaEl.getBoundingClientRect().bottom;
+  vidasEl.querySelectorAll<HTMLElement>('.vida').forEach((hueco, i) => {
+    const r = hueco.getBoundingClientRect();
+    for (const lado of [-1, 1] as const) {
+      const mitad = dibujo('span', `vida-mitad vida-mitad--suelta vida-mitad--${lado < 0 ? 'izq' : 'der'}`);
+      mitad.style.left = `${r.left}px`;
+      mitad.style.top = `${r.top}px`;
+      mitad.style.width = `${r.width}px`;
+      mitad.style.height = `${r.height}px`;
+      if (typeof mitad.animate !== 'function') continue;
+      document.body.append(mitad);
+      const dx = (i - 1) * 46 + lado * (14 + i * 7) + 60;
+      const dy = Math.max(120, piso - r.bottom - 6 - (i % 2) * 16);
+      const caida = mitad.animate(
+        [
+          { transform: 'translate(0, 0) rotate(0deg) scale(1)', offset: 0 },
+          { transform: `translate(${Math.round(dx * 0.35)}px, -14px) rotate(${lado * 40}deg) scale(1.5)`, offset: 0.18 },
+          { transform: `translate(${dx}px, ${Math.round(dy)}px) rotate(${lado * (150 + i * 35)}deg) scale(1.9)`, offset: 1 },
+        ],
+        { duration: ms, delay: i * 80, easing: 'steps(14, end)', fill: 'both' },
+      );
+      const sacar = (): void => mitad.remove();
+      caida.addEventListener('finish', sacar, { once: true });
+      caida.addEventListener('cancel', sacar, { once: true });
+    }
+  });
+}
+
 function responder(texto: string): void {
-  const item = actual(partida)!;
+  const item = actual(partida);
+  if (!item || partida.desenlace !== 'jugando') return;
   const correcta = textoCorrecto(item);
   const acerto = texto === correcta;
+  const vidasAntes = partida.vidas;
   partida = responderPartida(partida, texto);
+  const perdioUna = partida.vidas < vidasAntes;
+  const termino = partida.desenlace !== 'jugando';
+  const cual = partida.elegidas.length;
+  const estaFicha = fichaEl;
+  const vigente = (): boolean => partida.elegidas.length === cual && fichaEl === estaFicha && estaFicha.isConnected;
 
   // La confirmacion de cerrar, si estaba abierta, ya no tiene sentido: se respondio.
   zonaPartida.querySelector('.retirada--confirma')?.remove();
 
+  // Las opciones dicen ya cuál era y cuál elegiste, con símbolo además de tinta.
   for (const b of zonaPartida.querySelectorAll<HTMLButtonElement>('.opcion')) {
     b.disabled = true;
+    b.classList.remove('jugo-pega');
     if (b.dataset.texto === correcta) b.classList.add('es-correcta');
     else if (b.dataset.texto === texto) b.classList.add('es-elegida');
     else b.classList.add('es-otra');
   }
+  // Los botones quedaron deshabilitados: el foco vuelve a la pregunta, no al `<body>`.
+  const enunciado = estaFicha.querySelector<HTMLElement>('.enunciado');
+  if (enunciado) enfocar(enunciado);
 
-  // El tablero se rehace entero: las vidas, si se perdio una, y el paso del riel. Las vidas
-  // cambian en el mismo tick que el feedback y se anuncian en la misma region viva: son la
-  // misma noticia (`UX-07`). `CNT-10` decidio que perder una no lleva texto propio.
-  zonaPartida.querySelector('.tablero')?.replaceWith(tablero(true));
+  /*
+   * El primer tiempo del cierre, en el mismo tick del toque: el tablero se pone al día (el
+   * paso del riel, y la ficha de vida que se parte si erraste), el sello grande cae sobre la
+   * pregunta y, si erraste, la pantalla da un golpe. Si era la última vida, el golpe es doble.
+   */
+  ponerTableroAlDia(true, perdioUna);
+  sellarLaPregunta(acerto);
+  if (acerto) {
+    sonarEfecto('sello');
+    try {
+      navigator.vibrate?.(18);
+    } catch {
+      // Sin vibración: no pasa nada.
+    }
+  } else {
+    golpear(zonaPartida);
+    sonarEfecto('golpe');
+    if (termino) {
+      window.setTimeout(() => sonarEfecto('golpe'), 170);
+      lloverFichas();
+    }
+  }
 
-  const fuente = acerto ? ACIERTOS : ERRORES;
-  ultimoFeedback = variante(fuente, ultimoFeedback, Math.random);
+  /*
+   * El segundo tiempo llega solo, y **se puede adelantar con un toque** en la partida (o con
+   * Enter o la barra). Adelantar no saltea: la ficha se arma una sola vez (`conFicha`), venga
+   * de su reloj o del toque. Con movimiento reducido la espera vale cero.
+   */
+  let conFicha = false;
+  let reloj = 0;
+  const alTeclear = (ev: KeyboardEvent): void => {
+    if (ev.key !== 'Enter' && ev.key !== ' ') return;
+    ev.preventDefault();
+    conPuntero = false;
+    mostrarLaFicha();
+  };
+  const alTocar = (): void => {
+    conPuntero = true;
+    mostrarLaFicha();
+  };
+  function mostrarLaFicha(): void {
+    if (conFicha) return;
+    conFicha = true;
+    window.clearTimeout(reloj);
+    zonaPartida.removeEventListener('click', alTocar);
+    document.removeEventListener('keydown', alTeclear);
+    if (vigente()) pintarFicha(item!, acerto, correcta);
+  }
+  const espera = duracionDe('--duracion-pasada') + duracionDe('--duracion-umbral') + duracionDe('--duracion-paso');
+  if (espera <= 0) {
+    mostrarLaFicha();
+    return;
+  }
+  reloj = window.setTimeout(mostrarLaFicha, espera);
+  // El toque que eligió la opción no cuenta: se empieza a escuchar en la vuelta siguiente.
+  // Se escucha el `click` y no el `pointerdown`: la ficha corre la hoja, y con `pointerdown` el
+  // `click` de ese mismo toque caía después sobre lo que hubiera quedado bajo el dedo —"Seguí",
+  // en un teléfono bajo—, y se salteaba la respuesta entera (medido a 320 × 568).
+  window.setTimeout(() => {
+    if (conFicha || !vigente()) return;
+    zonaPartida.addEventListener('click', alTocar);
+    document.addEventListener('keydown', alTeclear);
+  }, 0);
+}
+
+/**
+ * El segundo tiempo: la ficha de la respuesta, con la gramática de los otros juegos pulidos —
+ * la marca y el grito estampados, lo que sumaste, la respuesta escrita grande con la tapa del
+ * disco, el dato, el sello de leyenda o testimonio, y "Seguí" adentro, cerrando la columna—.
+ * Las dos opciones que no eran ni la tuya ni la buena se van: lo que queda arriba es lo que
+ * dice algo. Debajo, en un renglón, el enlace a Spotify y la puerta para corregir.
+ */
+function pintarFicha(item: Item, acerto: boolean, correcta: string): void {
+  zonaPartida.classList.add('partida--revelada');
+  dejarLaMarca(acerto);
+  listaEl.classList.add('opciones--cerradas');
+  anotarRacha();
+
+  ultimoFeedback = variante(acerto ? ACIERTOS : ERRORES, ultimoFeedback, Math.random);
+
   // `revelacion` es la pieza de "Adiviná el tema": el acierto se estampa como sello de goma.
-  const panel = el('div', `feedback revelacion ${acerto ? 'ok' : 'no'}`);
+  const panel = el('div', `feedback revelacion ficha-respuesta jugo-pega ${acerto ? 'ok' : 'no'}`);
   // Region viva: se inserta VACIA a proposito — un lector de pantalla anuncia los cambios
-  // de una region que ya existe con mucha mas confiabilidad que una recien nacida.
-  panel.setAttribute('role', 'status');
+  // de una region que ya existe con mucha mas confiabilidad que una recien nacida. Lo que se
+  // anuncia es lo que dice la ficha, sin el botón (`UX-09`).
+  const dice = el('div', 'ficha-respuesta-dice');
+  dice.setAttribute('role', 'status');
+  panel.append(dice);
   zonaPartida.append(panel);
 
   const cabeza = el('div', 'revelacion-cabeza');
-  cabeza.append(el('p', 'micro', ultimoFeedback));
-  const n = acerto ? racha(partida) : 0;
-  const grito = RACHAS[n];
-  if (grito) cabeza.append(el('p', 'racha', grito));
-  panel.append(cabeza);
+  cabeza.append(dibujo('span', 'ficha-respuesta-marca', acerto ? '✔︎' : '✕︎'), el('p', 'micro', ultimoFeedback));
+  const sumaEl = acerto ? dibujo('span', 'revelacion-suma', FICHIN.suma) : null;
+  if (sumaEl) cabeza.append(sumaEl);
+  dice.append(cabeza);
+  // La racha redonda (tres, cinco, diez): un segundo sello, que cae un compás después.
+  const grito = acerto ? RACHAS[racha(partida)] : undefined;
+  if (grito) dice.append(el('p', 'racha-grito', grito));
 
   // La respuesta escrita grande, siempre: en el error es lo que hay que llevarse, y en el
   // acierto es el premio. Con la tapa del disco al lado, cuando la pregunta tiene disco.
@@ -425,7 +786,7 @@ function responder(texto: string): void {
   texto2.append(el('p', 'respuesta-dato', correcta));
   texto2.append(el('p', 'explicacion', item.explicacion));
   cuerpo.append(texto2);
-  panel.append(cuerpo);
+  dice.append(cuerpo);
 
   // El sello completo se revela recien ahora.
   const sello = selloRevelado(item);
@@ -433,29 +794,34 @@ function responder(texto: string): void {
     const caja = el('div', `sello sello--${item.clase}`);
     caja.append(el('strong', undefined, sello.etiqueta));
     caja.append(el('span', undefined, ` ${sello.detalle}`));
-    panel.append(caja);
+    dice.append(caja);
   }
-
-  // FIND-18 / RQ-B8: el link vive en su propio modulo. Borrar `spotify.ts` y esta
-  // llamada saca Spotify del sitio entero sin romper nada mas.
-  const spot = botonSpotify(item.spotify?.trackId);
-  if (spot) panel.append(spot);
 
   /*
    * El avance lo manda el dedo, siempre. No hay temporizador (`UX-01` v2, WCAG 2.2.1).
-   *
-   * Desde `D-71` el boton va en una barra pegada abajo: en la zona del pulgar y siempre a la
-   * vista, aunque la explicacion sea larga. Va AFUERA del panel, no adentro: asi la region
-   * viva anuncia el resultado y la explicacion, y no "SEGUÍ, boton" mezclado con ellos.
+   * "Seguí" va adentro de la ficha y afuera de la región viva: así se anuncia el resultado y
+   * la explicación, y no "SEGUÍ, botón" mezclado con ellos.
    */
-  const barra = el('div', 'seguir-barra');
-  const seguir = el('button', 'primario', BOTON_SEGUIR);
+  const termino = partida.desenlace !== 'jugando';
+  const seguir = el('button', 'primario seguir-ficha', termino ? FICHIN.alResultado : BOTON_SEGUIR);
   seguir.type = 'button';
   seguir.addEventListener('click', avanzar, { once: true });
-  barra.append(seguir);
+  panel.append(seguir);
 
-  // `BR-21` criterio 4: el boton de correccion, despues de la respuesta y afuera del panel.
-  zonaPartida.append(
+  /*
+   * El zócalo (`UX-09`): afuera del panel y después de "Seguí" en el orden del DOM. A la
+   * izquierda el enlace a Spotify —FIND-18 / RQ-B8: vive en su propio módulo; borrar
+   * `spotify.ts` y esta llamada saca Spotify del sitio entero sin romper nada más—, y a la
+   * derecha el botón de corrección (`BR-21` criterio 4).
+   */
+  const zocalo = el('div', 'ficha-pie ficha-zocalo');
+  const spot = botonSpotify(item.spotify?.trackId);
+  if (spot) {
+    const linea = el('p', 'fuente-verso');
+    linea.append(spot);
+    zocalo.append(linea);
+  }
+  zocalo.append(
     botonCorreccion(() => ({
       juego: 'quiz',
       itemId: item.id,
@@ -465,18 +831,80 @@ function responder(texto: string): void {
       banco: { contrato: 'CTR-02', version: 1 },
     })),
   );
-  zonaPartida.append(barra);
+  zonaPartida.append(zocalo);
 
+  // Lo que sumaste vuela del sello de la ficha a la cuenta de la cabecera, que sube al llegar.
+  const total = aciertosDe(partida);
+  if (acerto && sumaEl) {
+    const cual = partida.elegidas.length;
+    const destino = llevasEl;
+    const sigue = (): boolean => partida.elegidas.length === cual && destino.isConnected;
+    window.setTimeout(
+      () => {
+        if (!sigue()) return;
+        // Si ya se pasó de pregunta, la ficha no está: la cuenta se pone al día sin vuelo.
+        if (!sumaEl.isConnected) {
+          destino.textContent = FICHIN.llevas(total);
+          return;
+        }
+        volar(FICHIN.suma, 'suma-vuela', sumaEl, destino, () => {
+          if (!sigue()) return;
+          contar(destino, total - 1, total, FICHIN.llevas);
+          estampar(destino);
+        });
+      },
+      duracionDe('--duracion-umbral') + duracionDe('--escalon-pasada'),
+    );
+  } else {
+    llevasEl.textContent = FICHIN.llevas(total);
+  }
+
+  // El foco va a "Seguí" sin arrastrar la vista. El anillo se dibuja si se llegó con el
+  // teclado y no si se llegó con el dedo.
+  if (conPuntero) {
+    seguir.classList.add('seguir--sin-anillo');
+    seguir.addEventListener('blur', () => seguir.classList.remove('seguir--sin-anillo'), { once: true });
+  }
   seguir.focus({ preventScroll: true });
-  panel.scrollIntoView({ block: 'nearest', behavior: sinMovimiento() ? 'auto' : 'smooth' });
+  // Hasta el zócalo: así "Seguí" queda entero a la vista, en la zona del pulgar.
+  zocalo.scrollIntoView({ block: 'nearest' });
 }
 
+/**
+ * El pase, que es una sola historia: la ficha de la respuesta se va, **la pantalla se apaga**
+ * (se cierra a una línea, como un tubo), la rueda del contador da la vuelta y la pantalla
+ * vuelve a prender con la pregunta nueva; recién ahí se apoyan las teclas. Un sub-paso cada
+ * mitad. Con movimiento reducido el sub-paso vale cero y la pregunta nueva aparece puesta.
+ */
 function avanzar(): void {
+  sonarEfecto('tecla');
   // Quien decide si la partida sigue es `vidas.ts`, no esta funcion.
-  if (partida.desenlace === 'jugando') {
+  if (partida.desenlace !== 'jugando') {
+    pintarResultado();
+    return;
+  }
+  const vieja = fichaEl;
+  const ms = duracionDe('--duracion-umbral');
+  if (ms <= 0 || !vieja?.isConnected) {
     pintarPregunta();
     window.scrollTo({ top: 0 });
-  } else pintarResultado();
+    return;
+  }
+  for (const hijo of [...zonaPartida.children]) if (hijo !== tableroEl && hijo !== vieja) hijo.remove();
+  window.scrollTo({ top: 0 });
+  vieja.classList.remove('ficha-pregunta--prende');
+  vieja.classList.add('ficha-pregunta--apaga');
+  // El foco no se queda en un botón que ya no está.
+  enfocar(vieja);
+  // El apagado dura lo que un toque (120 ms): lo mínimo que se lee. La pantalla nueva prende
+  // enseguida, y el que toca rápido no espera.
+  window.setTimeout(
+    () => {
+      if (fichaEl !== vieja) return;
+      pintarPregunta();
+    },
+    Math.min(ms, duracionDe('--duracion-toque')),
+  );
 }
 
 /* ---- El resultado ---- */
@@ -499,38 +927,73 @@ function planilla(p: Partida<Item>): HTMLElement {
     'aria-label',
     `${ok} ${PLANILLA.acertada}${ok === 1 ? '' : 's'}, ${no} ${PLANILLA.errada}${no === 1 ? '' : 's'}, ${resto} ${PLANILLA.sinJugar}`,
   );
-  for (const g of escalones(p)) {
-    const tramo = el('div', 'planilla-tramo');
+  escalones(p).forEach((g, k) => {
+    const tramo = el('div', 'planilla-tramo jugo-pega');
+    tramo.style.setProperty('--orden', String(k + 5));
     tramo.append(el('span', 'planilla-nivel', (NOMBRE_NIVEL[g.nivel] ?? g.nivel).toUpperCase()));
+    // Cada renglón se imprime después del anterior: el orden en que se jugó.
     const casillas = el('div', 'planilla-casillas');
+    casillas.style.setProperty('--orden', String(k));
     for (const i of g.indices) {
       const estado = i < h.length ? (h[i] ? 'ok' : 'no') : 'resto';
       casillas.append(el('span', `planilla-casilla planilla-casilla--${estado}`, estado === 'ok' ? '✔︎' : estado === 'no' ? '✕︎' : '·'));
     }
     tramo.append(casillas);
     grilla.append(tramo);
-  }
+  });
   caja.append(grilla);
   return caja;
+}
+
+/** La tarjeta de la partida, en el idioma del fichín. Nunca tira: si no se puede, `null`. */
+async function dibujarLaTarjeta(): Promise<Blob | null> {
+  const r = resultadoDe(partida);
+  if (!r) return null;
+  try {
+    return await dibujarFichin({
+      juego: FICHIN.juego,
+      rotulo: DESENLACES[r.desenlace].rotulo,
+      titulo: DESENLACES[r.desenlace].titulo,
+      numero: numeroDePregunta(r.pregunta),
+      recorrido: lineaRecorrido(r),
+      aciertos: lineaAciertos(r),
+      vidas: partida.vidas,
+      fichas: FICHAS,
+      escalones: escalones(partida).map((g) => ({
+        nivel: (NOMBRE_NIVEL[g.nivel] ?? g.nivel).toUpperCase(),
+        casillas: g.indices.map((i) => {
+          const h = historial(partida);
+          return i < h.length ? (h[i] ? 'ok' : 'no') : 'resto';
+        }),
+      })),
+      sitio: location.host + location.pathname,
+    });
+  } catch {
+    // La tarjeta es el premio, no el camino.
+    return null;
+  }
 }
 
 /** `T-41`, `T-42` y `T-143` — el resultado, que son tres desenlaces y no tres tramos. */
 function pintarResultado(): void {
   const r = resultadoDe(partida)!;
   const { titulo, rotulo } = DESENLACES[r.desenlace];
+  const sinPerderUna = r.desenlace === 'victoria' && partida.vidas === FICHAS;
 
   zonaResultado.replaceChildren();
+
+  let orden = 0;
+  const entra = <T extends HTMLElement>(pieza: T, clase = 'jugo-entra'): T => {
+    pieza.classList.add(clase);
+    pieza.style.setProperty('--orden', String(orden++));
+    return pieza;
+  };
 
   // Registro 3 primero: el rotulo dice que hay adentro y se calla. Estampado como sello
   // de goma, pero sin tinta propia por desenlace: lo que dice como te fue es la palabra.
   const marcador = el('p', 'rotulo-desenlace', rotulo);
   marcador.id = 'rotulo-desenlace';
   zonaResultado.append(marcador);
-
-  // El numero grande es la ficha a la que llegaste. Decorativo para el lector: la frase de
-  // abajo dice lo mismo con todas las palabras.
-  const numero = el('p', 'resultado-numero', numeroDePregunta(r.pregunta));
-  numero.setAttribute('aria-hidden', 'true');
 
   const recorrido = el('p', 'puntaje', lineaRecorrido(r));
   recorrido.id = 'recorrido';
@@ -539,69 +1002,137 @@ function pintarResultado(): void {
 
   // El foco aterriza en el encabezado, que es la noticia, y se lleva puestos el rotulo y
   // los dos datos: los cuatro son una sola cosa.
-  const encabezado = el('h2', `tramo tramo--${r.desenlace}`, titulo);
+  const encabezado = entra(el('h2', `tramo tramo--${r.desenlace}`, titulo));
   encabezado.setAttribute('aria-describedby', `${marcador.id} ${recorrido.id} ${acertadas.id}`);
-  zonaResultado.append(encabezado, numero, recorrido, acertadas);
+  zonaResultado.append(encabezado);
+
+  // El numero grande es la ficha a la que llegaste: sube en escalones y apoya como un sello.
+  // Decorativo para el lector: la frase de abajo dice lo mismo con todas las palabras. Al
+  // lado, las fichas como quedaron, cuando el desenlace las cuenta (`BR-19` apartado 6.4: en
+  // la victoria no son un dato).
+  const cuenta = entra(el('div', 'cuenta-vuelta cuenta-fichin'));
+  const numero = dibujo('p', 'resultado-numero');
+  contar(numero, 0, r.pregunta, numeroDePregunta);
+  cuenta.append(numero);
+  /*
+   * Dos momentos distintos. **La derrota**: cuando la cifra termina de contar, la hoja da un
+   * golpe, y el contador de la máquina vuelve de 01 a 00 —el crédito se gastó; "Jugá de nuevo"
+   * es poner otra ficha—. **La victoria**: las fichas que te quedaron caen de a una, cada una
+   * con su clac, y el crédito queda en 01: la máquina te lo deja. La retirada es la derrota
+   * sin el golpe.
+   */
+  const gano = r.desenlace === 'victoria';
+  const creditos = dibujo('p', 'maquina-creditos');
+  const ruedas = armarContador(1, 2);
+  creditos.append(el('span', 'maquina-rotulo', FICHIN.creditos), ruedas);
+  window.setTimeout(() => {
+    sonarEfecto(r.desenlace === 'derrota' ? 'golpe' : 'sello');
+    if (r.desenlace === 'derrota') golpear(zonaResultado);
+  }, duracionDe('--duracion-cuenta'));
+  if (!gano) {
+    window.setTimeout(
+      () => {
+        if (rodarContador(ruedas, 0)) sonarEfecto('tecla');
+      },
+      duracionDe('--duracion-cuenta') + duracionDe('--duracion-umbral'),
+    );
+  }
+  {
+    // Las fichas como quedaron. Son dibujo: el dato, cuando lo es, va escrito abajo.
+    const fichas = marcadorVidas(partida.vidas, false, gano);
+    fichas.removeAttribute('id');
+    fichas.setAttribute('aria-hidden', 'true');
+    fichas.removeAttribute('role');
+    fichas.classList.add('vidas--resultado');
+    if (gano) {
+      fichas.classList.add('vidas--ganadas');
+      const paso = duracionDe('--escalon-umbral') * 5;
+      for (let i = 0; i < partida.vidas; i++) {
+        window.setTimeout(() => sonarEfecto('clac'), duracionDe('--duracion-cuenta') + paso * (i + 1));
+      }
+    }
+    cuenta.append(fichas);
+  }
+  cuenta.append(creditos);
+  if (sinPerderUna) {
+    // La hazaña: agotar el banco con las tres fichas en pie. Doble filete y un segundo sello.
+    numero.classList.add('resultado-numero--hazana');
+    cuenta.append(el('p', 'hazana-sello', FICHIN.hazana));
+    window.setTimeout(() => sonarEfecto('sello'), duracionDe('--duracion-cuenta') + 160);
+  }
+  zonaResultado.append(cuenta, entra(recorrido), entra(acertadas));
 
   // Solo la retirada muestra las vidas (`BR-19` apartado 6.4).
   const vidas = lineaVidas(r);
-  if (vidas) zonaResultado.append(el('p', 'tenue', vidas));
+  if (vidas) zonaResultado.append(entra(el('p', 'tenue', vidas)));
 
-  zonaResultado.append(planilla(partida));
+  zonaResultado.append(entra(planilla(partida)));
 
   // FIND-17: las variantes de `CNT-10`, no un string inventado aca.
-  if (desafio) zonaResultado.append(el('p', 'comparacion', comparacion(r, desafio)));
+  if (desafio) zonaResultado.append(entra(el('p', 'comparacion', comparacion(r, desafio))));
 
-  // "COMPARTÍ" con tilde (`D-17`), en la letra de la firma (`D-65`).
-  const compartir = el('button', 'primario firma', BOTON_COMPARTIR);
-  compartir.type = 'button';
-  compartir.addEventListener('click', () => void compartirResultado());
-  zonaResultado.append(compartir);
+  /*
+   * El pie del resultado (`.pie-resultado`): la misma pieza y el mismo orden que los otros
+   * juegos pulidos — la tarjeta que asoma, "Compartí" (el primario, en la letra de la firma,
+   * `D-65`), lo que compartir tenga para decir y la otra vuelta. El resultado viaja como
+   * desafío, forma `recorrido` (`ADR-02` v2): hasta dónde llegó y cómo terminó. La planilla va
+   * debajo de la frase de `CNT-10`: lo respondido, escalón por escalón.
+   */
+  const pie = entra(el('div', 'pie-resultado'));
+  const { boton: compartir, salida } = botonCompartir(COMPARTIR, () => {
+    const marcas = planillaParaCompartir(respondidasPorEscalon(partida));
+    return {
+      texto: marcas ? [textoParaCompartir(r), marcas].join('\n') : textoParaCompartir(r),
+      url: armarLink(location.origin + location.pathname, {
+        forma: 'recorrido',
+        juego: JUEGO,
+        puntaje: r.pregunta,
+        total: r.total,
+        desenlace: r.desenlace,
+      }),
+      archivo: archivoDeLaTarjeta,
+    };
+  });
+
+  // La tarjeta asoma: lo que vas a compartir se ve antes de tocar el botón. Se dibuja una vez.
+  const asoma = dibujo('div', 'tarjeta-asoma');
+  asoma.addEventListener('click', () => compartir.click());
+  if (urlDeLaTarjeta) URL.revokeObjectURL(urlDeLaTarjeta);
+  urlDeLaTarjeta = '';
+  archivoDeLaTarjeta = null;
+  const estaTarjeta = dibujarLaTarjeta();
+  tarjetaDeLaPartida = estaTarjeta;
+  void estaTarjeta.then((imagen) => {
+    if (tarjetaDeLaPartida !== estaTarjeta || !asoma.isConnected) return;
+    if (!imagen) {
+      asoma.remove();
+      return;
+    }
+    archivoDeLaTarjeta = new File([imagen], nombreArchivo('preguntas-ricoteras'), { type: 'image/png' });
+    urlDeLaTarjeta = URL.createObjectURL(imagen);
+    const foto = el('img', 'jugo-pega');
+    foto.alt = '';
+    foto.src = urlDeLaTarjeta;
+    asoma.append(foto);
+  });
 
   const denuevo = el('button', 'secundario', BOTON_DE_NUEVO);
   denuevo.type = 'button';
-  denuevo.addEventListener('click', comenzar);
-  zonaResultado.append(denuevo);
+  denuevo.addEventListener('click', () => {
+    sonarEfecto('clac');
+    comenzar();
+  });
+  pie.append(asoma, compartir, salida, denuevo);
+  zonaResultado.append(pie);
 
   // La salida hacia el arcade: la misma cinta de regreso de la portada, no un boton nuevo.
-  const salida = el('p', 'salida-resultado');
-  const alArcade = el('a', 'volver', `← ${PORTAL.volverAlArcade}`);
+  const salidaAlArcade = el('p', 'salida-resultado');
+  const alArcade = el('a', 'volver', `← ${FICHIN.volver}`);
   alArcade.href = '/';
-  salida.append(alArcade);
-  zonaResultado.append(salida);
+  salidaAlArcade.append(alArcade);
+  zonaResultado.append(salidaAlArcade);
 
   mostrar(zonaResultado);
   window.scrollTo({ top: 0 });
   enfocar(encabezado);
-}
-
-async function compartirResultado(): Promise<void> {
-  const r = resultadoDe(partida)!;
-  // Forma `recorrido` de `ADR-02` v2: hasta donde llego y como termino.
-  const url = armarLink(location.origin + location.pathname, {
-    forma: 'recorrido',
-    juego: JUEGO,
-    puntaje: r.pregunta,
-    total: r.total,
-    desenlace: r.desenlace,
-  });
-  // La planilla va debajo de la frase de `CNT-10`: lo respondido, escalon por escalon.
-  const marcas = planillaParaCompartir(respondidasPorEscalon(partida));
-  const texto = marcas ? [textoParaCompartir(r), marcas].join('\n') : textoParaCompartir(r);
-
-  if (navigator.share) {
-    try {
-      await navigator.share({ text: texto, url });
-      return;
-    } catch {
-      // El usuario cancelo, o el navegador la rechazo. Cae al respaldo.
-    }
-  }
-  try {
-    await navigator.clipboard.writeText(`${texto} ${url}`);
-    zonaResultado.append(el('p', 'tenue', ENLACE_COPIADO));
-  } catch {
-    // Sin portapapeles tampoco: mostrar el link para copiarlo a mano. Nadie queda afuera.
-    zonaResultado.append(el('p', 'link', url));
-  }
 }

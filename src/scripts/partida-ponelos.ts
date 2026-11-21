@@ -54,7 +54,14 @@ import {
 } from '../lib/ponelos/tablero.ts';
 import { SIN_UBICAR, MAX_FILAS, MIN_FILAS, nombresDeSiempre, sonLasDeSiempre, filasDe } from '../lib/ponelos/filas.ts';
 import { armarMazo, sincronizar, primera, saltear, alFrente, mezclar, type Mazo } from '../lib/ponelos/mazo.ts';
-import { armarConjunto, conjuntosOfrecidos, ID_TODOS, type Catalogo } from '../lib/ponelos/conjuntos.ts';
+import {
+  armarConjunto,
+  conjuntosOfrecidos,
+  ID_TODOS,
+  PREFIJO_SORTEO,
+  type Catalogo,
+  type Resumen,
+} from '../lib/ponelos/conjuntos.ts';
 import { ELECCION, PARTIDA, LAMINA, IMPRESO } from '../lib/ponelos/copy.ts';
 import { claseDisco } from '../lib/tema/paleta.ts';
 import { rutaFicha } from '../lib/tapa/pasadas.ts';
@@ -63,6 +70,10 @@ import { urlDeFragmento } from '../lib/audio/rutas-de-audio.ts';
 import { armarLink, leerReparto, limpiarNombreFila, LARGO_MAX_NOMBRE_FILA } from '../lib/desafio.ts';
 import { dibujarLamina } from './lamina.ts';
 import { nombreArchivoLamina } from '../lib/ponelos/lamina.ts';
+import { duracionDe, estampar, pegar, armarInterruptorDeRuidos } from './jugo.ts';
+import { ruidosPrendidos, sonarEfecto } from '../lib/audio/efectos.ts';
+import { contextoDeAudio, despertarSalida } from '../lib/audio/contexto.ts';
+import type { DatosLamina } from '../lib/ponelos/lamina.ts';
 
 /** El nombre del juego en el link (`g=`). Alfabeto de `ADR-02`: minúsculas y guiones. */
 const JUEGO = 'ponelos';
@@ -322,19 +333,57 @@ function tapita(disco: string, clase: string): HTMLImageElement | null {
   return img;
 }
 
-function pintarEleccion(): void {
+/** Una pieza de la pantalla que entra un escalón después de la anterior (`.jugo-entra`). */
+function entrar<T extends HTMLElement>(n: T, orden: number): T {
+  n.classList.add('jugo-entra');
+  n.style.setProperty('--orden', String(orden));
+  return n;
+}
+
+/**
+ * El dibujo que acompaña a cada conjunto de los que cruzan discos, hecho con lo que hay
+ * adentro (ronda de pulida, 2026-11-19). Nada de íconos: los diez discos parados en la batea,
+ * diez lomos con la tinta de cada disco, tres tapas en abanico, un surco con la púa donde
+ * arranca o donde termina, y las tres primeras tapas de lo que salió sorteado.
+ */
+function adornoDeConjunto(r: Resumen): HTMLElement | null {
+  const con = (clase: string, hijos: readonly (HTMLElement | null)[]): HTMLElement => {
+    const zona = el('span', clase);
+    zona.setAttribute('aria-hidden', 'true');
+    for (const h of hijos) if (h) zona.append(h);
+    return zona;
+  };
+  if (r.id === ID_TODOS) return con('conjunto-tira', DISCOS.map((d) => tapita(d, 'conjunto-tira-tapa')));
+  if (r.id === 'discos') return con('conjunto-lomos', DISCOS.map((d) => el('span', `conjunto-lomo ${claseDisco(d)}`)));
+  if (r.id === 'tapas') {
+    return con('conjunto-abanico', [DISCOS[1], DISCOS[7], DISCOS[4]].map((d) => tapita(d, 'conjunto-abanico-tapa')));
+  }
+  if (r.id === 'abren' || r.id === 'cierran') {
+    const surco = con(`conjunto-surco conjunto-surco--${r.id}`, [el('span', 'conjunto-surco-galleta'), el('span', 'conjunto-surco-pua')]);
+    return surco;
+  }
+  if (r.id.startsWith(PREFIJO_SORTEO)) {
+    const salieron = armarConjunto(catalogo, r.id)?.fichas.slice(0, 3) ?? [];
+    return con('conjunto-sorteo', salieron.map((f) => tapita(f.disco, 'conjunto-sorteo-tapa')));
+  }
+  return null;
+}
+
+function pintarEleccion(deLaPila: ReadonlyMap<string, DOMRect> | null = null): void {
   pararEscucha();
   zonaEleccion.replaceChildren();
   zonaEleccion.append(el('h2', 'eleccion-titulo', ELECCION.titulo));
 
+  const ofrecidos = conjuntosOfrecidos(catalogo);
   const lista = el('ul', 'conjuntos');
+  let orden = 0;
 
   // La partida que quedó a medias va arriba de todo: es lo primero que alguien que vuelve
   // quiere ver, y con los ciento cinco es lo más probable.
   const guardada = ultimaAMedias();
   if (guardada) {
-    const li = el('li', 'conjuntos-retomar');
-    const b = boton('conjunto conjunto--retomar', '', () => abrir(guardada.conjunto.id, null, null, false));
+    const li = entrar(el('li', 'conjuntos-retomar'), orden++);
+    const b = boton('conjunto conjunto--retomar', '', () => abrir(guardada.conjunto.id, null, null, false, b));
     b.append(el('span', 'conjunto-sello', ELECCION.retomar.rotulo));
     b.append(el('span', 'conjunto-titulo', ELECCION.retomar.boton(guardada.conjunto.nombre)));
     b.append(el('span', 'conjunto-dato', ELECCION.retomar.dato(restan(guardada.casillas), guardada.casillas.length)));
@@ -342,39 +391,124 @@ function pintarEleccion(): void {
     lista.append(li);
   }
 
-  for (const r of conjuntosOfrecidos(catalogo)) {
-    const li = el('li', r.id === ID_TODOS ? 'conjuntos-todos' : undefined);
-    const clases = ['conjunto', r.disco ? claseDisco(r.disco) : '', r.id === ID_TODOS ? 'conjunto--todos' : '']
-      .filter(Boolean)
-      .join(' ');
-    const b = boton(clases, '', () => abrir(r.id, null, null, false));
+  /*
+   * Los que cruzan discos: tarjetas, cada una con su dibujo. "Todos los temas" va primero y a
+   * lo ancho, con los diez discos parados; los demás van de a dos por renglón.
+   */
+  for (const r of ofrecidos.filter((o) => !o.disco)) {
+    const entero = r.id === ID_TODOS;
+    const sorteo = r.id.startsWith(PREFIJO_SORTEO);
+    const li = entrar(el('li', entero ? 'conjuntos-todos' : sorteo ? 'conjuntos-sorteo' : undefined), orden++);
+    const b = boton(['conjunto', entero ? 'conjunto--todos' : sorteo ? 'conjunto--sorteo' : 'conjunto--media'].join(' '), '', () =>
+      abrir(r.id, null, null, false, b),
+    );
+    b.dataset.conjunto = r.id;
 
-    if (r.disco) {
-      const t = tapita(r.disco, 'conjunto-tapa');
-      if (t) b.append(t);
-    }
+    const adorno = adornoDeConjunto(r);
+    if (adorno && !entero) b.append(adorno);
     const texto = el('span', 'conjunto-texto');
     texto.append(el('span', 'conjunto-titulo', r.nombre));
     texto.append(el('span', 'conjunto-baja', r.bajada));
     texto.append(el('span', 'conjunto-dato', ELECCION.cuantas(r.cuantas)));
     b.append(texto);
-
-    // "Todos los temas" lleva las diez tapas en tira: es el conjunto de los diez discos.
-    if (r.id === ID_TODOS) {
-      const tira = el('span', 'conjunto-tira');
-      for (const d of DISCOS) {
-        const t = tapita(d, 'conjunto-tira-tapa');
-        if (t) tira.append(t);
-      }
-      b.append(tira);
-    }
+    // En "Todos los temas" los diez discos van abajo del nombre, a lo ancho.
+    if (adorno && entero) b.append(adorno);
 
     li.append(b);
     lista.append(li);
   }
   zonaEleccion.append(lista);
+
+  /*
+   * La batea: los diez discos, tapa por tapa, para repartir el tracklist de uno. La tapa es el
+   * botón, y el año la ordena; el nombre lo dice el botón a quien no la ve (`aria-label`) y a
+   * quien le pasa el mouse por encima (`title`), y la pantalla siguiente lo escribe grande.
+   */
+  const deDisco = ofrecidos.filter((o) => o.disco);
+  if (deDisco.length > 0) {
+    // Cuando la pila vuela hasta acá, la batea ya está en su lugar: el vuelo se mide contra ella.
+    const batea = deLaPila ? el('section', 'batea') : entrar(el('section', 'batea'), orden++);
+    batea.append(el('h3', 'batea-rotulo', ELECCION.batea));
+    const discos = el('ul', 'batea-discos');
+    for (const r of deDisco) {
+      const disco = r.disco!;
+      const anio = catalogo.discos.find((d) => d.slug === disco)?.anio ?? 0;
+      const li = el('li');
+      const b = boton(`batea-disco ${claseDisco(disco)}`, '', () => abrir(r.id, null, null, false, b));
+      b.dataset.conjunto = r.id;
+      b.setAttribute('aria-label', ELECCION.discoDeLaBatea(r.nombre, anio, r.cuantas));
+      b.title = r.nombre;
+      const t = tapita(disco, 'batea-tapa');
+      if (t) {
+        t.dataset.disco = disco;
+        // La batea se ve entera de entrada, y la pila de la portada vuela hasta acá: sin espera.
+        t.loading = 'eager';
+        t.decoding = 'sync';
+        b.append(t);
+      }
+      b.append(el('span', 'batea-anio', String(anio)));
+      li.append(b);
+      discos.append(li);
+    }
+    batea.append(discos);
+    zonaEleccion.append(batea);
+  }
+
   mostrar(zonaEleccion);
   enfocarTitulo(zonaEleccion, '.eleccion-titulo');
+  if (deLaPila) repartirLaPila(deLaPila);
+}
+
+/** Dónde está cada tapa de la pila de la portada, para repartirla desde ahí. */
+function posesDeLaPila(): Map<string, DOMRect> {
+  const poses = new Map<string, DOMRect>();
+  for (const img of zonaInicio.querySelectorAll<HTMLElement>('.pila-disco')) {
+    if (img.dataset.disco) poses.set(img.dataset.disco, img.getBoundingClientRect());
+  }
+  return poses;
+}
+
+/** La curva del sitio, para los vuelos que arma la isla. */
+function curvaDelSitio(): string {
+  return getComputedStyle(document.documentElement).getPropertyValue('--curva-cinta').trim() || 'linear';
+}
+
+/**
+ * La pila de la portada se reparte: cada tapa de la batea llega desde donde estaba tirada.
+ *
+ * No hay un segundo juego de tapas viajando: son las de la batea, que arrancan corridas hasta
+ * su lugar en la pila y vuelven al suyo, una atrás de la otra. Solo se anima `transform`, y con
+ * movimiento reducido (`--duracion-umbral` en cero) la batea aparece ordenada y listo.
+ */
+function repartirLaPila(poses: ReadonlyMap<string, DOMRect>): void {
+  const ms = duracionDe('--duracion-umbral');
+  const escalon = duracionDe('--escalon-umbral') / 2;
+  const batea = zonaEleccion.querySelector<HTMLElement>('.batea');
+  if (ms <= 0 || !batea) return;
+  const curva = curvaDelSitio();
+  const vuelos: Animation[] = [];
+  batea.querySelectorAll<HTMLElement>('.batea-tapa').forEach((tapa, i) => {
+    const de = poses.get(tapa.dataset.disco ?? '');
+    if (!de || de.width === 0 || typeof tapa.animate !== 'function') return;
+    const a = tapa.getBoundingClientRect();
+    if (a.width === 0) return;
+    const dx = de.left + de.width / 2 - (a.left + a.width / 2);
+    const dy = de.top + de.height / 2 - (a.top + a.height / 2);
+    const giro = i % 2 === 0 ? -14 : 11;
+    vuelos.push(
+      tapa.animate(
+        [{ transform: `translate(${dx}px, ${dy}px) rotate(${giro}deg) scale(${de.width / a.width})` }, { transform: 'none' }],
+        { duration: ms, delay: i * escalon, easing: curva, fill: 'backwards' },
+      ),
+    );
+  });
+  const ultimo = vuelos.at(-1);
+  if (!ultimo) return;
+  // Mientras vuelan pasan por encima de las tarjetas de arriba: la batea sube un plano.
+  batea.classList.add('batea--llega');
+  const asentar = (): void => batea.classList.remove('batea--llega');
+  ultimo.addEventListener('finish', asentar, { once: true });
+  ultimo.addEventListener('cancel', asentar, { once: true });
 }
 
 /**
@@ -410,6 +544,7 @@ function abrir(
   casillas: readonly number[] | null,
   filas: readonly string[] | null,
   deAfuera: boolean,
+  tocado: HTMLElement | null = null,
 ): void {
   const c = armarConjunto(catalogo, id);
   if (!c) {
@@ -417,7 +552,14 @@ function abrir(
     pintarEleccion();
     return;
   }
+  // Abrir un conjunto es un toque: el audio del sitio se despierta acá, para el golpe de
+  // cartón de las fundas (`efectos.ts` solo suena con el contexto ya despierto). El que llega
+  // por un link no tocó nada todavía; para él se despierta en la primera ficha que reparta.
+  if (tocado) void despertarSalida();
+  // De dónde sale la primera carta: la tapa que se tocó en la batea, o la primera del dibujo.
+  const tapaTocada = tocado?.querySelector<HTMLElement>('img')?.getBoundingClientRect() ?? null;
   conjunto = c;
+  variosDiscos = new Set(c.fichas.map((f) => f.disco)).size > 1;
   const propia = casillas === null && !deAfuera ? partidaDe(id) : null;
   const seguir = propia && aMedias(propia) ? propia : null;
   nombres = [...(filas ?? seguir?.filas ?? filasGuardadas() ?? nombresDeSiempre())];
@@ -431,14 +573,41 @@ function abrir(
   filtroDisco = null;
   recien = null;
   historia = [];
+  cartaAnterior = null;
+  desplegadas = new Set();
   pintarTablero();
   mostrar(zonaTablero);
   zonaTablero.scrollIntoView({ block: 'start' });
   enfocarTitulo(zonaTablero, '.tablero-titulo');
+  traerLaTapa(tapaTocada);
   guardarEnLaDireccion();
   // La primera ficha suena apenas aparece. Desde un link no hay gesto todavía, y el
   // navegador la deja muda hasta el primer toque: no es un error, es la regla de la casa.
   seguirEscuchando();
+}
+
+/** Si el conjunto abierto cruza discos: entonces cada ficha de tema lleva la tapita del suyo. */
+let variosDiscos = false;
+
+/**
+ * De la batea al tablero: la tapa que se tocó llega a ser la funda de la primera carta.
+ *
+ * Mismo recurso que la pila que se reparte: no viaja una copia, es la funda de la carta, que
+ * arranca corrida hasta donde estaba la tapa tocada y vuelve a su lugar. Solo `transform`; con
+ * movimiento reducido la carta aparece puesta.
+ */
+function traerLaTapa(desde: DOMRect | null): void {
+  const funda = zonaTablero.querySelector<HTMLElement>('.carta-funda');
+  const ms = duracionDe('--duracion-umbral');
+  if (!desde || desde.width === 0 || !funda || ms <= 0 || typeof funda.animate !== 'function') return;
+  const a = funda.getBoundingClientRect();
+  if (a.width === 0) return;
+  const dx = desde.left + desde.width / 2 - (a.left + a.width / 2);
+  const dy = desde.top + desde.height / 2 - (a.top + a.height / 2);
+  funda.animate(
+    [{ transform: `translate(${dx}px, ${dy}px) rotate(-6deg) scale(${desde.width / a.width})` }, { transform: 'none' }],
+    { duration: ms, easing: curvaDelSitio(), fill: 'backwards' },
+  );
 }
 
 /** Guarda lo de antes de una jugada, para poder deshacerla. */
@@ -463,6 +632,8 @@ function pintarFicha(indice: number, ficha: Ficha, fila: number, alTocar: () => 
       'pieza',
       claseDisco(ficha.disco),
       puesta ? 'pieza--puesta' : '',
+      // En el conjunto que se mira, la pieza puesta es la tapa sola (el nombre queda para el lector).
+      ficha.imagen && conjunto?.formato === 'tapa' ? 'pieza--tapa' : '',
       enMano === indice ? 'pieza--en-mano' : '',
       recien === indice ? 'pieza--recien' : '',
     ]
@@ -485,6 +656,17 @@ function pintarFicha(indice: number, ficha: Ficha, fila: number, alTocar: () => 
     img.width = 160;
     img.height = 160;
     b.append(img);
+  } else if (variosDiscos && esTema(ficha)) {
+    // Un tema de un conjunto que cruza discos lleva la tapita del suyo (ronda 2 de la pulida):
+    // en una fila de cuarenta temas, la tapa se reconoce antes de leer el renglón chico. Son
+    // diez imágenes para todo el tablero; el navegador las baja y las decodifica una vez.
+    const mini = tapita(ficha.disco, 'pieza-tapa pieza-tapa--mini');
+    if (mini) {
+      // Sin carga diferida: son diez archivos ya bajados, y vigilar cien imágenes "perezosas"
+      // en cada repintado costaba más que pintarlas.
+      mini.loading = 'eager';
+      b.append(mini);
+    }
   }
 
   const cuerpo = el('span', 'pieza-cuerpo');
@@ -542,6 +724,22 @@ function ubicar(indice: number, fila: number): void {
     decir(PARTIDA.soltaste(ficha.titulo), false);
     return;
   }
+  // El audio del sitio, despierto para el golpe de cartón (si ya lo estaba, no hace nada).
+  void despertarSalida();
+  // De dónde sale: la funda de la carta, que es donde está la ficha que se reparte. Se mide
+  // antes de rehacer el tablero, porque después esa carta ya es la de la ficha siguiente.
+  // (Arrastrando con el mouse se puede soltar una que no es la de la carta: esa no vuela.)
+  const funda =
+    fila === SIN_UBICAR || actual() !== indice ? null : zonaTablero.querySelector<HTMLElement>('.carta-funda');
+  const origen = funda?.getBoundingClientRect() ?? null;
+  const imagenDeOrigen = funda?.querySelector('img')?.getAttribute('src') ?? null;
+
+  // ¿Es una ficha del mazo que llega a una fila, sin nada raro alrededor? Entonces alcanza con
+  // rehacer lo que cambió (`parcharFilas`). Se anota además dónde estaba la recién llegada
+  // anterior, que deja de estar marcada.
+  const vieneDelMazo = reparto[indice] === SIN_UBICAR && enMano === null && !viendoMazo && fila !== SIN_UBICAR;
+  const filaDeLaAnterior = recien !== null ? (reparto[recien] ?? null) : null;
+
   anotar();
   reparto = moverFicha(reparto, indice, fila, nombres.length);
   enMano = null;
@@ -560,15 +758,112 @@ function ubicar(indice: number, fila: number): void {
   else if (fila === SIN_UBICAR) focoSelector = '.reparto-boton';
   else focoFila = fila;
 
-  pintarTablero();
+  // La última: las filas se terminan de pegar, una atrás de la otra, una sola vez.
+  cerrando = listo;
+  pintarTablero(vieneDelMazo && !listo ? { fila, otra: filaDeLaAnterior } : null);
+  cerrando = false;
   guardar();
+  // El recorte de la ficha nueva arranca mudo y se abre cuando ya apoyó la anterior: el golpe
+  // de cartón no cae encima del primer compás (ver `escuchar`).
+  if (fila !== SIN_UBICAR && !listo) callarHasta = performance.now() + duracionDe('--duracion-umbral') + LARGO_DEL_GOLPE_MS;
   seguirEscuchando();
+
+  if (fila !== SIN_UBICAR) {
+    // La última no vuela: la hoja baja hasta la lámina en ese mismo momento, y una funda
+    // suelta quedaría apuntando a donde la fila ya no está. Apoya, y las filas se pegan.
+    llevarALaFila(listo ? null : origen, imagenDeOrigen, ficha);
+    // La cuenta que cambió, donde está el pulgar: cae como sello en el botón de esa fila.
+    estampar(zonaTablero.querySelector(`.reparto-boton[data-fila="${fila}"] .fila-cuenta`));
+  }
 
   if (fila === SIN_UBICAR) decir(PARTIDA.sacaste(ficha.titulo, restan(reparto)), false);
   else decir(PARTIDA.ubicaste(ficha.titulo, nombreDeFila(fila), restan(reparto)), false);
 
   // La última: lo que sigue es mirar la lista entera y compartirla.
   if (listo) zonaTablero.querySelector('.lamina')?.scrollIntoView({ block: 'nearest', behavior: comoMoverse() });
+}
+
+/** Si el tablero se está pintando justo después de ubicar la última: las filas se pegan. */
+let cerrando = false;
+/** La ficha que mostraba la carta la última vez que se pintó, para saber si llegó una nueva. */
+let cartaAnterior: number | null = null;
+
+/**
+ * La ficha viaja de la mano a su fila, y apoya (ronda de pulida, 2026-11-19).
+ *
+ * El tablero se rehace entero en cada toque, así que no hay una pieza que mover: se mide dónde
+ * estaba la funda de la carta **antes** de repintar, y después una copia suelta de esa funda
+ * vuela hasta la pieza nueva. Mientras vuela, la pieza de verdad espera escondida; al llegar,
+ * apoya torcida y se endereza, la fila acusa el peso y su cuenta cae como sello.
+ *
+ * **Nada depende de esto**: el reparto ya cambió, la región viva ya lo dijo y la pieza lleva su
+ * borde de recién puesta. No frena el toque siguiente (si el tablero se rehace en el medio, la
+ * copia llega igual y se borra). Con movimiento reducido no hay vuelo: la pieza aparece puesta.
+ * Solo se anima `transform`.
+ */
+function llevarALaFila(origen: DOMRect | null, imagen: string | null, ficha: Ficha): void {
+  const pieza = zonaTablero.querySelector<HTMLElement>('.pieza--recien');
+  if (!pieza) return;
+  const filaEl = pieza.closest<HTMLElement>('.fila');
+  const apoyar = (): void => {
+    pieza.classList.remove('pieza--viene');
+    pieza.classList.add('pieza--apoya');
+    filaEl?.classList.add('fila--recibe');
+    estampar(filaEl?.querySelector('.fila-destino .fila-cuenta'));
+    // El golpe sordo del cartón contra la batea (ronda 2). Igual en cualquier fila: es peso,
+    // no premio. Va detrás del interruptor de los ruidos y no toca lo que suena de la banda.
+    sonarEfecto('carton');
+  };
+  /*
+   * Si la pieza cayó donde no se ve —detrás del mazo pegado, o arriba de la ventana—, la hoja
+   * se corre lo justo para que la fila quede a la vista (`UX-23` §5.2: `nearest`, nunca un
+   * salto que no hace falta). De una, sin deslizar: el vuelo se mide contra donde quedó. El
+   * aire de abajo ya lo descuenta `scroll-padding-bottom`, que mide el mazo.
+   */
+  const mazoEl = zonaTablero.querySelector<HTMLElement>('.mazo');
+  const estiloMazo = mazoEl ? getComputedStyle(mazoEl) : null;
+  const pegado = mazoEl && estiloMazo?.position === 'sticky' && estiloMazo.bottom !== 'auto';
+  const piso = pegado ? mazoEl.getBoundingClientRect().top : window.innerHeight;
+  const caja = pieza.getBoundingClientRect();
+  if (caja.bottom > piso || caja.top < 0) filaEl?.scrollIntoView({ block: 'nearest' });
+
+  const ms = duracionDe('--duracion-umbral');
+  if (!origen || origen.width === 0 || ms <= 0 || typeof pieza.animate !== 'function') {
+    apoyar();
+    return;
+  }
+  // Adónde va: a la tapa de la pieza si la tiene, o a su esquina.
+  const blanco = (pieza.querySelector<HTMLElement>('.pieza-tapa') ?? pieza).getBoundingClientRect();
+  const lado = Math.min(blanco.width, blanco.height);
+  const vuelo = el('span', ['pieza-vuelo', claseDisco(ficha.disco)].filter(Boolean).join(' '));
+  vuelo.setAttribute('aria-hidden', 'true');
+  if (imagen) {
+    const img = el('img');
+    img.src = imagen;
+    img.alt = '';
+    vuelo.append(img);
+  }
+  vuelo.style.left = `${origen.left}px`;
+  vuelo.style.top = `${origen.top}px`;
+  vuelo.style.width = `${origen.width}px`;
+  vuelo.style.height = `${origen.height}px`;
+  document.body.append(vuelo);
+  pieza.classList.add('pieza--viene');
+  const viaje = vuelo.animate(
+    [
+      { transform: 'translate(0, 0) rotate(-5deg) scale(1)' },
+      {
+        transform: `translate(${blanco.left - origen.left}px, ${blanco.top - origen.top}px) rotate(0deg) scale(${lado / origen.width})`,
+      },
+    ],
+    { duration: ms, easing: curvaDelSitio(), fill: 'forwards' },
+  );
+  const llegar = (): void => {
+    vuelo.remove();
+    apoyar();
+  };
+  viaje.addEventListener('finish', llegar, { once: true });
+  viaje.addEventListener('cancel', llegar, { once: true });
 }
 
 /** El toque sobre una ficha puesta: la toma para moverla, o la suelta si ya estaba en la mano. */
@@ -623,8 +918,23 @@ function devolverElFoco(veniaDeAdentro: boolean): void {
     zonaTablero.querySelector<HTMLElement>('.reparto-boton') ??
     zonaTablero.querySelector<HTMLElement>('.fila-nombre') ??
     zonaTablero.querySelector<HTMLElement>('.tablero-herramientas .herramienta');
-  blanco?.focus();
+  // "Compartí" recibe el foco al cerrar la lista. Si se llegó con el dedo o el mouse, ese foco
+  // no dibuja anillo (la misma regla y la misma clase de los otros juegos pulidos).
+  // (Desde la ronda 3 vale para cualquier foco que ponga la isla: tocando con el dedo, ninguna
+  // tecla del tablero queda con el anillo de oro puesto.)
+  if (blanco && conPuntero) {
+    blanco.classList.add('seguir--sin-anillo');
+    blanco.addEventListener('blur', () => blanco.classList.remove('seguir--sin-anillo'), { once: true });
+  }
+  blanco?.focus({ preventScroll: blanco.matches('.firma') });
 }
+
+/**
+ * Si lo último que se tocó fue con el dedo o el mouse y no con el teclado. Un `click` que
+ * viene del teclado (o de un guion) trae `detail` en cero.
+ */
+let conPuntero = false;
+document.addEventListener('click', (e) => (conPuntero = e.detail > 0), true);
 
 /* ---- Las herramientas: cambiar las filas, deshacer, mezclar ---- */
 
@@ -639,13 +949,18 @@ function pintarHerramientas(): HTMLElement {
     focoSelector = editando ? '.fila-nombre' : '.herramienta';
     pintarTablero();
     seguirEscuchando();
+    // Al cerrar la edición, los nombres quedan estampados en sus pestañas: caen como sello,
+    // todos a la vez, y si alguno cambió suena el sello de goma.
+    if (!editando) {
+      for (const sello of zonaTablero.querySelectorAll('.fila-sello')) estampar(sello);
+      if (huboNombreNuevo) sonarEfecto('sello');
+      huboNombreNuevo = false;
+    }
   });
   zona.append(editar);
 
-  const sonido = boton('herramienta', sonidoPrendido ? PARTIDA.apagaSonido : PARTIDA.prendeSonido, alternarSonido);
-  sonido.dataset.herramienta = 'sonido';
-  zona.append(sonido);
-
+  // (La tecla de la música se fue al mazo, pegada al disco que suena: ronda 3. La de los
+  // ruidos de interfaz queda arriba, en la cabecera. Dos interruptores juntos se confundían.)
   const deshacer = boton('herramienta', PARTIDA.deshace, deshacerJugada);
   deshacer.dataset.herramienta = 'deshacer';
   deshacer.disabled = historia.length === 0;
@@ -709,7 +1024,13 @@ function renombrar(id: number, campo: HTMLInputElement): void {
   guardarFilas();
   guardar();
   decir(PARTIDA.renombraste(limpio), false);
+  // El nombre nuevo queda puesto: el campo termina de pegarse, sin rehacer nada.
+  huboNombreNuevo = true;
+  pegar(campo);
 }
+
+/** Si en esta edición se cambió algún nombre: al tocar "Listo", el sello suena. */
+let huboNombreNuevo = false;
 
 function sumarFila(): void {
   if (!entraOtraFila(nombres.length)) return;
@@ -721,6 +1042,9 @@ function sumarFila(): void {
   pintarTablero();
   guardar();
   decir(PARTIDA.sumaste(nueva), false);
+  // El cajón nuevo llega torcido y termina de apoyar al final de la batea.
+  pegar(zonaTablero.querySelector('.filas > .fila:last-of-type'));
+  huboNombreNuevo = true;
 }
 
 function sacarFilaDe(id: number): void {
@@ -730,6 +1054,7 @@ function sacarFilaDe(id: number): void {
   const vuelven = reparto.filter((v) => v === id).length;
   reparto = sacarFila(reparto, id, nombres.length);
   nombres.splice(id - 1, 1);
+  desplegadas.clear();
   mazo = sincronizar(mazo, reparto);
   enMano = null;
   recien = null;
@@ -757,13 +1082,120 @@ function volverASiempre(): void {
 
 /* ---- Las filas ---- */
 
+/**
+ * Las filas largas se pliegan (ronda 3 de la pulida, 2026-11-19).
+ *
+ * Con los ciento cinco temas, una fila de cuarenta era una lista de cuarenta sellos: el tablero
+ * dejaba de parecer una batea y, de paso, cada toque rehacía cuarenta botones. Desde
+ * `PLEGADA_DESDE` fichas una fila muestra las primeras `PLEGADA_MUESTRA` y una pestaña con las
+ * que no se ven ("+34"); tocarla la abre entera, y abierta ofrece plegarla. **La recién
+ * llegada y la que está en la mano no se esconden nunca**: es la que el ojo busca.
+ *
+ * Las filas de tapas no se pliegan: son diez como mucho y se miran. Y la lámina lleva todas,
+ * plegadas o no: plegar es de la pantalla, no de la lista.
+ */
+const PLEGADA_DESDE = 9;
+const PLEGADA_MUESTRA = 6;
+/** Las filas que el jugador abrió enteras, por su número. Se olvida al abrir otro conjunto. */
+let desplegadas = new Set<number>();
+
+/** Las piezas de una fila, plegadas si son muchas. Es lo que se rehace cuando llega una ficha. */
+function pintarPiezasDe(c: Conjunto, id: number, fichas: readonly Ficha[]): HTMLUListElement {
+  const lista = el('ul', 'fila-piezas');
+  const sePliega = c.formato !== 'tapa' && !editando && fichas.length >= PLEGADA_DESDE;
+  const plegada = sePliega && !desplegadas.has(id);
+  let ocultas = 0;
+  fichas.forEach((ficha, n) => {
+    const i = c.fichas.indexOf(ficha);
+    if (plegada && n >= PLEGADA_MUESTRA && i !== recien && i !== enMano) {
+      ocultas += 1;
+      return;
+    }
+    const li = el('li');
+    li.append(pintarFicha(i, ficha, id, () => tocarPuesta(i, id)));
+    lista.append(li);
+  });
+  if (sePliega && (ocultas > 0 || !plegada)) {
+    const li = el('li', 'fila-pliegue');
+    const b = boton('pliegue', plegada ? PARTIDA.masEnLaFila(ocultas) : PARTIDA.plegala, () => {
+      if (plegada) desplegadas.add(id);
+      else desplegadas.delete(id);
+      focoSelector = `.fila[data-cajon="${id}"] .pliegue`;
+      pintarTablero();
+    });
+    b.setAttribute('aria-expanded', String(!plegada));
+    // "+34" solo no dice nada a quien no ve la fila: lleva la frase entera. "Plegala" se llama
+    // como se lee, con el nombre de la fila sumado para el lector de pantalla.
+    if (plegada) b.setAttribute('aria-label', PARTIDA.verLasQueFaltan(ocultas, nombreDeFila(id)));
+    else b.append(el('span', 'solo-lector', `, ${nombreDeFila(id)}`));
+    li.append(b);
+    lista.append(li);
+  }
+  return lista;
+}
+
+/**
+ * Llegó una ficha del mazo: **se rehace solo lo que cambió** (ronda 3).
+ *
+ * Rehacer el tablero entero en cada toque es lo que hace imposible que la pantalla y el reparto
+ * se desincronicen, y sigue siendo el camino de todo lo demás (mover, deshacer, editar, cerrar).
+ * Pero repartir es el gesto de este juego, y con sesenta fichas puestas rehacerlas todas dejaba
+ * un cuadro de 120 a 180 ms con la CPU ×4. Acá se rehacen las piezas de la fila que recibe y,
+ * si es otra, las de la fila donde estaba la recién llegada anterior (que deja de estar
+ * marcada); se corrige la cuenta de la que recibe, y nada más. Lo que rodea a las filas —las
+ * teclas, el mazo, el pie— se rehace siempre: es chico.
+ *
+ * Devuelve `false` si no encontró lo que esperaba: entonces el tablero se rehace entero.
+ */
+function parcharFilas(c: Conjunto, filasEl: HTMLElement, llega: { readonly fila: number; readonly otra: number | null }): boolean {
+  const armadas = porFila(c, reparto, nombres);
+  const cuenta = cuentas(reparto, nombres.length);
+  const tocadas = new Set<number>([llega.fila]);
+  if (llega.otra !== null && llega.otra !== SIN_UBICAR) tocadas.add(llega.otra);
+  const piezas: Array<{ readonly viejo: Element; readonly nuevo: HTMLElement; readonly seccion: HTMLElement; readonly id: number }> = [];
+  for (const id of tocadas) {
+    const seccion = filasEl.querySelector<HTMLElement>(`:scope > .fila[data-cajon="${id}"]`);
+    const viejo = seccion?.querySelector(':scope > .fila-piezas');
+    const armada = armadas.find((a) => a.fila.id === id);
+    if (!seccion || !viejo || !armada) return false;
+    piezas.push({ viejo, nuevo: pintarPiezasDe(c, id, armada.fichas), seccion, id });
+  }
+  for (const p of piezas) {
+    p.viejo.replaceWith(p.nuevo);
+    p.seccion.classList.remove('fila--recibe');
+    const destino = p.seccion.querySelector<HTMLElement>(':scope > .fila-destino');
+    const n = cuenta[p.id] ?? 0;
+    destino?.setAttribute('aria-label', PARTIDA.ponerEn(nombreDeFila(p.id), n));
+    const numero = destino?.querySelector('.fila-cuenta');
+    if (numero) numero.textContent = String(n);
+  }
+  return true;
+}
+
 function pintarFilas(c: Conjunto): HTMLElement {
   const cuenta = cuentas(reparto, nombres.length);
+  const listaCerrada = terminado(reparto);
   const filas = el('div', ['filas', editando ? 'filas--editando' : ''].filter(Boolean).join(' '));
 
   for (const armada of porFila(c, reparto, nombres)) {
     const id = armada.fila.id;
-    const seccion = el('section', ['fila', enMano !== null && !editando ? 'fila--abierta' : ''].filter(Boolean).join(' '));
+    const seccion = el(
+      'section',
+      [
+        'fila',
+        enMano !== null && !editando ? 'fila--abierta' : '',
+        // Con la lista cerrada, la fila que quedó vacía se apaga: sigue ahí, con su nombre y su
+        // cero, pero de trazo cortado. Una "FILA 5" entera y vacía se veía como algo sin terminar.
+        listaCerrada && !editando && (cuenta[id] ?? 0) === 0 ? 'fila--vacia' : '',
+      ]
+        .filter(Boolean)
+        .join(' '),
+    );
+    // El cierre: con la última ficha puesta, cada fila termina de pegarse, de arriba para abajo.
+    if (cerrando) {
+      seccion.classList.add('jugo-pega');
+      seccion.style.setProperty('--orden', String(id));
+    }
 
     if (editando) {
       const edicion = el('div', 'fila-edicion');
@@ -811,14 +1243,8 @@ function pintarFilas(c: Conjunto): HTMLElement {
       seccion.append(destino);
     }
 
-    const lista = el('ul', 'fila-piezas');
-    for (const ficha of armada.fichas) {
-      const i = c.fichas.indexOf(ficha);
-      const li = el('li');
-      li.append(pintarFicha(i, ficha, id, () => tocarPuesta(i, id)));
-      lista.append(li);
-    }
-    seccion.append(lista);
+    seccion.dataset.cajon = String(id);
+    seccion.append(pintarPiezasDe(c, id, armada.fichas));
     filas.append(seccion);
   }
 
@@ -851,9 +1277,33 @@ function pieDeLaCarta(f: Ficha): string {
   return PARTIDA.pieDeTema(tituloDeDisco.get(tema.disco) ?? tema.disco, String(tema.pista));
 }
 
+/**
+ * La carta: el disco que tenés en la mano (ronda de pulida, 2026-11-19).
+ *
+ * Es una funda con su tapa —o ciega, en el conjunto que se juega sin tapas— y el vinilo que
+ * asoma por el costado. **Mientras suena el recorte, el disco sale de la funda y gira**; cuando
+ * se corta, vuelve a entrar y queda quieto. Es el único detalle vivo de esta pantalla y está
+ * atado a un estado, el de sonar, que además dice el botón ("Pará"). El giro lo prende
+ * `marcarEscucha()` con `.carta--suena`, sin rehacer nada.
+ *
+ * Abajo de la carta asoma lo que queda del mazo: hasta tres fundas más, la pila que se achica.
+ */
 function pintarCarta(i: number): HTMLElement {
   const f = conjunto!.fichas[i]!;
-  const carta = el('div', ['carta', claseDisco(f.disco), enMano !== null ? 'carta--moviendo' : ''].filter(Boolean).join(' '));
+  const carta = el(
+    'div',
+    [
+      'carta',
+      claseDisco(f.disco),
+      enMano !== null ? 'carta--moviendo' : '',
+      sonando === i ? 'carta--suena' : '',
+      // La que recién llega sube desde la pila; la misma carta repintada no se mueve.
+      cartaAnterior !== i ? 'carta--llega' : '',
+    ]
+      .filter(Boolean)
+      .join(' '),
+  );
+  cartaAnterior = i;
   carta.draggable = true;
   carta.addEventListener('dragstart', (e) => {
     arrastrada = i;
@@ -863,6 +1313,14 @@ function pintarCarta(i: number): HTMLElement {
     arrastrada = null;
   });
 
+  const funda = el('span', 'carta-funda');
+  const vinilo = el('span', 'carta-vinilo');
+  vinilo.setAttribute('aria-hidden', 'true');
+  const cara = el('span', 'carta-vinilo-cara');
+  // La veta: dos arcos enfrentados de tinta clara, impresos sobre el surco. Es lo que da vuelta.
+  cara.append(el('span', 'carta-vinilo-veta'), el('span', 'carta-vinilo-galleta'));
+  vinilo.append(cara);
+  funda.append(vinilo);
   const tapa = tapaDeLaCarta(f);
   if (tapa) {
     const img = el('img', 'carta-tapa');
@@ -871,8 +1329,13 @@ function pintarCarta(i: number): HTMLElement {
     img.decoding = 'async';
     img.width = 160;
     img.height = 160;
-    carta.append(img);
+    funda.append(img);
+  } else {
+    const ciega = el('span', 'carta-ciega');
+    ciega.setAttribute('aria-hidden', 'true');
+    funda.append(ciega);
   }
+  carta.append(funda);
   const cuerpo = el('div', 'carta-cuerpo');
   cuerpo.append(el('span', 'carta-titulo', f.titulo));
   cuerpo.append(el('span', 'carta-pie', pieDeLaCarta(f)));
@@ -1022,10 +1485,30 @@ function pintarMazo(): HTMLElement {
       .join(' '),
   );
 
+  /*
+   * Sin nada en el mazo, el mazo no se dibuja (ronda 2 de la pulida): la caja decía tres veces
+   * que no quedaba ninguna, y el cierre ya lo dice con su título y con la lámina. Queda la
+   * región viva, escondida a la vista, para que el lector de pantalla escuche dónde cayó la
+   * última y que no queda ninguna.
+   */
+  if (vacio) {
+    zonaMano = el('p', 'mano', PARTIDA.completa);
+    zonaMano.setAttribute('aria-live', 'polite');
+    seccion.append(zonaMano);
+    return seccion;
+  }
+
   const rotulo = el('h2', 'bandeja-rotulo');
-  rotulo.append(
-    el('span', 'bandeja-sello', enMano !== null ? PARTIDA.laEstasMoviendo : vacio ? PARTIDA.mazoVacio : PARTIDA.laQueSigue),
-  );
+  rotulo.append(el('span', 'bandeja-sello', enMano !== null ? PARTIDA.laEstasMoviendo : PARTIDA.laQueSigue));
+  /*
+   * La tecla de la música, pegada al disco (ronda 3): prendida, cada ficha que te toca suena
+   * sola; apagada, suena solo si lo pedís con "Escuchala". Es de la banda y vive en el mazo;
+   * la de los ruidos de interfaz se llama distinto y vive arriba, con las herramientas. Lleva
+   * `aria-pressed` y, apagada, va tachada: forma además de tinta.
+   */
+  const musica = boton('musica-tecla', PARTIDA.musicaTecla, alternarSonido);
+  musica.dataset.herramienta = 'sonido';
+  musica.setAttribute('aria-pressed', String(sonidoPrendido));
   rotulo.append(el('span', 'fila-cuenta', PARTIDA.quedan(mazo.length, c.fichas.length)));
   seccion.append(rotulo);
 
@@ -1033,34 +1516,59 @@ function pintarMazo(): HTMLElement {
   zonaMano.setAttribute('aria-live', 'polite');
   seccion.append(zonaMano);
 
-  if (vacio) {
-    seccion.append(el('p', 'bandeja-lista', PARTIDA.completa));
-    return seccion;
-  }
   if (editando) return seccion;
   if (viendoMazo && enMano === null) {
     seccion.append(pintarMazoAbierto());
     return seccion;
   }
-  seccion.append(pintarCarta(i));
+  // La carta, arriba de lo que queda del mazo: hasta tres fundas asoman por abajo.
+  const pila = el('div', 'mazo-carta');
+  const debajo = Math.min(3, enMano !== null ? mazo.length : mazo.length - 1);
+  pila.dataset.resto = String(Math.max(0, debajo));
+  for (let k = 0; k < 3; k++) {
+    const resto = el('span', 'carta-resto');
+    resto.setAttribute('aria-hidden', 'true');
+    pila.append(resto);
+  }
+  pila.append(pintarCarta(i));
+  // La tecla de la música va pisando el borde de la carta, abajo, del lado del disco.
+  pila.append(musica);
+  seccion.append(pila);
   seccion.append(pintarAccionesDeCarta(i));
   seccion.append(pintarBotonesDeFila(i));
   return seccion;
 }
 
-function pintarTablero(): void {
+function pintarTablero(llega: { readonly fila: number; readonly otra: number | null } | null = null): void {
   const c = conjunto!;
   const veniaDeAdentro = zonaTablero.contains(document.activeElement);
-  zonaTablero.replaceChildren();
 
+  // Si solo llegó una ficha del mazo, las filas se quedan y se les corrige lo que cambió
+  // (`parcharFilas`). En cualquier otro caso, o si algo no cierra, se rehace todo.
+  const filasDeAntes = llega && !editando ? zonaTablero.querySelector<HTMLElement>(':scope > .filas:not(.filas--editando)') : null;
+  const filasQueQuedan = filasDeAntes && llega && parcharFilas(c, filasDeAntes, llega) ? filasDeAntes : null;
+  if (filasQueQuedan) {
+    for (const n of [...zonaTablero.children]) if (n !== filasQueQuedan) n.remove();
+  } else {
+    zonaTablero.replaceChildren();
+  }
+
+  // La cabecera: el nombre de lo que se reparte. (La bajada del conjunto ya se leyó en la
+  // elección; acá le sacaba un renglón a las filas.)
   const cab = el('header', 'tablero-cabecera');
   cab.append(el('h2', 'tablero-titulo', c.nombre));
-  cab.append(el('p', 'tablero-baja', c.bajada));
+  const ruidos = armarInterruptorDeRuidos({ apagar: PARTIDA.ruidosTecla, prender: PARTIDA.ruidosTecla });
+  ruidos.classList.add('ruidos-tecla');
+  cab.append(ruidos);
   if (compartida) cab.append(el('p', 'lista--compartida', PARTIDA.llegoCompartida));
-  zonaTablero.append(cab);
+  const herramientas = pintarHerramientas();
 
-  zonaTablero.append(pintarHerramientas());
-  zonaTablero.append(pintarFilas(c));
+  if (filasQueQuedan) {
+    filasQueQuedan.before(cab, herramientas);
+  } else {
+    zonaTablero.append(cab, herramientas);
+    zonaTablero.append(pintarFilas(c));
+  }
   zonaTablero.append(pintarMazo());
 
   zonaTablero.append(pintarAcciones());
@@ -1150,6 +1658,9 @@ function marcarEscucha(): void {
   const b = zonaTablero.querySelector<HTMLButtonElement>('.carta-escuchar');
   const fb = i !== null ? conjunto?.fichas[i] : undefined;
   if (b && fb) rotularEscucha(b, fb, suena);
+  // El disco de la carta sale de la funda y gira mientras suena; cuando se corta, frena y vuelve.
+  const carta = zonaTablero.querySelector<HTMLElement>('.carta');
+  if (carta) girarElDisco(carta, suena);
   const renglon = zonaTablero.querySelector<HTMLElement>('.carta-suena');
   if (renglon) {
     const f = i !== null ? conjunto?.fichas[i] : undefined;
@@ -1157,6 +1668,64 @@ function marcarEscucha(): void {
     renglon.textContent = suena && temaSonando && f && !esTema(f) ? PARTIDA.suena(temaSonando.titulo) : '';
   }
 }
+
+/** En cuántos escalones frena el disco. Pocos y parejos, como los carretes del casete. */
+const ESCALONES_DE_FRENADO = [0.72, 0.5, 0.34, 0.2, 0.1, 0.04] as const;
+const frenadas = new WeakMap<HTMLElement, number>();
+
+/**
+ * Prende o frena el giro del disco de una carta (ronda 3 de la pulida).
+ *
+ * Prender es poner `.carta--suena`. Parar **no es sacarla de golpe**: un plato no clava. El
+ * giro pierde velocidad en escalones durante `--duracion-inercia`, y recién ahí se va la clase
+ * y el disco vuelve a la funda. Con movimiento reducido el token vale cero y se saca en el
+ * acto (ahí el disco ni giraba). Si vuelve a sonar mientras frena, retoma a su velocidad.
+ * No es un segundo cuadro de animación: es la misma animación de CSS, a la que se le cambia
+ * `playbackRate` seis veces con un reloj.
+ */
+function girarElDisco(carta: HTMLElement, suena: boolean): void {
+  const cara = carta.querySelector<HTMLElement>('.carta-vinilo-cara');
+  const giro = (): Animation | undefined => cara?.getAnimations?.()[0];
+  const pendiente = frenadas.get(carta);
+  if (pendiente !== undefined) window.clearInterval(pendiente);
+  frenadas.delete(carta);
+  if (suena) {
+    carta.classList.add('carta--suena');
+    const g = giro();
+    if (g) g.playbackRate = 1;
+    return;
+  }
+  if (!carta.classList.contains('carta--suena')) return;
+  const total = duracionDe('--duracion-inercia');
+  const g = giro();
+  if (total <= 0 || !g) {
+    carta.classList.remove('carta--suena');
+    return;
+  }
+  let paso = 0;
+  const reloj = window.setInterval(() => {
+    const ritmo = ESCALONES_DE_FRENADO[paso++];
+    if (ritmo === undefined) {
+      window.clearInterval(reloj);
+      frenadas.delete(carta);
+      carta.classList.remove('carta--suena');
+      return;
+    }
+    g.playbackRate = ritmo;
+  }, total / (ESCALONES_DE_FRENADO.length + 1));
+  frenadas.set(carta, reloj);
+}
+
+/**
+ * Hasta cuándo el recorte que arranca va mudo (ronda 3). Al repartir, el recorte de la ficha
+ * nueva empieza en el mismo toque en que la anterior sale volando, y el golpe de cartón cae
+ * cuando esa apoya: encima del primer compás. El recorte **arranca igual adentro del toque**
+ * —que es lo que el navegador pide para dejarlo sonar— pero mudo, y se abre cuando el golpe ya
+ * pasó. `muted` y no el volumen: el iPhone no deja tocar el volumen de un `<audio>`.
+ */
+let callarHasta = 0;
+/** Lo que dura el golpe de cartón, con un respiro. Es un reloj de sonido, no de animación. */
+const LARGO_DEL_GOLPE_MS = 140;
 
 function escuchar(i: number): void {
   const f = conjunto?.fichas[i];
@@ -1183,6 +1752,17 @@ function escuchar(i: number): void {
   audio.src = urlDeFragmento(tema.slug);
   sonando = i;
   temaSonando = tema;
+  // Mudo mientras apoya la ficha anterior, si los ruidos están prendidos (si no, no hay golpe
+  // que cuidar). Se abre solo, salvo que para entonces ya esté sonando otra cosa.
+  const falta = callarHasta - performance.now();
+  const espera = falta > 0 && ruidosPrendidos();
+  audio.muted = espera;
+  if (espera) {
+    const esteAudio = audio;
+    window.setTimeout(() => {
+      if (vuelta === vueltaAudio) esteAudio.muted = false;
+    }, falta);
+  }
   void audio.play().catch(() => {
     // El navegador no lo dejó sonar (sin gesto, sin red): el juego sigue mudo, y el botón
     // queda para pedirlo a mano.
@@ -1232,20 +1812,120 @@ document.addEventListener('visibilitychange', () => {
 
 let salidaCompartir: HTMLElement | null = null;
 
-function pintarAcciones(): HTMLElement {
-  const zona = el('section', 'lamina');
-  if (terminado(reparto)) zona.append(el('h2', 'lamina-titulo', LAMINA.titulo));
+/** Lo que la lámina lleva impreso de la lista que está en pantalla, en el idioma de la batea. */
+function datosDeLaLamina(c: Conjunto): DatosLamina {
+  return {
+    juego: IMPRESO.juego,
+    conjunto: c.nombre,
+    batea: true,
+    bandas: porFila(c, reparto, nombres).map((a) => ({
+      nombre: a.fila.nombre,
+      fichas: a.fichas.length > 0 ? a.fichas.map((f) => f.titulo) : [LAMINA.vacia],
+      // Un conjunto que se mira se imprime con las tapas; uno que se lee, con los
+      // titulos. Una lista de tapas sin las tapas es la mitad de lo que se ordeno.
+      imagenes: a.fichas.map((f) => f.imagen).filter((r): r is string => r !== null),
+      cuenta: a.fichas.length,
+      // La fila que quedó vacía sale apagada: se dice, no se esconde, y no pesa como las otras.
+      vacia: a.fichas.length === 0,
+    })),
+    repartidas: `${IMPRESO.rotuloCuantas}: ${c.fichas.length - restan(reparto)} / ${c.fichas.length}`,
+    // El credito dice lo que hay adentro de ESTA lamina, no lo que suele haber: firmarle
+    // a Rocambole una imagen de puro texto seria un rotulo que miente (`D-21`).
+    credito: c.formato === 'tapa' ? IMPRESO.creditoConTapas : IMPRESO.creditoSinTapas,
+    sitio: location.host + location.pathname,
+  };
+}
 
+/**
+ * La lámina de la lista que está en pantalla, dibujada una sola vez.
+ *
+ * El tablero se rehace entero en cada toque, y la lámina tarda: se guarda con la lista que
+ * retrata (la dirección la dice entera, filas incluidas), y mientras la lista no cambie se usa
+ * la misma, para asomarla en el cierre y para compartirla. `null` si no se pudo dibujar: la
+ * lámina es el premio, no el camino (`D-14`).
+ */
+let laminaHecha: { readonly clave: string; readonly imagen: Promise<Blob | null>; url: string; vista: boolean } | null = null;
+
+function laminaDeAhora(c: Conjunto): Promise<Blob | null> {
+  let clave: string;
+  try {
+    clave = linkDeLaLista(c);
+  } catch {
+    clave = `${c.id}|${reparto.join('')}|${nombres.join('|')}`;
+  }
+  if (laminaHecha?.clave === clave) return laminaHecha.imagen;
+  if (laminaHecha?.url) URL.revokeObjectURL(laminaHecha.url);
+  const imagen = dibujarLamina(datosDeLaLamina(c)).catch(() => null);
+  laminaHecha = { clave, imagen, url: '', vista: false };
+  return imagen;
+}
+
+/**
+ * El cierre (ronda 2 de la pulida): la misma pieza que los otros juegos pulidos.
+ *
+ * `.pie-resultado` con la lámina que asoma —lo que vas a compartir se ve antes de tocar—,
+ * "Compartí", lo que compartir tenga para decir y la otra vuelta ("Armá otra"). Abajo, en
+ * `.salida-resultado`, la cinta de vuelta al fichín y "Desarmala", chica: se deshace, pero no
+ * es lo que alguien viene a buscar acá.
+ *
+ * Se puede compartir sin terminar (`D-14`), así que el pie está siempre, abajo del mazo. El
+ * título y la lámina que asoma aparecen cuando no queda ninguna sin ubicar.
+ */
+function pintarAcciones(): HTMLElement {
+  const c = conjunto!;
+  const listo = terminado(reparto);
+  const zona = el('section', 'lamina');
+  if (listo) zona.append(el('h2', cerrando ? 'lamina-titulo jugo-sello' : 'lamina-titulo', LAMINA.titulo));
+
+  const pie = el('div', 'pie-resultado');
   const compartir = el('button', 'primario firma', LAMINA.compartir) as HTMLButtonElement;
   compartir.type = 'button';
   compartir.addEventListener('click', () => void compartirLista(compartir));
-  zona.append(compartir);
+
+  if (listo) {
+    const asoma = el('div', 'tarjeta-asoma');
+    asoma.setAttribute('aria-hidden', 'true');
+    asoma.addEventListener('click', () => compartir.click());
+    pie.append(asoma);
+    const esta = laminaDeAhora(c);
+    void esta.then((imagen) => {
+      const hecha = laminaHecha;
+      if (!asoma.isConnected || !hecha || hecha.imagen !== esta) return;
+      if (!imagen) {
+        asoma.remove();
+        return;
+      }
+      hecha.url ||= URL.createObjectURL(imagen);
+      // Se pega una vez, cuando llega; el tablero repintado la muestra ya puesta.
+      const foto = el('img', hecha.vista ? undefined : 'jugo-pega');
+      hecha.vista = true;
+      foto.alt = '';
+      foto.src = hecha.url;
+      asoma.append(foto);
+    });
+  }
+  pie.append(compartir);
 
   salidaCompartir = el('div', 'compartir-salida');
   salidaCompartir.setAttribute('aria-live', 'polite');
-  zona.append(salidaCompartir);
+  pie.append(salidaCompartir);
 
-  const desarmar = el('button', 'secundario', PARTIDA.desarmar) as HTMLButtonElement;
+  const otra = el('button', 'secundario', LAMINA.denuevo) as HTMLButtonElement;
+  otra.type = 'button';
+  otra.addEventListener('click', () => {
+    limpiarLaDireccion();
+    pintarEleccion();
+    zonaEleccion.scrollIntoView({ block: 'start' });
+  });
+  pie.append(otra);
+  zona.append(pie);
+
+  const salidas = el('p', 'salida-resultado salida-resultado--doble');
+  const volver = el('a', 'volver', `← ${LAMINA.volver}`);
+  volver.href = '/';
+  salidas.append(volver);
+
+  const desarmar = el('button', 'desarmar', PARTIDA.desarmar) as HTMLButtonElement;
   desarmar.type = 'button';
   desarmar.disabled = restan(reparto) === reparto.length;
   desarmar.addEventListener('click', () => {
@@ -1261,20 +1941,8 @@ function pintarAcciones(): HTMLElement {
     guardar();
     seguirEscuchando();
   });
-  zona.append(desarmar);
-
-  const otra = el('button', 'secundario', LAMINA.denuevo) as HTMLButtonElement;
-  otra.type = 'button';
-  otra.addEventListener('click', () => {
-    limpiarLaDireccion();
-    pintarEleccion();
-    zonaEleccion.scrollIntoView({ block: 'start' });
-  });
-  zona.append(otra);
-
-  const volver = el('a', 'secundario', LAMINA.volver);
-  volver.href = '/';
-  zona.append(volver);
+  salidas.append(desarmar);
+  zona.append(salidas);
 
   return zona;
 }
@@ -1314,28 +1982,9 @@ async function compartirLista(boton: HTMLButtonElement): Promise<void> {
   boton.disabled = true;
   boton.textContent = PARTIDA.armando;
 
-  let imagen: Blob | null = null;
-  try {
-    imagen = await dibujarLamina({
-      juego: IMPRESO.juego,
-      conjunto: c.nombre,
-      bandas: porFila(c, reparto, nombres).map((a) => ({
-        nombre: a.fila.nombre,
-        fichas: a.fichas.length > 0 ? a.fichas.map((f) => f.titulo) : [LAMINA.vacia],
-        // Un conjunto que se mira se imprime con las tapas; uno que se lee, con los
-        // titulos. Una lista de tapas sin las tapas es la mitad de lo que se ordeno.
-        imagenes: a.fichas.map((f) => f.imagen).filter((r): r is string => r !== null),
-      })),
-      repartidas: `${IMPRESO.rotuloCuantas}: ${c.fichas.length - restan(reparto)} / ${c.fichas.length}`,
-      // El credito dice lo que hay adentro de ESTA lamina, no lo que suele haber: firmarle
-      // a Rocambole una imagen de puro texto seria un rotulo que miente (`D-21`).
-      credito: c.formato === 'tapa' ? IMPRESO.creditoConTapas : IMPRESO.creditoSinTapas,
-      sitio: location.host + location.pathname,
-    });
-  } catch {
-    // La lámina es el premio, no el camino.
-    imagen = null;
-  }
+  // La lámina es el premio, no el camino: si no se pudo dibujar llega `null` y se comparte igual.
+  // Con la lista cerrada ya está hecha —es la que asoma—; a medias, se dibuja acá.
+  const imagen = await laminaDeAhora(c);
 
   boton.disabled = false;
   boton.textContent = rotuloOriginal;
@@ -1446,7 +2095,29 @@ document.addEventListener('keydown', (e) => {
   seguirEscuchando();
 });
 
-$('empezar').addEventListener('click', pintarEleccion);
+/**
+ * De la portada a la elección: la pila se reparte en la batea. El botón y la pila hacen lo
+ * mismo; la pila es el atajo dicho con el objeto del juego.
+ */
+function empezar(): void {
+  const poses = posesDeLaPila();
+  pintarEleccion(poses.size > 0 ? poses : null);
+  /*
+   * El audio del sitio se arma acá, pero **después** de que la pila terminó de repartirse:
+   * crear el contexto cuesta un cuadro largo (medido con la CPU ×4: de 130 a 300 ms si cae en
+   * el mismo toque), y en ese toque arranca el vuelo. Queda armado y dormido; lo despierta el
+   * toque que elige qué repartir, que ya es barato.
+   */
+  window.setTimeout(() => contextoDeAudio(), DESPUES_DE_LA_PILA_MS);
+}
+/** Lo que se espera para armar el audio: la pila ya llegó a la batea. Es un reloj, no un tiempo de animación. */
+const DESPUES_DE_LA_PILA_MS = 1200;
+$('empezar').addEventListener('click', empezar);
+// El interruptor de los ruidos, en la portada: apaga el golpe de cartón y nada más.
+document
+  .getElementById('ruidos')
+  ?.append(armarInterruptorDeRuidos({ apagar: PARTIDA.ruidosApagar, prender: PARTIDA.ruidosPrender }));
+document.getElementById('pila')?.addEventListener('click', empezar);
 
 /**
  * Si la dirección trae una lista compartida, se abre esa. Si no, la elección.
